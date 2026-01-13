@@ -1,0 +1,4 @@
+project_id = "gvxntlyvqlunaqjkbblw"
+
+[functions.cleanup-old-videos]
+verify_jwt = false
