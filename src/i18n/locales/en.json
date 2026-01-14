@@ -23,7 +23,8 @@
     "cancel": "Cancel",
     "delete": "Delete",
     "close": "Close",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "signInToPlay": "Sign in to play"
   },
   "auth": {
     "login": "Log in",
@@ -134,7 +135,19 @@
     "noThrowsYet": "No one has thrown yet this round",
     "todaysScore": "Today's score: {{score}} 🎯",
     "alreadyRegisteredToday": "You have already registered today's throws",
-    "nextDay": "Next day in"
+    "nextDay": "Next day in",
+    "leave": "Leave league",
+    "leaveConfirmTitle": "Leave league?",
+    "leaveConfirmDesc": "Are you sure you want to leave this league? Your score history will remain but you will no longer participate in future rounds.",
+    "finished": "League Finished",
+    "winner": "Winner",
+    "congratulations": "Congratulations to {{name}} for winning {{league}}!",
+    "startNewSeason": "Start New Season",
+    "seasonCreated": "New season created!",
+    "finalScore": "Final Score",
+    "restartConfirmTitle": "Start new season?",
+    "restartConfirmDesc": "This will create a new league with the same participants and settings. The current league will remain in history.",
+    "restart": "Restart"
   },
   "throwInput": {
     "timeUp": "Time's up!",
@@ -194,6 +207,7 @@
     "inviteSent": "Invite sent to {{name}}!",
     "inviteFriend": "Invite friend",
     "addFriend": "Add friend",
+    "addFriends": "Add friends",
     "requestPending": "Request sent",
     "acceptRequest": "Accept request",
     "alreadyFriends": "Friends",
@@ -290,7 +304,6 @@
     "noMatches": "No matches played yet",
     "won": "Won",
     "lost": "Lost",
-    "wins": "wins",
     "bust": "Bust!",
     "onlineMode": "Online",
     "offlineMode": "Offline",
@@ -309,7 +322,11 @@
     "opponentLeft": "Opponent has disconnected",
     "opponentLeftDesc": "Your opponent has left the match. The match will be cancelled.",
     "leaveMatch": "Leave Match",
-    "guestWarning": "Guests can only play offline matches"
+    "guestWarning": "Guests can only play offline matches",
+    "headToHead": "Head to Head",
+    "wins": "Wins",
+    "draws": "Draws",
+    "losses": "Losses"
   },
   "voice": {
     "listening": "Listening for score...",
@@ -332,6 +349,10 @@
     "size": "Tournament size (players)",
     "created": "Tournament created!",
     "createdDesc": "Share the link or invite friends",
+    "subtitle": "Find challenges or see your active games",
+    "ongoing": "Ongoing",
+    "quickAccess": "YOUR ACTIVE TOURNAMENTS",
+    "joinableTournaments": "Tournaments you can join",
     "join": "Join",
     "joined": "Joined tournament!",
     "full": "Full",

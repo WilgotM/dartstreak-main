@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Target, Swords, Trophy, Clock } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
-import { CreateMatchDialog } from "@/components/CreateMatchDialog";
+import { CreateOfflineMatchDialog } from "@/components/CreateOfflineMatchDialog";
+import { CreateOnlineMatchDialog } from "@/components/CreateOnlineMatchDialog";
 import { useMatch } from "@/hooks/useMatch";
 import { format } from "date-fns";
 import { enUS, sv } from "date-fns/locale";
@@ -153,13 +154,59 @@ export default function Matches() {
       </header>
 
       <main className="container mx-auto px-4 py-6 space-y-6">
-        {/* Create Match Button */}
-        <CreateMatchDialog>
-          <Button variant="hero" className="w-full">
-            <Swords className="w-4 h-4 mr-2" />
-            {t("match.oneVsOne")}
-          </Button>
-        </CreateMatchDialog>
+        {/* New Match Creation Section */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <CreateOfflineMatchDialog>
+            <Card className="cursor-pointer hover:shadow-glow transition-all border-dashed border-2 hover:border-primary/50 group bg-card/50">
+              <CardContent className="flex flex-col items-center justify-center py-8 text-center space-y-3">
+                <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                  <Target className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-display font-bold text-lg">{t("match.offlineMode")}</h3>
+                  <p className="text-sm text-muted-foreground">{t("match.offlineModeDesc")}</p>
+                </div>
+                <Button variant="ghost" className="group-hover:text-primary">
+                  {t("match.startMatch")}
+                </Button>
+              </CardContent>
+            </Card>
+          </CreateOfflineMatchDialog>
+
+          {!isGuest ? (
+            <CreateOnlineMatchDialog>
+              <Card className="cursor-pointer hover:shadow-glow transition-all border-dashed border-2 hover:border-accent/50 group bg-card/50">
+                <CardContent className="flex flex-col items-center justify-center py-8 text-center space-y-3">
+                  <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center group-hover:bg-accent/20 transition-colors">
+                    <Swords className="w-6 h-6 text-accent" />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-bold text-lg">{t("match.onlineMode")}</h3>
+                    <p className="text-sm text-muted-foreground">{t("match.onlineModeDesc")}</p>
+                  </div>
+                  <Button variant="ghost" className="group-hover:text-accent">
+                    {t("match.sendChallenge")}
+                  </Button>
+                </CardContent>
+              </Card>
+            </CreateOnlineMatchDialog>
+          ) : (
+            <Card className="opacity-50 border-dashed border-2 bg-card/50">
+              <CardContent className="flex flex-col items-center justify-center py-8 text-center space-y-3">
+                <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
+                  <Swords className="w-6 h-6 text-muted-foreground" />
+                </div>
+                <div>
+                  <h3 className="font-display font-bold text-lg">{t("match.onlineMode")}</h3>
+                  <p className="text-sm text-muted-foreground">{t("match.guestWarning")}</p>
+                </div>
+                <Button variant="ghost" disabled>
+                  {t("common.signInToPlay")}
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+        </section>
 
         {/* Tournaments Coming Soon */}
         <Card className="bg-secondary/50 border-dashed">

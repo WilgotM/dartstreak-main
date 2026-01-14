@@ -120,7 +120,7 @@ export function MatchThrowInput({ onComplete, remainingScore, disabled, onDartsC
       </div>
 
       {/* Number grid */}
-      <div className="grid grid-cols-5 gap-1.5">
+      <div className="grid grid-cols-5 gap-2">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map((num) => (
           <Button
             key={num}
@@ -128,7 +128,7 @@ export function MatchThrowInput({ onComplete, remainingScore, disabled, onDartsC
             size="sm"
             onClick={() => handleNumberClick(num)}
             disabled={disabled || darts.length >= 3}
-            className="h-10 font-mono"
+            className="h-14 text-lg font-bold font-mono shadow-sm active:scale-95 transition-transform"
           >
             {num}
           </Button>
@@ -136,33 +136,42 @@ export function MatchThrowInput({ onComplete, remainingScore, disabled, onDartsC
       </div>
 
       {/* Special buttons */}
-      <div className="flex gap-1.5">
+      <div className="flex gap-2">
         <Button
-          variant="secondary"
+          variant="outline"
           size="sm"
           onClick={() => handleSpecialClick(0)}
           disabled={disabled || darts.length >= 3}
-          className="flex-1 h-10"
+          className="flex-1 h-14 font-bold border-destructive/50 text-destructive hover:bg-destructive/10"
         >
           {t("throwInput.miss")}
         </Button>
         <Button
           variant="secondary"
           size="sm"
-          onClick={() => handleNumberClick(25)}
+          onClick={() => handleSpecialClick(25)}
           disabled={disabled || darts.length >= 3}
-          className="flex-1 h-10"
+          className="flex-1 h-14 font-bold text-emerald-600 dark:text-emerald-400 border-2 border-emerald-500/20"
         >
-          {multiplier === 2 ? "Bull 50" : "Bull 25"}
+          25
+        </Button>
+        <Button
+          variant="destructive"
+          size="sm"
+          onClick={() => handleSpecialClick(50)}
+          disabled={disabled || darts.length >= 3}
+          className="flex-1 h-14 font-black shadow-lg shadow-destructive/20"
+        >
+          BULL
         </Button>
         <Button
           variant="ghost"
           size="sm"
           onClick={handleUndo}
           disabled={disabled || darts.length === 0}
-          className="h-10"
+          className="h-14 px-3"
         >
-          <Undo2 className="w-4 h-4" />
+          <Undo2 className="w-6 h-6" />
         </Button>
       </div>
 

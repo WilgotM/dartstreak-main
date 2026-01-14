@@ -8,6 +8,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
 import { useMatch } from "@/hooks/useMatch";
 import { useFriends } from "@/hooks/useFriends";
+import { FriendsSheet } from "@/components/FriendsSheet";
 
 export default function Dashboard() {
   const { user, profile, loading, isGuest } = useAuth();
@@ -137,18 +138,17 @@ export default function Dashboard() {
 
         {/* Notifications hint */}
         {totalNotifications > 0 && (
-          <Card
-            className="cursor-pointer hover:shadow-soft transition-all"
-            onClick={() => navigate("/profile")}
-          >
-            <CardContent className="py-4 flex items-center justify-between">
-              <div>
-                <p className="font-semibold">{t("dashboard.youHaveNotifications", { count: totalNotifications })}</p>
-                <p className="text-sm text-muted-foreground">{t("dashboard.checkProfile")}</p>
-              </div>
-              <ArrowRight className="w-5 h-5 text-muted-foreground" />
-            </CardContent>
-          </Card>
+          <FriendsSheet>
+            <Card className="cursor-pointer hover:shadow-soft transition-all">
+              <CardContent className="py-4 flex items-center justify-between">
+                <div>
+                  <p className="font-semibold">{t("dashboard.youHaveNotifications", { count: totalNotifications })}</p>
+                  <p className="text-sm text-muted-foreground">{t("dashboard.checkProfile")}</p>
+                </div>
+                <ArrowRight className="w-5 h-5 text-muted-foreground" />
+              </CardContent>
+            </Card>
+          </FriendsSheet>
         )}
       </main>
     </AppLayout>

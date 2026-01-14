@@ -408,9 +408,15 @@ export default function Match() {
       </header>
 
       <main className="flex-1 container mx-auto px-4 py-4 flex flex-col gap-4 overflow-auto">
-        {/* Video section - shows current thrower's camera */}
-        <div className="flex justify-center">
-          <div className="relative bg-card rounded-lg overflow-hidden border border-border w-full max-w-sm aspect-square">
+        {/* Video section - dynamic height based on turn */}
+        <div className="flex justify-center transition-all duration-300 ease-in-out">
+          <div 
+            className={`relative bg-card rounded-lg overflow-hidden border border-border w-full transition-all duration-300 ease-in-out ${
+              isMyTurn 
+                ? "h-32 max-w-md shadow-sm" // Small strip when playing (to show input)
+                : "max-w-sm aspect-square shadow-lg" // Full square when watching opponent
+            }`}
+          >
             {/* Local video - always rendered, visibility controlled by CSS */}
             <video
               ref={localVideoRef}

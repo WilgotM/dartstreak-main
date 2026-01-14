@@ -29,14 +29,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isGuest, setIsGuest] = useState(false);
 
   const fetchProfile = async (userId: string) => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("profiles")
       .select("id, display_name")
       .eq("id", userId)
-      .single();
+      .maybeSingle();
 
     if (data) {
       setProfile(data);
+    } else if (userId && !isGuest) {
+      // Profile missing - try to recreate it
+      console.log("Profile missing for user, creating...");
+      const { data: { user } } = await supabase.auth.getUser();
+      const displayName = user?.user_metadata?.display_name || user?.email?.split('@')[0] || "User";
+
+      const { data: newProfile, error: createError } = await supabase
+        .from("profiles")
+        .insert({ id: userId, display_name: displayName })
+        .select("id, display_name")
+        .single();
+
+      if (!createError && newProfile) {
+        setProfile(newProfile);
+      } else {
+        console.error("Failed to create profile:", createError);
+      }
     }
   };
 

@@ -598,6 +598,11 @@ export function useMatch(matchId?: string) {
     try {
       console.log("Initializing WebRTC...");
 
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        console.error("Camera API not available");
+        return false;
+      }
+
       // Clear previous state
       processedSignals.current.clear();
       queuedSignals.current.clear();
@@ -725,6 +730,11 @@ export function useMatch(matchId?: string) {
 
   // Switch between front/back camera
   const switchCamera = async () => {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        console.error("Camera API not available");
+        return;
+    }
+
     const newFacingMode = facingMode === "user" ? "environment" : "user";
 
     // Stop current tracks
