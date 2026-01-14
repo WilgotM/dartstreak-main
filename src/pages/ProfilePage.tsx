@@ -44,7 +44,7 @@ export default function ProfilePage() {
       .select("id, display_name, timezone, display_name_changed_at, email_changed_at")
       .eq("id", user.id)
       .single();
-    
+
     if (data) {
       setExtendedProfile(data);
     }
@@ -60,7 +60,7 @@ export default function ProfilePage() {
       <AppLayout>
         <div className="min-h-screen flex items-center justify-center">
           <div className="animate-pulse-soft">
-            <Target className="w-12 h-12 text-primary" />
+            <img src="/logo.png" alt="DartStreak Logo" className="w-16 h-16 object-contain" />
           </div>
         </div>
       </AppLayout>

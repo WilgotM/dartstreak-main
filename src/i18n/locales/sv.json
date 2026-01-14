@@ -51,7 +51,15 @@
     "usernameTaken": "Detta användarnamn är redan taget",
     "usernameAvailable": "Användarnamnet är tillgängligt!",
     "continueAsGuest": "Fortsätt som gäst",
-    "guestName": "Gäst {{number}}"
+    "guestName": "Gäst {{number}}",
+    "forgotPassword": "Glömt lösenord?",
+    "forgotPasswordDesc": "Ange din e-post för att få en återställningslänk.",
+    "sendResetLink": "Skicka återställningslänk",
+    "resetEmailSent": "Återställningslänk skickad till din e-post",
+    "updatePassword": "Uppdatera lösenord",
+    "enterNewPassword": "Ange ditt nya lösenord nedan.",
+    "newPassword": "Nytt lösenord",
+    "passwordUpdated": "Lösenordet har uppdaterats"
   },
   "landing": {
     "tagline": "Tävla med vänner varje dag",

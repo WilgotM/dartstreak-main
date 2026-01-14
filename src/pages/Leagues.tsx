@@ -66,7 +66,7 @@ export default function Leagues() {
     }
 
     const leagueIds = memberData?.map(m => m.league_id) || [];
-    
+
     if (leagueIds.length === 0) {
       setLeagues([]);
       setLoadingLeagues(false);
@@ -180,7 +180,7 @@ export default function Leagues() {
       <AppLayout>
         <div className="min-h-screen flex items-center justify-center">
           <div className="animate-pulse-soft">
-            <Target className="w-12 h-12 text-primary" />
+            <img src="/logo.png" alt="DartStreak Logo" className="w-16 h-16 object-contain" />
           </div>
         </div>
       </AppLayout>

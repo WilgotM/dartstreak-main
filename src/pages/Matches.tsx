@@ -138,7 +138,7 @@ export default function Matches() {
       <AppLayout>
         <div className="min-h-screen flex items-center justify-center">
           <div className="animate-pulse-soft">
-            <Target className="w-12 h-12 text-primary" />
+            <img src="/logo.png" alt="DartStreak Logo" className="w-16 h-16 object-contain" />
           </div>
         </div>
       </AppLayout>

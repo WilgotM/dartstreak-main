@@ -10,18 +10,14 @@ export function DesktopNav() {
   const { t } = useTranslation();
   const { totalNotifications } = useFriends();
   const { pendingMatches } = useMatch();
-  
+
   const matchNotifications = pendingMatches.length;
 
   return (
     <nav className="hidden md:flex fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-b border-border h-16">
       <div className="container mx-auto px-4 flex items-center justify-between">
-        {/* Logo / Brand */}
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
-            <Swords className="w-4 h-4 text-primary-foreground" />
-          </div>
-          <span className="font-display font-bold text-lg">DartApp</span>
+          <img src="/logo.png" alt="DartStreak Logo" className="w-10 h-10 object-contain" />
         </div>
 
         {/* Navigation Links */}

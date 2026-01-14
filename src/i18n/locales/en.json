@@ -51,7 +51,15 @@
     "usernameTaken": "This username is already taken",
     "usernameAvailable": "Username is available!",
     "continueAsGuest": "Continue as guest",
-    "guestName": "Guest {{number}}"
+    "guestName": "Guest {{number}}",
+    "forgotPassword": "Forgot password?",
+    "forgotPasswordDesc": "Enter your email to receive a reset link.",
+    "sendResetLink": "Send Reset Link",
+    "resetEmailSent": "Reset link sent to your email",
+    "updatePassword": "Update Password",
+    "enterNewPassword": "Enter your new password below.",
+    "newPassword": "New Password",
+    "passwordUpdated": "Password updated successfully"
   },
   "landing": {
     "tagline": "Compete with friends every day",

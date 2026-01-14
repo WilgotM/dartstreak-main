@@ -19,7 +19,8 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const [checkingUsername, setCheckingUsername] = useState(false);
   const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
-  const { signIn, signUp, continueAsGuest } = useAuth();
+  const [forgotPassword, setForgotPassword] = useState(false);
+  const { signIn, signUp, continueAsGuest, resetPassword, updatePassword, isPasswordRecovery } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -34,6 +35,7 @@ export default function Auth() {
     displayName: z.string().min(2, t("auth.nameMinLength")).optional(),
   });
 
+  // ... (checkUsernameAvailability and logic stays same)
   const checkUsernameAvailability = async (username: string) => {
     if (username.length < 2) {
       setUsernameAvailable(null);
@@ -61,6 +63,35 @@ export default function Auth() {
     }, 500);
 
     return () => clearTimeout(timeoutId);
+  };
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const { error } = await resetPassword(email);
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success(t("auth.resetEmailSent") || "Reset link sent to your email");
+      setForgotPassword(false);
+      setIsLogin(true);
+    }
+    setLoading(false);
+  };
+
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const { error } = await updatePassword(password);
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success(t("auth.passwordUpdated") || "Password updated successfully");
+      navigate("/dashboard");
+    }
+    setLoading(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -100,6 +131,7 @@ export default function Auth() {
         navigate("/dashboard");
       }
     } else {
+      // Create account
       const { error } = await signUp(email, password, displayName);
       if (error) {
         if (error.message.includes("already registered")) {
@@ -110,6 +142,10 @@ export default function Auth() {
           toast.error(t("auth.signupError"));
         }
       } else {
+        // If successful, user is created.
+        // If email confirmation is disabled (PER USER REQUEST), session is active immediately.
+        // If enabled, they get email.
+        // We will assume they disabled it or will.
         toast.success(t("auth.accountCreated"));
         navigate("/dashboard");
       }
@@ -117,6 +153,94 @@ export default function Auth() {
     setLoading(false);
   };
 
+  // View: Update Password (from Recovery Link)
+  if (isPasswordRecovery) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+        <div className="w-full max-w-md animate-slide-up">
+          <Card className="shadow-card border-2">
+            <CardHeader className="text-center space-y-2">
+              <div className="mx-auto mb-4">
+                <img src="/logo.png" alt="DartStreak Logo" className="w-20 h-20 object-contain mx-auto" />
+              </div>
+              <CardTitle className="text-2xl font-display">
+                {t("auth.updatePassword") || "Update Password"}
+              </CardTitle>
+              <CardDescription>
+                {t("auth.enterNewPassword") || "Enter your new password below."}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleUpdatePassword} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="password">{t("auth.newPassword") || "New Password"}</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                <Button type="submit" variant="hero" size="lg" className="w-full" disabled={loading}>
+                  {loading ? t("common.loading") : t("auth.updatePassword") || "Update Password"}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  // View: Forgot Password
+  if (forgotPassword) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+        <div className="w-full max-w-md animate-slide-up">
+          <Button variant="ghost" className="mb-6" onClick={() => setForgotPassword(false)}>
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            {t("common.back")}
+          </Button>
+
+          <Card className="shadow-card border-2">
+            <CardHeader className="text-center space-y-2">
+              <div className="mx-auto mb-4">
+                <img src="/logo.png" alt="DartStreak Logo" className="w-20 h-20 object-contain mx-auto" />
+              </div>
+              <CardTitle className="text-2xl font-display">
+                {t("auth.forgotPassword") || "Reset Password"}
+              </CardTitle>
+              <CardDescription>
+                {t("auth.forgotPasswordDesc") || "Enter your email to receive a reset link."}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleResetPassword} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">{t("auth.email")}</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder={t("auth.emailPlaceholder")}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <Button type="submit" variant="hero" size="lg" className="w-full" disabled={loading}>
+                  {loading ? t("common.loading") : t("auth.sendResetLink") || "Send Reset Link"}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  // View: Login / Signup
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md animate-slide-up">
@@ -131,8 +255,8 @@ export default function Auth() {
 
         <Card className="shadow-card border-2">
           <CardHeader className="text-center space-y-2">
-            <div className="mx-auto w-16 h-16 rounded-2xl gradient-primary flex items-center justify-center mb-2">
-              <Target className="w-8 h-8 text-primary-foreground" />
+            <div className="mx-auto mb-4">
+              <img src="/logo.png" alt="DartStreak Logo" className="w-20 h-20 object-contain mx-auto" />
             </div>
             <CardTitle className="text-2xl font-display">
               {isLogin ? t("auth.login") : t("auth.signup")}
@@ -185,7 +309,18 @@ export default function Auth() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password">{t("auth.password")}</Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password">{t("auth.password")}</Label>
+                  {isLogin && (
+                    <button
+                      type="button"
+                      onClick={() => setForgotPassword(true)}
+                      className="text-xs text-muted-foreground hover:text-primary"
+                    >
+                      {t("auth.forgotPassword") || "Forgot password?"}
+                    </button>
+                  )}
+                </div>
                 <Input
                   id="password"
                   type="password"

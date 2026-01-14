@@ -13,10 +13,13 @@ interface AuthContextType {
   profile: Profile | null;
   loading: boolean;
   isGuest: boolean;
+  isPasswordRecovery: boolean;
   signUp: (email: string, password: string, displayName: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   continueAsGuest: () => void;
+  resetPassword: (email: string) => Promise<{ error: Error | null }>;
+  updatePassword: (password: string) => Promise<{ error: Error | null }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,6 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [isGuest, setIsGuest] = useState(false);
+  const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
 
   const fetchProfile = async (userId: string) => {
     const { data, error } = await supabase
@@ -107,6 +111,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
+
+        if (event === 'PASSWORD_RECOVERY') {
+          setIsPasswordRecovery(true);
+        }
+
         if (session?.user) {
           setIsGuest(false);
           localStorage.removeItem("dartstreak_guest_mode");
@@ -165,6 +174,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsGuest(false);
   };
 
+  const resetPassword = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth`,
+    });
+    return { error };
+  };
+
+  const updatePassword = async (password: string) => {
+    const { error } = await supabase.auth.updateUser({
+      password: password
+    });
+    return { error };
+  };
+
   const continueAsGuest = () => {
     setIsGuest(true);
     const guestId = `guest_${Math.floor(Math.random() * 10000)}`;
@@ -177,7 +200,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, profile, loading, isGuest, signUp, signIn, signOut, continueAsGuest }}>
+    <AuthContext.Provider value={{ user, session, profile, loading, isGuest, isPasswordRecovery, signUp, signIn, signOut, continueAsGuest, resetPassword, updatePassword }}>
       {children}
     </AuthContext.Provider>
   );

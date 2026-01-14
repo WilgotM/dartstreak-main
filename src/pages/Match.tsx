@@ -185,7 +185,7 @@ export default function Match() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-pulse-soft">
-          <Target className="w-12 h-12 text-primary" />
+          <img src="/logo.png" alt="DartStreak Logo" className="w-16 h-16 object-contain" />
         </div>
       </div>
     );
@@ -410,12 +410,11 @@ export default function Match() {
       <main className="flex-1 container mx-auto px-4 py-4 flex flex-col gap-4 overflow-auto">
         {/* Video section - dynamic height based on turn */}
         <div className="flex justify-center transition-all duration-300 ease-in-out">
-          <div 
-            className={`relative bg-card rounded-lg overflow-hidden border border-border w-full transition-all duration-300 ease-in-out ${
-              isMyTurn 
+          <div
+            className={`relative bg-card rounded-lg overflow-hidden border border-border w-full transition-all duration-300 ease-in-out ${isMyTurn
                 ? "h-32 max-w-md shadow-sm" // Small strip when playing (to show input)
                 : "max-w-sm aspect-square shadow-lg" // Full square when watching opponent
-            }`}
+              }`}
           >
             {/* Local video - always rendered, visibility controlled by CSS */}
             <video

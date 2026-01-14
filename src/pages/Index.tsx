@@ -23,10 +23,7 @@ export default function Index() {
       <header className="container mx-auto px-4 py-6">
         <nav className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
-              <Target className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <span className="font-display font-bold text-xl">DartStreak</span>
+            <img src="/logo.png" alt="DartStreak Logo" className="w-12 h-12 object-contain" />
           </div>
           <div className="flex items-center gap-4">
             <LanguageSwitch />

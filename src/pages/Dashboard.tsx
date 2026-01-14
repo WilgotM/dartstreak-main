@@ -28,7 +28,7 @@ export default function Dashboard() {
       <AppLayout>
         <div className="min-h-screen flex items-center justify-center">
           <div className="animate-pulse-soft">
-            <Target className="w-12 h-12 text-primary" />
+            <img src="/logo.png" alt="DartStreak Logo" className="w-16 h-16 object-contain" />
           </div>
         </div>
       </AppLayout>
@@ -40,9 +40,7 @@ export default function Dashboard() {
       <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
-              <Target className="w-5 h-5 text-primary-foreground" />
-            </div>
+            <img src="/logo.png" alt="DartStreak Logo" className="w-10 h-10 object-contain" />
             <div>
               <span className="font-display font-bold text-xl">DartStreak</span>
               {profile && (
