@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import type { Json } from "@/integrations/supabase/types";
 
 interface SignalPayload {
   type: string;
@@ -9,10 +8,9 @@ interface SignalPayload {
   candidate?: string;
   sdpMid?: string | null;
   sdpMLineIndex?: number | null;
-  isRemoteCamera?: boolean;
+  signalType?: string;
+  from?: string;
 }
-
-const CAMERA_SUFFIX = "_camera";
 
 export function useRemoteCamera(matchId?: string) {
   const { user } = useAuth();
@@ -21,60 +19,41 @@ export function useRemoteCamera(matchId?: string) {
   
   const cameraPeerConnection = useRef<RTCPeerConnection | null>(null);
   const remoteCameraMediaStream = useRef<MediaStream | null>(null);
-  const processedCameraSignals = useRef<Set<string>>(new Set());
-  const queuedCameraSignals = useRef<Set<string>>(new Set());
-  const pendingCameraSignals = useRef<Array<{ id: string; signalType: string; payload: SignalPayload }>>([]);
+  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const iceCandidateQueue = useRef<RTCIceCandidateInit[]>([]);
 
-  const getCameraUserId = useCallback(() => {
-    if (!user) return null;
-    return user.id + CAMERA_SUFFIX;
-  }, [user]);
-
-  const sendCameraSignal = useCallback(
+  const sendSignal = useCallback(
     async (signalType: "offer" | "answer" | "candidate", payload: SignalPayload) => {
-      if (!matchId || !user) return;
-
-      const cameraUserId = getCameraUserId();
-      const signalData = {
-        match_id: matchId,
-        from_user_id: user.id,
-        to_user_id: cameraUserId,
-        signal_type: signalType,
-        payload: { ...payload, isRemoteCamera: true } as unknown as Json,
-      };
-
-      const { error } = await supabase.from("match_signals").insert(signalData);
-      if (error) {
-        console.error("[RemoteCamera] Error sending camera signal:", error);
-      }
-    },
-    [matchId, user, getCameraUserId]
-  );
-
-  const enqueueCameraSignal = useCallback((signalType: string, payload: SignalPayload, signalId: string) => {
-    if (processedCameraSignals.current.has(signalId) || queuedCameraSignals.current.has(signalId)) return;
-    queuedCameraSignals.current.add(signalId);
-    pendingCameraSignals.current.push({ id: signalId, signalType, payload });
-    console.log(`[RemoteCamera] Queued ${signalType} signal`);
-  }, []);
-
-  const processCameraSignal = useCallback(
-    async (signalType: string, payload: SignalPayload, signalId: string) => {
-      if (processedCameraSignals.current.has(signalId)) return;
-      if (!cameraPeerConnection.current) {
-        console.warn("[RemoteCamera] Cannot process signal - peer connection not ready");
+      if (!channelRef.current) {
+        console.warn("[RemoteCamera Desktop] No channel to send signal");
         return;
       }
 
-      console.log(`[RemoteCamera] Processing ${signalType} signal`);
+      console.log(`[RemoteCamera Desktop] Sending ${signalType}`);
+      await channelRef.current.send({
+        type: "broadcast",
+        event: "camera-signal",
+        payload: { signalType, ...payload, from: "desktop" },
+      });
+    },
+    []
+  );
+
+  const processSignal = useCallback(
+    async (signalType: string, payload: SignalPayload) => {
+      if (!cameraPeerConnection.current) {
+        console.warn("[RemoteCamera Desktop] No peer connection");
+        return;
+      }
+
+      console.log(`[RemoteCamera Desktop] Processing ${signalType}`);
 
       try {
         if (signalType === "offer") {
           await cameraPeerConnection.current.setRemoteDescription(
             new RTCSessionDescription({ type: "offer", sdp: payload.sdp })
           );
-          console.log("[RemoteCamera] Remote description set from offer");
+          console.log("[RemoteCamera Desktop] Remote description set from offer");
 
           while (iceCandidateQueue.current.length > 0) {
             const candidate = iceCandidateQueue.current.shift()!;
@@ -83,7 +62,7 @@ export function useRemoteCamera(matchId?: string) {
 
           const answer = await cameraPeerConnection.current.createAnswer();
           await cameraPeerConnection.current.setLocalDescription(answer);
-          await sendCameraSignal("answer", { type: "answer", sdp: answer.sdp });
+          await sendSignal("answer", { type: "answer", sdp: answer.sdp });
         } else if (signalType === "answer") {
           if (cameraPeerConnection.current.signalingState === "have-local-offer") {
             await cameraPeerConnection.current.setRemoteDescription(
@@ -107,109 +86,41 @@ export function useRemoteCamera(matchId?: string) {
             iceCandidateQueue.current.push(candidate);
           }
         }
-
-        processedCameraSignals.current.add(signalId);
       } catch (error) {
-        console.error(`[RemoteCamera] Error processing ${signalType} signal:`, error);
+        console.error(`[RemoteCamera Desktop] Error processing ${signalType}:`, error);
       }
     },
-    [sendCameraSignal]
+    [sendSignal]
   );
 
-  const flushQueuedCameraSignals = useCallback(async () => {
-    if (!cameraPeerConnection.current) return;
-
-    const queued = [...pendingCameraSignals.current];
-    pendingCameraSignals.current = [];
-
-    for (const item of queued) {
-      queuedCameraSignals.current.delete(item.id);
-      await processCameraSignal(item.signalType, item.payload, item.id);
-    }
-  }, [processCameraSignal]);
-
-  const processOrQueueCameraSignal = useCallback(async (signalType: string, payload: SignalPayload, signalId: string) => {
-    if (processedCameraSignals.current.has(signalId) || queuedCameraSignals.current.has(signalId)) return;
-
-    if (!cameraPeerConnection.current) {
-      enqueueCameraSignal(signalType, payload, signalId);
-      return;
-    }
-
-    await processCameraSignal(signalType, payload, signalId);
-  }, [enqueueCameraSignal, processCameraSignal]);
-
-  const fetchExistingCameraSignals = useCallback(async () => {
-    if (!matchId || !user) return;
-
-    const cameraUserId = getCameraUserId();
-    const { data: signals, error } = await supabase
-      .from("match_signals")
-      .select("*")
-      .eq("match_id", matchId)
-      .eq("to_user_id", cameraUserId)
-      .order("created_at", { ascending: true });
-
-    if (error) {
-      console.error("[RemoteCamera] Error fetching signals:", error);
-      return;
-    }
-
-    for (const signal of signals || []) {
-      const payload = signal.payload as unknown as SignalPayload;
-      if (payload?.isRemoteCamera) {
-        await processOrQueueCameraSignal(signal.signal_type, payload, signal.id);
-      }
-    }
-  }, [matchId, user, getCameraUserId, processOrQueueCameraSignal]);
-
-  useEffect(() => {
-    if (!matchId || !user) return;
-
-    const cameraUserId = getCameraUserId();
-    const channel = supabase
-      .channel(`camera-signals-${matchId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "match_signals",
-          filter: `match_id=eq.${matchId}`,
-        },
-        async (payload) => {
-          const signal = payload.new as {
-            id: string;
-            to_user_id: string;
-            signal_type: string;
-            payload: unknown;
-          };
-
-          const signalPayload = signal.payload as unknown as SignalPayload;
-          if (signal.to_user_id === cameraUserId && signalPayload?.isRemoteCamera) {
-            console.log(`[RemoteCamera] Realtime: received ${signal.signal_type} signal`);
-            await processOrQueueCameraSignal(signal.signal_type, signalPayload, signal.id);
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [matchId, user?.id, processOrQueueCameraSignal, getCameraUserId]);
-
   const initializeRemoteCameraReceiver = useCallback(async () => {
+    if (!matchId || !user) {
+      console.error("[RemoteCamera Desktop] No matchId or user");
+      return false;
+    }
+
     try {
-      console.log("[RemoteCamera] Initializing receiver...");
+      console.log("[RemoteCamera Desktop] Initializing receiver...");
 
-      processedCameraSignals.current.clear();
-      queuedCameraSignals.current.clear();
-      pendingCameraSignals.current = [];
       iceCandidateQueue.current = [];
-
       remoteCameraMediaStream.current = null;
       setRemoteCameraStream(null);
+
+      // Set up broadcast channel
+      const channel = supabase
+        .channel(`remote-camera-${matchId}-${user.id}`)
+        .on("broadcast", { event: "camera-signal" }, (payload) => {
+          const data = payload.payload as SignalPayload & { signalType: string; from: string };
+          console.log("[RemoteCamera Desktop] Received broadcast:", data.signalType, data.from);
+          if (data.from === "phone") {
+            processSignal(data.signalType, data);
+          }
+        })
+        .subscribe((status) => {
+          console.log("[RemoteCamera Desktop] Channel status:", status);
+        });
+
+      channelRef.current = channel;
 
       cameraPeerConnection.current = new RTCPeerConnection({
         iceServers: [
@@ -219,7 +130,7 @@ export function useRemoteCamera(matchId?: string) {
       });
 
       cameraPeerConnection.current.ontrack = (event) => {
-        console.log("[RemoteCamera] Received track:", event.track.kind);
+        console.log("[RemoteCamera Desktop] Received track:", event.track.kind);
         if (!remoteCameraMediaStream.current) {
           remoteCameraMediaStream.current = new MediaStream();
         }
@@ -229,7 +140,7 @@ export function useRemoteCamera(matchId?: string) {
 
       cameraPeerConnection.current.onicecandidate = async (event) => {
         if (event.candidate) {
-          await sendCameraSignal("candidate", {
+          await sendSignal("candidate", {
             type: "candidate",
             candidate: event.candidate.candidate,
             sdpMid: event.candidate.sdpMid,
@@ -240,30 +151,28 @@ export function useRemoteCamera(matchId?: string) {
 
       cameraPeerConnection.current.oniceconnectionstatechange = () => {
         const state = cameraPeerConnection.current?.iceConnectionState || "unknown";
-        console.log("[RemoteCamera] ICE connection state:", state);
+        console.log("[RemoteCamera Desktop] ICE connection state:", state);
         setRemoteCameraState(state);
       };
 
-      await fetchExistingCameraSignals();
-      await flushQueuedCameraSignals();
-
       return true;
     } catch (error) {
-      console.error("[RemoteCamera] Error initializing receiver:", error);
+      console.error("[RemoteCamera Desktop] Error initializing receiver:", error);
       return false;
     }
-  }, [sendCameraSignal, fetchExistingCameraSignals, flushQueuedCameraSignals]);
+  }, [matchId, user, processSignal, sendSignal]);
 
   const cleanupRemoteCamera = useCallback(() => {
+    if (channelRef.current) {
+      supabase.removeChannel(channelRef.current);
+      channelRef.current = null;
+    }
     if (cameraPeerConnection.current) {
       cameraPeerConnection.current.close();
       cameraPeerConnection.current = null;
     }
     setRemoteCameraStream(null);
     setRemoteCameraState("new");
-    processedCameraSignals.current.clear();
-    queuedCameraSignals.current.clear();
-    pendingCameraSignals.current = [];
     iceCandidateQueue.current = [];
   }, []);
 
@@ -271,6 +180,13 @@ export function useRemoteCamera(matchId?: string) {
     if (!user) return "";
     return btoa(user.id).replace(/=/g, "");
   }, [user]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      cleanupRemoteCamera();
+    };
+  }, [cleanupRemoteCamera]);
 
   return {
     remoteCameraStream,
@@ -280,5 +196,3 @@ export function useRemoteCamera(matchId?: string) {
     generateCameraToken,
   };
 }
-
-export { CAMERA_SUFFIX };
