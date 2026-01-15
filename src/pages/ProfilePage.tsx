@@ -69,7 +69,7 @@ export default function ProfilePage() {
 
   return (
     <AppLayout>
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 md:top-16 z-10">
+      <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-[calc(3.5rem+env(safe-area-inset-top))] md:top-16 z-40">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-xl font-display font-bold">{t("nav.profile")}</h1>
           <LanguageSwitch />

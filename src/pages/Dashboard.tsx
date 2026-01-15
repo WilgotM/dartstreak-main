@@ -2,12 +2,13 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
-import { Target, Trophy, Swords, ArrowRight } from "lucide-react";
+import { Target, Trophy, Swords, ArrowRight, Award, Mail } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
 import { useMatch } from "@/hooks/useMatch";
 import { useFriends } from "@/hooks/useFriends";
+import { useTournaments } from "@/hooks/useTournaments";
 import { FriendsSheet } from "@/components/FriendsSheet";
 
 export default function Dashboard() {
@@ -16,6 +17,9 @@ export default function Dashboard() {
   const { t } = useTranslation();
   const { pendingMatches } = useMatch();
   const { totalNotifications } = useFriends();
+  const { myTournaments, tournamentInvites } = useTournaments();
+
+  const activeTournaments = myTournaments.filter(t => t.status === "in_progress");
 
   useEffect(() => {
     if (!loading && !user && !isGuest) {
@@ -37,7 +41,7 @@ export default function Dashboard() {
 
   return (
     <AppLayout>
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+      <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-[calc(3.5rem+env(safe-area-inset-top))] md:top-16 z-40">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-3">
             <img src="/logo.png" alt="DartStreak Logo" className="w-10 h-10 object-contain" />
@@ -51,7 +55,7 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6 space-y-4">
+      <main className="container mx-auto px-4 py-6 space-y-6">
         {/* Guest Warning */}
         {isGuest && (
           <Card className="border-2 border-accent/50 bg-accent/5 overflow-hidden">
@@ -75,7 +79,7 @@ export default function Dashboard() {
         )}
 
         {/* Quick Actions */}
-        <section className="grid grid-cols-2 gap-3">
+        <section className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <Card
             className={`cursor-pointer hover:shadow-glow transition-all border-2 hover:border-primary/50 ${isGuest ? "opacity-60 cursor-not-allowed" : ""}`}
             onClick={() => !isGuest && navigate("/leagues")}
@@ -103,11 +107,23 @@ export default function Dashboard() {
               )}
             </CardContent>
           </Card>
+
+          <Card
+            className={`cursor-pointer hover:shadow-glow transition-all border-2 hover:border-primary/50 ${isGuest ? "opacity-60 cursor-not-allowed" : ""}`}
+            onClick={() => !isGuest && navigate("/tournaments")}
+          >
+            <CardContent className="py-6 text-center">
+              <Award className="w-10 h-10 mx-auto text-primary mb-2" />
+              <h3 className="font-display font-semibold">{t("nav.tournaments")}</h3>
+              <p className="text-xs text-muted-foreground mt-1">{t("match.tournamentsDesc")}</p>
+              {isGuest && <p className="text-[10px] text-accent mt-2 font-medium">ONLINE ONLY</p>}
+            </CardContent>
+          </Card>
         </section>
 
         {/* Pending Challenges */}
         {pendingMatches.length > 0 && (
-          <section>
+          <section className="animate-slide-up">
             <h2 className="text-lg font-display font-semibold mb-3 flex items-center gap-2">
               <Swords className="w-5 h-5 text-accent" />
               {t("match.challenges")}
@@ -127,6 +143,64 @@ export default function Dashboard() {
                       </p>
                     </div>
                     <ArrowRight className="w-5 h-5 text-accent" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Tournament Invites */}
+        {tournamentInvites.length > 0 && (
+          <section className="animate-slide-up">
+            <h2 className="text-lg font-display font-semibold mb-3 flex items-center gap-2">
+              <Mail className="w-5 h-5 text-primary" />
+              {t("tournament.invites")}
+            </h2>
+            <div className="space-y-3">
+              {tournamentInvites.map((invite) => (
+                <Card
+                  key={invite.id}
+                  className="cursor-pointer hover:shadow-glow transition-all border-2 border-primary/30 bg-primary/5"
+                  onClick={() => navigate("/tournaments")}
+                >
+                  <CardContent className="py-4 flex items-center justify-between">
+                    <div>
+                      <p className="font-semibold">{t("tournament.invitedBy", { name: invite.from_profile?.display_name })}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {invite.tournament?.name}
+                      </p>
+                    </div>
+                    <ArrowRight className="w-5 h-5 text-primary" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Active Tournaments */}
+        {activeTournaments.length > 0 && (
+          <section className="animate-slide-up">
+            <h2 className="text-lg font-display font-semibold mb-3 flex items-center gap-2">
+              <Award className="w-5 h-5 text-primary" />
+              {t("tournament.ongoing")}
+            </h2>
+            <div className="space-y-3">
+              {activeTournaments.map((tournament) => (
+                <Card
+                  key={tournament.id}
+                  className="cursor-pointer hover:shadow-glow transition-all border-2 border-primary/30"
+                  onClick={() => navigate(`/tournament/${tournament.id}`)}
+                >
+                  <CardContent className="py-4 flex items-center justify-between">
+                    <div>
+                      <p className="font-semibold">{tournament.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {t("tournament.statusInProgress")} • {tournament.participant_count} {t("tournament.players")}
+                      </p>
+                    </div>
+                    <ArrowRight className="w-5 h-5 text-primary" />
                   </CardContent>
                 </Card>
               ))}

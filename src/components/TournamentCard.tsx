@@ -112,7 +112,7 @@ export function TournamentCard({
             </div>
           </div>
 
-          {showJoinButton && tournament.status === "open" && !isParticipant && !isOwner && (
+          {showJoinButton && (tournament.status === "open" || tournament.status === "scheduled") && !isParticipant && !isOwner && (
             <Button
               onClick={(e) => {
                 e.stopPropagation();

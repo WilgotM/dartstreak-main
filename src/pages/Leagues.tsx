@@ -189,7 +189,7 @@ export default function Leagues() {
 
   return (
     <AppLayout>
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+      <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-[calc(3.5rem+env(safe-area-inset-top))] md:top-16 z-40">
         <div className="container mx-auto px-4 py-4">
           <h1 className="text-xl font-display font-bold">{t("nav.leagues")}</h1>
         </div>

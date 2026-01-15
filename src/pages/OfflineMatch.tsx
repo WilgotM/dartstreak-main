@@ -30,6 +30,7 @@ interface OfflineMatchData {
   player1_sets: number;
   player2_sets: number;
   signaling_data?: any;
+  isLocal?: boolean;
 }
 
 export default function OfflineMatch() {
@@ -199,28 +200,38 @@ export default function OfflineMatch() {
 
   // Handle tournament match completion
   useEffect(() => {
-    if (match?.status === "completed" && match.winner_id && id && !tournamentMatchHandled.current && !isGuest) {
+    if (match?.status === "completed" && match.winner_id && id && !tournamentMatchHandled.current && !isGuest && !match.isLocal) {
       tournamentMatchHandled.current = true;
       completeTournamentMatch(id, match.winner_id);
     }
-  }, [match?.status, match?.winner_id, id, isGuest]);
+  }, [match?.status, match?.winner_id, id, isGuest, match?.isLocal]);
+
+  // Auto-redirect to tournament after match completion
+  useEffect(() => {
+    if (match?.status === "completed" && tournamentId) {
+      const timer = setTimeout(() => {
+        navigate(`/tournament/${tournamentId}`);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [match?.status, tournamentId, navigate]);
 
   const fetchMatch = async () => {
     if (!id) return;
 
-    if (isGuest) {
-      const localMatches = JSON.parse(localStorage.getItem("dartstreak_guest_matches") || "[]");
-      const localMatch = localMatches.find((m: any) => m.id === id);
+    // 1. Try to find in local storage first (covers guest matches and "forceLocal" matches for logged-in users)
+    const localMatches = JSON.parse(localStorage.getItem("dartstreak_guest_matches") || "[]");
+    const localMatch = localMatches.find((m: any) => m.id === id);
 
-      if (localMatch) {
-        const matchData: OfflineMatchData = {
-          ...localMatch,
-          player1_name: localMatch.player1_name || t("match.player1"),
-          player2_name: localMatch.player2_name || t("match.player2"),
-        };
-        setMatch(matchData);
-        setCurrentTurnIndex(localMatch.current_turn === localMatch.player1_id ? 0 : 1);
-      }
+    if (localMatch) {
+      const matchData: OfflineMatchData = {
+        ...localMatch,
+        player1_name: localMatch.signaling_data?.player1_name || localMatch.player1_name || t("match.player1"),
+        player2_name: localMatch.signaling_data?.player2_name || localMatch.player2_name || t("match.player2"),
+        isLocal: true,
+      };
+      setMatch(matchData);
+      setCurrentTurnIndex(localMatch.current_turn === localMatch.player1_id ? 0 : 1);
       setLoading(false);
       return;
     }
@@ -246,13 +257,16 @@ export default function OfflineMatch() {
       .select("id, display_name")
       .in("id", playerIds);
 
+    const signaling = (data.signaling_data as any) || {};
+
     const matchData: OfflineMatchData = {
       ...data,
       checkout_type: data.checkout_type as "straight_out" | "double_out",
-      player1_name: profiles?.find((p) => p.id === data.player1_id)?.display_name || t("match.player1"),
-      player2_name: data.player2_id
+      player1_name: signaling.player1_name || profiles?.find((p) => p.id === data.player1_id)?.display_name || t("match.player1"),
+      player2_name: signaling.player2_name || (data.player2_id
         ? profiles?.find((p) => p.id === data.player2_id)?.display_name || t("match.player2")
-        : (data.signaling_data as any)?.bot?.bot_name || t("match.player2"),
+        : signaling?.bot?.bot_name || t("match.player2")),
+      isLocal: false,
     };
 
     setMatch(matchData);
@@ -261,26 +275,96 @@ export default function OfflineMatch() {
     setLoading(false);
   };
 
-  const handleThrowComplete = async (dart1: number, dart2: number, dart3: number) => {
+  const handleThrowComplete = async (dart1: number, dart2: number, dart3: number, dartDetails?: { score: number; multiplier: number }[]) => {
     if (!match) return;
 
     const isPlayer1Turn = currentTurnIndex === 0;
     const currentScore = isPlayer1Turn ? match.player1_score : (match.player2_score || 0);
-    const total = dart1 + dart2 + dart3;
-    let newScore = currentScore - total;
-    let isBust = false;
 
-    // Check for bust
-    if (newScore < 0) {
-      isBust = true;
-      newScore = currentScore;
-    } else if (match.checkout_type === "double_out" && newScore === 1) {
-      isBust = true;
-      newScore = currentScore;
+    // If we have detailed throw data, use it for precise validation
+    let newScore = currentScore;
+    let isBust = false;
+    let total = 0;
+
+    if (dartDetails && dartDetails.length > 0) {
+      for (const dart of dartDetails) {
+        // Skip empty throws (score 0, mult 0) unless it's a miss (score 0, mult 1/0)
+        // Actually even misses count as throws but don't change score.
+        // We accumulate total for stats/display but for logic we check score.
+
+        const nextScore = newScore - dart.score;
+        total += dart.score;
+
+        if (match.checkout_type === "double_out") {
+          if (nextScore === 0) {
+            // Check if it was a double
+            // Note: Bullseye (50) is usually multiplier 2 in our input logic
+            if (dart.multiplier === 2) {
+              // Valid checkout
+              newScore = 0;
+              // Game over for this leg, ignore subsequent darts
+              break;
+            } else {
+              // Hit 0 but not on double -> Bust
+              isBust = true;
+              break;
+            }
+          } else if (nextScore <= 1) {
+            // 1 left is Bust (cannot double out)
+            // < 0 is Bust
+            isBust = true;
+            break;
+          } else {
+            newScore = nextScore;
+          }
+        } else {
+          // Straight out
+          if (nextScore === 0) {
+            newScore = 0;
+            break;
+          } else if (nextScore < 0) {
+            isBust = true;
+            break;
+          } else {
+            newScore = nextScore;
+          }
+        }
+      }
+    } else {
+      // Fallback for bots or legacy calls without details
+      // Bots generate valid throws so we assume they follow rules if they are well programmed.
+      // But passing dartDetails for bots would be better.
+      // Currently `generateRealisticDart` returns number.
+      // We know bots respect rules in logic, so simple subtraction is okay IF we trust the bot.
+      // But `handleThrowComplete` logic we saw earlier was:
+      /*
+        const total = dart1 + dart2 + dart3;
+        let newScore = currentScore - total;
+        // bust checks...
+      */
+      // We'll keep a simplified version for when dartDetails is missing (e.g. bots currently)
+
+      const totalScore = dart1 + dart2 + dart3;
+      newScore = currentScore - totalScore;
+
+      if (newScore < 0) {
+        isBust = true;
+      } else if (match.checkout_type === "double_out" && newScore === 1) {
+        isBust = true;
+      }
+
+      // We cannot verify "double out" on zero exactly without details, 
+      // but bots logic includes `if (match.checkout_type === "double_out" && tempScore === 1) break;`
+      // and bots aim for doubles.
+      // However, if we simply subtract, we might allow a Straight Out if the input source was untrusted.
+      // Since this is OfflineMatch, input is either User (via MatchThrowInput -> sends details) or Bot (trusted internal logic).
     }
 
-    if (isBust && !isBotThinking) {
-      toast.error(t("match.bust"));
+    if (isBust) {
+      newScore = currentScore;
+      if (!isBotThinking) {
+        toast.error(t("match.bust"));
+      }
     }
 
     // Check if leg won
@@ -299,7 +383,7 @@ export default function OfflineMatch() {
       updateData.current_turn = match.player1_id;
     }
 
-    if (isGuest) {
+    if (isGuest || match.isLocal) {
       saveMatchLocally(match.id, updateData);
     } else {
       await supabase.from("matches").update(updateData).eq("id", match.id);
@@ -350,7 +434,7 @@ export default function OfflineMatch() {
       current_turn: match.player1_id, // Winner starts next leg? Or alternate? Using player1 for simplicity
     };
 
-    if (isGuest) {
+    if (isGuest || match.isLocal) {
       saveMatchLocally(match.id, updateData);
     } else {
       await supabase.from("matches").update(updateData).eq("id", match.id);
@@ -390,7 +474,7 @@ export default function OfflineMatch() {
         player2_score: match.starting_score,
       };
 
-      if (isGuest) {
+      if (isGuest || match.isLocal) {
         saveMatchLocally(match.id, matchCompletionData);
       } else {
         await supabase.from("matches").update(matchCompletionData).eq("id", match.id);
@@ -421,7 +505,7 @@ export default function OfflineMatch() {
       current_turn: match.player1_id,
     };
 
-    if (isGuest) {
+    if (isGuest || match.isLocal) {
       saveMatchLocally(match.id, updateData);
     } else {
       await supabase.from("matches").update(updateData).eq("id", match.id);
@@ -468,19 +552,9 @@ export default function OfflineMatch() {
     const isPlayer1Winner = match.winner_id === match.player1_id;
     const backPath = tournamentId ? `/tournament/${tournamentId}` : "/matches";
 
-    // Auto-redirect to tournament after 3 seconds
-    useEffect(() => {
-      if (tournamentId) {
-        const timer = setTimeout(() => {
-          navigate(backPath);
-        }, 3000);
-        return () => clearTimeout(timer);
-      }
-    }, [tournamentId, navigate, backPath]);
-
     return (
       <div className="min-h-screen bg-background">
-        <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+        <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-10 pt-[env(safe-area-inset-top)]">
           <div className="container mx-auto px-4 py-4 flex items-center gap-3">
             <Button variant="ghost" size="icon" onClick={() => navigate(backPath)}>
               <ArrowLeft className="w-5 h-5" />
@@ -522,7 +596,7 @@ export default function OfflineMatch() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header with scores */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+      <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-10 pt-[env(safe-area-inset-top)]">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <Button variant="ghost" size="icon" onClick={() => navigate("/matches")}>

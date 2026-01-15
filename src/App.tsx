@@ -15,10 +15,14 @@ import League from "./pages/League";
 import Matches from "./pages/Matches";
 import Match from "./pages/Match";
 import OfflineMatch from "./pages/OfflineMatch";
+import RemoteCamera from "./pages/RemoteCamera";
 import Tournaments from "./pages/Tournaments";
 import Tournament from "./pages/Tournament";
 import ProfilePage from "./pages/ProfilePage";
+import InstallGuide from "./pages/InstallGuide";
 import NotFound from "./pages/NotFound";
+import { InstallPrompt } from "@/components/InstallPrompt";
+import { IOSInstallReminder } from "@/components/iOSInstallReminder";
 
 const queryClient = new QueryClient();
 
@@ -38,7 +42,7 @@ const App = () => {
   }
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <TooltipProvider>
@@ -54,12 +58,16 @@ const App = () => {
                 <Route path="/matches" element={<Matches />} />
                 <Route path="/match/:id" element={<Match />} />
                 <Route path="/offline-match/:id" element={<OfflineMatch />} />
+                <Route path="/remote-camera/:matchId" element={<RemoteCamera />} />
                 <Route path="/tournaments" element={<Tournaments />} />
                 <Route path="/tournament/:id" element={<Tournament />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/profile/:id" element={<ProfilePage />} />
+                <Route path="/install-guide" element={<InstallGuide />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              <InstallPrompt />
+              <IOSInstallReminder />
             </HashRouter>
           </TooltipProvider>
         </AuthProvider>

@@ -147,7 +147,7 @@ export default function Matches() {
 
   return (
     <AppLayout>
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+      <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-[calc(3.5rem+env(safe-area-inset-top))] md:top-16 z-40">
         <div className="container mx-auto px-4 py-4">
           <h1 className="text-xl font-display font-bold">{t("nav.matches")}</h1>
         </div>
@@ -208,14 +208,7 @@ export default function Matches() {
           )}
         </section>
 
-        {/* Tournaments Coming Soon */}
-        <Card className="bg-secondary/50 border-dashed">
-          <CardContent className="py-6 text-center">
-            <Trophy className="w-10 h-10 mx-auto text-muted-foreground mb-2" />
-            <h3 className="font-display font-semibold text-muted-foreground">{t("match.tournamentsComingSoon")}</h3>
-            <p className="text-sm text-muted-foreground/70">{t("match.tournamentsDesc")}</p>
-          </CardContent>
-        </Card>
+
 
         {/* Pending Challenges */}
         {pendingMatches.length > 0 && (

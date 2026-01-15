@@ -38,6 +38,7 @@ export default function Tournament() {
   const {
     getTournamentDetails,
     inviteToTournament,
+    joinTournament,
     checkAndStartScheduledMatches,
     getActiveMatchForUser,
     startTournamentMatch,
@@ -196,6 +197,13 @@ export default function Tournament() {
     await inviteToTournament(tournament.id, userId);
   };
 
+  const handleJoin = async () => {
+    await joinTournament(tournament.id);
+    await loadDetails(false);
+  };
+
+  const isFull = participants.filter((p: any) => !p.is_bot).length >= tournament.max_players;
+
   // Filter friends who aren't already participants
   const participantUserIds = participants
     .filter((p: any) => !p.is_bot)
@@ -277,6 +285,16 @@ export default function Tournament() {
               </div>
 
               <div className="flex gap-2">
+                {!isParticipant && !isOwner && tournament.status === "scheduled" && (
+                  <Button
+                    onClick={handleJoin}
+                    disabled={isFull}
+                    size="sm"
+                  >
+                    <UserPlus className="w-4 h-4 mr-2" />
+                    {isFull ? t("tournament.full") : t("tournament.join")}
+                  </Button>
+                )}
                 {isOwner && !tournament.is_public && tournament.status === "scheduled" && (
                   <InviteToTournamentDialog
                     friends={invitableFriends}

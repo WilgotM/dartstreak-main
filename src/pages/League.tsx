@@ -384,7 +384,7 @@ export default function League() {
 
   return (
     <AppLayout>
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 md:top-16 z-10 transition-all duration-200">
+      <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-[calc(3.5rem+env(safe-area-inset-top))] md:top-16 z-40 transition-all duration-200">
         <div className="container mx-auto px-4 py-3">
           {/* Top row: back button + title */}
           <div className="flex items-center gap-3 mb-2">

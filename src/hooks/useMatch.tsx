@@ -97,7 +97,30 @@ export function useMatch(matchId?: string) {
   }, [match, user]);
 
   const fetchMatch = useCallback(async () => {
-    if (!matchId || !user) return;
+    if (!matchId) return;
+
+    // 1. Try to find in local storage first (covers guest matches and "forceLocal" matches for logged-in users)
+    const localMatches = JSON.parse(localStorage.getItem("dartstreak_guest_matches") || "[]");
+    const localMatch = localMatches.find((m: any) => m.id === matchId);
+
+    if (localMatch) {
+      setMatch({
+        ...localMatch,
+        // Ensure properties match interface
+        player1_name: localMatch.signaling_data?.player1_name || "Player 1",
+        player2_name: localMatch.signaling_data?.player2_name || "Player 2",
+        status: localMatch.status as "pending" | "active" | "completed" | "cancelled",
+        checkout_type: localMatch.checkout_type as "straight_out" | "double_out",
+      });
+      setThrows([]); // Local matches might not store throws in this hook's expected format yet? 
+      // Or maybe we need to store throws locally too if we want this hook to work fully.
+      // But OfflineMatch.tsx seems to handle its own state mostly. 
+      // For now, this is enough to let createMatch work and return ID.
+      setLoading(false);
+      return;
+    }
+
+    if (!user) return;
 
     const { data, error } = await supabase
       .from("matches")
@@ -117,15 +140,17 @@ export function useMatch(matchId?: string) {
       .select("id, display_name")
       .in("id", playerIds);
 
+    const signaling = (data.signaling_data as Record<string, unknown>) || {};
+
     const matchWithNames: Match = {
       ...data,
       checkout_type: data.checkout_type as "straight_out" | "double_out",
       status: data.status as "pending" | "active" | "completed" | "cancelled",
-      signaling_data: (data.signaling_data as Record<string, unknown>) || {},
-      player1_name: profiles?.find((p) => p.id === data.player1_id)?.display_name || "Unknown",
-      player2_name: data.player2_id
+      signaling_data: signaling,
+      player1_name: (signaling.player1_name as string) || profiles?.find((p) => p.id === data.player1_id)?.display_name || "Unknown",
+      player2_name: (signaling.player2_name as string) || (data.player2_id
         ? profiles?.find((p) => p.id === data.player2_id)?.display_name || "Unknown"
-        : null,
+        : null),
       is_offline: data.is_offline,
       legs_to_win: data.legs_to_win,
       sets_to_win: data.sets_to_win,
@@ -202,17 +227,18 @@ export function useMatch(matchId?: string) {
   }, [user]);
 
   useEffect(() => {
-    if (user) {
-      if (matchId) {
-        fetchMatch();
-      }
+    // If we have a matchId, try fetching (even if no user, might be local)
+    if (matchId) {
+      fetchMatch();
+    } else if (user) {
+      // Only fetch pending if user is logged in
       fetchPendingMatches();
     }
   }, [user, matchId, fetchMatch, fetchPendingMatches]);
 
   // Realtime subscription for match updates
   useEffect(() => {
-    if (!matchId) return;
+    if (!matchId || !user) return; // Only subscribe if logged in and matchId
 
     const channel = supabase
       .channel(`match-${matchId}`)
@@ -245,7 +271,7 @@ export function useMatch(matchId?: string) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [matchId, fetchMatch]);
+  }, [matchId, fetchMatch, user]); // Added user to dep array
 
   const createMatch = async (
     opponentId: string | null,
@@ -253,11 +279,18 @@ export function useMatch(matchId?: string) {
     checkoutType: "straight_out" | "double_out",
     isOffline: boolean = false,
     legsToWin: number = 1,
-    setsToWin: number = 1
+    setsToWin: number = 1,
+    playerNames?: { p1?: string; p2?: string },
+    forceLocal: boolean = false
   ) => {
     if (!user && !isGuest) return { error: "Not authenticated", matchId: null };
 
     const matchId = crypto.randomUUID();
+    const signalingData = {
+      ...(playerNames?.p1 ? { player1_name: playerNames.p1 } : {}),
+      ...(playerNames?.p2 ? { player2_name: playerNames.p2 } : {}),
+    };
+
     const insertData = {
       id: matchId,
       player1_id: user?.id || localStorage.getItem("dartstreak_guest_id") || "guest",
@@ -273,9 +306,10 @@ export function useMatch(matchId?: string) {
       status: isOffline ? "active" : "pending",
       started_at: isOffline ? new Date().toISOString() : null,
       created_at: new Date().toISOString(),
+      signaling_data: signalingData,
     };
 
-    if (isGuest) {
+    if (isGuest || forceLocal) {
       const localMatches = JSON.parse(localStorage.getItem("dartstreak_guest_matches") || "[]");
       localStorage.setItem("dartstreak_guest_matches", JSON.stringify([...localMatches, insertData]));
       return { error: null, matchId };
@@ -338,24 +372,71 @@ export function useMatch(matchId?: string) {
       .eq("id", match.id);
   };
 
-  const registerThrow = async (dart1: number, dart2: number, dart3: number) => {
+  const registerThrow = async (dart1: number, dart2: number, dart3: number, dartDetails?: { score: number; multiplier: number }[]) => {
     if (!match || !user) return;
 
     const isPlayer1 = user.id === match.player1_id;
-    const currentScore = isPlayer1 ? match.player1_score : match.player2_score;
-    const total = dart1 + dart2 + dart3;
-    let newScore = (currentScore || 0) - total;
+    const currentScore = isPlayer1 ? match.player1_score : (match.player2_score || 0);
+
+    // Logic to calculate score considering rules
+    let newScore = currentScore;
     let isBust = false;
     let isWinner = false;
+    let total = 0; // Recalculate total if needed, or use arg total if no details
 
-    if (newScore < 0) {
-      isBust = true;
+    if (dartDetails && dartDetails.length > 0) {
+      for (const dart of dartDetails) {
+        const nextScore = newScore - dart.score;
+        total += dart.score;
+
+        if (match.checkout_type === "double_out") {
+          if (nextScore === 0) {
+            if (dart.multiplier === 2) {
+              newScore = 0;
+              isWinner = true;
+              break;
+            } else {
+              isBust = true;
+              break;
+            }
+          } else if (nextScore <= 1) {
+            isBust = true;
+            break;
+          } else {
+            newScore = nextScore;
+          }
+        } else {
+          if (nextScore === 0) {
+            newScore = 0;
+            isWinner = true;
+            break;
+          } else if (nextScore < 0) {
+            isBust = true;
+            break;
+          } else {
+            newScore = nextScore;
+          }
+        }
+      }
+    } else {
+      // Fallback logic
+      total = dart1 + dart2 + dart3;
+      newScore = (currentScore || 0) - total;
+
+      if (newScore < 0) {
+        isBust = true;
+        newScore = currentScore || 0;
+      } else if (match.checkout_type === "double_out" && newScore === 1) {
+        isBust = true;
+        newScore = currentScore || 0;
+      } else if (newScore === 0) {
+        isWinner = true;
+      }
+    }
+
+    if (isBust) {
       newScore = currentScore || 0;
-    } else if (match.checkout_type === "double_out" && newScore === 1) {
-      isBust = true;
-      newScore = currentScore || 0;
-    } else if (newScore === 0) {
-      isWinner = true;
+      isWinner = false;
     }
 
     const playerThrows = throws.filter((t) => t.player_id === user.id);
@@ -609,16 +690,26 @@ export function useMatch(matchId?: string) {
       pendingSignals.current = [];
       iceCandidateQueue.current = [];
 
-      localStream.current = await navigator.mediaDevices.getUserMedia({
-        video: {
-          width: { ideal: 640 },
-          height: { ideal: 640 },
-          aspectRatio: 1,
-          facingMode: preferredFacingMode,
-        },
-        // Audio is disabled to avoid autoplay blocking (white video) on some browsers.
-        audio: false,
-      });
+      try {
+        localStream.current = await navigator.mediaDevices.getUserMedia({
+          video: {
+            width: { ideal: 640 },
+            height: { ideal: 480 },
+            facingMode: preferredFacingMode,
+          },
+          // Audio is disabled to avoid autoplay blocking (white video) on some browsers.
+          audio: false,
+        });
+      } catch (err) {
+        console.warn("Failed to get camera with ideal constraints, trying minimal constraints:", err);
+        // Fallback: try with minimal constraints (just facing mode)
+        localStream.current = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: preferredFacingMode,
+          },
+          audio: false,
+        });
+      }
       setFacingMode(preferredFacingMode);
       setLocalVideoReady(true);
       console.log("Local stream obtained");
@@ -731,8 +822,8 @@ export function useMatch(matchId?: string) {
   // Switch between front/back camera
   const switchCamera = async () => {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        console.error("Camera API not available");
-        return;
+      console.error("Camera API not available");
+      return;
     }
 
     const newFacingMode = facingMode === "user" ? "environment" : "user";

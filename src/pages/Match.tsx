@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { useMatch } from "@/hooks/useMatch";
+import { useRemoteCamera } from "@/hooks/useRemoteCamera";
 import { useTournaments } from "@/hooks/useTournaments";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -17,9 +18,17 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Target, ArrowLeft, Trophy, Clock, Video, VideoOff, Check, X, Swords, SwitchCamera, ZoomIn, WifiOff } from "lucide-react";
+import { Target, ArrowLeft, Trophy, Clock, Video, VideoOff, Check, X, Swords, SwitchCamera, ZoomIn, WifiOff, Smartphone } from "lucide-react";
 import { MatchThrowInput } from "@/components/MatchThrowInput";
+import { QRCodeSVG } from "qrcode.react";
 
 export default function Match() {
   const { id } = useParams<{ id: string }>();
@@ -54,11 +63,22 @@ export default function Match() {
 
   const { completeTournamentMatch } = useTournaments();
 
+  const {
+    remoteCameraStream,
+    remoteCameraState,
+    initializeRemoteCameraReceiver,
+    cleanupRemoteCamera,
+    generateCameraToken,
+  } = useRemoteCamera(id);
+
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
+  const remoteCameraRef = useRef<HTMLVideoElement>(null);
   const [videoEnabled, setVideoEnabled] = useState(false);
   const [showZoomSlider, setShowZoomSlider] = useState(false);
   const [showDisconnectDialog, setShowDisconnectDialog] = useState(false);
+  const [showQRDialog, setShowQRDialog] = useState(false);
+  const [remoteCameraEnabled, setRemoteCameraEnabled] = useState(false);
   const [tournamentId, setTournamentId] = useState<string | null>(null);
 
   // Check if this match is part of a tournament
@@ -107,6 +127,16 @@ export default function Match() {
     }
   }, [remoteStream]);
 
+  // Set up remote camera video
+  useEffect(() => {
+    const el = remoteCameraRef.current;
+    if (el && remoteCameraStream) {
+      console.log("Setting remote camera video srcObject");
+      el.srcObject = remoteCameraStream;
+      el.play?.().catch(() => {});
+    }
+  }, [remoteCameraStream]);
+
   // Initialize WebRTC when match becomes active
   useEffect(() => {
     if (match?.status === "active" && !videoEnabled) {
@@ -127,6 +157,7 @@ export default function Match() {
   useEffect(() => {
     return () => {
       cleanupWebRTC();
+      cleanupRemoteCamera();
     };
   }, []);
 
@@ -136,6 +167,16 @@ export default function Match() {
       completeTournamentMatch(id, match.winner_id);
     }
   }, [match?.status, match?.winner_id, id]);
+
+  // Auto-redirect to tournament after match completion
+  useEffect(() => {
+    if (match?.status === "completed" && tournamentId) {
+      const timer = setTimeout(() => {
+        navigate(`/tournament/${tournamentId}`);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [match?.status, tournamentId, navigate]);
 
   const handleStartVideo = async () => {
     const success = await initializeWebRTC();
@@ -165,8 +206,8 @@ export default function Match() {
     navigate("/dashboard");
   };
 
-  const handleThrowComplete = async (dart1: number, dart2: number, dart3: number) => {
-    await registerThrow(dart1, dart2, dart3);
+  const handleThrowComplete = async (dart1: number, dart2: number, dart3: number, dartDetails?: { score: number; multiplier: number }[]) => {
+    await registerThrow(dart1, dart2, dart3, dartDetails);
     // Clear broadcast when throw is confirmed
     broadcastCurrentDarts([]);
   };
@@ -179,6 +220,23 @@ export default function Match() {
     await abandonMatch();
     toast.info(t("match.opponentLeft"));
     navigate("/matches");
+  };
+
+  const handleEnableRemoteCamera = async () => {
+    setShowQRDialog(false);
+    const success = await initializeRemoteCameraReceiver();
+    if (success) {
+      setRemoteCameraEnabled(true);
+      toast.success(t("match.remoteCameraEnabled") || "Remote camera enabled");
+    } else {
+      toast.error(t("match.remoteCameraError") || "Failed to enable remote camera");
+    }
+  };
+
+  const getRemoteCameraUrl = () => {
+    const baseUrl = window.location.origin + window.location.pathname.replace(/\/#.*/, "");
+    const token = generateCameraToken();
+    return `${baseUrl}/#/remote-camera/${id}?token=${token}`;
   };
 
   if (authLoading || loading) {
@@ -218,7 +276,7 @@ export default function Match() {
 
     return (
       <div className="min-h-screen bg-background">
-        <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+        <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-10 pt-[env(safe-area-inset-top)]">
           <div className="container mx-auto px-4 py-4 flex items-center gap-3">
             <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")}>
               <ArrowLeft className="w-5 h-5" />
@@ -306,19 +364,9 @@ export default function Match() {
     const isWinner = match.winner_id === user?.id;
     const backPath = tournamentId ? `/tournament/${tournamentId}` : "/dashboard";
 
-    // Auto-redirect to tournament after 3 seconds
-    useEffect(() => {
-      if (tournamentId) {
-        const timer = setTimeout(() => {
-          navigate(backPath);
-        }, 3000);
-        return () => clearTimeout(timer);
-      }
-    }, [tournamentId, navigate, backPath]);
-
     return (
       <div className="min-h-screen bg-background">
-        <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+        <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-10 pt-[env(safe-area-inset-top)]">
           <div className="container mx-auto px-4 py-4 flex items-center gap-3">
             <Button variant="ghost" size="icon" onClick={() => navigate(backPath)}>
               <ArrowLeft className="w-5 h-5" />
@@ -355,6 +403,32 @@ export default function Match() {
   // Active match
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      {/* QR Code Dialog for Remote Camera */}
+      <Dialog open={showQRDialog} onOpenChange={setShowQRDialog}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Smartphone className="w-5 h-5" />
+              {t("match.remoteCameraTitle") || "Use Phone as Camera"}
+            </DialogTitle>
+            <DialogDescription>
+              {t("match.remoteCameraDescription") || "Scan this QR code with your phone to use it as a dartboard camera."}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col items-center gap-4 py-4">
+            <div className="bg-white p-4 rounded-lg">
+              <QRCodeSVG value={getRemoteCameraUrl()} size={200} />
+            </div>
+            <p className="text-xs text-muted-foreground text-center break-all max-w-full">
+              {getRemoteCameraUrl()}
+            </p>
+            <Button onClick={handleEnableRemoteCamera} className="w-full">
+              {t("match.enableRemoteCamera") || "Enable Remote Camera"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Opponent disconnected dialog */}
       <AlertDialog open={showDisconnectDialog} onOpenChange={setShowDisconnectDialog}>
         <AlertDialogContent>
@@ -375,7 +449,7 @@ export default function Match() {
         </AlertDialogContent>
       </AlertDialog>
       {/* Header with scores */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+      <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-10 pt-[env(safe-area-inset-top)]">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")}>
@@ -412,32 +486,48 @@ export default function Match() {
         <div className="flex justify-center transition-all duration-300 ease-in-out">
           <div
             className={`relative bg-card rounded-lg overflow-hidden border border-border w-full transition-all duration-300 ease-in-out ${isMyTurn
-                ? "h-32 max-w-md shadow-sm" // Small strip when playing (to show input)
-                : "max-w-sm aspect-square shadow-lg" // Full square when watching opponent
+              ? "h-32 max-w-md shadow-sm" // Small strip when playing (to show input)
+              : "max-w-sm aspect-square shadow-lg" // Full square when watching opponent
               }`}
           >
-            {/* Local video - always rendered, visibility controlled by CSS */}
+            {/* Remote camera video - shown when enabled and available */}
+            <video
+              ref={remoteCameraRef}
+              autoPlay
+              muted
+              playsInline
+              className={`absolute inset-0 w-full h-full object-cover ${remoteCameraEnabled && remoteCameraStream ? "" : "hidden"}`}
+            />
+
+            {/* Local video - shown when it's my turn and no remote camera */}
             <video
               ref={localVideoRef}
               autoPlay
               muted
               playsInline
-              className={`absolute inset-0 w-full h-full object-cover ${isMyTurn && localVideoReady ? "" : "hidden"}`}
+              className={`absolute inset-0 w-full h-full object-cover ${isMyTurn && localVideoReady && !(remoteCameraEnabled && remoteCameraStream) ? "" : "hidden"}`}
             />
 
-            {/* Remote video - always rendered, visibility controlled by CSS */}
+            {/* Remote video - shown when it's opponent's turn */}
             <video
               ref={remoteVideoRef}
               autoPlay
               muted
               playsInline
-              className={`absolute inset-0 w-full h-full object-cover ${!isMyTurn && remoteStream ? "" : "hidden"}`}
+              className={`absolute inset-0 w-full h-full object-cover ${!isMyTurn && remoteStream && !(remoteCameraEnabled && remoteCameraStream) ? "" : "hidden"}`}
             />
 
-            {/* Fallback: VideoOff icon */}
-            {((isMyTurn && !localVideoReady) || (!isMyTurn && !remoteStream)) && (
+            {/* Fallback: VideoOff icon or remote camera waiting */}
+            {!remoteCameraStream && ((isMyTurn && !localVideoReady) || (!isMyTurn && !remoteStream)) && (
               <div className="absolute inset-0 w-full h-full flex items-center justify-center">
-                <VideoOff className="w-12 h-12 text-muted-foreground" />
+                {remoteCameraEnabled ? (
+                  <div className="text-center">
+                    <Smartphone className="w-10 h-10 text-muted-foreground mx-auto mb-2 animate-pulse" />
+                    <p className="text-xs text-muted-foreground">{t("match.waitingForCamera") || "Waiting for camera..."}</p>
+                  </div>
+                ) : (
+                  <VideoOff className="w-12 h-12 text-muted-foreground" />
+                )}
               </div>
             )}
 
@@ -446,25 +536,46 @@ export default function Match() {
             </span>
 
             {/* Camera controls - only show when it's my turn */}
-            {isMyTurn && localVideoReady && (
+            {isMyTurn && (
               <div className="absolute top-2 right-2 flex gap-2 z-10">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="bg-background/80 hover:bg-background/90 h-8 w-8"
-                  onClick={switchCamera}
-                >
-                  <SwitchCamera className="w-4 h-4" />
-                </Button>
-                {maxZoom > 1 && (
+                {!remoteCameraEnabled && (
                   <Button
                     variant="ghost"
                     size="icon"
                     className="bg-background/80 hover:bg-background/90 h-8 w-8"
-                    onClick={() => setShowZoomSlider(!showZoomSlider)}
+                    onClick={() => setShowQRDialog(true)}
+                    title={t("match.usePhoneCamera") || "Use phone as camera"}
                   >
-                    <ZoomIn className="w-4 h-4" />
+                    <Smartphone className="w-4 h-4" />
                   </Button>
+                )}
+                {remoteCameraEnabled && remoteCameraStream && (
+                  <span className="bg-green-500/90 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                    <Check className="w-3 h-3" />
+                    {t("match.phoneCam") || "Phone"}
+                  </span>
+                )}
+                {localVideoReady && !remoteCameraStream && (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="bg-background/80 hover:bg-background/90 h-8 w-8"
+                      onClick={switchCamera}
+                    >
+                      <SwitchCamera className="w-4 h-4" />
+                    </Button>
+                    {maxZoom > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="bg-background/80 hover:bg-background/90 h-8 w-8"
+                        onClick={() => setShowZoomSlider(!showZoomSlider)}
+                      >
+                        <ZoomIn className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </>
                 )}
               </div>
             )}

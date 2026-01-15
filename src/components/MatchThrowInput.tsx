@@ -7,22 +7,38 @@ import { VoiceInputButton } from "@/components/VoiceInputButton";
 import { useDartCaller } from "@/hooks/useDartCaller";
 
 interface MatchThrowInputProps {
-  onComplete: (dart1: number, dart2: number, dart3: number) => void;
+  onComplete: (dart1: number, dart2: number, dart3: number, dartDetails: { score: number; multiplier: number }[]) => void;
   remainingScore: number;
   disabled?: boolean;
   onDartsChange?: (darts: number[]) => void;
 }
 
 export function MatchThrowInput({ onComplete, remainingScore, disabled, onDartsChange }: MatchThrowInputProps) {
+  // ... (this part is handled by previous replacement, but we need to ensure local renders are fixed)
+  // The previous replacement handled lines 18-67.
+  // We need to fix rendering of darts (lines 76-87) and calculation of currentTotal (line 69).
+
+  // Wait, I should do this in one go or subsequent calls.
+  // I will use multi_replace.
+
   const { t } = useTranslation();
-  const [darts, setDarts] = useState<number[]>([]);
+  const [darts, setDarts] = useState<{ score: number; multiplier: number }[]>([]);
   const [multiplier, setMultiplier] = useState<1 | 2 | 3>(1);
   const { playRoundScore } = useDartCaller();
 
   // Handle voice score detection
   const handleVoiceScore = useCallback((score: number) => {
     if (darts.length >= 3 || disabled) return;
-    setDarts(prev => [...prev, score]);
+    // Voice input usually gives the total score for the dart. 
+    // We'll guess multiplier=1 unless we implement better parsing later or if it's an impossible single score.
+    // For now, let's assume it's a valid single target or handle specific logic.
+    // Actually, voice input hook might just return score.
+    // If we assume voice gives score, we accept it.
+    // However, if the score implies a double (like "Double 20"), the voice parser should return that.
+    // Assuming the simple voice parser returns a number.
+    // We will treat it as multiplier 1 for now unless it's strictly a double/triple segment?
+    // Let's stick to safe default.
+    setDarts(prev => [...prev, { score, multiplier: 1 }]);
   }, [darts.length, disabled]);
 
   const { isListening, isSupported, toggleListening } = useVoiceInput({
@@ -32,22 +48,31 @@ export function MatchThrowInput({ onComplete, remainingScore, disabled, onDartsC
 
   // Notify parent of darts changes for real-time broadcast
   useEffect(() => {
-    onDartsChange?.(darts);
+    onDartsChange?.(darts.map(d => d.score));
   }, [darts, onDartsChange]);
 
   const handleNumberClick = (num: number) => {
     if (darts.length >= 3) return;
-    
+
     const score = num * multiplier;
     const maxScore = num === 25 ? (multiplier === 2 ? 50 : 25) : score;
-    
-    setDarts([...darts, maxScore]);
+    const actualMultiplier = num === 25 ? (multiplier === 2 ? 2 : 1) : multiplier;
+
+    setDarts([...darts, { score: maxScore, multiplier: actualMultiplier }]);
     setMultiplier(1);
   };
 
   const handleSpecialClick = (score: number) => {
     if (darts.length >= 3) return;
-    setDarts([...darts, score]);
+    // Special click: 0 (Miss), 25 (Outer), 50 (Bull)
+    // 0 is multiplier 1 (technically 0, but 1 is safe for logic usually, or 0)
+    // 25 is multiplier 1
+    // 50 is multiplier 2 (Double 25)
+    let mult = 1;
+    if (score === 50) mult = 2;
+    if (score === 0) mult = 0; // or 1?
+
+    setDarts([...darts, { score, multiplier: mult }]);
     setMultiplier(1);
   };
 
@@ -58,15 +83,19 @@ export function MatchThrowInput({ onComplete, remainingScore, disabled, onDartsC
   };
 
   const handleConfirm = () => {
-    const [d1 = 0, d2 = 0, d3 = 0] = darts;
+    const d1 = darts[0] || { score: 0, multiplier: 0 };
+    const d2 = darts[1] || { score: 0, multiplier: 0 };
+    const d3 = darts[2] || { score: 0, multiplier: 0 };
+
     // Play the dart caller sound for the round total
-    playRoundScore(d1, d2, d3);
-    onComplete(d1, d2, d3);
+    playRoundScore(d1.score, d2.score, d3.score);
+
+    onComplete(d1.score, d2.score, d3.score, [d1, d2, d3]);
     setDarts([]);
     setMultiplier(1);
   };
 
-  const currentTotal = darts.reduce((a, b) => a + b, 0);
+  const currentTotal = darts.reduce((a, b) => a + b.score, 0);
   const projectedScore = remainingScore - currentTotal;
 
   return (
@@ -76,13 +105,12 @@ export function MatchThrowInput({ onComplete, remainingScore, disabled, onDartsC
         {[0, 1, 2].map((i) => (
           <div
             key={i}
-            className={`w-14 h-14 rounded-xl border-2 flex items-center justify-center text-xl font-display font-bold transition-all ${
-              darts[i] !== undefined
+            className={`w-14 h-14 rounded-xl border-2 flex items-center justify-center text-xl font-display font-bold transition-all ${darts[i] !== undefined
                 ? "border-primary bg-primary/10 text-primary"
                 : "border-border bg-card text-muted-foreground"
-            }`}
+              }`}
           >
-            {darts[i] !== undefined ? darts[i] : "-"}
+            {darts[i] !== undefined ? darts[i].score : "-"}
           </div>
         ))}
       </div>

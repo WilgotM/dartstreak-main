@@ -20,7 +20,7 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
-      <header className="container mx-auto px-4 py-6">
+      <header className="container mx-auto px-4 py-6 pt-[calc(1.5rem+env(safe-area-inset-top))]">
         <nav className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src="/logo.png" alt="DartStreak Logo" className="w-12 h-12 object-contain" />

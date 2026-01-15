@@ -592,6 +592,7 @@ export type Database = {
           player1_participant_id: string | null
           player2_participant_id: string | null
           round: number
+          scheduled_start_at: string | null
           status: string
           tournament_id: string
           winner_participant_id: string | null
@@ -604,6 +605,7 @@ export type Database = {
           player1_participant_id?: string | null
           player2_participant_id?: string | null
           round: number
+          scheduled_start_at?: string | null
           status?: string
           tournament_id: string
           winner_participant_id?: string | null
@@ -616,6 +618,7 @@ export type Database = {
           player1_participant_id?: string | null
           player2_participant_id?: string | null
           round?: number
+          scheduled_start_at?: string | null
           status?: string
           tournament_id?: string
           winner_participant_id?: string | null
@@ -712,6 +715,8 @@ export type Database = {
           legs_to_win: number
           max_players: number
           name: string
+          round_started_at: string | null
+          scheduled_start_at: string | null
           sets_to_win: number
           started_at: string | null
           starting_score: number
@@ -730,6 +735,8 @@ export type Database = {
           legs_to_win?: number
           max_players?: number
           name: string
+          round_started_at?: string | null
+          scheduled_start_at?: string | null
           sets_to_win?: number
           started_at?: string | null
           starting_score?: number
@@ -748,6 +755,8 @@ export type Database = {
           legs_to_win?: number
           max_players?: number
           name?: string
+          round_started_at?: string | null
+          scheduled_start_at?: string | null
           sets_to_win?: number
           started_at?: string | null
           starting_score?: number

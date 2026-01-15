@@ -11,11 +11,12 @@ import { TournamentCard } from "@/components/TournamentCard";
 import { TournamentInviteCard } from "@/components/TournamentInviteCard";
 import { Plus, Globe, Trophy, Mail } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export default function Tournaments() {
   const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
   const {
     publicTournaments,
     myTournaments,
@@ -85,12 +86,16 @@ export default function Tournaments() {
                   variant="hero"
                   size="sm"
                   className="rounded-lg px-4 py-5 h-auto text-xs shadow-soft"
-                  onClick={() => window.location.href = `/tournament/${tournament.id}`}
+                  onClick={() => navigate(`/tournament/${tournament.id}`)}
                 >
                   <div className="flex flex-col items-start gap-0.5">
                     <span className="font-bold">{tournament.name}</span>
                     <span className="text-[10px] opacity-80 font-normal">
-                      {tournament.status === 'in_progress' ? t("tournament.ongoing") : t("tournament.scheduled")}
+                      {tournament.status === 'completed' 
+                        ? t("tournament.completed") 
+                        : tournament.status === 'in_progress' 
+                          ? t("tournament.ongoing") 
+                          : t("tournament.scheduled")}
                     </span>
                   </div>
                 </Button>
