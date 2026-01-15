@@ -16,19 +16,19 @@ export function useRemoteCamera(matchId?: string) {
   const { user } = useAuth();
   const [remoteCameraStream, setRemoteCameraStream] = useState<MediaStream | null>(null);
   const [remoteCameraState, setRemoteCameraState] = useState<string>("new");
-  
-  const cameraPeerConnection = useRef<RTCPeerConnection | null>(null);
-  const remoteCameraMediaStream = useRef<MediaStream | null>(null);
+
+  const peerConnection = useRef<RTCPeerConnection | null>(null);
+  const mediaStream = useRef<MediaStream | null>(null);
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const iceCandidateQueue = useRef<RTCIceCandidateInit[]>([]);
+  const isReady = useRef(false);
 
   const sendSignal = useCallback(
-    async (signalType: "offer" | "answer" | "candidate", payload: SignalPayload) => {
+    async (signalType: string, payload: SignalPayload) => {
       if (!channelRef.current) {
-        console.warn("[RemoteCamera Desktop] No channel to send signal");
+        console.warn("[RemoteCamera Desktop] No channel");
         return;
       }
-
       console.log(`[RemoteCamera Desktop] Sending ${signalType}`);
       await channelRef.current.send({
         type: "broadcast",
@@ -41,7 +41,7 @@ export function useRemoteCamera(matchId?: string) {
 
   const processSignal = useCallback(
     async (signalType: string, payload: SignalPayload) => {
-      if (!cameraPeerConnection.current) {
+      if (!peerConnection.current) {
         console.warn("[RemoteCamera Desktop] No peer connection");
         return;
       }
@@ -50,38 +50,37 @@ export function useRemoteCamera(matchId?: string) {
 
       try {
         if (signalType === "offer") {
-          await cameraPeerConnection.current.setRemoteDescription(
+          // Reset connection for new offer
+          if (peerConnection.current.signalingState !== "stable") {
+            console.log("[RemoteCamera Desktop] Resetting connection for new offer");
+            await peerConnection.current.setLocalDescription({ type: "rollback" }).catch(() => {});
+          }
+
+          await peerConnection.current.setRemoteDescription(
             new RTCSessionDescription({ type: "offer", sdp: payload.sdp })
           );
-          console.log("[RemoteCamera Desktop] Remote description set from offer");
+          console.log("[RemoteCamera Desktop] Remote description set");
 
+          // Process queued candidates
           while (iceCandidateQueue.current.length > 0) {
             const candidate = iceCandidateQueue.current.shift()!;
-            await cameraPeerConnection.current.addIceCandidate(new RTCIceCandidate(candidate));
+            await peerConnection.current.addIceCandidate(new RTCIceCandidate(candidate));
           }
 
-          const answer = await cameraPeerConnection.current.createAnswer();
-          await cameraPeerConnection.current.setLocalDescription(answer);
+          const answer = await peerConnection.current.createAnswer();
+          await peerConnection.current.setLocalDescription(answer);
           await sendSignal("answer", { type: "answer", sdp: answer.sdp });
-        } else if (signalType === "answer") {
-          if (cameraPeerConnection.current.signalingState === "have-local-offer") {
-            await cameraPeerConnection.current.setRemoteDescription(
-              new RTCSessionDescription({ type: "answer", sdp: payload.sdp })
-            );
-            while (iceCandidateQueue.current.length > 0) {
-              const candidate = iceCandidateQueue.current.shift()!;
-              await cameraPeerConnection.current.addIceCandidate(new RTCIceCandidate(candidate));
-            }
-          }
-        } else if (signalType === "candidate") {
+          console.log("[RemoteCamera Desktop] Answer sent");
+
+        } else if (signalType === "candidate" && payload.candidate) {
           const candidate: RTCIceCandidateInit = {
             candidate: payload.candidate,
             sdpMid: payload.sdpMid,
             sdpMLineIndex: payload.sdpMLineIndex,
           };
 
-          if (cameraPeerConnection.current.remoteDescription) {
-            await cameraPeerConnection.current.addIceCandidate(new RTCIceCandidate(candidate));
+          if (peerConnection.current.remoteDescription) {
+            await peerConnection.current.addIceCandidate(new RTCIceCandidate(candidate));
           } else {
             iceCandidateQueue.current.push(candidate);
           }
@@ -99,46 +98,37 @@ export function useRemoteCamera(matchId?: string) {
       return false;
     }
 
+    if (isReady.current) {
+      console.log("[RemoteCamera Desktop] Already initialized");
+      return true;
+    }
+
     try {
-      console.log("[RemoteCamera Desktop] Initializing receiver...");
+      console.log("[RemoteCamera Desktop] Initializing...");
 
       iceCandidateQueue.current = [];
-      remoteCameraMediaStream.current = null;
+      mediaStream.current = null;
       setRemoteCameraStream(null);
 
-      // Set up broadcast channel
-      const channel = supabase
-        .channel(`remote-camera-${matchId}-${user.id}`)
-        .on("broadcast", { event: "camera-signal" }, (payload) => {
-          const data = payload.payload as SignalPayload & { signalType: string; from: string };
-          console.log("[RemoteCamera Desktop] Received broadcast:", data.signalType, data.from);
-          if (data.from === "phone") {
-            processSignal(data.signalType, data);
-          }
-        })
-        .subscribe((status) => {
-          console.log("[RemoteCamera Desktop] Channel status:", status);
-        });
-
-      channelRef.current = channel;
-
-      cameraPeerConnection.current = new RTCPeerConnection({
+      // Create peer connection
+      peerConnection.current = new RTCPeerConnection({
         iceServers: [
           { urls: "stun:stun.l.google.com:19302" },
           { urls: "stun:stun1.l.google.com:19302" },
+          { urls: "stun:stun2.l.google.com:19302" },
         ],
       });
 
-      cameraPeerConnection.current.ontrack = (event) => {
-        console.log("[RemoteCamera Desktop] Received track:", event.track.kind);
-        if (!remoteCameraMediaStream.current) {
-          remoteCameraMediaStream.current = new MediaStream();
+      peerConnection.current.ontrack = (event) => {
+        console.log("[RemoteCamera Desktop] Got track:", event.track.kind);
+        if (!mediaStream.current) {
+          mediaStream.current = new MediaStream();
         }
-        remoteCameraMediaStream.current.addTrack(event.track);
-        setRemoteCameraStream(remoteCameraMediaStream.current);
+        mediaStream.current.addTrack(event.track);
+        setRemoteCameraStream(mediaStream.current);
       };
 
-      cameraPeerConnection.current.onicecandidate = async (event) => {
+      peerConnection.current.onicecandidate = async (event) => {
         if (event.candidate) {
           await sendSignal("candidate", {
             type: "candidate",
@@ -149,15 +139,44 @@ export function useRemoteCamera(matchId?: string) {
         }
       };
 
-      cameraPeerConnection.current.oniceconnectionstatechange = () => {
-        const state = cameraPeerConnection.current?.iceConnectionState || "unknown";
-        console.log("[RemoteCamera Desktop] ICE connection state:", state);
+      peerConnection.current.oniceconnectionstatechange = () => {
+        const state = peerConnection.current?.iceConnectionState || "unknown";
+        console.log("[RemoteCamera Desktop] ICE state:", state);
         setRemoteCameraState(state);
       };
 
+      // Set up channel and wait for subscription
+      const channelName = `remote-camera-${matchId}-${user.id}`;
+      console.log("[RemoteCamera Desktop] Channel:", channelName);
+
+      const channel = supabase.channel(channelName);
+
+      channel.on("broadcast", { event: "camera-signal" }, (payload) => {
+        const data = payload.payload as SignalPayload & { signalType: string; from: string };
+        if (data.from === "phone") {
+          processSignal(data.signalType, data);
+        }
+      });
+
+      await new Promise<void>((resolve) => {
+        channel.subscribe((status) => {
+          console.log("[RemoteCamera Desktop] Channel status:", status);
+          if (status === "SUBSCRIBED") {
+            resolve();
+          }
+        });
+      });
+
+      channelRef.current = channel;
+      isReady.current = true;
+
+      // Send ready signal so phone knows we're listening
+      await sendSignal("ready", { type: "ready" });
+      console.log("[RemoteCamera Desktop] Ready signal sent");
+
       return true;
     } catch (error) {
-      console.error("[RemoteCamera Desktop] Error initializing receiver:", error);
+      console.error("[RemoteCamera Desktop] Error:", error);
       return false;
     }
   }, [matchId, user, processSignal, sendSignal]);
@@ -167,13 +186,14 @@ export function useRemoteCamera(matchId?: string) {
       supabase.removeChannel(channelRef.current);
       channelRef.current = null;
     }
-    if (cameraPeerConnection.current) {
-      cameraPeerConnection.current.close();
-      cameraPeerConnection.current = null;
+    if (peerConnection.current) {
+      peerConnection.current.close();
+      peerConnection.current = null;
     }
     setRemoteCameraStream(null);
     setRemoteCameraState("new");
     iceCandidateQueue.current = [];
+    isReady.current = false;
   }, []);
 
   const generateCameraToken = useCallback(() => {
@@ -181,7 +201,6 @@ export function useRemoteCamera(matchId?: string) {
     return btoa(user.id).replace(/=/g, "");
   }, [user]);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       cleanupRemoteCamera();

@@ -3,7 +3,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Camera, CameraOff, SwitchCamera, Check } from "lucide-react";
+import { Camera, CameraOff, SwitchCamera, Check, Loader2 } from "lucide-react";
 
 interface SignalPayload {
   type: string;
@@ -26,17 +26,19 @@ export default function RemoteCamera() {
   const peerConnection = useRef<RTCPeerConnection | null>(null);
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const iceCandidateQueue = useRef<RTCIceCandidateInit[]>([]);
+  const desktopReady = useRef(false);
+  const offerSent = useRef(false);
 
   const [streaming, setStreaming] = useState(false);
   const [connected, setConnected] = useState(false);
+  const [connecting, setConnecting] = useState(false);
   const [facingMode, setFacingMode] = useState<"user" | "environment">("environment");
   const [error, setError] = useState<string | null>(null);
 
   const sendSignal = useCallback(
-    async (signalType: "offer" | "answer" | "candidate", payload: SignalPayload) => {
+    async (signalType: string, payload: SignalPayload) => {
       if (!channelRef.current) return;
-
-      console.log(`[RemoteCamera] Sending ${signalType}`);
+      console.log(`[RemoteCamera Phone] Sending ${signalType}`);
       await channelRef.current.send({
         type: "broadcast",
         event: "camera-signal",
@@ -46,11 +48,36 @@ export default function RemoteCamera() {
     []
   );
 
+  const createAndSendOffer = useCallback(async () => {
+    if (!peerConnection.current || offerSent.current) return;
+
+    try {
+      console.log("[RemoteCamera Phone] Creating offer...");
+      const offer = await peerConnection.current.createOffer();
+      await peerConnection.current.setLocalDescription(offer);
+      await sendSignal("offer", { type: "offer", sdp: offer.sdp });
+      offerSent.current = true;
+      console.log("[RemoteCamera Phone] Offer sent");
+    } catch (err) {
+      console.error("[RemoteCamera Phone] Error creating offer:", err);
+    }
+  }, [sendSignal]);
+
   const processSignal = useCallback(
     async (signalType: string, payload: SignalPayload) => {
-      if (!peerConnection.current) return;
+      console.log(`[RemoteCamera Phone] Processing ${signalType}`);
 
-      console.log(`[RemoteCamera] Processing ${signalType}`);
+      if (signalType === "ready") {
+        console.log("[RemoteCamera Phone] Desktop is ready");
+        desktopReady.current = true;
+        // If we have a peer connection ready, send offer now
+        if (peerConnection.current && !offerSent.current) {
+          await createAndSendOffer();
+        }
+        return;
+      }
+
+      if (!peerConnection.current) return;
 
       try {
         if (signalType === "answer") {
@@ -58,12 +85,15 @@ export default function RemoteCamera() {
             await peerConnection.current.setRemoteDescription(
               new RTCSessionDescription({ type: "answer", sdp: payload.sdp })
             );
+            console.log("[RemoteCamera Phone] Answer received, connection should establish");
+
+            // Process queued candidates
             while (iceCandidateQueue.current.length > 0) {
               const candidate = iceCandidateQueue.current.shift()!;
               await peerConnection.current.addIceCandidate(new RTCIceCandidate(candidate));
             }
           }
-        } else if (signalType === "candidate") {
+        } else if (signalType === "candidate" && payload.candidate) {
           const candidate: RTCIceCandidateInit = {
             candidate: payload.candidate,
             sdpMid: payload.sdpMid,
@@ -77,57 +107,33 @@ export default function RemoteCamera() {
           }
         }
       } catch (error) {
-        console.error(`[RemoteCamera] Error processing ${signalType}:`, error);
+        console.error(`[RemoteCamera Phone] Error processing ${signalType}:`, error);
       }
     },
-    []
+    [createAndSendOffer]
   );
-
-  const setupChannel = useCallback(() => {
-    if (!matchId || !odlareId) return null;
-
-    const channel = supabase
-      .channel(`remote-camera-${matchId}-${odlareId}`)
-      .on("broadcast", { event: "camera-signal" }, (payload) => {
-        const data = payload.payload as SignalPayload & { signalType: string; from: string };
-        if (data.from === "desktop") {
-          processSignal(data.signalType, data);
-        }
-      })
-      .subscribe();
-
-    return channel;
-  }, [matchId, odlareId, processSignal]);
 
   const startCamera = async () => {
     if (!matchId || !odlareId) {
-      setError(t("remoteCamera.invalidLink") || "Invalid link. Please scan the QR code again.");
-      return;
-    }
-
-    if (window.location.protocol !== "https:" && window.location.hostname !== "localhost") {
-      setError(t("remoteCamera.httpsRequired") || "Camera requires HTTPS. Please use a secure connection.");
+      setError(t("remoteCamera.invalidLink") || "Invalid link.");
       return;
     }
 
     try {
       setError(null);
+      setConnecting(true);
+      offerSent.current = false;
+      desktopReady.current = false;
 
-      // Try with ideal constraints first, fallback to simpler constraints for iOS
+      // Get camera
       try {
         localStream.current = await navigator.mediaDevices.getUserMedia({
-          video: {
-            width: { ideal: 1280 },
-            height: { ideal: 720 },
-            facingMode: facingMode,
-          },
+          video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode },
           audio: false,
         });
-      } catch (constraintError) {
-        console.warn("[RemoteCamera] Ideal constraints failed, trying simple constraints:", constraintError);
-        // Fallback for iOS - use simpler constraints
+      } catch {
         localStream.current = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: facingMode },
+          video: { facingMode },
           audio: false,
         });
       }
@@ -136,18 +142,41 @@ export default function RemoteCamera() {
         videoRef.current.srcObject = localStream.current;
       }
 
+      // Set up channel first
+      const channelName = `remote-camera-${matchId}-${odlareId}`;
+      console.log("[RemoteCamera Phone] Channel:", channelName);
+
+      const channel = supabase.channel(channelName);
+
+      channel.on("broadcast", { event: "camera-signal" }, (payload) => {
+        const data = payload.payload as SignalPayload & { signalType: string; from: string };
+        if (data.from === "desktop") {
+          processSignal(data.signalType, data);
+        }
+      });
+
+      await new Promise<void>((resolve) => {
+        channel.subscribe((status) => {
+          console.log("[RemoteCamera Phone] Channel status:", status);
+          if (status === "SUBSCRIBED") {
+            resolve();
+          }
+        });
+      });
+
+      channelRef.current = channel;
+
+      // Create peer connection
       iceCandidateQueue.current = [];
-
-      // Set up broadcast channel first
-      channelRef.current = setupChannel();
-
       peerConnection.current = new RTCPeerConnection({
         iceServers: [
           { urls: "stun:stun.l.google.com:19302" },
           { urls: "stun:stun1.l.google.com:19302" },
+          { urls: "stun:stun2.l.google.com:19302" },
         ],
       });
 
+      // Add tracks
       localStream.current.getTracks().forEach((track) => {
         if (localStream.current && peerConnection.current) {
           peerConnection.current.addTrack(track, localStream.current);
@@ -167,30 +196,38 @@ export default function RemoteCamera() {
 
       peerConnection.current.oniceconnectionstatechange = () => {
         const state = peerConnection.current?.iceConnectionState;
-        console.log("[RemoteCamera] ICE state:", state);
-        setConnected(state === "connected" || state === "completed");
+        console.log("[RemoteCamera Phone] ICE state:", state);
+        if (state === "connected" || state === "completed") {
+          setConnected(true);
+          setConnecting(false);
+        } else if (state === "failed" || state === "disconnected") {
+          setConnected(false);
+        }
       };
 
-      const offer = await peerConnection.current.createOffer();
-      await peerConnection.current.setLocalDescription(offer);
-
-      await sendSignal("offer", { type: "offer", sdp: offer.sdp });
-
       setStreaming(true);
+
+      // Send a "phone-ready" signal and wait a bit, then create offer
+      // This gives desktop time to set up if it wasn't ready
+      await sendSignal("phone-ready", { type: "phone-ready" });
+
+      // Wait a moment then send offer (desktop might already be listening)
+      setTimeout(async () => {
+        if (!offerSent.current && peerConnection.current) {
+          await createAndSendOffer();
+        }
+      }, 500);
+
     } catch (err: any) {
-      console.error("[RemoteCamera] Error:", err);
-      
-      // Provide more specific error messages
-      if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
-        setError(t("remoteCamera.permissionDenied") || "Camera permission denied. Please allow camera access in your browser settings.");
-      } else if (err.name === "NotFoundError" || err.name === "DevicesNotFoundError") {
-        setError(t("remoteCamera.noCamera") || "No camera found on this device.");
-      } else if (err.name === "NotReadableError" || err.name === "TrackStartError") {
-        setError(t("remoteCamera.cameraInUse") || "Camera is in use by another app. Please close other apps using the camera.");
-      } else if (err.name === "OverconstrainedError") {
-        setError(t("remoteCamera.cameraError") || "Camera constraints not supported. Try again.");
+      console.error("[RemoteCamera Phone] Error:", err);
+      setConnecting(false);
+
+      if (err.name === "NotAllowedError") {
+        setError(t("remoteCamera.permissionDenied") || "Camera permission denied.");
+      } else if (err.name === "NotFoundError") {
+        setError(t("remoteCamera.noCamera") || "No camera found.");
       } else {
-        setError(t("remoteCamera.cameraError") || "Failed to access camera. Please check permissions.");
+        setError(t("remoteCamera.cameraError") || "Failed to access camera.");
       }
     }
   };
@@ -210,22 +247,20 @@ export default function RemoteCamera() {
     }
     setStreaming(false);
     setConnected(false);
+    setConnecting(false);
+    offerSent.current = false;
   };
 
   const switchCameraFacing = async () => {
     const newMode = facingMode === "user" ? "environment" : "user";
     setFacingMode(newMode);
 
-    if (streaming && localStream.current) {
+    if (streaming && localStream.current && peerConnection.current) {
       localStream.current.getTracks().forEach((track) => track.stop());
 
       try {
         const newStream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            width: { ideal: 1280 },
-            height: { ideal: 720 },
-            facingMode: newMode,
-          },
+          video: { facingMode: newMode },
           audio: false,
         });
 
@@ -234,15 +269,13 @@ export default function RemoteCamera() {
           videoRef.current.srcObject = newStream;
         }
 
-        if (peerConnection.current) {
-          const sender = peerConnection.current.getSenders().find(s => s.track?.kind === "video");
-          const videoTrack = newStream.getVideoTracks()[0];
-          if (sender && videoTrack) {
-            await sender.replaceTrack(videoTrack);
-          }
+        const sender = peerConnection.current.getSenders().find((s) => s.track?.kind === "video");
+        const videoTrack = newStream.getVideoTracks()[0];
+        if (sender && videoTrack) {
+          await sender.replaceTrack(videoTrack);
         }
       } catch (err) {
-        console.error("[RemoteCamera] Error switching camera:", err);
+        console.error("[RemoteCamera Phone] Error switching camera:", err);
       }
     }
   };
@@ -260,7 +293,7 @@ export default function RemoteCamera() {
           <CameraOff className="w-16 h-16 mx-auto text-muted-foreground" />
           <h1 className="text-xl font-bold">{t("remoteCamera.invalidLink") || "Invalid Link"}</h1>
           <p className="text-muted-foreground max-w-xs mx-auto">
-            {t("remoteCamera.scanAgain") || "Please scan the QR code from the match page again."}
+            {t("remoteCamera.scanAgain") || "Please scan the QR code again."}
           </p>
         </div>
       </div>
@@ -284,7 +317,7 @@ export default function RemoteCamera() {
               <Camera className="w-20 h-20 mx-auto text-primary" />
               <h1 className="text-2xl font-bold">{t("remoteCamera.title") || "Dartboard Camera"}</h1>
               <p className="text-muted-foreground max-w-xs mx-auto">
-                {t("remoteCamera.description") || "This device will stream video to your match."}
+                {t("remoteCamera.description") || "Stream video to your match."}
               </p>
               {error && <p className="text-destructive text-sm">{error}</p>}
               <Button onClick={startCamera} size="lg" className="gap-2">
@@ -303,7 +336,8 @@ export default function RemoteCamera() {
         )}
 
         {streaming && !connected && (
-          <div className="absolute top-4 left-4 bg-yellow-500/90 text-black px-3 py-1.5 rounded-full text-sm font-medium animate-pulse">
+          <div className="absolute top-4 left-4 bg-yellow-500/90 text-black px-3 py-1.5 rounded-full flex items-center gap-2 text-sm font-medium">
+            <Loader2 className="w-4 h-4 animate-spin" />
             {t("remoteCamera.connecting") || "Connecting..."}
           </div>
         )}

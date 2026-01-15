@@ -78,7 +78,7 @@ export default function Match() {
   const [showZoomSlider, setShowZoomSlider] = useState(false);
   const [showDisconnectDialog, setShowDisconnectDialog] = useState(false);
   const [showQRDialog, setShowQRDialog] = useState(false);
-  const [remoteCameraEnabled, setRemoteCameraEnabled] = useState(false);
+  const remoteCameraEnabled = useRef(false);
   const [tournamentId, setTournamentId] = useState<string | null>(null);
 
   // Check if this match is part of a tournament
@@ -143,6 +143,18 @@ export default function Match() {
       handleStartVideo();
     }
   }, [match?.status]);
+
+  // Auto-initialize remote camera receiver when match becomes active
+  useEffect(() => {
+    if (match?.status === "active" && user && !remoteCameraEnabled.current) {
+      remoteCameraEnabled.current = true;
+      initializeRemoteCameraReceiver().then((success) => {
+        if (success) {
+          console.log("[Match] Remote camera receiver initialized - ready to accept phone connection");
+        }
+      });
+    }
+  }, [match?.status, user, initializeRemoteCameraReceiver]);
 
   // Detect opponent disconnection
   useEffect(() => {
@@ -222,15 +234,8 @@ export default function Match() {
     navigate("/matches");
   };
 
-  const handleEnableRemoteCamera = async () => {
+  const handleCloseQRDialog = () => {
     setShowQRDialog(false);
-    const success = await initializeRemoteCameraReceiver();
-    if (success) {
-      setRemoteCameraEnabled(true);
-      toast.success(t("match.remoteCameraEnabled") || "Remote camera enabled");
-    } else {
-      toast.error(t("match.remoteCameraError") || "Failed to enable remote camera");
-    }
   };
 
   const getRemoteCameraUrl = () => {
@@ -422,8 +427,19 @@ export default function Match() {
             <p className="text-xs text-muted-foreground text-center break-all max-w-full">
               {getRemoteCameraUrl()}
             </p>
-            <Button onClick={handleEnableRemoteCamera} className="w-full">
-              {t("match.enableRemoteCamera") || "Enable Remote Camera"}
+            {remoteCameraStream ? (
+              <div className="flex items-center gap-2 text-green-600">
+                <Check className="w-5 h-5" />
+                <span>{t("match.phoneConnected") || "Phone connected!"}</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 text-muted-foreground animate-pulse">
+                <Smartphone className="w-5 h-5" />
+                <span>{t("match.waitingForPhone") || "Waiting for phone..."}</span>
+              </div>
+            )}
+            <Button onClick={handleCloseQRDialog} variant="outline" className="w-full">
+              {t("common.close") || "Close"}
             </Button>
           </div>
         </DialogContent>
@@ -490,13 +506,13 @@ export default function Match() {
               : "max-w-sm aspect-square shadow-lg" // Full square when watching opponent
               }`}
           >
-            {/* Remote camera video - shown when enabled and available */}
+            {/* Remote camera video - shown when available (via WebRTC peer-to-peer) */}
             <video
               ref={remoteCameraRef}
               autoPlay
               muted
               playsInline
-              className={`absolute inset-0 w-full h-full object-cover ${remoteCameraEnabled && remoteCameraStream ? "" : "hidden"}`}
+              className={`absolute inset-0 w-full h-full object-cover ${remoteCameraStream ? "" : "hidden"}`}
             />
 
             {/* Local video - shown when it's my turn and no remote camera */}
@@ -505,7 +521,7 @@ export default function Match() {
               autoPlay
               muted
               playsInline
-              className={`absolute inset-0 w-full h-full object-cover ${isMyTurn && localVideoReady && !(remoteCameraEnabled && remoteCameraStream) ? "" : "hidden"}`}
+              className={`absolute inset-0 w-full h-full object-cover ${isMyTurn && localVideoReady && !remoteCameraStream ? "" : "hidden"}`}
             />
 
             {/* Remote video - shown when it's opponent's turn */}
@@ -514,20 +530,13 @@ export default function Match() {
               autoPlay
               muted
               playsInline
-              className={`absolute inset-0 w-full h-full object-cover ${!isMyTurn && remoteStream && !(remoteCameraEnabled && remoteCameraStream) ? "" : "hidden"}`}
+              className={`absolute inset-0 w-full h-full object-cover ${!isMyTurn && remoteStream && !remoteCameraStream ? "" : "hidden"}`}
             />
 
-            {/* Fallback: VideoOff icon or remote camera waiting */}
+            {/* Fallback: VideoOff icon */}
             {!remoteCameraStream && ((isMyTurn && !localVideoReady) || (!isMyTurn && !remoteStream)) && (
               <div className="absolute inset-0 w-full h-full flex items-center justify-center">
-                {remoteCameraEnabled ? (
-                  <div className="text-center">
-                    <Smartphone className="w-10 h-10 text-muted-foreground mx-auto mb-2 animate-pulse" />
-                    <p className="text-xs text-muted-foreground">{t("match.waitingForCamera") || "Waiting for camera..."}</p>
-                  </div>
-                ) : (
-                  <VideoOff className="w-12 h-12 text-muted-foreground" />
-                )}
+                <VideoOff className="w-12 h-12 text-muted-foreground" />
               </div>
             )}
 
@@ -538,7 +547,7 @@ export default function Match() {
             {/* Camera controls - only show when it's my turn */}
             {isMyTurn && (
               <div className="absolute top-2 right-2 flex gap-2 z-10">
-                {!remoteCameraEnabled && (
+                {!remoteCameraStream && (
                   <Button
                     variant="ghost"
                     size="icon"
@@ -549,7 +558,7 @@ export default function Match() {
                     <Smartphone className="w-4 h-4" />
                   </Button>
                 )}
-                {remoteCameraEnabled && remoteCameraStream && (
+                {remoteCameraStream && (
                   <span className="bg-green-500/90 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
                     <Check className="w-3 h-3" />
                     {t("match.phoneCam") || "Phone"}

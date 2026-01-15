@@ -127,7 +127,6 @@ export default function Auth() {
           toast.error(t("auth.loginError"));
         }
       } else {
-        toast.success(t("auth.welcomeBackToast"));
         navigate("/dashboard");
       }
     } else {
