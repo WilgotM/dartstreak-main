@@ -27,6 +27,9 @@ export interface Match {
   player2_legs: number;
   player1_sets: number;
   player2_sets: number;
+  throw_time_limit: number;
+  expires_at: string | null;
+  last_throw_at: string | null;
 }
 
 export interface HeadToHead {
@@ -141,6 +144,7 @@ export function useMatch(matchId?: string) {
       .in("id", playerIds);
 
     const signaling = (data.signaling_data as Record<string, unknown>) || {};
+    const dataWithNewFields = data as any;
 
     const matchWithNames: Match = {
       ...data,
@@ -158,6 +162,9 @@ export function useMatch(matchId?: string) {
       player2_legs: data.player2_legs,
       player1_sets: data.player1_sets,
       player2_sets: data.player2_sets,
+      throw_time_limit: dataWithNewFields.throw_time_limit ?? 80,
+      expires_at: dataWithNewFields.expires_at ?? null,
+      last_throw_at: dataWithNewFields.last_throw_at ?? null,
     };
 
     setMatch(matchWithNames);
@@ -207,20 +214,26 @@ export function useMatch(matchId?: string) {
         .select("id, display_name")
         .in("id", player1Ids);
 
-      const matchesWithNames: Match[] = data.map((m) => ({
-        ...m,
-        checkout_type: m.checkout_type as "straight_out" | "double_out",
-        status: m.status as "pending" | "active" | "completed" | "cancelled",
-        signaling_data: (m.signaling_data as Record<string, unknown>) || {},
-        player1_name: profiles?.find((p) => p.id === m.player1_id)?.display_name || "Unknown",
-        is_offline: m.is_offline,
-        legs_to_win: m.legs_to_win,
-        sets_to_win: m.sets_to_win,
-        player1_legs: m.player1_legs,
-        player2_legs: m.player2_legs,
-        player1_sets: m.player1_sets,
-        player2_sets: m.player2_sets,
-      }));
+      const matchesWithNames: Match[] = data.map((m) => {
+        const mWithNewFields = m as any;
+        return {
+          ...m,
+          checkout_type: m.checkout_type as "straight_out" | "double_out",
+          status: m.status as "pending" | "active" | "completed" | "cancelled",
+          signaling_data: (m.signaling_data as Record<string, unknown>) || {},
+          player1_name: profiles?.find((p) => p.id === m.player1_id)?.display_name || "Unknown",
+          is_offline: m.is_offline,
+          legs_to_win: m.legs_to_win,
+          sets_to_win: m.sets_to_win,
+          player1_legs: m.player1_legs,
+          player2_legs: m.player2_legs,
+          player1_sets: m.player1_sets,
+          player2_sets: m.player2_sets,
+          throw_time_limit: mWithNewFields.throw_time_limit ?? 80,
+          expires_at: mWithNewFields.expires_at ?? null,
+          last_throw_at: mWithNewFields.last_throw_at ?? null,
+        };
+      });
 
       setPendingMatches(matchesWithNames);
     }
@@ -281,7 +294,8 @@ export function useMatch(matchId?: string) {
     legsToWin: number = 1,
     setsToWin: number = 1,
     playerNames?: { p1?: string; p2?: string },
-    forceLocal: boolean = false
+    forceLocal: boolean = false,
+    throwTimeLimit: number = 80
   ) => {
     if (!user && !isGuest) return { error: "Not authenticated", matchId: null };
 
@@ -290,6 +304,12 @@ export function useMatch(matchId?: string) {
       ...(playerNames?.p1 ? { player1_name: playerNames.p1 } : {}),
       ...(playerNames?.p2 ? { player2_name: playerNames.p2 } : {}),
     };
+
+    // Clamp throwTimeLimit to valid range (1-100 seconds)
+    const validThrowTimeLimit = Math.min(100, Math.max(1, throwTimeLimit));
+
+    // For online matches, set expiration to 2 minutes from now
+    const expiresAt = isOffline ? null : new Date(Date.now() + 2 * 60 * 1000).toISOString();
 
     const insertData = {
       id: matchId,
@@ -307,6 +327,8 @@ export function useMatch(matchId?: string) {
       started_at: isOffline ? new Date().toISOString() : null,
       created_at: new Date().toISOString(),
       signaling_data: signalingData,
+      throw_time_limit: validThrowTimeLimit,
+      expires_at: expiresAt,
     };
 
     if (isGuest || forceLocal) {
@@ -317,7 +339,7 @@ export function useMatch(matchId?: string) {
 
     const { data, error } = await supabase
       .from("matches")
-      .insert(insertData)
+      .insert(insertData as any)
       .select()
       .single();
 
@@ -336,7 +358,9 @@ export function useMatch(matchId?: string) {
       .update({
         status: "active",
         started_at: new Date().toISOString(),
-      })
+        expires_at: null, // Clear expiration when match starts
+        last_throw_at: new Date().toISOString(), // Start turn timer
+      } as any)
       .eq("id", match.id);
 
     fetchMatch();
@@ -349,6 +373,43 @@ export function useMatch(matchId?: string) {
       .from("matches")
       .update({ status: "cancelled" })
       .eq("id", match.id);
+  };
+
+  // Cancel a pending match (used when the challenger leaves the waiting room)
+  const cancelPendingMatch = async () => {
+    if (!match) return;
+
+    // Delete related data first
+    await supabase
+      .from("match_throws")
+      .delete()
+      .eq("match_id", match.id);
+
+    await supabase
+      .from("match_signals")
+      .delete()
+      .eq("match_id", match.id);
+
+    await supabase
+      .from("matches")
+      .delete()
+      .eq("id", match.id);
+  };
+
+  // Forfeit match - opponent wins (used for timeouts)
+  const forfeitMatch = async (winnerId: string) => {
+    if (!match) return;
+
+    await supabase
+      .from("matches")
+      .update({
+        status: "completed",
+        winner_id: winnerId,
+        completed_at: new Date().toISOString(),
+      })
+      .eq("id", match.id);
+
+    fetchMatch();
   };
 
   // Cancel/abandon match (when opponent disconnects or leaves)
@@ -456,6 +517,7 @@ export function useMatch(matchId?: string) {
 
     const updateData: Record<string, unknown> = {
       current_turn: isPlayer1 ? match.player2_id : match.player1_id,
+      last_throw_at: new Date().toISOString(), // Reset turn timer for next player
     };
 
     if (isPlayer1) {
@@ -930,6 +992,8 @@ export function useMatch(matchId?: string) {
     acceptMatch,
     declineMatch,
     abandonMatch,
+    cancelPendingMatch,
+    forfeitMatch,
     registerThrow,
     refetch: fetchMatch,
     refetchPending: fetchPendingMatches,

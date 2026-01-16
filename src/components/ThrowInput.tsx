@@ -208,8 +208,8 @@ export default function ThrowInput({ onComplete, leagueId, userId }: ThrowInputP
 
   return (
     <div className="fixed inset-0 z-50 bg-background flex flex-col">
-      {/* Camera preview - Square, takes ~40% of screen on mobile */}
-      <div className="relative bg-black flex-shrink-0" style={{ height: "40vh" }}>
+      {/* Camera preview - Square, takes ~30% of screen on mobile */}
+      <div className="relative bg-black flex-shrink-0" style={{ height: "30vh" }}>
         {/* Always render video element so ref can be attached */}
         <video
           ref={videoRef}

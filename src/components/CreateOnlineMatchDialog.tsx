@@ -28,7 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Swords, Users, Wifi, Target, Trophy } from "lucide-react";
+import { Swords, Users, Wifi, Target, Trophy, Clock } from "lucide-react";
 import { useFriends } from "@/hooks/useFriends";
 import { useMatch } from "@/hooks/useMatch";
 import { cn } from "@/lib/utils";
@@ -50,6 +50,7 @@ export function CreateOnlineMatchDialog({ children }: CreateOnlineMatchDialogPro
   const [checkoutType, setCheckoutType] = useState<string>("double_out");
   const [legsToWin, setLegsToWin] = useState(1);
   const [setsToWin, setSetsToWin] = useState(1);
+  const [throwTimeLimit, setThrowTimeLimit] = useState(80);
   const [creating, setCreating] = useState(false);
 
   const { friends, loading: friendsLoading } = useFriends();
@@ -68,7 +69,10 @@ export function CreateOnlineMatchDialog({ children }: CreateOnlineMatchDialogPro
       checkoutType as "straight_out" | "double_out",
       false, // isOffline = false
       legsToWin,
-      setsToWin
+      setsToWin,
+      undefined, // playerNames
+      false, // forceLocal
+      throwTimeLimit
     );
     setCreating(false);
 
@@ -180,6 +184,26 @@ export function CreateOnlineMatchDialog({ children }: CreateOnlineMatchDialogPro
             max={11}
             className="w-full"
           />
+        </div>
+
+        {/* Throw time limit */}
+        <div className="bg-card/50 rounded-xl border p-4 space-y-3">
+          <div className="flex items-center gap-2 text-orange-500">
+            <Clock className="w-4 h-4" />
+            <Label className="text-base text-foreground">{t("match.throwTimeLimit")}</Label>
+          </div>
+          <div className="flex items-center gap-2">
+            <NumberPicker
+              value={throwTimeLimit}
+              onValueChange={setThrowTimeLimit}
+              min={10}
+              max={100}
+              step={10}
+              className="w-full"
+            />
+            <span className="text-sm text-muted-foreground whitespace-nowrap">{t("match.seconds")}</span>
+          </div>
+          <p className="text-xs text-muted-foreground">{t("match.throwTimeLimitDesc")}</p>
         </div>
       </div>
 

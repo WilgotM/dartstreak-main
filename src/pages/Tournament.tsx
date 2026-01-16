@@ -21,6 +21,7 @@ import {
   ArrowLeft,
   Clock,
   Loader2,
+  AlertTriangle,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -48,6 +49,11 @@ export default function Tournament() {
   const [loading, setLoading] = useState(true);
   const [countdown, setCountdown] = useState<number | null>(null);
   const [countdownType, setCountdownType] = useState<"start" | "round">("start");
+  const [walkoverCountdown, setWalkoverCountdown] = useState<number | null>(null);
+  const [userActiveMatch, setUserActiveMatch] = useState<any>(null);
+
+  // Walkover timeout constant (20 seconds after match scheduled start)
+  const WALKOVER_TIMEOUT_SECONDS = 20;
 
   const loadDetails = useCallback(async (isInitial = false) => {
     if (!id) return;
@@ -70,6 +76,7 @@ export default function Tournament() {
 
     // Check if user has an active match they should be in
     const activeMatch = await getActiveMatchForUser(id, user.id) as any;
+    setUserActiveMatch(activeMatch);
 
     if (activeMatch) {
       // Check if match should have started
@@ -162,6 +169,33 @@ export default function Tournament() {
     const interval = setInterval(updateCountdown, 1000);
     return () => clearInterval(interval);
   }, [details?.tournament?.scheduled_start_at, details?.tournament?.round_started_at, details?.tournament?.status]);
+
+  // Walkover countdown timer
+  useEffect(() => {
+    if (!userActiveMatch?.scheduled_start_at || userActiveMatch.status !== "scheduled") {
+      setWalkoverCountdown(null);
+      return;
+    }
+
+    const updateWalkoverCountdown = () => {
+      const scheduledStart = new Date(userActiveMatch.scheduled_start_at);
+      const walkoverTime = new Date(scheduledStart.getTime() + WALKOVER_TIMEOUT_SECONDS * 1000);
+      const now = new Date();
+
+      // Only show countdown after match should have started
+      if (now < scheduledStart) {
+        setWalkoverCountdown(null);
+        return;
+      }
+
+      const diff = Math.max(0, Math.floor((walkoverTime.getTime() - now.getTime()) / 1000));
+      setWalkoverCountdown(diff);
+    };
+
+    updateWalkoverCountdown();
+    const interval = setInterval(updateWalkoverCountdown, 1000);
+    return () => clearInterval(interval);
+  }, [userActiveMatch?.scheduled_start_at, userActiveMatch?.status, WALKOVER_TIMEOUT_SECONDS]);
 
   if (authLoading || loading) {
     return (
@@ -355,8 +389,30 @@ export default function Tournament() {
           </Card>
         )}
 
+        {/* Walkover warning - urgent! */}
+        {tournament.status === "in_progress" && walkoverCountdown !== null && walkoverCountdown > 0 && isParticipant && (
+          <Card className="mb-6 bg-destructive/10 border-destructive/40 animate-pulse">
+            <CardContent className="py-6">
+              <div className="flex flex-col items-center gap-2">
+                <div className="flex items-center gap-2 text-destructive">
+                  <AlertTriangle className="w-6 h-6" />
+                  <span className="text-lg font-bold">
+                    {t("tournament.walkoverWarning")}
+                  </span>
+                </div>
+                <span className="text-5xl font-display font-bold text-destructive">
+                  {walkoverCountdown}s
+                </span>
+                <p className="text-sm text-destructive/80 font-medium">
+                  {t("tournament.walkoverIn", { seconds: walkoverCountdown })}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Waiting indicator */}
-        {tournament.status === "in_progress" && countdown === 0 && isParticipant && (
+        {tournament.status === "in_progress" && countdown === 0 && isParticipant && walkoverCountdown === null && (
           <Card className="mb-6 bg-amber-500/10 border-amber-500/20">
             <CardContent className="py-6">
               <div className="flex flex-col items-center gap-2">

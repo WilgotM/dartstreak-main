@@ -23,6 +23,7 @@ import InstallGuide from "./pages/InstallGuide";
 import NotFound from "./pages/NotFound";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { IOSInstallReminder } from "@/components/iOSInstallReminder";
+import { TournamentGuard } from "@/components/TournamentGuard";
 
 const queryClient = new QueryClient();
 
@@ -49,23 +50,25 @@ const App = () => {
             <Toaster />
             <Sonner />
             <HashRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/leagues" element={<Leagues />} />
-                <Route path="/league/:id" element={<League />} />
-                <Route path="/matches" element={<Matches />} />
-                <Route path="/match/:id" element={<Match />} />
-                <Route path="/offline-match/:id" element={<OfflineMatch />} />
-                <Route path="/remote-camera/:matchId" element={<RemoteCamera />} />
-                <Route path="/tournaments" element={<Tournaments />} />
-                <Route path="/tournament/:id" element={<Tournament />} />
-                <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/profile/:id" element={<ProfilePage />} />
-                <Route path="/install-guide" element={<InstallGuide />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <TournamentGuard>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/leagues" element={<Leagues />} />
+                  <Route path="/league/:id" element={<League />} />
+                  <Route path="/matches" element={<Matches />} />
+                  <Route path="/match/:id" element={<Match />} />
+                  <Route path="/offline-match/:id" element={<OfflineMatch />} />
+                  <Route path="/remote-camera/:matchId" element={<RemoteCamera />} />
+                  <Route path="/tournaments" element={<Tournaments />} />
+                  <Route path="/tournament/:id" element={<Tournament />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/profile/:id" element={<ProfilePage />} />
+                  <Route path="/install-guide" element={<InstallGuide />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </TournamentGuard>
               <InstallPrompt />
               <IOSInstallReminder />
             </HashRouter>

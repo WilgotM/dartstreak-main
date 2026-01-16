@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Bot, Clock, Loader2 } from "lucide-react";
+import { Trophy, Bot, Clock, Loader2, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Participant {
@@ -21,6 +21,7 @@ interface Match {
   player1_participant_id: string | null;
   player2_participant_id: string | null;
   winner_participant_id: string | null;
+  walkover_loser_id: string | null;
   match_id: string | null;
   status: string;
   scheduled_start_at: string | null;
@@ -75,6 +76,19 @@ export function TournamentBracket({
       (p1 && !p1.is_bot && p1.user_id === currentUserId) ||
       (p2 && !p2.is_bot && p2.user_id === currentUserId)
     );
+  };
+
+  // Check if a participant has had a walkover loss in any previous match
+  const hasWalkoverHistory = (participantId: string | null, beforeRound: number) => {
+    if (!participantId) return false;
+    return matches.some(
+      (m) => m.round < beforeRound && m.walkover_loser_id === participantId
+    );
+  };
+
+  // Check if match was a walkover
+  const isWalkoverMatch = (match: Match) => {
+    return match.walkover_loser_id !== null;
   };
 
   const getStatusBadge = (match: Match) => {
@@ -156,18 +170,30 @@ export function TournamentBracket({
                                 "flex items-center gap-2 p-2 rounded",
                                 match.winner_participant_id ===
                                   match.player1_participant_id &&
-                                  "bg-primary/10"
+                                  "bg-primary/10",
+                                match.walkover_loser_id === match.player1_participant_id &&
+                                  "bg-destructive/10"
                               )}
                             >
                               {p1?.is_bot && (
                                 <Bot className="w-3 h-3 text-muted-foreground" />
                               )}
-                              <span className="text-sm truncate flex-1">
+                              {/* Warning if player has walkover history */}
+                              {hasWalkoverHistory(match.player1_participant_id, match.round) && (
+                                <AlertTriangle className="w-3 h-3 text-amber-500" title={t("tournament.noShowWarning")} />
+                              )}
+                              <span className={cn(
+                                "text-sm truncate flex-1",
+                                match.walkover_loser_id === match.player1_participant_id && "text-destructive line-through"
+                              )}>
                                 {getParticipantName(p1)}
                               </span>
                               {match.winner_participant_id ===
                                 match.player1_participant_id && (
                                 <Trophy className="w-3 h-3 text-primary" />
+                              )}
+                              {match.walkover_loser_id === match.player1_participant_id && (
+                                <span className="text-xs text-destructive">WO</span>
                               )}
                             </div>
 
@@ -179,24 +205,41 @@ export function TournamentBracket({
                                 "flex items-center gap-2 p-2 rounded",
                                 match.winner_participant_id ===
                                   match.player2_participant_id &&
-                                  "bg-primary/10"
+                                  "bg-primary/10",
+                                match.walkover_loser_id === match.player2_participant_id &&
+                                  "bg-destructive/10"
                               )}
                             >
                               {p2?.is_bot && (
                                 <Bot className="w-3 h-3 text-muted-foreground" />
                               )}
-                              <span className="text-sm truncate flex-1">
+                              {/* Warning if player has walkover history */}
+                              {hasWalkoverHistory(match.player2_participant_id, match.round) && (
+                                <AlertTriangle className="w-3 h-3 text-amber-500" title={t("tournament.noShowWarning")} />
+                              )}
+                              <span className={cn(
+                                "text-sm truncate flex-1",
+                                match.walkover_loser_id === match.player2_participant_id && "text-destructive line-through"
+                              )}>
                                 {getParticipantName(p2)}
                               </span>
                               {match.winner_participant_id ===
                                 match.player2_participant_id && (
                                 <Trophy className="w-3 h-3 text-primary" />
                               )}
+                              {match.walkover_loser_id === match.player2_participant_id && (
+                                <span className="text-xs text-destructive">WO</span>
+                              )}
                             </div>
 
                             {/* Status */}
-                            <div className="mt-2 flex justify-center">
+                            <div className="mt-2 flex justify-center gap-1">
                               {getStatusBadge(match)}
+                              {isWalkoverMatch(match) && (
+                                <Badge variant="destructive" className="text-xs">
+                                  {t("tournament.walkover")}
+                                </Badge>
+                              )}
                             </div>
                           </div>
                         );

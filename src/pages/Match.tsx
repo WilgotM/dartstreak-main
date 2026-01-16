@@ -12,6 +12,7 @@ import { Slider } from "@/components/ui/slider";
 import {
   AlertDialog,
   AlertDialogAction,
+  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -26,7 +27,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Target, ArrowLeft, Trophy, Clock, Video, VideoOff, Check, X, Swords, SwitchCamera, ZoomIn, WifiOff, Smartphone } from "lucide-react";
+import { Target, ArrowLeft, Trophy, Clock, Video, VideoOff, Check, X, Swords, SwitchCamera, ZoomIn, WifiOff, Smartphone, LogOut } from "lucide-react";
 import { MatchThrowInput } from "@/components/MatchThrowInput";
 import { QRCodeSVG } from "qrcode.react";
 
@@ -43,6 +44,8 @@ export default function Match() {
     acceptMatch,
     declineMatch,
     abandonMatch,
+    cancelPendingMatch,
+    forfeitMatch,
     registerThrow,
     localStream,
     remoteStream,
@@ -59,6 +62,7 @@ export default function Match() {
     opponentCurrentDarts,
     broadcastCurrentDarts,
     h2h,
+    refetch,
   } = useMatch(id);
 
   const { completeTournamentMatch } = useTournaments();
@@ -78,6 +82,9 @@ export default function Match() {
   const [showZoomSlider, setShowZoomSlider] = useState(false);
   const [showDisconnectDialog, setShowDisconnectDialog] = useState(false);
   const [showQRDialog, setShowQRDialog] = useState(false);
+  const [showLeaveRoomDialog, setShowLeaveRoomDialog] = useState(false);
+  const [inviteCountdown, setInviteCountdown] = useState<number | null>(null);
+  const [throwCountdown, setThrowCountdown] = useState<number | null>(null);
   const remoteCameraEnabled = useRef(false);
   const [tournamentId, setTournamentId] = useState<string | null>(null);
 
@@ -133,7 +140,7 @@ export default function Match() {
     if (el && remoteCameraStream) {
       console.log("Setting remote camera video srcObject");
       el.srcObject = remoteCameraStream;
-      el.play?.().catch(() => {});
+      el.play?.().catch(() => { });
     }
   }, [remoteCameraStream]);
 
@@ -189,6 +196,109 @@ export default function Match() {
       return () => clearTimeout(timer);
     }
   }, [match?.status, tournamentId, navigate]);
+
+  // Invite countdown timer (2 minutes for pending matches)
+  useEffect(() => {
+    if (match?.status !== "pending" || !match?.expires_at) {
+      setInviteCountdown(null);
+      return;
+    }
+
+    const updateCountdown = () => {
+      const expiresAt = new Date(match.expires_at!).getTime();
+      const now = Date.now();
+      const remaining = Math.max(0, Math.floor((expiresAt - now) / 1000));
+      setInviteCountdown(remaining);
+
+      // If expired, cancel the match and redirect
+      if (remaining <= 0) {
+        cancelPendingMatch();
+        toast.error(t("match.inviteExpired"));
+        navigate("/dashboard");
+      }
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+    return () => clearInterval(interval);
+  }, [match?.status, match?.expires_at, cancelPendingMatch, navigate, t]);
+
+  // Page leave detection - cancel pending match when user leaves
+  useEffect(() => {
+    if (match?.status !== "pending") return;
+
+    const isChallenger = user?.id === match?.player1_id;
+    if (!isChallenger) return; // Only challenger needs to handle leaving
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      // Cancel the pending match when leaving
+      cancelPendingMatch();
+      e.preventDefault();
+      e.returnValue = "";
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        // User minimized or switched tabs - cancel match
+        cancelPendingMatch();
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [match?.status, match?.player1_id, user?.id, cancelPendingMatch]);
+
+  // Handle match cancelled/deleted (navigate away if match disappears)
+  useEffect(() => {
+    if (!loading && !match && id) {
+      // Match was deleted/cancelled
+      toast.info(t("match.matchCancelled"));
+      navigate("/dashboard");
+    }
+  }, [loading, match, id, navigate, t]);
+
+  // Throw countdown timer (time limit per throw)
+  useEffect(() => {
+    if (match?.status !== "active" || !match?.last_throw_at || !match?.throw_time_limit) {
+      setThrowCountdown(null);
+      return;
+    }
+
+    const isMyTurn = match.current_turn === user?.id;
+
+    const updateCountdown = () => {
+      const lastThrowAt = new Date(match.last_throw_at!).getTime();
+      const now = Date.now();
+      const elapsed = Math.floor((now - lastThrowAt) / 1000);
+      const remaining = Math.max(0, match.throw_time_limit - elapsed);
+      setThrowCountdown(remaining);
+
+      // If time ran out and it's my turn, I forfeit
+      if (remaining <= 0 && isMyTurn) {
+        const opponentId = user?.id === match.player1_id ? match.player2_id : match.player1_id;
+        if (opponentId) {
+          forfeitMatch(opponentId);
+          toast.error(t("match.timeoutForfeit"));
+        }
+      }
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+    return () => clearInterval(interval);
+  }, [match?.status, match?.last_throw_at, match?.throw_time_limit, match?.current_turn, user?.id, forfeitMatch, t]);
+
+  // Handle leaving the waiting room
+  const handleLeaveRoom = async () => {
+    await cancelPendingMatch();
+    toast.info(t("match.leftWaitingRoom"));
+    navigate("/dashboard");
+  };
 
   const handleStartVideo = async () => {
     const success = await initializeWebRTC();
@@ -278,15 +388,57 @@ export default function Match() {
   // Pending match - waiting for acceptance
   if (match.status === "pending") {
     const isChallenger = user?.id === match.player1_id;
+    const formatTime = (seconds: number) => {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${mins}:${secs.toString().padStart(2, "0")}`;
+    };
 
     return (
       <div className="min-h-screen bg-background">
+        {/* Leave Room Confirmation Dialog */}
+        <AlertDialog open={showLeaveRoomDialog} onOpenChange={setShowLeaveRoomDialog}>
+          <AlertDialogContent className="max-w-sm">
+            <AlertDialogHeader>
+              <div className="flex justify-center mb-4">
+                <div className="p-3 bg-destructive/10 rounded-full">
+                  <LogOut className="w-8 h-8 text-destructive" />
+                </div>
+              </div>
+              <AlertDialogTitle className="text-center">{t("match.leaveRoomTitle")}</AlertDialogTitle>
+              <AlertDialogDescription className="text-center">
+                {t("match.leaveRoomDesc")}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
+              <AlertDialogAction
+                onClick={handleLeaveRoom}
+                className="w-full bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                {t("match.confirmLeaveRoom")}
+              </AlertDialogAction>
+              <AlertDialogCancel className="w-full mt-0">
+                {t("match.stayInRoom")}
+              </AlertDialogCancel>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
         <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-10 pt-[env(safe-area-inset-top)]">
-          <div className="container mx-auto px-4 py-4 flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")}>
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
+          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
             <h1 className="font-display font-bold text-xl">{t("match.matchChallenge")}</h1>
+            {isChallenger && (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => setShowLeaveRoomDialog(true)}
+                className="shadow-lg shadow-destructive/20"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                {t("match.leaveRoom")}
+              </Button>
+            )}
           </div>
         </header>
 
@@ -311,7 +463,29 @@ export default function Match() {
                       ? t("match.doubleOut")
                       : t("match.straightOut")}
                   </span>
+                  <span>•</span>
+                  <span className="flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    {match.throw_time_limit}s
+                  </span>
                 </div>
+
+                {/* Countdown Timer */}
+                {inviteCountdown !== null && (
+                  <div className={`mt-4 p-4 rounded-xl border-2 ${inviteCountdown <= 30 ? "border-destructive bg-destructive/5" : "border-primary bg-primary/5"}`}>
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">
+                      {t("match.timeRemaining")}
+                    </p>
+                    <p className={`text-3xl font-display font-bold tabular-nums ${inviteCountdown <= 30 ? "text-destructive" : "text-primary"}`}>
+                      {formatTime(inviteCountdown)}
+                    </p>
+                    {isChallenger && (
+                      <p className="text-xs text-muted-foreground mt-2">
+                        {t("match.waitingForOpponentToAccept")}
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 {h2h && (
                   <div className="pt-4 border-t border-border/50">
@@ -341,20 +515,35 @@ export default function Match() {
               </div>
 
               {isChallenger ? (
-                <div className="flex items-center justify-center gap-2 py-4 text-muted-foreground">
-                  <Clock className="w-4 h-4 animate-pulse" />
-                  <span>{t("match.waitingForAccept")}</span>
+                <div className="flex flex-col items-center gap-3 py-4">
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <div className="relative">
+                      <Clock className="w-5 h-5 animate-pulse" />
+                      <span className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full animate-ping" />
+                    </div>
+                    <span>{t("match.waitingForAccept")}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground text-center max-w-xs">
+                    {t("match.stayOnPageWarning")}
+                  </p>
                 </div>
               ) : (
-                <div className="flex gap-3">
-                  <Button onClick={handleAccept} variant="hero" className="flex-1">
-                    <Check className="w-4 h-4 mr-2" />
-                    {t("match.accept")}
-                  </Button>
-                  <Button onClick={handleDecline} variant="outline" className="flex-1">
-                    <X className="w-4 h-4 mr-2" />
-                    {t("match.decline")}
-                  </Button>
+                <div className="space-y-3">
+                  {inviteCountdown !== null && inviteCountdown <= 30 && (
+                    <p className="text-center text-sm text-destructive font-medium animate-pulse">
+                      {t("match.hurryUp")}
+                    </p>
+                  )}
+                  <div className="flex gap-3">
+                    <Button onClick={handleAccept} variant="hero" className="flex-1">
+                      <Check className="w-4 h-4 mr-2" />
+                      {t("match.accept")}
+                    </Button>
+                    <Button onClick={handleDecline} variant="outline" className="flex-1">
+                      <X className="w-4 h-4 mr-2" />
+                      {t("match.decline")}
+                    </Button>
+                  </div>
                 </div>
               )}
             </CardContent>
@@ -501,9 +690,9 @@ export default function Match() {
         {/* Video section - dynamic height based on turn */}
         <div className="flex justify-center transition-all duration-300 ease-in-out">
           <div
-            className={`relative bg-card rounded-lg overflow-hidden border border-border w-full transition-all duration-300 ease-in-out ${isMyTurn
-              ? "h-32 max-w-md shadow-sm" // Small strip when playing (to show input)
-              : "max-w-sm aspect-square shadow-lg" // Full square when watching opponent
+            className={`relative bg-card rounded-lg overflow-hidden border border-border mx-auto transition-all duration-300 ease-in-out ${isMyTurn
+              ? "h-[30vh] aspect-square shadow-sm" // Small strip when playing (to show input)
+              : "w-full max-w-sm aspect-square shadow-lg" // Full square when watching opponent
               }`}
           >
             {/* Remote camera video - shown when available (via WebRTC peer-to-peer) */}
@@ -625,9 +814,19 @@ export default function Match() {
           </div>
         </div>
 
-        {/* Turn indicator */}
-        <div className={`text-center py-2 rounded-lg ${isMyTurn ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
-          {isMyTurn ? t("match.yourTurn") : t("match.opponentTurn", { name: opponentName })}
+        {/* Turn indicator with timer */}
+        <div className={`text-center py-2 px-4 rounded-lg flex items-center justify-center gap-3 ${isMyTurn ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+          <span>{isMyTurn ? t("match.yourTurn") : t("match.opponentTurn", { name: opponentName })}</span>
+          {throwCountdown !== null && (
+            <span className={`font-mono font-bold px-2 py-0.5 rounded ${throwCountdown <= 10
+                ? "bg-destructive text-destructive-foreground animate-pulse"
+                : throwCountdown <= 30
+                  ? "bg-orange-500 text-white"
+                  : "bg-primary/20 text-primary"
+              }`}>
+              {Math.floor(throwCountdown / 60)}:{(throwCountdown % 60).toString().padStart(2, "0")}
+            </span>
+          )}
         </div>
 
         {/* Throw input */}

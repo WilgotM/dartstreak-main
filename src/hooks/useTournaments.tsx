@@ -557,6 +557,10 @@ export function useTournaments() {
       bot_name: botParticipant.bot_name,
     } : null;
 
+    // Track who created the match (the player who showed up first)
+    // This is crucial for walkover logic
+    const createdByUserId = user.id;
+
     // Create the actual match
     const matchInsert: any = {
       player1_id: humanParticipant.user_id,
@@ -571,7 +575,9 @@ export function useTournaments() {
       sets_to_win: tournament.sets_to_win,
       status: "active",
       started_at: new Date().toISOString(),
-      signaling_data: botInfo ? { bot: botInfo } : {},
+      signaling_data: botInfo 
+        ? { bot: botInfo, created_by: createdByUserId } 
+        : { created_by: createdByUserId },
     };
 
     const { data: createdMatch, error: matchError } = await supabase
@@ -890,6 +896,9 @@ export function useTournaments() {
     // First check if tournament itself needs to start
     await checkAndStartTournament(tournamentId);
 
+    // Process any walkovers first
+    await processWalkovers(tournamentId);
+
     // Get all scheduled matches that should start
     const { data: scheduledMatches } = await supabase
       .from("tournament_matches")
@@ -929,6 +938,148 @@ export function useTournaments() {
     }
 
     return scheduledMatches;
+  };
+
+  // Walkover timeout: 20 seconds after match scheduled start
+  const WALKOVER_TIMEOUT_SECONDS = 20;
+
+  const processWalkovers = async (tournamentId: string) => {
+    const now = new Date();
+
+    // Get all scheduled matches that might need walkover processing
+    const { data: scheduledMatches } = await supabase
+      .from("tournament_matches")
+      .select("*, tournaments(*)")
+      .eq("tournament_id", tournamentId)
+      .eq("status", "scheduled")
+      .not("scheduled_start_at", "is", null);
+
+    if (!scheduledMatches || scheduledMatches.length === 0) return;
+
+    for (const match of scheduledMatches) {
+      const scheduledStart = new Date(match.scheduled_start_at!);
+      const walkoverTime = new Date(scheduledStart.getTime() + WALKOVER_TIMEOUT_SECONDS * 1000);
+
+      // Not yet past walkover time
+      if (now < walkoverTime) continue;
+
+      // If match has a match_id, check if it actually has activity (throws)
+      // If no throws after walkover time, one player showed up but the other didn't
+      if (match.match_id) {
+        // Check if match has any throws (indicating both players are active)
+        const { count } = await supabase
+          .from("match_throws")
+          .select("*", { count: "exact", head: true })
+          .eq("match_id", match.match_id);
+
+        // If there are throws, match is progressing normally
+        if (count && count > 0) continue;
+
+        // No throws yet - check if match is still active after walkover time
+        // This means one player created the match but opponent never showed up
+        // We'll handle this below
+      }
+
+      // Get both participants
+      const { data: p1 } = await supabase
+        .from("tournament_participants")
+        .select("*")
+        .eq("id", match.player1_participant_id)
+        .single();
+
+      const { data: p2 } = await supabase
+        .from("tournament_participants")
+        .select("*")
+        .eq("id", match.player2_participant_id)
+        .single();
+
+      if (!p1 || !p2) continue;
+
+      // If both are bots, simulate the match instead
+      if (p1.is_bot && p2.is_bot) {
+        await simulateBotVsBotMatch(match.id);
+        continue;
+      }
+
+      // Determine walkover winner based on who showed up
+      let winnerId: string;
+      
+      if (p1.is_bot && !p2.is_bot) {
+        // Human p2 didn't show up in time, bot p1 wins by walkover
+        winnerId = p1.id;
+      } else if (!p1.is_bot && p2.is_bot) {
+        // Human p1 didn't show up in time, bot p2 wins by walkover
+        winnerId = p2.id;
+      } else if (match.match_id) {
+        // Match was created - one player showed up but opponent didn't
+        // Check who created the match (they showed up) via signaling_data.created_by
+        const { data: actualMatch } = await supabase
+          .from("matches")
+          .select("signaling_data")
+          .eq("id", match.match_id)
+          .single();
+
+        if (actualMatch?.signaling_data) {
+          const signalingData = actualMatch.signaling_data as { created_by?: string };
+          const createdByUserId = signalingData.created_by;
+          
+          if (createdByUserId) {
+            // Give win to whoever created the match (they showed up)
+            if (p1.user_id === createdByUserId) {
+              winnerId = p1.id; // Player 1 showed up, they win
+            } else if (p2.user_id === createdByUserId) {
+              winnerId = p2.id; // Player 2 showed up, they win
+            } else {
+              winnerId = p1.id; // Fallback
+            }
+          } else {
+            winnerId = p1.id; // No created_by info, fallback
+          }
+        } else {
+          winnerId = p1.id; // Fallback
+        }
+      } else {
+        // Both are human and neither showed up within 20 seconds
+        // Use match ID to deterministically but fairly pick a winner
+        // This ensures consistency (same result if checked multiple times)
+        // but fairness (not always the same player)
+        const matchIdSum = match.id.split('').reduce((sum: number, char: string) => sum + char.charCodeAt(0), 0);
+        winnerId = matchIdSum % 2 === 0 ? p1.id : p2.id;
+      }
+
+      console.log(`Walkover: Match ${match.id} - winner: ${winnerId}`);
+
+      // If there was an actual match created, cancel/complete it
+      if (match.match_id) {
+        // Find the winner's user_id to set as match winner
+        const winnerParticipant = winnerId === p1.id ? p1 : p2;
+        
+        await supabase
+          .from("matches")
+          .update({
+            status: "completed",
+            winner_id: winnerParticipant.user_id,
+            completed_at: new Date().toISOString(),
+          })
+          .eq("id", match.match_id);
+      }
+
+      // Determine who didn't show up (the loser)
+      const loserId = winnerId === p1.id ? p2.id : p1.id;
+
+      // Award walkover in tournament - mark who didn't show up
+      await supabase
+        .from("tournament_matches")
+        .update({
+          winner_participant_id: winnerId,
+          status: "completed",
+          walkover_loser_id: loserId, // Track who didn't show up
+        })
+        .eq("id", match.id);
+
+      // Advance winner to next round
+      await advanceWinnerToNextRound(match, winnerId);
+    }
   };
 
   const getActiveMatchForUser = async (tournamentId: string, userId: string) => {

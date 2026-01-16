@@ -347,7 +347,23 @@
     "remoteCameraError": "Kunde inte aktivera extern kamera",
     "usePhoneCamera": "Använd telefon som kamera",
     "phoneCam": "Telefon",
-    "waitingForCamera": "Väntar på kamera..."
+    "waitingForCamera": "Väntar på kamera...",
+    "throwTimeLimit": "Tid per kast",
+    "seconds": "sek",
+    "throwTimeLimitDesc": "Varje spelare har denna tid på sig att registrera sitt kast. Om tiden går ut förlorar spelaren.",
+    "leaveRoom": "Lämna rum",
+    "leaveRoomTitle": "Lämna rum?",
+    "leaveRoomDesc": "Om du lämnar rummet kommer inbjudan att avbrytas och matchen kommer inte att starta.",
+    "confirmLeaveRoom": "Ja, lämna rummet",
+    "stayInRoom": "Stanna kvar",
+    "timeRemaining": "Tid kvar",
+    "waitingForOpponentToAccept": "Väntar på att motståndaren ska acceptera inbjudan...",
+    "stayOnPageWarning": "Stanna kvar på denna sida. Om du lämnar eller växlar flik avbryts matchen.",
+    "hurryUp": "Skynda dig! Tiden håller på att ta slut!",
+    "inviteExpired": "Inbjudan har gått ut",
+    "leftWaitingRoom": "Du har lämnat väntrummet",
+    "matchCancelled": "Matchen har avbrutits",
+    "timeoutForfeit": "Tiden gick ut! Du förlorade matchen."
   },
   "remoteCamera": {
     "title": "Darttavlekamera",
@@ -479,6 +495,16 @@
     "pending": "Väntar",
     "ready": "Redo",
     "play": "Spela",
-    "completed": "Klar"
+    "completed": "Klar",
+    "walkoverWarning": "Gå med i din match nu eller du förlorar på walkover!",
+    "walkoverIn": "Walkover om {{seconds}}s",
+    "walkover": "Walkover",
+    "noShowWarning": "Denna spelare dök inte upp till sin förra match",
+    "walkoverWin": "Du vann på walkover",
+    "walkoverLoss": "Du förlorade på walkover",
+    "opponentNoShow": "Motståndaren dök inte upp",
+    "youDidntShow": "Du gick inte med i tid",
+    "lockedToTournament": "Du är i en aktiv turnering",
+    "mustStayInTournament": "Du måste stanna på turneringssidan under aktivt spel"
   }
 }

@@ -347,7 +347,23 @@
     "remoteCameraError": "Failed to enable remote camera",
     "usePhoneCamera": "Use phone as camera",
     "phoneCam": "Phone",
-    "waitingForCamera": "Waiting for camera..."
+    "waitingForCamera": "Waiting for camera...",
+    "throwTimeLimit": "Time per throw",
+    "seconds": "sec",
+    "throwTimeLimitDesc": "Each player has this amount of time to register their throw. If time runs out, the player loses.",
+    "leaveRoom": "Leave Room",
+    "leaveRoomTitle": "Leave Room?",
+    "leaveRoomDesc": "If you leave the room, the invitation will be cancelled and the match will not start.",
+    "confirmLeaveRoom": "Yes, Leave Room",
+    "stayInRoom": "Stay in Room",
+    "timeRemaining": "Time Remaining",
+    "waitingForOpponentToAccept": "Waiting for opponent to accept...",
+    "stayOnPageWarning": "Stay on this page. If you leave or switch tabs, the match will be cancelled.",
+    "hurryUp": "Hurry up! Time is running out!",
+    "inviteExpired": "Invitation expired",
+    "leftWaitingRoom": "You left the waiting room",
+    "matchCancelled": "Match cancelled",
+    "timeoutForfeit": "Time's up! You lost the match."
   },
   "remoteCamera": {
     "title": "Dartboard Camera",
@@ -479,6 +495,16 @@
     "pending": "Waiting",
     "ready": "Ready",
     "play": "Play",
-    "completed": "Done"
+    "completed": "Done",
+    "walkoverWarning": "Join your match now or you will receive a walkover loss!",
+    "walkoverIn": "Walkover in {{seconds}}s",
+    "walkover": "Walkover",
+    "noShowWarning": "This player did not show up for their previous match",
+    "walkoverWin": "You won by walkover",
+    "walkoverLoss": "You lost by walkover",
+    "opponentNoShow": "Opponent didn't show up",
+    "youDidntShow": "You didn't join in time",
+    "lockedToTournament": "You are in an active tournament",
+    "mustStayInTournament": "You must stay on the tournament page during active play"
   }
 }
