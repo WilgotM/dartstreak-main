@@ -335,6 +335,9 @@
     "opponentLeft": "Motståndaren har kopplats bort",
     "opponentLeftDesc": "Din motståndare har lämnat matchen. Matchen kommer att avbrytas.",
     "leaveMatch": "Lämna match",
+    "leaveMatchTitle": "Lämna match?",
+    "leaveMatchDesc": "Är du säker på att du vill lämna matchen? Detta räknas som en förlust (WO).",
+    "confirmLeaveMatch": "Ja, lämna (WO)",
     "guestWarning": "Gäster kan endast spela offline-matcher",
     "headToHead": "Head to Head",
     "wins": "Vinster",
@@ -505,6 +508,11 @@
     "opponentNoShow": "Motståndaren dök inte upp",
     "youDidntShow": "Du gick inte med i tid",
     "lockedToTournament": "Du är i en aktiv turnering",
-    "mustStayInTournament": "Du måste stanna på turneringssidan under aktivt spel"
+    "mustStayInTournament": "Du måste stanna på turneringssidan under aktivt spel",
+    "left": "Lämnade turneringen",
+    "cannotLeaveInProgress": "Du kan inte lämna en pågående turnering",
+    "switchTitle": "Byt turnering?",
+    "switchDesc": "Du är redan anmäld till \"{{current}}\". För att gå med i \"{{new}}\" måste du avanmäla dig från den nuvarande turneringen.",
+    "switchConfirm": "Byt turnering"
   }
 }

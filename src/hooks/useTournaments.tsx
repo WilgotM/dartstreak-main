@@ -260,6 +260,75 @@ export function useTournaments() {
     return data;
   };
 
+  const getActiveRegistration = async (): Promise<{ tournamentId: string; tournamentName: string } | null> => {
+    if (!user) return null;
+
+    const { data: participations } = await supabase
+      .from("tournament_participants")
+      .select("tournament_id")
+      .eq("user_id", user.id);
+
+    if (!participations || participations.length === 0) return null;
+
+    const tournamentIds = participations.map((p) => p.tournament_id);
+
+    const { data: activeTournaments } = await supabase
+      .from("tournaments")
+      .select("id, name")
+      .in("id", tournamentIds)
+      .in("status", ["open", "scheduled", "in_progress"]);
+
+    if (activeTournaments && activeTournaments.length > 0) {
+      return {
+        tournamentId: activeTournaments[0].id,
+        tournamentName: activeTournaments[0].name,
+      };
+    }
+
+    return null;
+  };
+
+  const leaveTournament = async (tournamentId: string) => {
+    if (!user) return false;
+
+    const { data: tournament } = await supabase
+      .from("tournaments")
+      .select("status")
+      .eq("id", tournamentId)
+      .single();
+
+    if (tournament?.status === "in_progress") {
+      toast({
+        title: t("tournament.cannotLeaveInProgress"),
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    const { error } = await supabase
+      .from("tournament_participants")
+      .delete()
+      .eq("tournament_id", tournamentId)
+      .eq("user_id", user.id);
+
+    if (error) {
+      toast({
+        title: t("common.error"),
+        description: error.message,
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    toast({
+      title: t("tournament.left"),
+    });
+
+    await fetchPublicTournaments();
+    await fetchMyTournaments();
+    return true;
+  };
+
   const joinTournament = async (tournamentId: string) => {
     if (!user) return false;
 
@@ -1207,6 +1276,8 @@ export function useTournaments() {
     loading,
     createTournament,
     joinTournament,
+    leaveTournament,
+    getActiveRegistration,
     inviteToTournament,
     respondToInvite,
     startTournament,

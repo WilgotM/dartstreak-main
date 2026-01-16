@@ -335,6 +335,9 @@
     "opponentLeft": "Opponent has disconnected",
     "opponentLeftDesc": "Your opponent has left the match. The match will be cancelled.",
     "leaveMatch": "Leave Match",
+    "leaveMatchTitle": "Leave Match?",
+    "leaveMatchDesc": "Are you sure you want to leave the match? This will count as a forfeit (WO).",
+    "confirmLeaveMatch": "Yes, Forfeit (WO)",
     "guestWarning": "Guests can only play offline matches",
     "headToHead": "Head to Head",
     "wins": "Wins",
@@ -505,6 +508,11 @@
     "opponentNoShow": "Opponent didn't show up",
     "youDidntShow": "You didn't join in time",
     "lockedToTournament": "You are in an active tournament",
-    "mustStayInTournament": "You must stay on the tournament page during active play"
+    "mustStayInTournament": "You must stay on the tournament page during active play",
+    "left": "Left tournament",
+    "cannotLeaveInProgress": "You cannot leave a tournament in progress",
+    "switchTitle": "Switch tournament?",
+    "switchDesc": "You are already registered for \"{{current}}\". To join \"{{new}}\", you must leave your current tournament.",
+    "switchConfirm": "Switch tournament"
   }
 }

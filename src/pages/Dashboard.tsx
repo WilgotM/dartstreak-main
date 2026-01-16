@@ -10,6 +10,7 @@ import { useMatch } from "@/hooks/useMatch";
 import { useFriends } from "@/hooks/useFriends";
 import { useTournaments } from "@/hooks/useTournaments";
 import { FriendsSheet } from "@/components/FriendsSheet";
+import { TournamentCountdown } from "@/components/TournamentCountdown";
 
 export default function Dashboard() {
   const { user, profile, loading, isGuest } = useAuth();
@@ -20,6 +21,7 @@ export default function Dashboard() {
   const { myTournaments, tournamentInvites } = useTournaments();
 
   const activeTournaments = myTournaments.filter(t => t.status === "in_progress");
+  const scheduledTournaments = myTournaments.filter(t => t.status === "scheduled");
 
   useEffect(() => {
     if (!loading && !user && !isGuest) {
@@ -172,6 +174,39 @@ export default function Dashboard() {
                       </p>
                     </div>
                     <ArrowRight className="w-5 h-5 text-primary" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Scheduled Tournaments - UPCOMING */}
+        {scheduledTournaments.length > 0 && (
+          <section className="animate-slide-up">
+            <h2 className="text-lg font-display font-semibold mb-3 flex items-center gap-2">
+              <Award className="w-5 h-5 text-amber-500" />
+              {t("tournament.upcoming") || "Kommande turneringar"}
+            </h2>
+            <div className="space-y-3">
+              {scheduledTournaments.map((tournament) => (
+                <Card
+                  key={tournament.id}
+                  className="cursor-pointer hover:shadow-glow transition-all border-2 border-amber-500/30 bg-amber-500/5 overflow-hidden"
+                  onClick={() => navigate(`/tournament/${tournament.id}`)}
+                >
+                  <CardContent className="py-4 flex items-center justify-between gap-4">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-semibold truncate">{tournament.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {tournament.participant_count} {t("tournament.players")}
+                      </p>
+                    </div>
+                    {tournament.scheduled_start_at && (
+                      <div className="shrink-0 bg-background/50 p-2 rounded-lg border border-border/50 backdrop-blur-sm">
+                        <TournamentCountdown targetDate={tournament.scheduled_start_at} compact={false} />
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               ))}

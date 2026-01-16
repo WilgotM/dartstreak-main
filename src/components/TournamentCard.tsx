@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Users, Trophy, Target, Layers, Globe, Lock } from "lucide-react";
+import { TournamentCountdown } from "@/components/TournamentCountdown";
 
 interface Tournament {
   id: string;
@@ -17,6 +18,7 @@ interface Tournament {
   status: string;
   creator_name?: string;
   participant_count?: number;
+  scheduled_start_at?: string | null;
 }
 
 interface TournamentCardProps {
@@ -79,6 +81,12 @@ export function TournamentCard({
               <p className="text-sm text-muted-foreground mb-3">
                 {t("tournament.hostedBy", { name: tournament.creator_name })}
               </p>
+            )}
+
+            {tournament.status === 'scheduled' && tournament.scheduled_start_at && (
+              <div className="mb-3 bg-secondary/30 p-2 rounded-md border border-secondary inline-block">
+                <TournamentCountdown targetDate={tournament.scheduled_start_at} compact />
+              </div>
             )}
 
             <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">

@@ -83,6 +83,7 @@ export default function Match() {
   const [showDisconnectDialog, setShowDisconnectDialog] = useState(false);
   const [showQRDialog, setShowQRDialog] = useState(false);
   const [showLeaveRoomDialog, setShowLeaveRoomDialog] = useState(false);
+  const [showLeaveMatchDialog, setShowLeaveMatchDialog] = useState(false);
   const [inviteCountdown, setInviteCountdown] = useState<number | null>(null);
   const [throwCountdown, setThrowCountdown] = useState<number | null>(null);
   const remoteCameraEnabled = useRef(false);
@@ -300,6 +301,23 @@ export default function Match() {
     navigate("/dashboard");
   };
 
+  const handleLeaveMatch = async () => {
+    if (!match) return;
+    
+    if (!match.is_offline) {
+      const opponentId = user?.id === match.player1_id ? match.player2_id : match.player1_id;
+      if (opponentId) {
+        await forfeitMatch(opponentId);
+        toast.info(t("match.matchForfeited", "Match forfeited (WO)"));
+      }
+    }
+    
+    // For offline matches or after forfeit, we navigate away
+    // If it was a tournament match, we probably want to go back to tournament page?
+    // But typically leaving a match means going back to dashboard or matches list.
+    navigate("/dashboard");
+  };
+
   const handleStartVideo = async () => {
     const success = await initializeWebRTC();
     if (success) {
@@ -349,7 +367,9 @@ export default function Match() {
   };
 
   const getRemoteCameraUrl = () => {
-    const baseUrl = window.location.origin + window.location.pathname.replace(/\/#.*/, "");
+    // Use origin + pathname (without trailing slash) to get the base URL
+    // pathname doesn't include the hash, so no need to strip it
+    const baseUrl = window.location.origin + window.location.pathname.replace(/\/$/, "");
     const token = generateCameraToken();
     return `${baseUrl}/#/remote-camera/${id}?token=${token}`;
   };
@@ -653,11 +673,51 @@ export default function Match() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Leave Active Match Dialog (WO) */}
+      <AlertDialog open={showLeaveMatchDialog} onOpenChange={setShowLeaveMatchDialog}>
+        <AlertDialogContent className="max-w-sm">
+          <AlertDialogHeader>
+            <div className="flex justify-center mb-4">
+              <div className="p-3 bg-destructive/10 rounded-full">
+                <LogOut className="w-8 h-8 text-destructive" />
+              </div>
+            </div>
+            <AlertDialogTitle className="text-center">{t("match.leaveMatchTitle")}</AlertDialogTitle>
+            <AlertDialogDescription className="text-center">
+              {t("match.leaveMatchDesc")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
+            <AlertDialogAction
+              onClick={handleLeaveMatch}
+              className="w-full bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              {t("match.confirmLeaveMatch")}
+            </AlertDialogAction>
+            <AlertDialogCancel className="w-full mt-0">
+              {t("common.cancel")}
+            </AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {/* Header with scores */}
       <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-10 pt-[env(safe-area-inset-top)]">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")}>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => {
+                if (match.is_offline) {
+                  navigate("/dashboard");
+                } else {
+                  setShowLeaveMatchDialog(true);
+                }
+              }}
+            >
               <ArrowLeft className="w-5 h-5" />
             </Button>
 
@@ -681,7 +741,15 @@ export default function Match() {
               )}
             </div>
 
-            <div className="w-10" />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-muted-foreground hover:text-destructive transition-colors"
+              onClick={() => setShowLeaveMatchDialog(true)}
+              title={t("match.leaveMatch")}
+            >
+              <LogOut className="w-5 h-5" />
+            </Button>
           </div>
         </div>
       </header>

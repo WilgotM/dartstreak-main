@@ -105,16 +105,35 @@ export function TournamentGuard({ children }: TournamentGuardProps) {
 
         // Get the first active tournament
         const tournament = activeTournaments[0] as ActiveTournamentInfo;
-        setActiveTournament(tournament);
-        setIsLocked(true);
 
         // Find user's participant id for this tournament
         const participation = participations.find((p) => p.tournament_id === tournament.id);
         if (!participation) {
+          setActiveTournament(null);
           setActiveMatch(null);
+          setIsLocked(false);
           setLoading(false);
           return;
         }
+
+        // Check if user is eliminated from the tournament
+        const { data: participant } = await supabase
+          .from("tournament_participants")
+          .select("eliminated_at_round")
+          .eq("id", participation.id)
+          .single();
+
+        if (participant?.eliminated_at_round !== null) {
+          // User has been eliminated - don't lock them
+          setActiveTournament(null);
+          setActiveMatch(null);
+          setIsLocked(false);
+          setLoading(false);
+          return;
+        }
+
+        setActiveTournament(tournament);
+        setIsLocked(true);
 
         // Check if user has an active/scheduled match
         const { data: match } = await supabase
@@ -174,9 +193,13 @@ export function TournamentGuard({ children }: TournamentGuardProps) {
     const currentPath = location.pathname;
     const tournamentPath = `/tournament/${activeTournament.id}`;
 
-    // Allow being on the tournament page or any match page
+    // Allow being on the tournament page, any match page, or remote camera page
     const isOnTournamentPage = currentPath === tournamentPath;
     const isOnMatchPage = currentPath.startsWith("/match/") || currentPath.startsWith("/offline-match/");
+    const isOnRemoteCameraPage = currentPath.startsWith("/remote-camera/");
+
+    // Don't redirect if on remote camera page (phone camera for another match)
+    if (isOnRemoteCameraPage) return;
 
     // If user has an active match with a match_id, redirect to that match
     if (activeMatch?.match_id && activeMatch.status === "in_progress" && !isOnMatchPage) {

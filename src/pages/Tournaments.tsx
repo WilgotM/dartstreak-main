@@ -9,6 +9,8 @@ import { useTournaments } from "@/hooks/useTournaments";
 import { CreateTournamentDialog } from "@/components/CreateTournamentDialog";
 import { TournamentCard } from "@/components/TournamentCard";
 import { TournamentInviteCard } from "@/components/TournamentInviteCard";
+import { SwitchTournamentDialog } from "@/components/SwitchTournamentDialog";
+import { TournamentCountdown } from "@/components/TournamentCountdown";
 import { Plus, Globe, Trophy, Mail } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -23,8 +25,41 @@ export default function Tournaments() {
     tournamentInvites,
     loading,
     joinTournament,
+    leaveTournament,
+    getActiveRegistration,
     respondToInvite,
   } = useTournaments();
+
+  const [switchDialogOpen, setSwitchDialogOpen] = useState(false);
+  const [switchLoading, setSwitchLoading] = useState(false);
+  const [pendingJoin, setPendingJoin] = useState<{ id: string; name: string } | null>(null);
+  const [currentRegistration, setCurrentRegistration] = useState<{ tournamentId: string; tournamentName: string } | null>(null);
+
+  const handleJoinTournament = async (tournamentId: string, tournamentName: string) => {
+    const activeReg = await getActiveRegistration();
+    
+    if (activeReg && activeReg.tournamentId !== tournamentId) {
+      setCurrentRegistration(activeReg);
+      setPendingJoin({ id: tournamentId, name: tournamentName });
+      setSwitchDialogOpen(true);
+    } else {
+      await joinTournament(tournamentId);
+    }
+  };
+
+  const handleConfirmSwitch = async () => {
+    if (!currentRegistration || !pendingJoin) return;
+    
+    setSwitchLoading(true);
+    const left = await leaveTournament(currentRegistration.tournamentId);
+    if (left) {
+      await joinTournament(pendingJoin.id);
+    }
+    setSwitchLoading(false);
+    setSwitchDialogOpen(false);
+    setPendingJoin(null);
+    setCurrentRegistration(null);
+  };
 
   if (authLoading) {
     return (
@@ -88,14 +123,16 @@ export default function Tournaments() {
                   className="rounded-lg px-4 py-5 h-auto text-xs shadow-soft"
                   onClick={() => navigate(`/tournament/${tournament.id}`)}
                 >
-                  <div className="flex flex-col items-start gap-0.5">
+                  <div className="flex flex-col items-start gap-1">
                     <span className="font-bold">{tournament.name}</span>
                     <span className="text-[10px] opacity-80 font-normal">
                       {tournament.status === 'completed' 
                         ? t("tournament.completed") 
                         : tournament.status === 'in_progress' 
                           ? t("tournament.ongoing") 
-                          : t("tournament.scheduled")}
+                          : tournament.status === 'scheduled' && tournament.scheduled_start_at
+                            ? <TournamentCountdown targetDate={tournament.scheduled_start_at} compact className="text-primary-foreground/90" />
+                            : t("tournament.scheduled")}
                     </span>
                   </div>
                 </Button>
@@ -152,7 +189,7 @@ export default function Tournaments() {
                   <TournamentCard
                     key={tournament.id}
                     tournament={tournament}
-                    onJoin={() => joinTournament(tournament.id)}
+                    onJoin={() => handleJoinTournament(tournament.id, tournament.name)}
                     showJoinButton
                     isParticipant={(tournament as any).is_participant}
                     isOwner={tournament.created_by === user.id}
@@ -224,6 +261,15 @@ export default function Tournaments() {
           </TabsContent>
         </Tabs>
       </div>
+
+      <SwitchTournamentDialog
+        open={switchDialogOpen}
+        onOpenChange={setSwitchDialogOpen}
+        currentTournamentName={currentRegistration?.tournamentName || ""}
+        newTournamentName={pendingJoin?.name || ""}
+        onConfirm={handleConfirmSwitch}
+        loading={switchLoading}
+      />
     </AppLayout>
   );
 }

@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useFriends } from "@/hooks/useFriends";
 import { TournamentBracket } from "@/components/TournamentBracket";
 import { InviteToTournamentDialog } from "@/components/InviteToTournamentDialog";
+import { TournamentCountdown } from "@/components/TournamentCountdown";
 import {
   Users,
   Target,
@@ -346,23 +347,13 @@ export default function Tournament() {
         </Card>
 
         {/* Countdown timer - for scheduled tournament */}
-        {tournament.status === "scheduled" && countdown !== null && countdown > 0 && (
+        {tournament.status === "scheduled" && tournament.scheduled_start_at && (
           <Card className="mb-6 bg-primary/5 border-primary/20">
             <CardContent className="py-6">
-              <div className="flex flex-col items-center gap-2">
-                <div className="flex items-center gap-2 text-primary">
-                  <Clock className="w-5 h-5" />
-                  <span className="text-sm font-medium">
-                    {t("tournament.startsIn")}
-                  </span>
-                </div>
-                <span className="text-4xl font-display font-bold text-primary">
-                  {formatCountdown(countdown)}
-                </span>
-                <p className="text-sm text-muted-foreground">
-                  {t("tournament.playersCanJoin")}
-                </p>
-              </div>
+              <TournamentCountdown targetDate={tournament.scheduled_start_at} />
+              <p className="text-sm text-muted-foreground text-center mt-2">
+                {t("tournament.playersCanJoin")}
+              </p>
             </CardContent>
           </Card>
         )}
