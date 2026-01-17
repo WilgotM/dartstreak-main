@@ -50,32 +50,31 @@ export function FriendsSheet({ children }: FriendsSheetProps) {
     if (error) {
       toast.error(t(`friends.errors.${error.replace(/ /g, "_").toLowerCase()}`) || error);
     } else {
-      toast.success(t("friends.requestSent"));
       setUsername("");
     }
   };
 
   const handleAcceptRequest = async (requestId: string) => {
     await acceptFriendRequest(requestId);
-    toast.success(t("friends.requestAccepted"));
   };
 
   const handleRejectRequest = async (requestId: string) => {
     await rejectFriendRequest(requestId);
-    toast.success(t("friends.requestRejected"));
   };
 
   const handleAcceptLeagueInvite = async (inviteId: string) => {
     const leagueId = await acceptLeagueInvite(inviteId);
-    toast.success(t("friends.leagueJoined"));
     if (leagueId) {
+      if (typeof window !== 'undefined' && window.innerWidth < 640) {
+        // Close the sheet on mobile if navigating
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      }
       navigate(`/league/${leagueId}`);
     }
   };
 
   const handleRejectLeagueInvite = async (inviteId: string) => {
     await rejectLeagueInvite(inviteId);
-    toast.success(t("friends.inviteRejected"));
   };
 
   return (

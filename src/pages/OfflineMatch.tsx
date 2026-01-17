@@ -417,7 +417,6 @@ export default function OfflineMatch() {
     const newP2Legs = isPlayer1 ? match.player2_legs : match.player2_legs + 1;
 
     const winnerName = isPlayer1 ? match.player1_name : match.player2_name;
-    toast.success(t("match.legWon", { name: winnerName }));
 
     // Check if set won
     if ((isPlayer1 && newP1Legs >= match.legs_to_win) || (!isPlayer1 && newP2Legs >= match.legs_to_win)) {
@@ -453,12 +452,10 @@ export default function OfflineMatch() {
 
   const handleSetWon = async (isPlayer1: boolean, newP1Legs: number, newP2Legs: number) => {
     if (!match) return;
-
     const newP1Sets = isPlayer1 ? match.player1_sets + 1 : match.player1_sets;
     const newP2Sets = isPlayer1 ? match.player2_sets : match.player2_sets + 1;
 
     const winnerName = isPlayer1 ? match.player1_name : match.player2_name;
-    toast.success(t("match.setWon", { name: winnerName }));
 
     // Check if match won
     if ((isPlayer1 && newP1Sets >= match.sets_to_win) || (!isPlayer1 && newP2Sets >= match.sets_to_win)) {

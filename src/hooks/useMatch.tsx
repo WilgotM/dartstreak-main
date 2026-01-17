@@ -599,7 +599,9 @@ export function useMatch(matchId?: string) {
       const { error } = await supabase.from("match_signals").insert(signalData);
 
       if (error) {
-        console.error("Error sending signal:", error);
+        console.error("Error sending signal:", error, "Signal data:", signalData);
+      } else {
+        console.log(`Signal ${signalType} sent successfully`);
       }
     },
     [match, user, getOpponentId]
@@ -725,9 +727,10 @@ export function useMatch(matchId?: string) {
       .order("created_at", { ascending: true });
 
     if (error) {
-      console.error("Error fetching signals:", error);
+      console.error("Error fetching signals:", error, "matchId:", matchId, "userId:", user.id);
       return;
     }
+    console.log(`Fetched ${signals?.length || 0} existing signals`);
 
     for (const signal of signals || []) {
       await processOrQueueSignal(
@@ -844,15 +847,38 @@ export function useMatch(matchId?: string) {
         }
       });
 
+      // Safari/iOS: ensure we have a transceiver configured for receiving video
+      // This helps Safari properly negotiate bidirectional video
+      const transceivers = peerConnection.current.getTransceivers();
+      transceivers.forEach(t => {
+        if (t.receiver.track?.kind === "video" || t.sender.track?.kind === "video") {
+          t.direction = "sendrecv";
+        }
+      });
+
       peerConnection.current.ontrack = (event) => {
         console.log("Received remote track:", event.track.kind);
+        const track = event.track;
 
-        // More robust than event.streams[0] (can be empty in some browsers)
         if (!remoteMediaStream.current) {
           remoteMediaStream.current = new MediaStream();
         }
-        remoteMediaStream.current.addTrack(event.track);
-        setRemoteStream(remoteMediaStream.current);
+
+        // Avoid duplicate tracks (Safari can fire multiple times)
+        const existing = remoteMediaStream.current.getTracks().some(t => t.id === track.id);
+        if (!existing) {
+          remoteMediaStream.current.addTrack(track);
+        }
+
+        // IMPORTANT: Create new MediaStream instance for React state update
+        // Safari/iOS won't re-render if we pass the same object reference
+        setRemoteStream(new MediaStream(remoteMediaStream.current.getTracks()));
+
+        // iOS Safari often needs play() triggered after track unmutes
+        track.onunmute = () => {
+          console.log("Remote track unmuted, triggering state update");
+          setRemoteStream(new MediaStream(remoteMediaStream.current!.getTracks()));
+        };
       };
 
       peerConnection.current.onicecandidate = async (event) => {
@@ -908,6 +934,7 @@ export function useMatch(matchId?: string) {
       peerConnection.current.close();
       peerConnection.current = null;
     }
+    remoteMediaStream.current = null;
     setRemoteStream(null);
     setLocalVideoReady(false);
     setConnectionState("new");

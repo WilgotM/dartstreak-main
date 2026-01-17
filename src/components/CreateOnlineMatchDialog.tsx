@@ -79,7 +79,6 @@ export function CreateOnlineMatchDialog({ children }: CreateOnlineMatchDialogPro
     if (error) {
       toast.error(t("match.couldNotCreate"));
     } else if (matchId) {
-      toast.success(t("match.challengeSent"));
       setOpen(false);
       navigate(`/match/${matchId}`);
     }

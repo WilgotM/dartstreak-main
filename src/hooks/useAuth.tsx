@@ -20,6 +20,8 @@ interface AuthContextType {
   continueAsGuest: () => void;
   resetPassword: (email: string) => Promise<{ error: Error | null }>;
   updatePassword: (password: string) => Promise<{ error: Error | null }>;
+  signInWithGoogle: () => Promise<{ error: Error | null }>;
+  createProfile: (displayName: string) => Promise<{ error: Error | null }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -41,24 +43,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (data) {
       setProfile(data);
-    } else if (userId && !isGuest) {
-      // Profile missing - try to recreate it
-      console.log("Profile missing for user, creating...");
-      const { data: { user } } = await supabase.auth.getUser();
-      const displayName = user?.user_metadata?.display_name || user?.email?.split('@')[0] || "User";
-
-      const { data: newProfile, error: createError } = await supabase
-        .from("profiles")
-        .insert({ id: userId, display_name: displayName })
-        .select("id, display_name")
-        .single();
-
-      if (!createError && newProfile) {
-        setProfile(newProfile);
-      } else {
-        console.error("Failed to create profile:", createError);
-      }
+    } else {
+      setProfile(null);
     }
+    setLoading(false);
   };
 
   const migrateGuestData = async (userId: string) => {
@@ -199,8 +187,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const signInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/#/dashboard`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
+      },
+    });
+    return { error };
+  };
+
+  const createProfile = async (displayName: string) => {
+    if (!user) return { error: new Error("No user") };
+
+    const { data, error } = await supabase
+      .from("profiles")
+      .insert({ id: user.id, display_name: displayName })
+      .select("id, display_name")
+      .single();
+
+    if (!error && data) {
+      setProfile(data);
+    }
+    return { error };
+  };
+
   return (
-    <AuthContext.Provider value={{ user, session, profile, loading, isGuest, isPasswordRecovery, signUp, signIn, signOut, continueAsGuest, resetPassword, updatePassword }}>
+    <AuthContext.Provider value={{ user, session, profile, loading, isGuest, isPasswordRecovery, signUp, signIn, signOut, continueAsGuest, resetPassword, updatePassword, signInWithGoogle, createProfile }}>
       {children}
     </AuthContext.Provider>
   );

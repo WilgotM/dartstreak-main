@@ -124,15 +124,42 @@ export default function Match() {
   }, [localStream]);
 
   // Set up remote video - always keep srcObject attached
+  // iOS Safari fix: attach onunmute handlers to ensure playback resumes
   useEffect(() => {
     const el = remoteVideoRef.current;
-    if (el && remoteStream) {
-      console.log("Setting remote video srcObject");
-      el.srcObject = remoteStream;
-      el.play?.().catch(() => {
-        // Autoplay can be blocked; remote video is muted to avoid this.
+    if (!el || !remoteStream) return;
+
+    console.log("Setting remote video srcObject");
+    el.srcObject = remoteStream;
+
+    const tryPlay = () => {
+      requestAnimationFrame(() => {
+        el.play?.().then(() => {
+          console.log("Remote video play() succeeded, readyState:", el.readyState, "videoWidth:", el.videoWidth);
+        }).catch((err) => {
+          console.error("Remote video play() failed:", err);
+        });
       });
-    }
+    };
+
+    tryPlay();
+
+    // Log video element state for debugging
+    console.log("Remote video element state - paused:", el.paused, "readyState:", el.readyState);
+
+    // iOS Safari needs play() triggered when tracks unmute
+    const tracks = remoteStream.getVideoTracks();
+    tracks.forEach(track => {
+      track.onunmute = tryPlay;
+      track.onended = tryPlay;
+    });
+
+    return () => {
+      tracks.forEach(track => {
+        track.onunmute = null;
+        track.onended = null;
+      });
+    };
   }, [remoteStream]);
 
   // Set up remote camera video
@@ -290,7 +317,6 @@ export default function Match() {
   useEffect(() => {
     if (!loading && !match && id) {
       // Match was deleted/cancelled
-      toast.info(t("match.matchCancelled"));
       navigate("/dashboard");
     }
   }, [loading, match, id, navigate, t]);
@@ -329,7 +355,6 @@ export default function Match() {
   // Handle leaving the waiting room
   const handleLeaveRoom = async () => {
     await cancelPendingMatch();
-    toast.info(t("match.leftWaitingRoom"));
     navigate("/dashboard");
   };
 
@@ -340,7 +365,6 @@ export default function Match() {
       const opponentId = user?.id === match.player1_id ? match.player2_id : match.player1_id;
       if (opponentId) {
         await forfeitMatch(opponentId);
-        toast.info(t("match.matchForfeited", "Match forfeited (WO)"));
       }
     }
 
@@ -369,12 +393,10 @@ export default function Match() {
 
   const handleAccept = async () => {
     await acceptMatch();
-    toast.success(t("match.matchStarted"));
   };
 
   const handleDecline = async () => {
     await declineMatch();
-    toast.info(t("match.matchDeclined"));
     navigate("/dashboard");
   };
 
@@ -390,7 +412,6 @@ export default function Match() {
 
   const handleOpponentLeft = async () => {
     await abandonMatch();
-    toast.info(t("match.opponentLeft"));
     navigate("/matches");
   };
 
@@ -739,19 +760,8 @@ export default function Match() {
       <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-10 pt-[env(safe-area-inset-top)]">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => {
-                if (match.is_offline) {
-                  navigate("/dashboard");
-                } else {
-                  setShowLeaveMatchDialog(true);
-                }
-              }}
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
+            <div className="w-10" />
+
 
             {/* Score display */}
             <div className="flex flex-col items-center">
@@ -790,9 +800,9 @@ export default function Match() {
         {/* Video section - dynamic height based on turn */}
         <div className="flex justify-center transition-all duration-300 ease-in-out">
           <div
-            className={`relative bg-card rounded-lg overflow-hidden border border-border mx-auto transition-all duration-300 ease-in-out ${isMyTurn
-              ? "h-[30vh] aspect-square shadow-sm" // Small strip when playing (to show input)
-              : "w-full max-w-sm aspect-square shadow-lg" // Full square when watching opponent
+            className={`relative bg-card rounded-lg overflow-hidden border border-border mx-auto transition-all duration-300 ease-in-out aspect-square ${isMyTurn
+              ? "w-[200px] shadow-sm" // Smaller square when playing
+              : "w-[300px] shadow-lg" // Larger square when watching opponent
               }`}
           >
             {/* Remote camera video - shown when available (via WebRTC peer-to-peer) */}
@@ -801,25 +811,31 @@ export default function Match() {
               autoPlay
               muted
               playsInline
-              className={`absolute inset-0 w-full h-full object-cover ${remoteCameraStream ? "" : "hidden"}`}
+              className={`absolute inset-0 w-full h-full object-cover ${remoteCameraStream ? "z-30" : "hidden"}`}
             />
 
-            {/* Local video - shown when it's my turn and no remote camera */}
+            {/* 
+              iOS Safari fix: Keep BOTH videos always visible and playing.
+              Use z-index to control which one is on top instead of opacity/hidden.
+              Safari breaks when WebRTC video elements are hidden with display:none or opacity:0.
+            */}
+
+            {/* Local video - always rendered, z-index controls visibility */}
             <video
               ref={localVideoRef}
               autoPlay
               muted
               playsInline
-              className={`absolute inset-0 w-full h-full object-cover ${isMyTurn && localVideoReady && !remoteCameraStream ? "" : "hidden"}`}
+              className={`absolute inset-0 w-full h-full object-cover ${isMyTurn && localVideoReady && !remoteCameraStream ? "z-20" : "z-10"}`}
             />
 
-            {/* Remote video - shown when it's opponent's turn */}
+            {/* Remote video - always rendered, z-index controls visibility */}
             <video
               ref={remoteVideoRef}
               autoPlay
               muted
               playsInline
-              className={`absolute inset-0 w-full h-full object-cover ${!isMyTurn && remoteStream && !remoteCameraStream ? "" : "hidden"}`}
+              className={`absolute inset-0 w-full h-full object-cover ${!isMyTurn && remoteStream && !remoteCameraStream ? "z-20" : "z-10"}`}
             />
 
             {/* Fallback: VideoOff icon */}
@@ -829,7 +845,7 @@ export default function Match() {
               </div>
             )}
 
-            <span className="absolute bottom-2 left-2 text-sm bg-background/80 px-2 py-1 rounded font-medium z-10">
+            <span className="absolute bottom-2 left-2 text-sm bg-background/80 px-2 py-1 rounded font-medium z-20">
               {isMyTurn ? t("match.you") : opponentName}
             </span>
 

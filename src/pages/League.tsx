@@ -296,7 +296,6 @@ export default function League() {
   const copyInviteCode = () => {
     navigator.clipboard.writeText(league?.invite_code || "");
     setCopied(true);
-    toast.success(t("league.inviteCodeCopied"));
     setTimeout(() => setCopied(false), 2000);
   };
 

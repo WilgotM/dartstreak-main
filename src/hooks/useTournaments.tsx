@@ -320,10 +320,6 @@ export function useTournaments() {
       return false;
     }
 
-    toast({
-      title: t("tournament.left"),
-    });
-
     await fetchPublicTournaments();
     await fetchMyTournaments();
     return true;
@@ -391,10 +387,6 @@ export function useTournaments() {
       return false;
     }
 
-    toast({
-      title: t("tournament.joined"),
-    });
-
     await fetchPublicTournaments();
     await fetchMyTournaments();
     return true;
@@ -417,10 +409,6 @@ export function useTournaments() {
       });
       return false;
     }
-
-    toast({
-      title: t("tournament.inviteSent"),
-    });
 
     return true;
   };
@@ -449,10 +437,6 @@ export function useTournaments() {
       .from("tournament_invites")
       .update({ status: accept ? "accepted" : "declined" })
       .eq("id", inviteId);
-
-    toast({
-      title: accept ? t("tournament.joined") : t("tournament.inviteDeclined"),
-    });
 
     await fetchTournamentInvites();
     await fetchMyTournaments();
@@ -644,8 +628,8 @@ export function useTournaments() {
       sets_to_win: tournament.sets_to_win,
       status: "active",
       started_at: new Date().toISOString(),
-      signaling_data: botInfo 
-        ? { bot: botInfo, created_by: createdByUserId } 
+      signaling_data: botInfo
+        ? { bot: botInfo, created_by: createdByUserId }
         : { created_by: createdByUserId },
     };
 
@@ -1072,7 +1056,7 @@ export function useTournaments() {
 
       // Determine walkover winner based on who showed up
       let winnerId: string;
-      
+
       if (p1.is_bot && !p2.is_bot) {
         // Human p2 didn't show up in time, bot p1 wins by walkover
         winnerId = p1.id;
@@ -1091,7 +1075,7 @@ export function useTournaments() {
         if (actualMatch?.signaling_data) {
           const signalingData = actualMatch.signaling_data as { created_by?: string };
           const createdByUserId = signalingData.created_by;
-          
+
           if (createdByUserId) {
             // Give win to whoever created the match (they showed up)
             if (p1.user_id === createdByUserId) {
@@ -1122,7 +1106,7 @@ export function useTournaments() {
       if (match.match_id) {
         // Find the winner's user_id to set as match winner
         const winnerParticipant = winnerId === p1.id ? p1 : p2;
-        
+
         await supabase
           .from("matches")
           .update({

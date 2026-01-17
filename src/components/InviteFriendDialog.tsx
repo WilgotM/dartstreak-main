@@ -31,14 +31,12 @@ export function InviteFriendDialog({
 
   const handleInvite = async (friend: Friend) => {
     const { error } = await sendLeagueInvite(leagueId, friend.id);
-
     if (error) {
       toast.error(
         t(`friends.errors.${error.replace(/ /g, "_").toLowerCase()}`) || error
       );
     } else {
       setInvitedFriends((prev) => new Set([...prev, friend.id]));
-      toast.success(t("friends.inviteSent", { name: friend.display_name }));
     }
   };
 
