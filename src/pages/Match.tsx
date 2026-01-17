@@ -145,6 +145,38 @@ export default function Match() {
     }
   }, [remoteCameraStream]);
 
+  // Re-trigger video playback when turn changes
+  // Browsers may pause hidden videos, so we need to call play() again when the video becomes visible
+  useEffect(() => {
+    if (match?.status !== "active") return;
+
+    const isMyTurn = match.current_turn === user?.id;
+
+    // If we have a remote camera, it's always shown regardless of turn
+    if (remoteCameraStream) {
+      remoteCameraRef.current?.play?.().catch(() => { });
+      return;
+    }
+
+    if (isMyTurn && localVideoReady) {
+      // It's my turn - ensure local video is playing
+      const el = localVideoRef.current;
+      if (el && localStream) {
+        console.log("Turn changed to me - ensuring local video is playing");
+        el.srcObject = localStream;
+        el.play?.().catch(() => { });
+      }
+    } else if (!isMyTurn && remoteStream) {
+      // It's opponent's turn - ensure remote video is playing
+      const el = remoteVideoRef.current;
+      if (el) {
+        console.log("Turn changed to opponent - ensuring remote video is playing");
+        el.srcObject = remoteStream;
+        el.play?.().catch(() => { });
+      }
+    }
+  }, [match?.current_turn, match?.status, user?.id, localStream, remoteStream, localVideoReady, remoteCameraStream]);
+
   // Initialize WebRTC when match becomes active
   useEffect(() => {
     if (match?.status === "active" && !videoEnabled) {
@@ -303,7 +335,7 @@ export default function Match() {
 
   const handleLeaveMatch = async () => {
     if (!match) return;
-    
+
     if (!match.is_offline) {
       const opponentId = user?.id === match.player1_id ? match.player2_id : match.player1_id;
       if (opponentId) {
@@ -311,7 +343,7 @@ export default function Match() {
         toast.info(t("match.matchForfeited", "Match forfeited (WO)"));
       }
     }
-    
+
     // For offline matches or after forfeit, we navigate away
     // If it was a tournament match, we probably want to go back to tournament page?
     // But typically leaving a match means going back to dashboard or matches list.
@@ -616,7 +648,7 @@ export default function Match() {
 
   // Active match
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="h-[100dvh] bg-background flex flex-col overflow-hidden">
       {/* QR Code Dialog for Remote Camera */}
       <Dialog open={showQRDialog} onOpenChange={setShowQRDialog}>
         <DialogContent className="max-w-sm">
@@ -707,9 +739,9 @@ export default function Match() {
       <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-10 pt-[env(safe-area-inset-top)]">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => {
                 if (match.is_offline) {
                   navigate("/dashboard");
@@ -754,7 +786,7 @@ export default function Match() {
         </div>
       </header>
 
-      <main className="flex-1 container mx-auto px-4 py-4 flex flex-col gap-4 overflow-auto">
+      <main className="flex-1 min-h-0 container mx-auto px-4 py-4 flex flex-col gap-4 overflow-y-auto pb-[env(safe-area-inset-bottom)]">
         {/* Video section - dynamic height based on turn */}
         <div className="flex justify-center transition-all duration-300 ease-in-out">
           <div
@@ -887,10 +919,10 @@ export default function Match() {
           <span>{isMyTurn ? t("match.yourTurn") : t("match.opponentTurn", { name: opponentName })}</span>
           {throwCountdown !== null && (
             <span className={`font-mono font-bold px-2 py-0.5 rounded ${throwCountdown <= 10
-                ? "bg-destructive text-destructive-foreground animate-pulse"
-                : throwCountdown <= 30
-                  ? "bg-orange-500 text-white"
-                  : "bg-primary/20 text-primary"
+              ? "bg-destructive text-destructive-foreground animate-pulse"
+              : throwCountdown <= 30
+                ? "bg-orange-500 text-white"
+                : "bg-primary/20 text-primary"
               }`}>
               {Math.floor(throwCountdown / 60)}:{(throwCountdown % 60).toString().padStart(2, "0")}
             </span>
