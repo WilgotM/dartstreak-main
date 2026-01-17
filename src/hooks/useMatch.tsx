@@ -103,7 +103,21 @@ export function useMatch(matchId?: string) {
     if (!matchId) return;
 
     // 1. Try to find in local storage first (covers guest matches and "forceLocal" matches for logged-in users)
-    const localMatches = JSON.parse(localStorage.getItem("dartstreak_guest_matches") || "[]");
+    const storedMatches = JSON.parse(localStorage.getItem("dartstreak_guest_matches") || "[]");
+
+    // Cleanup old local matches (older than 1 hour)
+    const localMatches = storedMatches.filter((m: any) => {
+      if (m.status === 'completed' && m.completed_at) {
+        const completedTime = new Date(m.completed_at).getTime();
+        const oneHourAgo = Date.now() - (60 * 60 * 1000);
+        return completedTime > oneHourAgo;
+      }
+      return true;
+    });
+
+    if (localMatches.length !== storedMatches.length) {
+      localStorage.setItem("dartstreak_guest_matches", JSON.stringify(localMatches));
+    }
     const localMatch = localMatches.find((m: any) => m.id === matchId);
 
     if (localMatch) {
@@ -345,7 +359,7 @@ export function useMatch(matchId?: string) {
 
     if (error) {
       console.error("Error creating match:", error);
-      
+
       // Fallback for missing columns (migration not run)
       if (error.code === '42703') {
         console.warn("Falling back to legacy match creation (missing columns)");
@@ -353,18 +367,18 @@ export function useMatch(matchId?: string) {
         // Remove new fields that might be missing
         delete (legacyData as any).throw_time_limit;
         delete (legacyData as any).expires_at;
-        
+
         const { data: retryData, error: retryError } = await supabase
           .from("matches")
           .insert(legacyData as any)
           .select()
           .single();
-          
+
         if (retryError) {
           console.error("Error regarding legacy match:", retryError);
           return { error: "Could not create match: " + retryError.message, matchId: null };
         }
-        
+
         return { error: null, matchId: retryData.id };
       }
 
