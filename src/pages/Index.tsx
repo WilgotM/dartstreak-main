@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Target, Users, Trophy, Video, ArrowRight, Zap, Gamepad2 } from "lucide-react";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 
+import { HeroBackground } from "@/components/HeroBackground";
+
 export default function Index() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
@@ -22,7 +24,8 @@ export default function Index() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+    <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
+      <HeroBackground />
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -46,7 +49,7 @@ export default function Index() {
         </div>
       </header>
 
-      <main className="pt-24 pb-0">
+      <main className="pt-24 pb-0 relative z-10">
         {/* Hero Section */}
         <section className="container mx-auto px-4 py-12 md:py-24 text-center">
           <div className="max-w-4xl mx-auto animate-fade-in">
@@ -93,7 +96,7 @@ export default function Index() {
                 variant="secondary"
                 size="lg"
                 onClick={scrollToLeagues}
-                className="w-full sm:w-auto h-auto py-4 px-8 text-base sm:text-lg font-semibold border border-primary/20 hover:border-primary/50 transition-all shadow-sm hover:shadow-md bg-card/50 backdrop-blur-sm"
+                className="w-full sm:w-auto h-auto py-4 px-6 sm:px-8 text-sm sm:text-lg whitespace-normal leading-tight font-semibold border border-primary/20 hover:border-primary/50 transition-all shadow-sm hover:shadow-md bg-card/50 backdrop-blur-sm"
               >
                 {t("landing.leaguesTeaser")}
               </Button>

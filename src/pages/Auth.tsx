@@ -7,8 +7,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Target, ArrowLeft, Check, X } from "lucide-react";
+import { Target, ArrowLeft, Check, X, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { z } from "zod";
 
 const GoogleIcon = ({ className }: { className?: string }) => (
@@ -30,6 +39,7 @@ export default function Auth() {
   const [checkingUsername, setCheckingUsername] = useState(false);
   const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
   const [forgotPassword, setForgotPassword] = useState(false);
+  const [showGoogleWarning, setShowGoogleWarning] = useState(false);
   const { signIn, signUp, continueAsGuest, resetPassword, updatePassword, isPasswordRecovery, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -162,7 +172,12 @@ export default function Auth() {
     setLoading(false);
   };
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleLoginClick = () => {
+    setShowGoogleWarning(true);
+  };
+
+  const handleGoogleLoginConfirm = async () => {
+    setShowGoogleWarning(false);
     try {
       const { error } = await signInWithGoogle();
       if (error) {
@@ -391,7 +406,7 @@ export default function Auth() {
                   type="button"
                   variant="outline"
                   className="w-full border-2 h-12 relative"
-                  onClick={handleGoogleLogin}
+                  onClick={handleGoogleLoginClick}
                 >
                   <GoogleIcon className="w-5 h-5 absolute left-4" />
                   {t("auth.continueWithGoogle") || "Continue with Google"}
@@ -409,6 +424,43 @@ export default function Auth() {
             </div>
           </CardContent>
         </Card>
+
+        <Dialog open={showGoogleWarning} onOpenChange={setShowGoogleWarning}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-xl">
+                <AlertCircle className="w-5 h-5 text-primary" />
+                {t("auth.googleWarningTitle")}
+              </DialogTitle>
+              <DialogDescription className="text-base pt-2 leading-relaxed">
+                {t("auth.googleWarning")}
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="flex-col sm:flex-col gap-2 mt-4">
+              <Button
+                type="button"
+                variant="hero"
+                size="lg"
+                className="w-full"
+                onClick={handleGoogleLoginConfirm}
+              >
+                {t("auth.proceedToGoogle")}
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                className="w-full text-muted-foreground"
+                onClick={() => {
+                  setShowGoogleWarning(false);
+                  document.getElementById("email")?.focus();
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              >
+                {isLogin ? t("auth.useEmailLogin") : t("auth.useEmailSignup")}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
