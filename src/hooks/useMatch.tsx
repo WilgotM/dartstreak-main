@@ -344,7 +344,31 @@ export function useMatch(matchId?: string) {
       .single();
 
     if (error) {
-      return { error: "Could not create match", matchId: null };
+      console.error("Error creating match:", error);
+      
+      // Fallback for missing columns (migration not run)
+      if (error.code === '42703') {
+        console.warn("Falling back to legacy match creation (missing columns)");
+        const legacyData = { ...insertData };
+        // Remove new fields that might be missing
+        delete (legacyData as any).throw_time_limit;
+        delete (legacyData as any).expires_at;
+        
+        const { data: retryData, error: retryError } = await supabase
+          .from("matches")
+          .insert(legacyData as any)
+          .select()
+          .single();
+          
+        if (retryError) {
+          console.error("Error regarding legacy match:", retryError);
+          return { error: "Could not create match: " + retryError.message, matchId: null };
+        }
+        
+        return { error: null, matchId: retryData.id };
+      }
+
+      return { error: "Could not create match: " + error.message, matchId: null };
     }
 
     return { error: null, matchId: data.id };
