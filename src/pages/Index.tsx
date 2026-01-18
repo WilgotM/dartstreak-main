@@ -243,7 +243,7 @@ export default function Index() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border py-8 bg-card/50">
+      <footer className="relative z-10 border-t border-border py-8 bg-card/50">
         <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground gap-4">
           <p>DartStreak 2026. Made with fair play.</p>
           <div className="flex gap-6">
