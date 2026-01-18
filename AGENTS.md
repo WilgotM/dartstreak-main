@@ -25,3 +25,8 @@
 - Hooks: camelCase with `use` prefix
 - Use Radix UI primitives via shadcn/ui; use `cn()` from `@/lib/utils` for class merging
 - TypeScript with relaxed strictness (no implicit any off, nullable checks off)
+
+## Legal Compliance
+- **Update Legal Pages**: When adding new features (e.g., third-party integrations, new data collection, significant functionality changes), you MUST review and update `src/pages/Legal.tsx` (Privacy Policy & Terms of Service) to reflect these changes.
+- **Privacy First**: Always document what data is collected and how it is used.
+
