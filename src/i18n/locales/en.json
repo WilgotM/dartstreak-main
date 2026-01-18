@@ -103,9 +103,6 @@
     "passwordUpdated": "Password updated successfully",
     "chooseUsername": "Choose your username",
     "chooseUsernameDesc": "Pick a unique name to start competing.",
-    "googleWarning": "DartStreak is currently in verification. If Google shows a warning: Click 'Advanced' and then 'Go to dartstreak.pages.dev' to log in safely.",
-    "googleWarningTitle": "Important Google Login Info",
-    "proceedToGoogle": "I understand, continue to Google",
     "useEmailLogin": "Log in with email instead",
     "useEmailSignup": "Sign up with email instead",
     "byContinuing": "By continuing, you agree to our"

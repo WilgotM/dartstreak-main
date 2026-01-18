@@ -103,9 +103,6 @@
     "passwordUpdated": "Lösenordet har uppdaterats",
     "chooseUsername": "Välj ditt användarnamn",
     "chooseUsernameDesc": "Välj ett unikt namn för att börja tävla.",
-    "googleWarning": "DartStreak är i verifieringsfasen. Om Google visar en varning: Klicka på 'Avancerat' och sedan 'Fortsätt till dartstreak.pages.dev' för att logga in säkert.",
-    "googleWarningTitle": "Viktigt om Google-inloggning",
-    "proceedToGoogle": "Jag förstår, fortsätt till Google",
     "useEmailLogin": "Logga in med e-post istället",
     "useEmailSignup": "Skapa konto med e-post istället",
     "byContinuing": "Genom att fortsätta godkänner du våra"
