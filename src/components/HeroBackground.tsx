@@ -12,8 +12,8 @@ export function HeroBackground() {
     return (
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0" aria-hidden="true" style={{ perspective: '1200px' }}>
             {/* Background Gradient - Stronger overlay for text contrast while keeping board visible */}
-            <div className="absolute inset-0 bg-background/80 z-5" />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/50 z-5" />
+            <div className="absolute inset-0 bg-background/80 z-20" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/50 z-20" />
 
             {/* 3D Scene Container - Centered and Fixed-ish */}
             <div
