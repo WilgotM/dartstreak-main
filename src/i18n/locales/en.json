@@ -59,7 +59,11 @@
     "unknown": "Unknown",
     "signInToPlay": "Sign in to play",
     "useMyAccount": "Use my account",
-    "or": "or"
+    "or": "or",
+    "and": "and",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "contact": "Contact"
   },
   "auth": {
     "login": "Log in",
@@ -103,7 +107,8 @@
     "googleWarningTitle": "Important Google Login Info",
     "proceedToGoogle": "I understand, continue to Google",
     "useEmailLogin": "Log in with email instead",
-    "useEmailSignup": "Sign up with email instead"
+    "useEmailSignup": "Sign up with email instead",
+    "byContinuing": "By continuing, you agree to our"
   },
   "landing": {
     "tagline": "The easiest way to play darts online",

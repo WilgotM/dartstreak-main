@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -247,9 +247,9 @@ export default function Index() {
         <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground gap-4">
           <p>DartStreak 2026. Made with fair play.</p>
           <div className="flex gap-6">
-            <button onClick={() => navigate("/privacy")} className="hover:text-foreground transition-colors">Privacy</button>
-            <button onClick={() => navigate("/terms")} className="hover:text-foreground transition-colors">Terms</button>
-            <button onClick={() => navigate("/contact")} className="hover:text-foreground transition-colors">Contact</button>
+            <Link to="/privacy" className="hover:text-foreground transition-colors">{t("common.privacyPolicy")}</Link>
+            <Link to="/terms" className="hover:text-foreground transition-colors">{t("common.termsOfService")}</Link>
+            <Link to="/contact" className="hover:text-foreground transition-colors">{t("common.contact")}</Link>
           </div>
         </div>
       </footer>

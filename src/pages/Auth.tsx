@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
@@ -447,14 +447,14 @@ export default function Auth() {
 
         <div className="mt-8 text-center text-xs text-muted-foreground space-y-2">
           <p>
-            By continuing, you agree to our{" "}
-            <a href="/#/terms" className="underline hover:text-primary transition-colors">
-              Terms of Service
-            </a>{" "}
-            and{" "}
-            <a href="/#/privacy" className="underline hover:text-primary transition-colors">
-              Privacy Policy
-            </a>
+            {t("auth.byContinuing") || "By continuing, you agree to our"}{" "}
+            <Link to="/terms" className="underline hover:text-primary transition-colors">
+              {t("common.termsOfService")}
+            </Link>{" "}
+            {t("common.and") || "and"}{" "}
+            <Link to="/privacy" className="underline hover:text-primary transition-colors">
+              {t("common.privacyPolicy")}
+            </Link>
             .
           </p>
         </div>

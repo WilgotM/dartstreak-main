@@ -59,7 +59,11 @@
     "unknown": "Okänd",
     "signInToPlay": "Logga in för att spela",
     "useMyAccount": "Använd mitt konto",
-    "or": "eller"
+    "or": "eller",
+    "and": "och",
+    "privacyPolicy": "Integritetspolicy",
+    "termsOfService": "Användarvillkor",
+    "contact": "Kontakt"
   },
   "auth": {
     "login": "Logga in",
@@ -103,7 +107,8 @@
     "googleWarningTitle": "Viktigt om Google-inloggning",
     "proceedToGoogle": "Jag förstår, fortsätt till Google",
     "useEmailLogin": "Logga in med e-post istället",
-    "useEmailSignup": "Skapa konto med e-post istället"
+    "useEmailSignup": "Skapa konto med e-post istället",
+    "byContinuing": "Genom att fortsätta godkänner du våra"
   },
   "landing": {
     "tagline": "Det enklaste sättet att spela dart online",
