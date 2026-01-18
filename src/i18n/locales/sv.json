@@ -16,6 +16,38 @@
     "leagueStats": "Ligor",
     "statistics": "Statistik"
   },
+  "guest": {
+    "welcomeTitle": "Välkommen som gäst!",
+    "welcomeDesc": "Du har nu full tillgång till DartStreak! Men det finns några viktiga saker att veta:",
+    "featureFullAccess": "Full tillgång",
+    "featureFullAccessDesc": "Spela matcher, gå med i ligor, lägg till vänner – allt fungerar!",
+    "featureExpiration": "30 dagars gräns",
+    "featureExpirationDesc": "Ditt gästkonto och all data raderas efter 30 dagars inaktivitet.",
+    "featureUpgrade": "Uppgradera när som helst",
+    "featureUpgradeDesc": "Skapa ett konto för att behålla all din data permanent – ingenting försvinner!",
+    "featureLocalOnly": "Endast denna enhet",
+    "featureLocalOnlyDesc": "All data sparas lokalt på denna enhet och kan inte synkas till andra enheter.",
+    "recommendationTitle": "Rekommendation",
+    "recommendationDesc": "Skapa ett gratis konto för att säkra din data permanent och behålla ditt användarnamn för alltid.",
+    "createAccountNow": "Skapa konto nu",
+    "continueAsGuestAnyway": "Fortsätt som gäst ändå",
+    "bannerTitle": "Gästkonto",
+    "bannerDesc": "Ditt gästkonto raderas efter 30 dagars inaktivitet. Skapa ett konto för att säkra allt!",
+    "bannerDescUrgent": "Ditt gästkonto löper snart ut! Skapa ett konto nu för att inte förlora din data.",
+    "daysRemaining": "{{days}} dagar kvar",
+    "createAccount": "Skapa konto",
+    "learnMore": "Läs mer",
+    "logoutTitle": "Logga ut från gästkonto?",
+    "logoutDesc": "Om du loggar ut kommer all din data att raderas permanent.",
+    "logoutWarningTitle": "Varning: All data raderas",
+    "logoutWarningDesc": "Matcher, statistik, vänner och all annan data kopplad till ditt gästkonto kommer att försvinna för alltid.",
+    "logoutRecommendation": "Spara din data genom att skapa ett konto",
+    "logoutRecommendationDesc": "Skapa ett gratis konto för att behålla all din data och spela på flera enheter.",
+    "createAccountKeepData": "Skapa konto & behåll data",
+    "logoutAndDelete": "Logga ut & radera allt",
+    "profileInfo": "Du är inloggad som gäst. Ditt konto och all data raderas efter 30 dagars inaktivitet.",
+    "statsLocalOnly": "Statistik visas endast för inloggade användare. Skapa ett konto för att spåra din spelhistorik."
+  },
   "common": {
     "back": "Tillbaka",
     "loading": "Laddar...",
@@ -26,7 +58,8 @@
     "close": "Stäng",
     "unknown": "Okänd",
     "signInToPlay": "Logga in för att spela",
-    "useMyAccount": "Använd mitt konto"
+    "useMyAccount": "Använd mitt konto",
+    "or": "eller"
   },
   "auth": {
     "login": "Logga in",
@@ -50,6 +83,7 @@
     "signupError": "Något gick fel vid registrering",
     "welcomeBackToast": "Välkommen tillbaka! 🎯",
     "accountCreated": "Konto skapat! Välkommen! 🎯",
+    "accountUpgraded": "Konto uppgraderat! All din data har sparats! 🎉",
     "usernameTaken": "Detta användarnamn är redan taget",
     "usernameAvailable": "Användarnamnet är tillgängligt!",
     "continueWithGoogle": "Fortsätt med Google",
@@ -75,6 +109,7 @@
     "tagline": "Det enklaste sättet att spela dart online",
     "heroTitle": "Spela Dart Online med",
     "heroHighlight": "Live Video",
+    "heroHighlight2": "Helt Gratis",
     "heroDescription": "Spela matcher och turneringar helt gratis. Den enda sidan som erbjuder enkla, nybörjarvänliga onlinematcher med kamera – inget krångel, bara spela.",
     "playOnline": "Spela Onlinematch",
     "playTournament": "Gå med i Turnering",
@@ -98,6 +133,8 @@
     "readyToCompete": "Redo att tävla?",
     "createAccountCta": "Skapa ett konto på sekunder och börja spela.",
     "createFreeAccount": "Skapa gratis konto",
+    "playFreeNoAccount": "Spela gratis utan konto",
+    "noSignupRequired": "Inget konto behövs · Börja spela direkt",
     "footer": "© 2025 DartStreak. Tävla. Ha kul. Bli bäst."
   },
   "dashboard": {

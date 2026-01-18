@@ -17,10 +17,10 @@ export function HeroBackground() {
 
             {/* 3D Scene Container - Centered and Fixed-ish */}
             <div
-                className="fixed top-0 left-0 w-full h-[120vh] flex items-center justify-center z-0 will-change-transform"
+                className="fixed top-0 left-0 w-full h-[100vh] flex items-center justify-center z-0 will-change-transform"
                 style={{
                     opacity: Math.max(0.3, 1 - scrollY / 800),
-                    transform: `translateY(${scrollY * 0.05}px)`
+                    transform: `translateY(${100 + scrollY * 0.05}px)`
                 }}
             >
                 <style>

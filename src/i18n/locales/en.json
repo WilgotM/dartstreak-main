@@ -16,6 +16,38 @@
     "leagueStats": "Leagues",
     "statistics": "Statistics"
   },
+  "guest": {
+    "welcomeTitle": "Welcome, Guest!",
+    "welcomeDesc": "You now have full access to DartStreak! But there are some important things to know:",
+    "featureFullAccess": "Full Access",
+    "featureFullAccessDesc": "Play matches, join leagues, add friends – everything works!",
+    "featureExpiration": "30-Day Limit",
+    "featureExpirationDesc": "Your guest account and all data will be deleted after 30 days of inactivity.",
+    "featureUpgrade": "Upgrade Anytime",
+    "featureUpgradeDesc": "Create an account to keep all your data permanently – nothing will be lost!",
+    "featureLocalOnly": "This Device Only",
+    "featureLocalOnlyDesc": "All data is stored locally on this device and cannot be synced to other devices.",
+    "recommendationTitle": "Recommendation",
+    "recommendationDesc": "Create a free account to save your data permanently and keep your username forever.",
+    "createAccountNow": "Create Account Now",
+    "continueAsGuestAnyway": "Continue as Guest Anyway",
+    "bannerTitle": "Guest Account",
+    "bannerDesc": "Your guest account will be deleted after 30 days of inactivity. Create an account to secure everything!",
+    "bannerDescUrgent": "Your guest account is about to expire! Create an account now to keep your data.",
+    "daysRemaining": "{{days}} days left",
+    "createAccount": "Create Account",
+    "learnMore": "Learn More",
+    "logoutTitle": "Log out from guest account?",
+    "logoutDesc": "If you log out, all your data will be permanently deleted.",
+    "logoutWarningTitle": "Warning: All data will be deleted",
+    "logoutWarningDesc": "Matches, statistics, friends, and all other data linked to your guest account will be lost forever.",
+    "logoutRecommendation": "Save your data by creating an account",
+    "logoutRecommendationDesc": "Create a free account to keep all your data and play on multiple devices.",
+    "createAccountKeepData": "Create Account & Keep Data",
+    "logoutAndDelete": "Log Out & Delete Everything",
+    "profileInfo": "You are logged in as a guest. Your account and all data will be deleted after 30 days of inactivity.",
+    "statsLocalOnly": "Statistics are only shown for logged-in users. Create an account to track your play history."
+  },
   "common": {
     "back": "Back",
     "loading": "Loading...",
@@ -26,7 +58,8 @@
     "close": "Close",
     "unknown": "Unknown",
     "signInToPlay": "Sign in to play",
-    "useMyAccount": "Use my account"
+    "useMyAccount": "Use my account",
+    "or": "or"
   },
   "auth": {
     "login": "Log in",
@@ -50,6 +83,7 @@
     "signupError": "Something went wrong during registration",
     "welcomeBackToast": "Welcome back! 🎯",
     "accountCreated": "Account created! Welcome! 🎯",
+    "accountUpgraded": "Account upgraded! All your data has been saved! 🎉",
     "usernameTaken": "This username is already taken",
     "usernameAvailable": "Username is available!",
     "continueWithGoogle": "Continue with Google",
@@ -75,6 +109,7 @@
     "tagline": "The easiest way to play darts online",
     "heroTitle": "Play Darts Online with",
     "heroHighlight": "Live Video",
+    "heroHighlight2": "Completely Free",
     "heroDescription": "Play matches and tournaments completely free. The only platform offering simple, beginner-friendly online darts with camera support – no complication, just play.",
     "playOnline": "Play Online Match",
     "playTournament": "Join Tournament",
@@ -98,6 +133,8 @@
     "readyToCompete": "Ready to compete?",
     "createAccountCta": "Create an account in seconds and start playing.",
     "createFreeAccount": "Create free account",
+    "playFreeNoAccount": "Play free without account",
+    "noSignupRequired": "No account needed · Start playing now",
     "footer": "© 2025 DartStreak. Compete. Have fun. Be the best."
   },
   "dashboard": {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
@@ -16,7 +16,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Target, ArrowLeft, Check, X, AlertCircle } from "lucide-react";
+import { Target, ArrowLeft, Check, X, AlertCircle, Shield } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { z } from "zod";
 
@@ -40,13 +40,18 @@ export default function Auth() {
   const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
   const [forgotPassword, setForgotPassword] = useState(false);
   const [showGoogleWarning, setShowGoogleWarning] = useState(false);
-  const { signIn, signUp, continueAsGuest, resetPassword, updatePassword, isPasswordRecovery, signInWithGoogle } = useAuth();
+  const { signIn, signUp, continueAsGuest, upgradeGuestAccount, resetPassword, updatePassword, isPasswordRecovery, signInWithGoogle, isGuest, profile } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const handleGuestContinue = () => {
-    continueAsGuest();
-    navigate("/dashboard");
+  // Check if this is a guest trying to upgrade their account
+  const isUpgradeMode = isGuest && location.state?.mode === "signup";
+
+  const handleGuestContinue = async () => {
+    const { error } = await continueAsGuest();
+    if (!error) {
+      navigate("/dashboard");
+    }
   };
 
   const authSchema = z.object({
@@ -149,8 +154,23 @@ export default function Auth() {
       } else {
         navigate("/dashboard");
       }
+    } else if (isUpgradeMode) {
+      // Upgrade guest account - link email/password to anonymous user
+      const { error } = await upgradeGuestAccount(email, password, displayName);
+      if (error) {
+        if (error.message.includes("already registered") || error.message.includes("already been registered")) {
+          toast.error(t("auth.emailAlreadyRegistered"));
+        } else if (error.message.includes("duplicate key") || error.message.includes("profiles_display_name_unique")) {
+          toast.error(t("auth.usernameTaken"));
+        } else {
+          toast.error(error.message || t("auth.signupError"));
+        }
+      } else {
+        toast.success(t("auth.accountUpgraded") || t("auth.accountCreated"));
+        navigate("/dashboard");
+      }
     } else {
-      // Create account
+      // Create new account
       const { error } = await signUp(email, password, displayName);
       if (error) {
         if (error.message.includes("already registered")) {
@@ -424,6 +444,20 @@ export default function Auth() {
             </div>
           </CardContent>
         </Card>
+
+        <div className="mt-8 text-center text-xs text-muted-foreground space-y-2">
+          <p>
+            By continuing, you agree to our{" "}
+            <a href="/#/terms" className="underline hover:text-primary transition-colors">
+              Terms of Service
+            </a>{" "}
+            and{" "}
+            <a href="/#/privacy" className="underline hover:text-primary transition-colors">
+              Privacy Policy
+            </a>
+            .
+          </p>
+        </div>
 
         <Dialog open={showGoogleWarning} onOpenChange={setShowGoogleWarning}>
           <DialogContent className="sm:max-w-md">

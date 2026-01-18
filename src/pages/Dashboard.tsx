@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
-import { Target, Trophy, Swords, ArrowRight, Award, Mail } from "lucide-react";
+import { Trophy, Swords, ArrowRight, Award, Mail } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
@@ -11,9 +11,11 @@ import { useFriends } from "@/hooks/useFriends";
 import { useTournaments } from "@/hooks/useTournaments";
 import { FriendsSheet } from "@/components/FriendsSheet";
 import { TournamentCountdown } from "@/components/TournamentCountdown";
+import { GuestWarningBanner } from "@/components/GuestWarningBanner";
+import { GuestInfoModal } from "@/components/GuestInfoModal";
 
 export default function Dashboard() {
-  const { user, profile, loading, isGuest } = useAuth();
+  const { user, profile, loading, isGuest, showGuestInfoModal, setShowGuestInfoModal } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { pendingMatches } = useMatch();
@@ -58,39 +60,19 @@ export default function Dashboard() {
       </header>
 
       <main className="container mx-auto px-4 py-6 space-y-6">
-        {/* Guest Warning */}
-        {isGuest && (
-          <Card className="border-2 border-accent/50 bg-accent/5 overflow-hidden">
-            <CardContent className="p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="bg-accent/20 p-2 rounded-lg">
-                  <Target className="w-5 h-5 text-accent" />
-                </div>
-                <p className="text-sm font-medium">{t("dashboard.isGuestWarning")}</p>
-              </div>
-              <Button
-                variant="hero"
-                size="sm"
-                className="shrink-0"
-                onClick={() => navigate("/auth")}
-              >
-                {t("dashboard.convertToAccount")}
-              </Button>
-            </CardContent>
-          </Card>
-        )}
+        {/* Guest Warning Banner */}
+        {isGuest && <GuestWarningBanner variant="full" />}
 
-        {/* Quick Actions */}
+        {/* Quick Actions - All available for guests now */}
         <section className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <Card
-            className={`cursor-pointer hover:shadow-glow transition-all border-2 hover:border-primary/50 ${isGuest ? "opacity-60 cursor-not-allowed" : ""}`}
-            onClick={() => !isGuest && navigate("/leagues")}
+            className="cursor-pointer hover:shadow-glow transition-all border-2 hover:border-primary/50"
+            onClick={() => navigate("/leagues")}
           >
             <CardContent className="py-6 text-center">
               <Trophy className="w-10 h-10 mx-auto text-primary mb-2" />
               <h3 className="font-display font-semibold">{t("nav.leagues")}</h3>
               <p className="text-xs text-muted-foreground mt-1">{t("dashboard.competeDaily")}</p>
-              {isGuest && <p className="text-[10px] text-accent mt-2 font-medium">ONLINE ONLY</p>}
             </CardContent>
           </Card>
 
@@ -111,14 +93,13 @@ export default function Dashboard() {
           </Card>
 
           <Card
-            className={`cursor-pointer hover:shadow-glow transition-all border-2 hover:border-primary/50 ${isGuest ? "opacity-60 cursor-not-allowed" : ""}`}
-            onClick={() => !isGuest && navigate("/tournaments")}
+            className="cursor-pointer hover:shadow-glow transition-all border-2 hover:border-primary/50"
+            onClick={() => navigate("/tournaments")}
           >
             <CardContent className="py-6 text-center">
               <Award className="w-10 h-10 mx-auto text-primary mb-2" />
               <h3 className="font-display font-semibold">{t("nav.tournaments")}</h3>
               <p className="text-xs text-muted-foreground mt-1">{t("match.tournamentsDesc")}</p>
-              {isGuest && <p className="text-[10px] text-accent mt-2 font-medium">ONLINE ONLY</p>}
             </CardContent>
           </Card>
         </section>
@@ -258,6 +239,12 @@ export default function Dashboard() {
           </FriendsSheet>
         )}
       </main>
+
+      {/* Guest Info Modal - shown on first guest login */}
+      <GuestInfoModal
+        open={showGuestInfoModal}
+        onClose={() => setShowGuestInfoModal(false)}
+      />
     </AppLayout>
   );
 }

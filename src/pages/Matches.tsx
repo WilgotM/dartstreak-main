@@ -133,7 +133,7 @@ export default function Matches() {
     };
   };
 
-  if (loading || !user) {
+  if (loading || (!user && !isGuest)) {
     return (
       <AppLayout>
         <div className="min-h-screen flex items-center justify-center">
@@ -173,39 +173,23 @@ export default function Matches() {
             </Card>
           </CreateOfflineMatchDialog>
 
-          {!isGuest ? (
-            <CreateOnlineMatchDialog>
-              <Card className="cursor-pointer hover:shadow-glow transition-all border-dashed border-2 hover:border-accent/50 group bg-card/50">
-                <CardContent className="flex flex-col items-center justify-center py-8 text-center space-y-3">
-                  <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center group-hover:bg-accent/20 transition-colors">
-                    <Swords className="w-6 h-6 text-accent" />
-                  </div>
-                  <div>
-                    <h3 className="font-display font-bold text-lg">{t("match.onlineMode")}</h3>
-                    <p className="text-sm text-muted-foreground">{t("match.onlineModeDesc")}</p>
-                  </div>
-                  <Button variant="ghost" className="group-hover:text-accent">
-                    {t("match.sendChallenge")}
-                  </Button>
-                </CardContent>
-              </Card>
-            </CreateOnlineMatchDialog>
-          ) : (
-            <Card className="opacity-50 border-dashed border-2 bg-card/50">
+          {/* Online matches - now available for guests too */}
+          <CreateOnlineMatchDialog>
+            <Card className="cursor-pointer hover:shadow-glow transition-all border-dashed border-2 hover:border-accent/50 group bg-card/50">
               <CardContent className="flex flex-col items-center justify-center py-8 text-center space-y-3">
-                <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
-                  <Swords className="w-6 h-6 text-muted-foreground" />
+                <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center group-hover:bg-accent/20 transition-colors">
+                  <Swords className="w-6 h-6 text-accent" />
                 </div>
                 <div>
                   <h3 className="font-display font-bold text-lg">{t("match.onlineMode")}</h3>
-                  <p className="text-sm text-muted-foreground">{t("match.guestWarning")}</p>
+                  <p className="text-sm text-muted-foreground">{t("match.onlineModeDesc")}</p>
                 </div>
-                <Button variant="ghost" disabled>
-                  {t("common.signInToPlay")}
+                <Button variant="ghost" className="group-hover:text-accent">
+                  {t("match.sendChallenge")}
                 </Button>
               </CardContent>
             </Card>
-          )}
+          </CreateOnlineMatchDialog>
         </section>
 
 

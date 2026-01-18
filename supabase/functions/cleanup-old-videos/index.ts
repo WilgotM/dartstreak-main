@@ -5,6 +5,25 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Get today's date string in a specific timezone
+function getTodayInTimezone(timezone: string): string {
+  try {
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat("sv-SE", {
+      timeZone: timezone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    // Format returns YYYY-MM-DD for sv-SE locale
+    return formatter.format(now);
+  } catch {
+    // Fallback to UTC if timezone is invalid
+    console.warn(`Invalid timezone: ${timezone}, falling back to UTC`);
+    return new Date().toISOString().split("T")[0];
+  }
+}
+
 Deno.serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
@@ -14,16 +33,35 @@ Deno.serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    
+
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    console.log("Starting cleanup of old throw videos and stale matches...");
+    console.log("Starting timezone-aware cleanup of old throw videos...");
 
-    // Get today's date (videos from before today should be deleted)
-    const today = new Date();
-    const todayStr = today.toISOString().split("T")[0]; // YYYY-MM-DD format
+    // Fetch all leagues with their creator's timezone
+    const { data: leagues, error: leaguesError } = await supabase
+      .from("leagues")
+      .select(`
+        id,
+        name,
+        profiles!leagues_created_by_fkey (
+          timezone
+        )
+      `);
 
-    console.log(`Deleting videos from before: ${todayStr}`);
+    if (leaguesError) {
+      console.error("Error fetching leagues:", leaguesError);
+      throw leaguesError;
+    }
+
+    // Build a map of league_id -> today's date in that league's timezone
+    const leagueTimezones: Map<string, string> = new Map();
+    for (const league of leagues || []) {
+      const timezone = (league.profiles as { timezone?: string })?.timezone || "Europe/Stockholm";
+      const todayInTz = getTodayInTimezone(timezone);
+      leagueTimezones.set(league.id, todayInTz);
+      console.log(`League "${league.name}": today is ${todayInTz} in ${timezone}`);
+    }
 
     // List all files in the throw-videos bucket
     const { data: folders, error: listError } = await supabase.storage
@@ -38,9 +76,19 @@ Deno.serve(async (req) => {
     let totalDeleted = 0;
     const filesToDelete: string[] = [];
 
-    // Iterate through league folders
+    // Iterate through league folders (folder.name = league_id)
     for (const folder of folders || []) {
       if (!folder.name) continue;
+
+      const leagueId = folder.name;
+      const todayForLeague = leagueTimezones.get(leagueId);
+
+      if (!todayForLeague) {
+        // Unknown league (maybe deleted), use UTC as fallback
+        console.log(`League ${leagueId} not found, using UTC fallback`);
+      }
+
+      const cutoffDate = todayForLeague || new Date().toISOString().split("T")[0];
 
       // List user folders within each league
       const { data: userFolders, error: userListError } = await supabase.storage
@@ -72,8 +120,8 @@ Deno.serve(async (req) => {
           const dateMatch = video.name.match(/^(\d{4}-\d{2}-\d{2})/);
           if (dateMatch) {
             const videoDate = dateMatch[1];
-            // Delete videos from before today
-            if (videoDate < todayStr) {
+            // Delete videos from before "today" in this league's timezone
+            if (videoDate < cutoffDate) {
               filesToDelete.push(`${folder.name}/${userFolder.name}/${video.name}`);
             }
           }
@@ -84,8 +132,8 @@ Deno.serve(async (req) => {
     // Delete old files in batches
     if (filesToDelete.length > 0) {
       console.log(`Found ${filesToDelete.length} old videos to delete`);
-      
-      const { data: deleteData, error: deleteError } = await supabase.storage
+
+      const { error: deleteError } = await supabase.storage
         .from("throw-videos")
         .remove(filesToDelete);
 
@@ -100,18 +148,20 @@ Deno.serve(async (req) => {
       console.log("No old videos found to delete");
     }
 
-    // Clear video_url references in daily_throws for videos from before today
-    const { error: updateError } = await supabase
-      .from("daily_throws")
-      .update({ video_url: null })
-      .lt("throw_date", todayStr)
-      .not("video_url", "is", null);
+    // Clear video_url references in daily_throws per league, respecting timezone
+    for (const [leagueId, todayForLeague] of leagueTimezones) {
+      const { error: updateError } = await supabase
+        .from("daily_throws")
+        .update({ video_url: null })
+        .eq("league_id", leagueId)
+        .lt("throw_date", todayForLeague)
+        .not("video_url", "is", null);
 
-    if (updateError) {
-      console.error("Error updating daily_throws:", updateError);
-    } else {
-      console.log("Cleared video_url references for old throws");
+      if (updateError) {
+        console.error(`Error updating daily_throws for league ${leagueId}:`, updateError);
+      }
     }
+    console.log("Cleared video_url references for old throws (timezone-aware)");
 
     // Cleanup stale matches (active/pending matches older than 1 hour)
     const oneHourAgo = new Date();
@@ -254,7 +304,7 @@ Deno.serve(async (req) => {
       await supabase.from("tournament_invites").delete().in("tournament_id", abandonedIds);
       await supabase.from("tournament_participants").delete().in("tournament_id", abandonedIds);
       await supabase.from("tournament_matches").delete().in("tournament_id", abandonedIds);
-      
+
       const { error: abandonedDeleteError } = await supabase
         .from("tournaments")
         .delete()
@@ -269,7 +319,7 @@ Deno.serve(async (req) => {
       JSON.stringify({
         success: true,
         deletedVideos: totalDeleted,
-        cutoffDate: todayStr,
+        leaguesProcessed: leagueTimezones.size,
         matchesCutoff: matchCutoffTime,
         tournamentCutoff: tournamentCutoffTime,
       }),

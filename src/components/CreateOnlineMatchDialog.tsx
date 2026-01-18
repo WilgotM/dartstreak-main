@@ -84,7 +84,7 @@ export function CreateOnlineMatchDialog({ children }: CreateOnlineMatchDialogPro
     }
   };
 
-  if (isGuest) return null;
+  // With anonymous auth, guests have a real user.id so they can use online matches
 
   const MatchForm = ({ className }: { className?: string }) => (
     <div className={cn("space-y-6", className)}>

@@ -131,8 +131,21 @@ export default function League() {
 
     const leagueStarted = !leagueData.started_at || new Date(leagueData.started_at) <= new Date();
 
+    const getLeagueToday = () => {
+      try {
+        return new Intl.DateTimeFormat("sv-SE", {
+          timeZone: creatorTimezone,
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }).format(new Date());
+      } catch (e) {
+        return format(new Date(), "yyyy-MM-dd");
+      }
+    };
+
     if (leagueStarted) {
-      const today = format(new Date(), "yyyy-MM-dd");
+      const today = getLeagueToday();
       const { data: todayThrow } = await supabase
         .from("daily_throws")
         .select("*")
@@ -163,7 +176,20 @@ export default function League() {
   };
 
   const fetchLeaderboard = async (leagueData: League) => {
-    const today = format(new Date(), "yyyy-MM-dd");
+    // Get creator's timezone first to use for correct 'today'
+    const { data: creatorProfile } = await supabase
+      .from("profiles")
+      .select("timezone")
+      .eq("id", leagueData.created_by)
+      .single();
+
+    const tz = creatorProfile?.timezone || "Europe/Stockholm";
+    const today = new Intl.DateTimeFormat("sv-SE", {
+      timeZone: tz,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(new Date());
 
     const { data: members } = await supabase
       .from("league_members")
@@ -238,7 +264,12 @@ export default function League() {
   };
 
   const handleThrowComplete = async (completedThrows: number[], videoUrl?: string) => {
-    const today = format(new Date(), "yyyy-MM-dd");
+    const today = new Intl.DateTimeFormat("sv-SE", {
+      timeZone: creatorTimezone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(new Date());
 
     const throwData: DailyThrow = {
       throw_1: completedThrows[0],
@@ -377,6 +408,7 @@ export default function League() {
         onComplete={handleThrowComplete}
         leagueId={id!}
         userId={user.id}
+        leagueTimezone={creatorTimezone}
       />
     );
   }

@@ -26,7 +26,7 @@ export function VideoDialog({ videoUrl, playerName, throwDate, isOpen, onClose }
 
   const loadVideo = async () => {
     if (!videoUrl) return;
-    
+
     setLoading(true);
     setError(null);
 
@@ -71,14 +71,14 @@ export function VideoDialog({ videoUrl, playerName, throwDate, isOpen, onClose }
             {playerName} – {throwDate}
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="relative aspect-square bg-black">
           {loading && (
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
             </div>
           )}
-          
+
           {error && (
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
               <AlertTriangle className="w-12 h-12 text-destructive mb-3" />
@@ -86,7 +86,7 @@ export function VideoDialog({ videoUrl, playerName, throwDate, isOpen, onClose }
               <p className="text-sm text-muted-foreground">{error}</p>
             </div>
           )}
-          
+
           {videoSrc && !loading && !error && (
             <video
               src={videoSrc}
@@ -95,7 +95,7 @@ export function VideoDialog({ videoUrl, playerName, throwDate, isOpen, onClose }
               className="w-full h-full object-contain"
             />
           )}
-          
+
           {!videoUrl && (
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
               <AlertTriangle className="w-12 h-12 text-muted-foreground mb-3" />
@@ -103,7 +103,7 @@ export function VideoDialog({ videoUrl, playerName, throwDate, isOpen, onClose }
             </div>
           )}
         </div>
-        
+
         <div className="p-4 pt-2">
           <Button variant="secondary" className="w-full" onClick={handleClose}>
             <X className="w-4 h-4 mr-2" />

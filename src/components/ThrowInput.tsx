@@ -15,9 +15,10 @@ interface ThrowInputProps {
   onCancel?: () => void;
   leagueId: string;
   userId: string;
+  leagueTimezone?: string;
 }
 
-export default function ThrowInput({ onComplete, leagueId, userId }: ThrowInputProps) {
+export default function ThrowInput({ onComplete, leagueId, userId, leagueTimezone = "Europe/Stockholm" }: ThrowInputProps) {
   const { t } = useTranslation();
   const [throws, setThrows] = useState<number[]>([]);
   const [timeLeft, setTimeLeft] = useState(5 * 60);
@@ -60,7 +61,7 @@ export default function ThrowInput({ onComplete, leagueId, userId }: ThrowInputP
   // Play dart caller sound after each completed round (every 3 darts)
   useEffect(() => {
     const currentRound = Math.floor(throws.length / 3);
-    
+
     // If we just completed a round and haven't called it yet
     if (throws.length > 0 && throws.length % 3 === 0 && currentRound > lastCalledRoundRef.current) {
       const roundStart = (currentRound - 1) * 3;
@@ -137,13 +138,23 @@ export default function ThrowInput({ onComplete, leagueId, userId }: ThrowInputP
   }, [throws.length]);
 
   const uploadVideo = async (blob: Blob): Promise<string | undefined> => {
-    const throwDate = new Date().toISOString().split("T")[0];
+    let throwDate: string;
+    try {
+      throwDate = new Intl.DateTimeFormat("sv-SE", {
+        timeZone: leagueTimezone,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).format(new Date());
+    } catch {
+      throwDate = new Date().toISOString().split("T")[0];
+    }
     const filePath = `${leagueId}/${userId}/${throwDate}.webm`;
 
     const { error } = await supabase.storage
       .from("throw-videos")
       .upload(filePath, blob, {
-        contentType: "video/webm",
+        contentType: blob.type || "video/webm",
         upsert: true,
       });
 
@@ -157,7 +168,7 @@ export default function ThrowInput({ onComplete, leagueId, userId }: ThrowInputP
 
   const handleComplete = useCallback(async () => {
     if (throws.length !== 9 || isCompleting) return;
-    
+
     setIsCompleting(true);
 
     // Stop recording and get the blob directly
@@ -219,14 +230,14 @@ export default function ThrowInput({ onComplete, leagueId, userId }: ThrowInputP
           className={`w-full h-full object-cover ${hasCamera && isRecording ? 'block' : 'hidden'}`}
           style={{ aspectRatio: "1/1", margin: "0 auto" }}
         />
-        
+
         {hasCamera && isRecording && (
           <div className="absolute top-3 left-3 flex items-center gap-2 bg-destructive/90 text-destructive-foreground px-3 py-1.5 rounded-full text-xs font-semibold">
             <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
             REC
           </div>
         )}
-        
+
         {cameraError && (
           <div className="w-full h-full flex flex-col items-center justify-center text-center p-4">
             <AlertTriangle className="w-12 h-12 text-destructive mb-3" />
@@ -234,20 +245,19 @@ export default function ThrowInput({ onComplete, leagueId, userId }: ThrowInputP
             <p className="text-muted-foreground text-xs max-w-[250px]">{cameraError}</p>
           </div>
         )}
-        
+
         {!hasCamera && !cameraError && (
           <div className="w-full h-full flex flex-col items-center justify-center">
             <VideoOff className="w-12 h-12 text-muted-foreground mb-3" />
             <p className="text-muted-foreground text-sm">{t("throwInput.startingCamera")}</p>
           </div>
         )}
-        
+
         {/* Timer overlay */}
-        <div className={`absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-mono ${
-          timeLeft < 60 
-            ? "bg-destructive/90 text-destructive-foreground animate-pulse" 
-            : "bg-background/80 text-foreground"
-        }`}>
+        <div className={`absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-mono ${timeLeft < 60
+          ? "bg-destructive/90 text-destructive-foreground animate-pulse"
+          : "bg-background/80 text-foreground"
+          }`}>
           <Timer className="w-4 h-4" />
           {formatTime(timeLeft)}
         </div>
@@ -325,7 +335,7 @@ export default function ThrowInput({ onComplete, leagueId, userId }: ThrowInputP
               Bullseye
             </Button>
           </div>
-          
+
           {/* Action buttons */}
           <div className="flex gap-1.5 max-w-md mx-auto w-full mt-1.5">
             <Button
@@ -376,17 +386,16 @@ export default function ThrowInput({ onComplete, leagueId, userId }: ThrowInputP
                 const roundThrows = getRoundThrows(round);
                 const isCurrentRound = currentRound === round;
                 const isCompleted = roundThrows.length === 3;
-                
+
                 return (
                   <div
                     key={round}
-                    className={`px-1.5 py-1 rounded text-center ${
-                      isCurrentRound
-                        ? "bg-primary/20 border border-primary/50"
-                        : isCompleted
+                    className={`px-1.5 py-1 rounded text-center ${isCurrentRound
+                      ? "bg-primary/20 border border-primary/50"
+                      : isCompleted
                         ? "bg-primary/10"
                         : "bg-muted"
-                    }`}
+                      }`}
                   >
                     <div className="flex gap-0.5">
                       {[0, 1, 2].map((dartIndex) => {
@@ -396,22 +405,20 @@ export default function ThrowInput({ onComplete, leagueId, userId }: ThrowInputP
                         return (
                           <div
                             key={dartIndex}
-                            className={`w-6 h-5 rounded text-[10px] flex items-center justify-center font-mono ${
-                              hasThrow
-                                ? "bg-primary text-primary-foreground font-bold"
-                                : throwIndex === currentThrowIndex
+                            className={`w-6 h-5 rounded text-[10px] flex items-center justify-center font-mono ${hasThrow
+                              ? "bg-primary text-primary-foreground font-bold"
+                              : throwIndex === currentThrowIndex
                                 ? "bg-accent/30 border border-accent"
                                 : "bg-background border border-border"
-                            }`}
+                              }`}
                           >
                             {hasThrow ? score : ""}
                           </div>
                         );
                       })}
                     </div>
-                    <p className={`text-[10px] font-display font-bold mt-0.5 ${
-                      isCompleted ? "text-primary" : "text-muted-foreground"
-                    }`}>
+                    <p className={`text-[10px] font-display font-bold mt-0.5 ${isCompleted ? "text-primary" : "text-muted-foreground"
+                      }`}>
                       {isCompleted ? getRoundTotal(round) : "-"}
                     </p>
                   </div>

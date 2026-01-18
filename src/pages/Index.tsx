@@ -3,21 +3,21 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { Target, Users, Trophy, Video, ArrowRight, Zap, Gamepad2 } from "lucide-react";
+import { Target, Users, Trophy, Video, ArrowRight, Zap, Gamepad2, Play } from "lucide-react";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 
 import { HeroBackground } from "@/components/HeroBackground";
 
 export default function Index() {
-  const { user, loading } = useAuth();
+  const { user, loading, isGuest, continueAsGuest } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (!loading && user) {
+    if (!loading && (user || isGuest)) {
       navigate("/dashboard");
     }
-  }, [user, loading, navigate]);
+  }, [user, isGuest, loading, navigate]);
 
   const scrollToLeagues = () => {
     document.getElementById('leagues')?.scrollIntoView({ behavior: 'smooth' });
@@ -58,10 +58,17 @@ export default function Index() {
               {t("landing.tagline")}
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight mb-8 text-balance leading-[1.1]">
+            <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight mb-8 text-balance leading-[1.1] text-white">
               {t("landing.heroTitle")}{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400">
                 {t("landing.heroHighlight")}
+              </span>
+              {" "}
+              <span className="relative inline-block whitespace-nowrap">
+                <span className="relative z-10 px-3 py-1 text-white">
+                  {t("landing.heroHighlight2")}
+                </span>
+                <span className="absolute inset-0 bg-primary/20 rounded-2xl -rotate-1 border border-primary/30" />
               </span>
             </h1>
 
@@ -69,7 +76,7 @@ export default function Index() {
               {t("landing.heroDescription")}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
               <Button
                 size="xl"
                 className="w-full sm:w-auto text-lg h-14 px-8 shadow-lg shadow-primary/20"
@@ -89,14 +96,36 @@ export default function Index() {
               </Button>
             </div>
 
-            <div className="flex flex-col items-center gap-6 mt-8">
-              <p className="text-sm text-muted-foreground">{t("auth.continueAsGuest")} • No credit card required • Free forever</p>
+            {/* Quick Play - Guest Mode Button */}
+            <div className="flex flex-col items-center gap-4 mb-8">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-2xl blur-xl" />
+                <Button
+                  variant="secondary"
+                  size="xl"
+                  className="relative w-full sm:w-auto text-lg h-14 px-10 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white border-0 shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all"
+                  onClick={async () => {
+                    const { error } = await continueAsGuest();
+                    if (!error) {
+                      navigate("/dashboard");
+                    }
+                  }}
+                >
+                  <Play className="w-5 h-5 mr-2" />
+                  {t("landing.playFreeNoAccount")}
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {t("landing.noSignupRequired")}
+              </p>
+            </div>
 
+            <div className="flex flex-col items-center gap-6">
               <Button
-                variant="secondary"
+                variant="ghost"
                 size="lg"
                 onClick={scrollToLeagues}
-                className="w-full sm:w-auto h-auto py-4 px-6 sm:px-8 text-sm sm:text-lg whitespace-normal leading-tight font-semibold border border-primary/20 hover:border-primary/50 transition-all shadow-sm hover:shadow-md bg-card/50 backdrop-blur-sm"
+                className="w-full sm:w-auto h-auto py-3 px-6 text-sm whitespace-normal leading-tight font-medium text-muted-foreground hover:text-foreground transition-all"
               >
                 {t("landing.leaguesTeaser")}
               </Button>

@@ -1,73 +1,71 @@
-# Welcome to your Lovable project
+# 🎯 DartStreak
 
-## Project info
+![DartStreak Banner](public/og.png)
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+DartStreak is a premium, modern platform for darts enthusiasts. Whether you're playing solo, challenging friends online, or competing in global leagues, DartStreak provides the ultimate tracking and social experience for the modern player.
 
-## How can I edit this code?
+**Play for free at [dartstreak.pages.dev](https://dartstreak.pages.dev/)**
 
-There are several ways of editing your application.
+## ✨ Key Features
 
-**Use Lovable**
+- **🎥 Online Multiplayer**: Play against opponents worldwide with real-time video support. Feel like you're in the same room!
+- **🏆 Leagues & Tournaments**: Create private leagues or join public tournaments. Track standings and climb the ranks.
+- **🎯 Daily Challenges**: Throw 9 darts every day, submit your score, and see where you rank on the global leaderboard.
+- **📊 Advanced Analytics**: Detailed statistics and performance graphs to help you track your progress and improve your game.
+- **👥 Social Experience**: Invite friends via share links, add them to your friend list, and challenge them to live matches.
+- **🌍 Multi-language**: Fully localized in **English** and **Swedish** (Spela på svenska!).
+- **📱 PWA Ready**: Install DartStreak on your home screen for a fast, native-app experience on iOS and Android.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## 🚀 Why DartStreak?
 
-Changes made via Lovable will be committed automatically to this repo.
+- **100% Free**: No hidden costs, no subscriptions, and no in-app purchases.
+- **Fair Play**: Designed with a focus on sportsmanship and competitive integrity.
+- **Modern Experience**: A sleek, dark-mode first interface built for enthusiasts.
 
-**Use your preferred IDE**
+## 🛠️ Tech Stack
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+DartStreak is built with high-performance, industry-standard technologies:
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- **Frontend**: [React](https://reactjs.org/) + [Vite](https://vitejs.dev/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) + [shadcn/ui](https://ui.shadcn.com/)
+- **Backend/Auth**: [Supabase](https://supabase.com/)
+- **State Management**: [TanStack Query](https://tanstack.com/query/latest)
+- **Internationalization**: [i18next](https://www.i18next.com/)
+- **Visuals**: [Lucide Icons](https://lucide.dev/) + [Recharts](https://recharts.org/)
 
-Follow these steps:
+## 🛠️ Getting Started
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Prerequisites
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+- Node.js (v18 or higher)
+- npm or yarn
 
-# Step 3: Install the necessary dependencies.
-npm i
+### Local Setup
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/WilgotM/dartstreak-main.git
+   cd dartstreak-main
+   ```
 
-**Edit a file directly in GitHub**
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+3. **Set up Environment Variables**:
+   Create a `.env` file in the root directory and add your Supabase credentials:
+   ```env
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
 
-**Use GitHub Codespaces**
+4. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+---
 
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Built with ❤️ for the Darts Community.
+**DartStreak 2026 - Made with fair play.**
