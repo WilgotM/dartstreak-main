@@ -137,6 +137,8 @@
     "createFreeAccount": "Skapa gratis konto",
     "playFreeNoAccount": "Spela gratis utan konto",
     "noSignupRequired": "Inget konto behövs · Börja spela direkt",
+    "googleLogin": "Logga in med Google",
+    "createAccount": "Skapa konto",
     "footer": "© 2025 DartStreak. Tävla. Ha kul. Bli bäst."
   },
   "dashboard": {

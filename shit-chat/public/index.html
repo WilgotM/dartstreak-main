@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Antigravity Mobile Monitor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8b5cf6;
+            --primary-dark: #7c3aed;
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --accent: #38bdf8;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(56, 189, 248, 0.15) 0%, transparent 50%);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            padding: 1rem 1.5rem;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            margin: 0;
+            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        #status {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        #status.online {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        #chat-view {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        /* The styles injected from Antigravity will work here */
+        #content-wrapper {
+            width: 100%;
+            height: auto;
+            min-height: 100%;
+        }
+
+        .input-area {
+            padding: 1rem;
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-end;
+            padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+        }
+
+        #message-input {
+            flex: 1;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.25rem;
+            padding: 0.75rem 1.25rem;
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            resize: none;
+            max-height: 120px;
+            transition: border-color 0.2s;
+        }
+
+        #message-input:focus {
+            border-color: var(--primary);
+        }
+
+        #send-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            flex-shrink: 0;
+        }
+
+        #send-btn:active {
+            transform: scale(0.9);
+            background: var(--primary-dark);
+        }
+
+        #send-btn svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            fill: currentColor;
+        }
+
+        /* Styling for the captured content to make it fit mobile */
+        #content-wrapper * {
+            max-width: 100% !important;
+            word-wrap: break-word !important;
+        }
+
+        #style-container {
+            display: none;
+        }
+
+        .offline-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            z-index: 50;
+            display: none;
+        }
+
+        .offline-overlay.active {
+            display: flex;
+        }
+
+        .offline-overlay h2 {
+            margin-top: 0;
+            font-family: 'Outfit';
+        }
+
+        .offline-overlay p {
+            color: var(--text-muted);
+            max-width: 300px;
+        }
+
+        .loader {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(139, 92, 246, 0.2);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Antigravity</h1>
+        <div id="status">OFFLINE</div>
+    </header>
+
+    <div id="chat-view">
+        <div id="style-container"></div>
+        <div id="content-wrapper">
+            <div class="offline-overlay active" id="offline-ui">
+                <div class="loader"></div>
+                <h2>Waiting for Antigravity</h2>
+                <p>Make sure you started Antigravity with <code>--remote-debugging-port=9000</code></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="input-area">
+        <textarea id="message-input" placeholder="Type a message..." rows="1"></textarea>
+        <button id="send-btn" aria-label="Send">
+            <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+        </button>
+    </div>
+
+    <script>
+        const chatView = document.getElementById('chat-view');
+        const contentWrapper = document.getElementById('content-wrapper');
+        const styleContainer = document.getElementById('style-container');
+        const statusEl = document.getElementById('status');
+        const messageInput = document.getElementById('message-input');
+        const sendBtn = document.getElementById('send-btn');
+        const offlineUI = document.getElementById('offline-ui');
+
+        let ws;
+        let reconnectTimer;
+
+        function connect() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            ws = new WebSocket(`\${protocol}//\${window.location.host}`);
+
+            ws.onopen = () => {
+                statusEl.textContent = 'ONLINE';
+                statusEl.classList.add('online');
+                offlineUI.classList.remove('active');
+            };
+
+            ws.onclose = () => {
+                statusEl.textContent = 'OFFLINE';
+                statusEl.classList.remove('online');
+                offlineUI.classList.add('active');
+                clearTimeout(reconnectTimer);
+                reconnectTimer = setTimeout(connect, 3000);
+            };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+
+                if (data.type === 'update') {
+                    if (data.error) {
+                        offlineUI.classList.add('active');
+                        return;
+                    }
+
+                    offlineUI.classList.remove('active');
+
+                    if (data.css) {
+                        const style = document.createElement('style');
+                        style.textContent = data.css;
+                        styleContainer.appendChild(style);
+                    }
+
+                    if (data.html) {
+                        const wasAtBottom = chatView.scrollHeight - chatView.scrollTop <= chatView.clientHeight + 100;
+                        contentWrapper.innerHTML = data.html;
+                        
+                        if (wasAtBottom) {
+                            chatView.scrollTo({ top: chatView.scrollHeight, behavior: 'smooth' });
+                        }
+                    }
+                }
+
+                if (data.type === 'send_status') {
+                    if (data.success) {
+                        messageInput.value = '';
+                        messageInput.style.height = 'auto';
+                    } else {
+                        alert('Failed to send message. Is the input visible?');
+                    }
+                }
+            };
+        }
+
+        function sendMessage() {
+            const text = messageInput.value.trim();
+            if (text && ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ type: 'send', text }));
+            }
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Auto-expand textarea
+        messageInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        connect();
+    </script>
+</body>
+</html>
