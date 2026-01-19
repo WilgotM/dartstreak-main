@@ -265,6 +265,21 @@ html {
   to { opacity: 1; }
 }
 
+@keyframes app-enter {
+  from { 
+    opacity: 0; 
+    transform: translateY(8px);
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0);
+  }
+}
+
+.animate-app-enter {
+  animation: app-enter 0.4s ease-out forwards;
+}
+
 /* Dart score input styling */
 .dart-input {
   @apply w-16 h-16 text-2xl font-display font-bold text-center rounded-xl border-2 border-border bg-card text-foreground transition-all duration-200;

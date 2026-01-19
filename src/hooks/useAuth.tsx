@@ -319,7 +319,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/#/dashboard`,
+        // Use just the origin URL - the app will redirect to dashboard after auth
+        // HashRouter doesn't work with OAuth redirects that have hash paths
+        redirectTo: window.location.origin,
         queryParams: {
           access_type: 'offline',
           prompt: 'consent',

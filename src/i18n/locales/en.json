@@ -137,6 +137,8 @@
     "createFreeAccount": "Create free account",
     "playFreeNoAccount": "Play free without account",
     "noSignupRequired": "No account needed · Start playing now",
+    "googleLogin": "Log in with Google",
+    "createAccount": "Create Account",
     "footer": "© 2025 DartStreak. Compete. Have fun. Be the best."
   },
   "dashboard": {
