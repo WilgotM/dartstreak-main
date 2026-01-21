@@ -45,6 +45,18 @@ export default function OfflineMatch() {
   const [currentTurnIndex, setCurrentTurnIndex] = useState(0); // 0 = player1, 1 = player2
   const [isBotThinking, setIsBotThinking] = useState(false);
   const [botDarts, setBotDarts] = useState<number[]>([]);
+  
+  // Track throws for calculating averages
+  const [player1Throws, setPlayer1Throws] = useState<number[]>([]);
+  const [player2Throws, setPlayer2Throws] = useState<number[]>([]);
+  
+  // Calculate 3-dart averages
+  const player1Average = player1Throws.length > 0 
+    ? Math.round((player1Throws.reduce((a, b) => a + b, 0) / player1Throws.length) * 10) / 10 
+    : 0;
+  const player2Average = player2Throws.length > 0 
+    ? Math.round((player2Throws.reduce((a, b) => a + b, 0) / player2Throws.length) * 10) / 10 
+    : 0;
   const { completeTournamentMatch } = useTournaments();
   const { completeOfflineMatch, getOfflineTournament } = useOfflineTournaments();
   const tournamentMatchHandled = useRef(false);
@@ -127,34 +139,117 @@ export default function OfflineMatch() {
     }
   }, [currentTurnIndex, match?.status, match?.signaling_data?.bot]);
 
-  // Realistic Dart Generation - DartCounter-style accuracy
+  // Realistic Dart Generation - 2D Gaussian physics simulation like DartCounter
   const generateRealisticDart = (currentScore: number, avg: number, checkoutType: string, dartIndexOnTurn: number): { score: number; multiplier: number } => {
-    // Dartboard layout (clockwise from top)
-    const boardOrder = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
-
-    const getNeighbors = (num: number): number[] => {
-      if (num === 25) return [20, 1, 5, 12, 9]; // Bull neighbors (inner ring singles)
-      const idx = boardOrder.indexOf(num);
-      if (idx === -1) return [num];
-      const left = boardOrder[(idx - 1 + 20) % 20];
-      const right = boardOrder[(idx + 1) % 20];
-      return [left, right];
+    // Dartboard dimensions in mm (BDO standard)
+    const BOARD_RADIUS = 170; // Outer double ring edge
+    const DOUBLE_OUTER = 170;
+    const DOUBLE_INNER = 162;
+    const OUTER_SINGLE_INNER = 107;
+    const TRIPLE_OUTER = 107;
+    const TRIPLE_INNER = 99;
+    const INNER_SINGLE_INNER = 16;
+    const OUTER_BULL = 16;
+    const INNER_BULL = 6.35;
+    
+    // Dartboard segment order (clockwise from 12 o'clock = 20)
+    const segmentOrder = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
+    
+    // Box-Muller transform for Gaussian random numbers
+    const gaussianRandom = (): number => {
+      let u = 0, v = 0;
+      while (u === 0) u = Math.random();
+      while (v === 0) v = Math.random();
+      return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
     };
-
-    // Skill scales with average: 20 avg = 0.1 skill, 120 avg = 1.0 skill
-    const skill = Math.min(1.0, Math.max(0.1, (avg - 10) / 110));
-
-    // Hit probabilities based on skill (realistic distribution)
-    const tripleHitRate = skill * 0.45; // Max 45% triple hit rate at 120 avg
-    const doubleHitRate = skill * 0.38; // Max 38% double hit rate at 120 avg  
-    const bullseyeHitRate = skill * 0.12; // D25 is hard, max 12%
-    const bull25HitRate = skill * 0.35; // S25 easier, max 35%
-
-    // Determine what the bot is aiming for
-    let targetNum = 20;
-    let targetMult = 3;
-
-    // Checkout logic (professional checkout paths)
+    
+    // Convert average to standard deviation (σ) in mm
+    // Lower average = higher σ (more spread), higher average = lower σ (more accurate)
+    // Calibrated so:
+    // - avg 20-25 → σ ≈ 70-80mm (very inaccurate, often misses board)
+    // - avg 40-50 → σ ≈ 45-55mm (hits board but scattered)  
+    // - avg 60-70 → σ ≈ 30-40mm (decent grouping)
+    // - avg 80-90 → σ ≈ 20-28mm (good grouping)
+    // - avg 100-120 → σ ≈ 12-18mm (pro level tight grouping)
+    const getStandardDeviation = (average: number): number => {
+      // Exponential decay: low skill = high spread
+      // σ = 85 * e^(-0.018 * avg) + 10
+      return 85 * Math.exp(-0.018 * average) + 10;
+    };
+    
+    // Get target coordinates based on what we're aiming for
+    const getTargetCoordinates = (targetNum: number, targetMult: number): { x: number; y: number } => {
+      if (targetNum === 25) {
+        // Bull - aim at center
+        return { x: 0, y: 0 };
+      }
+      
+      // Find angle for the segment (20 is at top, segments go clockwise)
+      const segmentIndex = segmentOrder.indexOf(targetNum);
+      const segmentAngle = (Math.PI / 2) - (segmentIndex * Math.PI / 10) - (Math.PI / 20);
+      
+      // Determine radius based on multiplier
+      let targetRadius: number;
+      if (targetMult === 3) {
+        // Triple - aim at middle of triple ring
+        targetRadius = (TRIPLE_OUTER + TRIPLE_INNER) / 2; // ~103mm
+      } else if (targetMult === 2) {
+        // Double - aim at middle of double ring
+        targetRadius = (DOUBLE_OUTER + DOUBLE_INNER) / 2; // ~166mm
+      } else {
+        // Single - aim at middle of outer single bed (bigger target)
+        targetRadius = (OUTER_SINGLE_INNER + TRIPLE_INNER) / 2 + 15; // ~118mm
+      }
+      
+      return {
+        x: targetRadius * Math.cos(segmentAngle),
+        y: targetRadius * Math.sin(segmentAngle)
+      };
+    };
+    
+    // Convert coordinates to score
+    const coordsToScore = (x: number, y: number): { score: number; multiplier: number } => {
+      const r = Math.sqrt(x * x + y * y);
+      
+      // Off the board
+      if (r > BOARD_RADIUS) {
+        return { score: 0, multiplier: 0 };
+      }
+      
+      // Inner bull (double bull)
+      if (r <= INNER_BULL) {
+        return { score: 50, multiplier: 2 };
+      }
+      
+      // Outer bull (single bull)
+      if (r <= OUTER_BULL) {
+        return { score: 25, multiplier: 1 };
+      }
+      
+      // Find segment based on angle
+      let angle = Math.atan2(y, x);
+      // Rotate so 20 is at top and segments go clockwise
+      let adjustedAngle = (Math.PI / 2 - angle + Math.PI / 20 + 2 * Math.PI) % (2 * Math.PI);
+      const segmentIndex = Math.floor(adjustedAngle / (Math.PI / 10)) % 20;
+      const segmentValue = segmentOrder[segmentIndex];
+      
+      // Determine ring
+      if (r <= TRIPLE_INNER) {
+        // Inner single
+        return { score: segmentValue, multiplier: 1 };
+      } else if (r <= TRIPLE_OUTER) {
+        // Triple
+        return { score: segmentValue * 3, multiplier: 3 };
+      } else if (r <= DOUBLE_INNER) {
+        // Outer single
+        return { score: segmentValue, multiplier: 1 };
+      } else {
+        // Double
+        return { score: segmentValue * 2, multiplier: 2 };
+      }
+    };
+    
+    // Professional checkout paths
     const checkoutPaths: Record<number, { target: number; mult: number }[]> = {
       170: [{ target: 20, mult: 3 }, { target: 20, mult: 3 }, { target: 25, mult: 2 }],
       167: [{ target: 20, mult: 3 }, { target: 19, mult: 3 }, { target: 25, mult: 2 }],
@@ -307,23 +402,36 @@ export default function OfflineMatch() {
       3: [{ target: 1, mult: 1 }, { target: 1, mult: 2 }],
       2: [{ target: 1, mult: 2 }],
     };
-
-    // Determine target based on score and checkout path
+    
+    // Determine what we're aiming for
+    let targetNum = 20;
+    let targetMult = 3;
+    
+    // For low skill players, sometimes aim at safer targets (bull area for beginners)
+    const sigma = getStandardDeviation(avg);
+    const isLowSkill = avg < 40;
+    
+    // Checkout logic
     if (checkoutType === "double_out" && currentScore <= 170 && checkoutPaths[currentScore]) {
       const path = checkoutPaths[currentScore];
       const dartInPath = Math.min(dartIndexOnTurn, path.length - 1);
       targetNum = path[dartInPath].target;
       targetMult = path[dartInPath].mult;
     } else if (currentScore > 100) {
-      // Scoring phase - aim for T20
-      targetNum = 20;
-      targetMult = 3;
+      // Scoring phase
+      if (isLowSkill && Math.random() < 0.3) {
+        // Low skill players sometimes aim at bull area (easier to hit something)
+        targetNum = 25;
+        targetMult = 1;
+      } else {
+        targetNum = 20;
+        targetMult = 3;
+      }
     } else if (currentScore > 60) {
-      // Try to setup for a checkout
       targetNum = 20;
       targetMult = 3;
     } else {
-      // Low score - be careful, aim for setup
+      // Low score - setup or checkout
       if (checkoutType === "double_out") {
         if (currentScore % 2 === 0 && currentScore <= 40) {
           targetNum = currentScore / 2;
@@ -332,8 +440,8 @@ export default function OfflineMatch() {
           targetNum = 25;
           targetMult = 2;
         } else {
-          // Setup - aim for a single to leave a double
-          const setupTarget = currentScore - 32; // Leave D16
+          // Setup - leave D16
+          const setupTarget = currentScore - 32;
           if (setupTarget > 0 && setupTarget <= 20) {
             targetNum = setupTarget;
             targetMult = 1;
@@ -343,107 +451,48 @@ export default function OfflineMatch() {
           }
         }
       } else {
-        targetNum = Math.min(20, currentScore);
-        targetMult = 1;
-      }
-    }
-
-    // Simulate the throw with realistic variance
-    const rand = Math.random();
-
-    // Different hit rates for different targets
-    let hitRate: number;
-    if (targetNum === 25 && targetMult === 2) {
-      hitRate = bullseyeHitRate;
-    } else if (targetNum === 25 && targetMult === 1) {
-      hitRate = bull25HitRate;
-    } else if (targetMult === 3) {
-      hitRate = tripleHitRate;
-    } else if (targetMult === 2) {
-      hitRate = doubleHitRate;
-    } else {
-      hitRate = 0.65 + (skill * 0.30); // Singles are easier: 65-95%
-    }
-
-    // Perfect hit
-    if (rand < hitRate) {
-      return { score: targetNum * targetMult, multiplier: targetMult };
-    }
-
-    // Miss logic - depends on what we were aiming for
-    if (targetNum === 25) {
-      // Missed bull - hit single 25 or a random single
-      if (Math.random() < 0.5) {
-        return { score: 25, multiplier: 1 }; // S25
-      } else {
-        const randomSingle = boardOrder[Math.floor(Math.random() * 20)];
-        return { score: randomSingle, multiplier: 1 };
-      }
-    }
-
-    if (targetMult === 3) {
-      // Missed triple - usually hit single of same number or neighbor
-      const missRand = Math.random();
-      if (missRand < 0.55) {
-        // Hit single of same number (most common)
-        return { score: targetNum, multiplier: 1 };
-      } else if (missRand < 0.75) {
-        // Hit single of neighbor
-        const neighbors = getNeighbors(targetNum);
-        const neighbor = neighbors[Math.floor(Math.random() * neighbors.length)];
-        return { score: neighbor, multiplier: 1 };
-      } else if (missRand < 0.88) {
-        // Hit triple of neighbor (less common)
-        const neighbors = getNeighbors(targetNum);
-        const neighbor = neighbors[Math.floor(Math.random() * neighbors.length)];
-        // Only hit neighbor triple if skilled enough
-        if (Math.random() < skill * 0.4) {
-          return { score: neighbor * 3, multiplier: 3 };
+        // Straight out - try to finish efficiently
+        if (currentScore <= 60 && currentScore >= 41) {
+          // Can finish with T + single or just go for T20
+          targetNum = 20;
+          targetMult = 3;
+        } else if (currentScore === 50) {
+          // Bull!
+          targetNum = 25;
+          targetMult = 2;
+        } else if (currentScore <= 40 && currentScore >= 21) {
+          // Try double to finish in one dart
+          if (currentScore % 2 === 0) {
+            targetNum = currentScore / 2;
+            targetMult = 2;
+          } else {
+            // Odd - hit single 1 to leave even, or just go for it
+            targetNum = Math.min(20, currentScore);
+            targetMult = 1;
+          }
+        } else if (currentScore <= 20) {
+          // Just hit the single to finish
+          targetNum = currentScore;
+          targetMult = 1;
+        } else {
+          targetNum = 20;
+          targetMult = 3;
         }
-        return { score: neighbor, multiplier: 1 };
-      } else {
-        // Wire into big single or double
-        if (Math.random() < 0.3) {
-          return { score: targetNum * 2, multiplier: 2 }; // Hit the double
-        }
-        return { score: targetNum, multiplier: 1 };
       }
     }
-
-    if (targetMult === 2) {
-      // Missed double - critical for checkouts
-      const missRand = Math.random();
-      if (missRand < 0.45) {
-        // Hit single of same number
-        return { score: targetNum, multiplier: 1 };
-      } else if (missRand < 0.70) {
-        // Miss outside (off the board) - score 0
-        return { score: 0, multiplier: 0 };
-      } else if (missRand < 0.85) {
-        // Hit neighbor single
-        const neighbors = getNeighbors(targetNum);
-        const neighbor = neighbors[Math.floor(Math.random() * neighbors.length)];
-        return { score: neighbor, multiplier: 1 };
-      } else {
-        // Hit neighbor double (rare)
-        const neighbors = getNeighbors(targetNum);
-        const neighbor = neighbors[Math.floor(Math.random() * neighbors.length)];
-        if (Math.random() < skill * 0.3) {
-          return { score: neighbor * 2, multiplier: 2 };
-        }
-        return { score: neighbor, multiplier: 1 };
-      }
-    }
-
-    // Missed single - usually hit neighbor or same number
-    const missRand = Math.random();
-    if (missRand < 0.6) {
-      return { score: targetNum, multiplier: 1 }; // Still hit the single
-    } else {
-      const neighbors = getNeighbors(targetNum);
-      const neighbor = neighbors[Math.floor(Math.random() * neighbors.length)];
-      return { score: neighbor, multiplier: 1 };
-    }
+    
+    // Get target coordinates
+    const target = getTargetCoordinates(targetNum, targetMult);
+    
+    // Apply 2D Gaussian noise based on skill
+    const noiseX = gaussianRandom() * sigma;
+    const noiseY = gaussianRandom() * sigma;
+    
+    const actualX = target.x + noiseX;
+    const actualY = target.y + noiseY;
+    
+    // Convert landing position to score
+    return coordsToScore(actualX, actualY);
   };
 
   // Handle tournament match completion
@@ -646,6 +695,17 @@ export default function OfflineMatch() {
       if (!isBotThinking) {
         toast.error(t("match.bust"));
       }
+    }
+
+    // Track throw for average calculation (even busts count)
+    const throwTotal = dartDetails 
+      ? dartDetails.reduce((sum, d) => sum + d.score, 0)
+      : dart1 + dart2 + dart3;
+    
+    if (isPlayer1Turn) {
+      setPlayer1Throws(prev => [...prev, throwTotal]);
+    } else {
+      setPlayer2Throws(prev => [...prev, throwTotal]);
     }
 
     // Check if leg won
@@ -865,6 +925,18 @@ export default function OfflineMatch() {
               <p className="text-muted-foreground">
                 {t("match.sets")}: {match.player1_sets} - {match.player2_sets}
               </p>
+              {(player1Average > 0 || player2Average > 0) && (
+                <div className="flex justify-center gap-8 text-sm">
+                  <div className="text-center">
+                    <p className="text-muted-foreground text-xs">{match.player1_name}</p>
+                    <p className="font-bold">{t("match.avg")}: {player1Average || "-"}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-muted-foreground text-xs">{match.player2_name}</p>
+                    <p className="font-bold">{t("match.avg")}: {player2Average || "-"}</p>
+                  </div>
+                </div>
+              )}
               {tournamentId && (
                 <p className="text-sm text-muted-foreground">
                   {t("tournament.returningToTournament")}
@@ -900,11 +972,21 @@ export default function OfflineMatch() {
               <div className={`text-center ${isPlayer1Turn ? "ring-2 ring-primary rounded-lg p-2" : "p-2"}`}>
                 <p className="text-xs text-muted-foreground">{match.player1_name}</p>
                 <p className="text-3xl font-display font-bold">{match.player1_score}</p>
+                {player1Average > 0 && (
+                  <p className="text-[10px] text-muted-foreground mt-0.5">
+                    {t("match.avg")}: {player1Average}
+                  </p>
+                )}
               </div>
               <span className="text-muted-foreground">vs</span>
               <div className={`text-center ${!isPlayer1Turn ? "ring-2 ring-primary rounded-lg p-2" : "p-2"}`}>
                 <p className="text-xs text-muted-foreground">{match.player2_name}</p>
                 <p className="text-3xl font-display font-bold">{match.player2_score}</p>
+                {player2Average > 0 && (
+                  <p className="text-[10px] text-muted-foreground mt-0.5">
+                    {t("match.avg")}: {player2Average}
+                  </p>
+                )}
               </div>
             </div>
 

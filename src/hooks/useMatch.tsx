@@ -320,7 +320,8 @@ export function useMatch(matchId?: string) {
     setsToWin: number = 1,
     playerNames?: { p1?: string; p2?: string },
     forceLocal: boolean = false,
-    throwTimeLimit: number = 80
+    throwTimeLimit: number = 80,
+    botInfo?: { bot_name: string; bot_average: number } | null
   ) => {
     if (!user && !isGuest) return { error: "Not authenticated", matchId: null };
 
@@ -328,6 +329,7 @@ export function useMatch(matchId?: string) {
     const signalingData = {
       ...(playerNames?.p1 ? { player1_name: playerNames.p1 } : {}),
       ...(playerNames?.p2 ? { player2_name: playerNames.p2 } : {}),
+      ...(botInfo ? { bot: botInfo } : {}),
     };
 
     // Clamp throwTimeLimit to valid range (1-100 seconds)

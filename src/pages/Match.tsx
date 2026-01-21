@@ -90,6 +90,17 @@ export default function Match() {
   const [tournamentId, setTournamentId] = useState<string | null>(null);
   const tournamentMatchHandled = useRef(false); // BUG FIX: Prevent double-advance
 
+  // Calculate 3-dart averages from throws
+  const player1Throws = throws.filter(t => t.player_id === match?.player1_id);
+  const player2Throws = throws.filter(t => t.player_id === match?.player2_id);
+  
+  const player1Average = player1Throws.length > 0 
+    ? Math.round((player1Throws.reduce((sum, t) => sum + t.total, 0) / player1Throws.length) * 10) / 10 
+    : 0;
+  const player2Average = player2Throws.length > 0 
+    ? Math.round((player2Throws.reduce((sum, t) => sum + t.total, 0) / player2Throws.length) * 10) / 10 
+    : 0;
+
   // Check if this match is part of a tournament
   useEffect(() => {
     const checkTournament = async () => {
@@ -658,6 +669,18 @@ export default function Match() {
               <p className="text-muted-foreground">
                 {match.player1_name}: {match.player1_score} - {match.player2_name}: {match.player2_score}
               </p>
+              {(player1Average > 0 || player2Average > 0) && (
+                <div className="flex justify-center gap-8 text-sm">
+                  <div className="text-center">
+                    <p className="text-muted-foreground text-xs">{match.player1_name}</p>
+                    <p className="font-bold">{t("match.avg")}: {player1Average || "-"}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-muted-foreground text-xs">{match.player2_name}</p>
+                    <p className="font-bold">{t("match.avg")}: {player2Average || "-"}</p>
+                  </div>
+                </div>
+              )}
               {tournamentId && (
                 <p className="text-sm text-muted-foreground">
                   {t("tournament.returningToTournament")}
@@ -775,11 +798,21 @@ export default function Match() {
                 <div className={`text-center ${isPlayer1 ? "text-primary" : ""}`}>
                   <p className="text-xs text-muted-foreground">{match.player1_name}</p>
                   <p className="text-3xl font-display font-bold">{match.player1_score}</p>
+                  {player1Average > 0 && (
+                    <p className="text-[10px] text-muted-foreground mt-0.5">
+                      {t("match.avg")}: {player1Average}
+                    </p>
+                  )}
                 </div>
                 <span className="text-muted-foreground">vs</span>
                 <div className={`text-center ${!isPlayer1 ? "text-primary" : ""}`}>
                   <p className="text-xs text-muted-foreground">{match.player2_name}</p>
                   <p className="text-3xl font-display font-bold">{match.player2_score}</p>
+                  {player2Average > 0 && (
+                    <p className="text-[10px] text-muted-foreground mt-0.5">
+                      {t("match.avg")}: {player2Average}
+                    </p>
+                  )}
                 </div>
               </div>
               {h2h && (
