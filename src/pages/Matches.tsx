@@ -5,11 +5,13 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Target, Swords, Trophy, Clock } from "lucide-react";
+import { Target, Swords, Trophy, Clock, Bot, ChevronRight, Trash2 } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { CreateOfflineMatchDialog } from "@/components/CreateOfflineMatchDialog";
 import { CreateOnlineMatchDialog } from "@/components/CreateOnlineMatchDialog";
+import { CreateOfflineTournamentDialog } from "@/components/CreateOfflineTournamentDialog";
 import { useMatch } from "@/hooks/useMatch";
+import { useOfflineTournaments, OfflineTournament } from "@/hooks/useOfflineTournaments";
 import { format } from "date-fns";
 import { enUS, sv } from "date-fns/locale";
 
@@ -34,8 +36,10 @@ export default function Matches() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { pendingMatches, refetchPending } = useMatch();
+  const { getAllOfflineTournaments, deleteOfflineTournament } = useOfflineTournaments();
   const [matchHistory, setMatchHistory] = useState<MatchHistory[]>([]);
   const [activeMatches, setActiveMatches] = useState<MatchHistory[]>([]);
+  const [offlineTournaments, setOfflineTournaments] = useState<OfflineTournament[]>([]);
   const [loadingMatches, setLoadingMatches] = useState(true);
 
   const dateLocale = i18n.language === "sv" ? sv : enUS;
@@ -49,11 +53,23 @@ export default function Matches() {
   useEffect(() => {
     if (user || isGuest) {
       fetchMatches();
+      fetchOfflineTournaments();
       if (!isGuest) {
         setupRealtimeSubscription();
       }
     }
   }, [user, isGuest]);
+
+  // Polling for offline tournaments (since they're in localStorage)
+  useEffect(() => {
+    const interval = setInterval(fetchOfflineTournaments, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const fetchOfflineTournaments = () => {
+    const tournaments = getAllOfflineTournaments();
+    setOfflineTournaments(tournaments);
+  };
 
   const fetchMatches = async () => {
     if (isGuest) {
@@ -147,13 +163,13 @@ export default function Matches() {
 
   return (
     <AppLayout>
-      <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-[calc(3.5rem+env(safe-area-inset-top))] md:top-16 z-40">
+      <header className="border-b border-border bg-card/80 backdrop-blur-md fixed top-[calc(56px+env(safe-area-inset-top))] md:top-16 left-0 right-0 z-40">
         <div className="container mx-auto px-4 py-4">
           <h1 className="text-xl font-display font-bold">{t("nav.matches")}</h1>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6 space-y-6">
+      <main className="container mx-auto px-4 py-6 space-y-6 pt-24">
         {/* New Match Creation Section */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <CreateOfflineMatchDialog>
@@ -190,6 +206,24 @@ export default function Matches() {
               </CardContent>
             </Card>
           </CreateOnlineMatchDialog>
+
+          {/* Offline Tournament */}
+          <CreateOfflineTournamentDialog>
+            <Card className="cursor-pointer hover:shadow-glow transition-all border-dashed border-2 hover:border-amber-500/50 group bg-card/50">
+              <CardContent className="flex flex-col items-center justify-center py-8 text-center space-y-3">
+                <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center group-hover:bg-amber-500/20 transition-colors">
+                  <Bot className="w-6 h-6 text-amber-500" />
+                </div>
+                <div>
+                  <h3 className="font-display font-bold text-lg">{t("offlineTournament.title") || "Offline Tournament"}</h3>
+                  <p className="text-sm text-muted-foreground">{t("offlineTournament.description") || "Play against bots"}</p>
+                </div>
+                <Button variant="ghost" className="group-hover:text-amber-500">
+                  {t("offlineTournament.create") || "Create Tournament"}
+                </Button>
+              </CardContent>
+            </Card>
+          </CreateOfflineTournamentDialog>
         </section>
 
 
@@ -221,6 +255,54 @@ export default function Matches() {
                   </CardContent>
                 </Card>
               ))}
+            </div>
+          </section>
+        )}
+
+        {/* Active Offline Tournaments */}
+        {offlineTournaments.filter(t => t.status !== "completed").length > 0 && (
+          <section>
+            <h2 className="text-lg font-display font-semibold mb-3 flex items-center gap-2">
+              <Bot className="w-5 h-5 text-amber-500" />
+              {t("offlineTournament.activeTournaments") || "Active Tournaments"}
+            </h2>
+            <div className="space-y-3">
+              {offlineTournaments
+                .filter(t => t.status !== "completed")
+                .map((tournament) => (
+                  <Card
+                    key={tournament.id}
+                    className="cursor-pointer hover:shadow-glow transition-all border-2 border-amber-500/30 bg-amber-500/5"
+                    onClick={() => navigate(`/offline-tournament/${tournament.id}`)}
+                  >
+                    <CardContent className="py-4 flex items-center justify-between">
+                      <div className="flex-1">
+                        <p className="font-semibold flex items-center gap-2">
+                          <Bot className="w-4 h-4 text-amber-500" />
+                          {tournament.name}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {tournament.max_players} {t("tournament.players") || "players"} •
+                          {t("tournament.round", { number: tournament.current_round })}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteOfflineTournament(tournament.id);
+                          }}
+                          className="text-destructive hover:text-destructive"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                        <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
             </div>
           </section>
         )}

@@ -45,7 +45,7 @@ export default function Dashboard() {
 
   return (
     <AppLayout>
-      <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-[calc(3.5rem+env(safe-area-inset-top))] md:top-16 z-40">
+      <header className="border-b border-border bg-card/80 backdrop-blur-md fixed top-[calc(56px+env(safe-area-inset-top))] md:top-16 left-0 right-0 z-40">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-3">
             <img src="/logo.png" alt="DartStreak Logo" className="w-10 h-10 object-contain" />
@@ -59,7 +59,7 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6 space-y-6">
+      <main className="container mx-auto px-4 py-6 space-y-6 pt-24">
         {/* Guest Warning Banner */}
         {isGuest && <GuestWarningBanner variant="full" />}
 

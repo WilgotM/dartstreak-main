@@ -253,7 +253,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Sign in anonymously - creates a real Supabase user for guests
   const continueAsGuest = async () => {
-    const { data, error } = await supabase.auth.signInAnonymously();
+    const { data, error } = await supabase.auth.signInAnonymously({
+      options: {
+        data: {
+          display_name: 'Guest'
+        }
+      }
+    });
 
     if (error) {
       console.error("Error signing in anonymously:", error);

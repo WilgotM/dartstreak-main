@@ -1,4 +1,4 @@
-import { Home, Trophy, Swords, User, Users, Award } from "lucide-react";
+import { Home, Trophy, Swords, User, Users, Award, WifiOff } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useTranslation } from "react-i18next";
 import { useFriends } from "@/hooks/useFriends";
@@ -61,6 +61,15 @@ export function DesktopNav() {
           >
             <Award className="w-4 h-4" />
             <span className="font-medium">{t("nav.tournaments")}</span>
+          </NavLink>
+
+          <NavLink
+            to="/offline"
+            className="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-secondary"
+            activeClassName="text-primary bg-primary/10"
+          >
+            <WifiOff className="w-4 h-4" />
+            <span className="font-medium">{t("nav.offline")}</span>
           </NavLink>
 
           <NavLink

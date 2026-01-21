@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
+import { getMultipleBotNames } from "@/utils/botNames";
 
 interface Tournament {
   id: string;
@@ -21,8 +22,10 @@ interface Tournament {
   started_at: string | null;
   completed_at: string | null;
   created_at: string;
+  scheduled_start_at?: string | null;
   creator_name?: string;
   participant_count?: number;
+  is_participant?: boolean;
 }
 
 interface TournamentParticipant {
@@ -464,23 +467,14 @@ export function useTournaments() {
     const currentCount = participants?.length || 0;
     const neededBots = tournament.max_players - currentCount;
 
-    // Add bots if needed
-    const botNames = [
-      "DartBot Alpha",
-      "DartBot Beta",
-      "DartBot Gamma",
-      "DartBot Delta",
-      "DartBot Epsilon",
-      "DartBot Zeta",
-      "DartBot Eta",
-      "DartBot Theta",
-    ];
+    // Add bots if needed with realistic dart player names
+    const botNames = getMultipleBotNames(neededBots);
 
     for (let i = 0; i < neededBots; i++) {
       await supabase.from("tournament_participants").insert({
         tournament_id: tournamentId,
         is_bot: true,
-        bot_name: botNames[i] || `DartBot ${i + 1}`,
+        bot_name: botNames[i],
         seed: currentCount + i + 1,
       });
     }
@@ -648,14 +642,32 @@ export function useTournaments() {
       return null;
     }
 
-    // Link the match to the tournament match
-    await supabase
+    // RACE CONDITION FIX: Link the match only if match_id is still null
+    // This prevents duplicate match creation when multiple clients race
+    const { data: linked } = await supabase
       .from("tournament_matches")
       .update({
         match_id: createdMatch.id,
         status: "in_progress"
       })
-      .eq("id", tournamentMatchId);
+      .eq("id", tournamentMatchId)
+      .is("match_id", null) // Critical guard - only link if no match exists yet
+      .select("id")
+      .maybeSingle();
+
+    if (!linked) {
+      // Another client already created a match, delete our orphan
+      console.log("Match already created by another client, cleaning up orphan");
+      await supabase.from("matches").delete().eq("id", createdMatch.id);
+
+      // Return the existing match_id
+      const { data: existing } = await supabase
+        .from("tournament_matches")
+        .select("match_id")
+        .eq("id", tournamentMatchId)
+        .single();
+      return existing?.match_id || null;
+    }
 
     return createdMatch.id;
   };
@@ -669,6 +681,12 @@ export function useTournaments() {
       .single();
 
     if (!tournamentMatch) return;
+
+    // BUG FIX: Check if already completed (idempotency guard)
+    if (tournamentMatch.status === "completed" && tournamentMatch.winner_participant_id) {
+      console.log("Tournament match already completed, skipping");
+      return;
+    }
 
     // Find which participant won
     const { data: winnerParticipant } = await supabase
@@ -694,31 +712,42 @@ export function useTournaments() {
         // If winner is player1, then p1 wins, else p2 wins
         const winnerParticipantId = match.player1_id === winnerId ? p1Id : p2Id;
 
-        await supabase
+        // BUG FIX: Use conditional update to prevent race conditions
+        const { data: updated } = await supabase
           .from("tournament_matches")
           .update({
             winner_participant_id: winnerParticipantId,
             status: "completed",
           })
-          .eq("id", tournamentMatch.id);
+          .eq("id", tournamentMatch.id)
+          .is("winner_participant_id", null) // Only update if not already set
+          .select("id")
+          .maybeSingle();
 
-        // Advance winner to next round
-        await advanceWinnerToNextRound(tournamentMatch, winnerParticipantId);
+        // Only advance if we successfully claimed the completion
+        if (updated) {
+          await advanceWinnerToNextRound(tournamentMatch, winnerParticipantId);
+        }
       }
       return;
     }
 
-    // Update tournament match with winner
-    await supabase
+    // BUG FIX: Use conditional update to prevent race conditions
+    const { data: updated } = await supabase
       .from("tournament_matches")
       .update({
         winner_participant_id: winnerParticipant.id,
         status: "completed",
       })
-      .eq("id", tournamentMatch.id);
+      .eq("id", tournamentMatch.id)
+      .is("winner_participant_id", null) // Only update if not already set
+      .select("id")
+      .maybeSingle();
 
-    // Advance winner to next round
-    await advanceWinnerToNextRound(tournamentMatch, winnerParticipant.id);
+    // Only advance if we successfully claimed the completion
+    if (updated) {
+      await advanceWinnerToNextRound(tournamentMatch, winnerParticipant.id);
+    }
   };
 
   const advanceWinnerToNextRound = async (
@@ -883,13 +912,34 @@ export function useTournaments() {
   };
 
   const autoStartTournament = async (tournamentId: string) => {
-    const { data: tournament } = await supabase
-      .from("tournaments")
-      .select("*")
-      .eq("id", tournamentId)
-      .single();
+    // RACE CONDITION FIX: Use atomic compare-and-swap to claim the start
+    // Only one client will succeed in changing status from "scheduled" to "in_progress"
+    const firstMatchStart = new Date(Date.now() + 30 * 1000);
 
-    if (!tournament) return;
+    const { data: claimed, error: claimErr } = await supabase
+      .from("tournaments")
+      .update({
+        status: "in_progress",
+        started_at: new Date().toISOString(),
+        round_started_at: firstMatchStart.toISOString(),
+      })
+      .eq("id", tournamentId)
+      .eq("status", "scheduled") // Critical guard - only claim if still scheduled
+      .select("id, max_players, scheduled_start_at")
+      .maybeSingle();
+
+    if (claimErr) {
+      console.error("Error claiming tournament start:", claimErr);
+      return;
+    }
+
+    // If no row returned, another client already started the tournament
+    if (!claimed) {
+      console.log("Tournament already started by another client");
+      return;
+    }
+
+    // Now we have exclusive "ownership" of starting this tournament
 
     // Get current participants
     const { data: participants } = await supabase
@@ -899,45 +949,19 @@ export function useTournaments() {
       .order("seed");
 
     const currentCount = participants?.length || 0;
-    const neededBots = tournament.max_players - currentCount;
+    const neededBots = claimed.max_players - currentCount;
 
-    // Add bots if needed
-    const botNames = [
-      "DartBot Alpha",
-      "DartBot Beta",
-      "DartBot Gamma",
-      "DartBot Delta",
-      "DartBot Epsilon",
-      "DartBot Zeta",
-      "DartBot Eta",
-      "DartBot Theta",
-      "DartBot Iota",
-      "DartBot Kappa",
-      "DartBot Lambda",
-      "DartBot Mu",
-    ];
+    // Add bots if needed with realistic dart player names
+    const botNames = getMultipleBotNames(neededBots);
 
     for (let i = 0; i < neededBots; i++) {
       await supabase.from("tournament_participants").insert({
         tournament_id: tournamentId,
         is_bot: true,
-        bot_name: botNames[i] || `DartBot ${i + 1}`,
+        bot_name: botNames[i],
         seed: currentCount + i + 1,
       });
     }
-
-    // First round starts 30 seconds after tournament start
-    const firstMatchStart = new Date(Date.now() + 30 * 1000);
-
-    // Update tournament status
-    await supabase
-      .from("tournaments")
-      .update({
-        status: "in_progress",
-        started_at: new Date().toISOString(),
-        round_started_at: firstMatchStart.toISOString(),
-      })
-      .eq("id", tournamentId);
 
     // Generate bracket
     await generateBracket(tournamentId, firstMatchStart);
@@ -997,141 +1021,13 @@ export function useTournaments() {
   const WALKOVER_TIMEOUT_SECONDS = 20;
 
   const processWalkovers = async (tournamentId: string) => {
-    const now = new Date();
+    // Moved logic to server-side RPC to resolve race conditions
+    const { error } = await supabase.rpc("process_tournament_walkovers", {
+      p_tournament_id: tournamentId,
+    });
 
-    // Get all scheduled matches that might need walkover processing
-    const { data: scheduledMatches } = await supabase
-      .from("tournament_matches")
-      .select("*, tournaments(*)")
-      .eq("tournament_id", tournamentId)
-      .eq("status", "scheduled")
-      .not("scheduled_start_at", "is", null);
-
-    if (!scheduledMatches || scheduledMatches.length === 0) return;
-
-    for (const match of scheduledMatches) {
-      const scheduledStart = new Date(match.scheduled_start_at!);
-      const walkoverTime = new Date(scheduledStart.getTime() + WALKOVER_TIMEOUT_SECONDS * 1000);
-
-      // Not yet past walkover time
-      if (now < walkoverTime) continue;
-
-      // If match has a match_id, check if it actually has activity (throws)
-      // If no throws after walkover time, one player showed up but the other didn't
-      if (match.match_id) {
-        // Check if match has any throws (indicating both players are active)
-        const { count } = await supabase
-          .from("match_throws")
-          .select("*", { count: "exact", head: true })
-          .eq("match_id", match.match_id);
-
-        // If there are throws, match is progressing normally
-        if (count && count > 0) continue;
-
-        // No throws yet - check if match is still active after walkover time
-        // This means one player created the match but opponent never showed up
-        // We'll handle this below
-      }
-
-      // Get both participants
-      const { data: p1 } = await supabase
-        .from("tournament_participants")
-        .select("*")
-        .eq("id", match.player1_participant_id)
-        .single();
-
-      const { data: p2 } = await supabase
-        .from("tournament_participants")
-        .select("*")
-        .eq("id", match.player2_participant_id)
-        .single();
-
-      if (!p1 || !p2) continue;
-
-      // If both are bots, simulate the match instead
-      if (p1.is_bot && p2.is_bot) {
-        await simulateBotVsBotMatch(match.id);
-        continue;
-      }
-
-      // Determine walkover winner based on who showed up
-      let winnerId: string;
-
-      if (p1.is_bot && !p2.is_bot) {
-        // Human p2 didn't show up in time, bot p1 wins by walkover
-        winnerId = p1.id;
-      } else if (!p1.is_bot && p2.is_bot) {
-        // Human p1 didn't show up in time, bot p2 wins by walkover
-        winnerId = p2.id;
-      } else if (match.match_id) {
-        // Match was created - one player showed up but opponent didn't
-        // Check who created the match (they showed up) via signaling_data.created_by
-        const { data: actualMatch } = await supabase
-          .from("matches")
-          .select("signaling_data")
-          .eq("id", match.match_id)
-          .single();
-
-        if (actualMatch?.signaling_data) {
-          const signalingData = actualMatch.signaling_data as { created_by?: string };
-          const createdByUserId = signalingData.created_by;
-
-          if (createdByUserId) {
-            // Give win to whoever created the match (they showed up)
-            if (p1.user_id === createdByUserId) {
-              winnerId = p1.id; // Player 1 showed up, they win
-            } else if (p2.user_id === createdByUserId) {
-              winnerId = p2.id; // Player 2 showed up, they win
-            } else {
-              winnerId = p1.id; // Fallback
-            }
-          } else {
-            winnerId = p1.id; // No created_by info, fallback
-          }
-        } else {
-          winnerId = p1.id; // Fallback
-        }
-      } else {
-        // Both are human and neither showed up within 20 seconds
-        // Use match ID to deterministically but fairly pick a winner
-        // This ensures consistency (same result if checked multiple times)
-        // but fairness (not always the same player)
-        const matchIdSum = match.id.split('').reduce((sum: number, char: string) => sum + char.charCodeAt(0), 0);
-        winnerId = matchIdSum % 2 === 0 ? p1.id : p2.id;
-      }
-
-      console.log(`Walkover: Match ${match.id} - winner: ${winnerId}`);
-
-      // If there was an actual match created, cancel/complete it
-      if (match.match_id) {
-        // Find the winner's user_id to set as match winner
-        const winnerParticipant = winnerId === p1.id ? p1 : p2;
-
-        await supabase
-          .from("matches")
-          .update({
-            status: "completed",
-            winner_id: winnerParticipant.user_id,
-            completed_at: new Date().toISOString(),
-          })
-          .eq("id", match.match_id);
-      }
-
-      // Determine who didn't show up (the loser)
-      const loserId = winnerId === p1.id ? p2.id : p1.id;
-
-      // Award walkover in tournament - mark who didn't show up
-      await supabase
-        .from("tournament_matches")
-        .update({
-          winner_participant_id: winnerId,
-          status: "completed",
-          walkover_loser_id: loserId, // Track who didn't show up
-        })
-        .eq("id", match.id);
-
-      // Advance winner to next round
-      await advanceWinnerToNextRound(match, winnerId);
+    if (error) {
+      console.error("Error processing walkovers:", error);
     }
   };
 

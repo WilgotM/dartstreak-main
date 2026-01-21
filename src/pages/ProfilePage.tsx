@@ -71,14 +71,14 @@ export default function ProfilePage() {
 
   return (
     <AppLayout>
-      <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-[calc(3.5rem+env(safe-area-inset-top))] md:top-16 z-40">
+      <header className="border-b border-border bg-card/80 backdrop-blur-md fixed top-[calc(56px+env(safe-area-inset-top))] md:top-16 left-0 right-0 z-40">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-xl font-display font-bold">{t("nav.profile")}</h1>
           <LanguageSwitch />
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6 space-y-6">
+      <main className="container mx-auto px-4 py-6 space-y-6 pt-24">
         {/* Guest Warning Banner */}
         {isGuest && <GuestWarningBanner variant="full" />}
 
@@ -87,8 +87,8 @@ export default function ProfilePage() {
           <CardHeader className="pb-3">
             <div className="flex items-center gap-4">
               <div className={`w-16 h-16 rounded-full flex items-center justify-center ${isGuest
-                  ? "bg-gradient-to-br from-amber-500/20 to-orange-500/20"
-                  : "gradient-primary"
+                ? "bg-gradient-to-br from-amber-500/20 to-orange-500/20"
+                : "gradient-primary"
                 }`}>
                 {isGuest ? (
                   <AlertTriangle className="w-8 h-8 text-amber-500" />

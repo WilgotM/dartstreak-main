@@ -102,8 +102,14 @@ export function useMatch(matchId?: string) {
   const fetchMatch = useCallback(async () => {
     if (!matchId) return;
 
-    // 1. Try to find in local storage first (covers guest matches and "forceLocal" matches for logged-in users)
-    const storedMatches = JSON.parse(localStorage.getItem("dartstreak_guest_matches") || "[]");
+    // BUG FIX: Wrap localStorage parse in try-catch to prevent crashes on corrupt data
+    let storedMatches: any[] = [];
+    try {
+      storedMatches = JSON.parse(localStorage.getItem("dartstreak_guest_matches") || "[]");
+    } catch {
+      console.warn("Corrupt localStorage data, clearing guest matches");
+      localStorage.removeItem("dartstreak_guest_matches");
+    }
 
     // Cleanup old local matches (older than 1 hour)
     const localMatches = storedMatches.filter((m: any) => {
@@ -137,7 +143,12 @@ export function useMatch(matchId?: string) {
       return;
     }
 
-    if (!user) return;
+    // BUG FIX: Set loading to false and return if no user (prevents infinite loading)
+    if (!user) {
+      setLoading(false);
+      setMatch(null);
+      return;
+    }
 
     const { data, error } = await supabase
       .from("matches")

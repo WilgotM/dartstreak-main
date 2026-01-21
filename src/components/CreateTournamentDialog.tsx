@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
 import {
   Select,
   SelectContent,
@@ -20,9 +21,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
 import { useTournaments } from "@/hooks/useTournaments";
-import { Globe, Lock, Users, Clock, Bot } from "lucide-react";
+import { Globe, Lock, Users, Clock, Bot, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface CreateTournamentDialogProps {
   children: React.ReactNode;
@@ -43,7 +43,33 @@ export function CreateTournamentDialog({ children }: CreateTournamentDialogProps
   const [legsToWin, setLegsToWin] = useState([1]);
   const [setsToWin, setSetsToWin] = useState([1]);
   const [startTime, setStartTime] = useState(() => format(addMinutes(new Date(), 15), "HH:mm"));
-  const [botAverage, setBotAverage] = useState([50]);
+  const [botLevel, setBotLevel] = useState(5); // Default to level 5 (41-45 avg)
+
+  // Bot level definitions: 18 levels from beginner to pro
+  const botLevels = [
+    { level: 1, min: 20, max: 25, label: "Level 1" },
+    { level: 2, min: 26, max: 30, label: "Level 2" },
+    { level: 3, min: 31, max: 35, label: "Level 3" },
+    { level: 4, min: 36, max: 40, label: "Level 4" },
+    { level: 5, min: 41, max: 45, label: "Level 5" },
+    { level: 6, min: 46, max: 50, label: "Level 6" },
+    { level: 7, min: 51, max: 55, label: "Level 7" },
+    { level: 8, min: 56, max: 60, label: "Level 8" },
+    { level: 9, min: 61, max: 65, label: "Level 9" },
+    { level: 10, min: 66, max: 70, label: "Level 10" },
+    { level: 11, min: 71, max: 75, label: "Level 11" },
+    { level: 12, min: 76, max: 80, label: "Level 12" },
+    { level: 13, min: 81, max: 85, label: "Level 13" },
+    { level: 14, min: 86, max: 90, label: "Level 14" },
+    { level: 15, min: 91, max: 95, label: "Level 15" },
+    { level: 16, min: 96, max: 100, label: "Level 16" },
+    { level: 17, min: 101, max: 110, label: "Level 17" },
+    { level: 18, min: 110, max: 120, label: "Level 18" },
+  ];
+
+  const currentBotLevel = botLevels[botLevel - 1];
+  // Use midpoint of the range for the average passed to the backend
+  const botAverage = Math.round((currentBotLevel.min + currentBotLevel.max) / 2);
 
   const handleCreate = async () => {
     if (!name.trim()) return;
@@ -67,7 +93,7 @@ export function CreateTournamentDialog({ children }: CreateTournamentDialogProps
       legs_to_win: legsToWin[0],
       sets_to_win: setsToWin[0],
       scheduled_start_at: scheduledStartAt,
-      bot_average: botAverage[0],
+      bot_average: botAverage,
     });
 
     setLoading(false);
@@ -79,13 +105,6 @@ export function CreateTournamentDialog({ children }: CreateTournamentDialogProps
   };
 
   const playerOptions = [4, 8, 16, 32];
-
-  const getAverageLabel = (avg: number) => {
-    if (avg < 30) return `${t("tournament.botEasy")} (20-30)`;
-    if (avg < 50) return `${t("tournament.botMedium")} (30-50)`;
-    if (avg < 70) return `${t("tournament.botHard")} (50-70)`;
-    return `${t("tournament.botExpert")} (70-90)`;
-  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -183,22 +202,40 @@ export function CreateTournamentDialog({ children }: CreateTournamentDialogProps
 
           {/* Bot Difficulty */}
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <Label className="flex items-center gap-2">
-                <Bot className="w-4 h-4" />
-                {t("tournament.botDifficulty")}
-              </Label>
-              <span className="text-sm font-medium">
-                {getAverageLabel(botAverage[0])}
-              </span>
+            <Label className="flex items-center gap-2">
+              <Bot className="w-4 h-4" />
+              {t("tournament.botDifficulty")}
+            </Label>
+            <div className="flex items-center justify-between gap-3 p-3 bg-secondary/50 rounded-lg">
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => setBotLevel(Math.max(1, botLevel - 1))}
+                disabled={botLevel === 1}
+                className="shrink-0"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+              <div className="flex-1 text-center">
+                <div className="text-lg font-bold">
+                  {t("tournament.botLevel")} {currentBotLevel.level}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {currentBotLevel.min}-{currentBotLevel.max} {t("tournament.avg")}
+                </div>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => setBotLevel(Math.min(18, botLevel + 1))}
+                disabled={botLevel === 18}
+                className="shrink-0"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </Button>
             </div>
-            <Slider
-              value={botAverage}
-              onValueChange={setBotAverage}
-              min={20}
-              max={90}
-              step={5}
-            />
             <p className="text-xs text-muted-foreground text-center">
               {t("tournament.botFillDesc")}
             </p>

@@ -88,6 +88,7 @@ export default function Match() {
   const [throwCountdown, setThrowCountdown] = useState<number | null>(null);
   const remoteCameraEnabled = useRef(false);
   const [tournamentId, setTournamentId] = useState<string | null>(null);
+  const tournamentMatchHandled = useRef(false); // BUG FIX: Prevent double-advance
 
   // Check if this match is part of a tournament
   useEffect(() => {
@@ -241,11 +242,16 @@ export default function Match() {
   }, []);
 
   // Handle tournament match completion
+  // BUG FIX: Use ref guard to prevent multiple calls (same as OfflineMatch.tsx)
   useEffect(() => {
+    if (tournamentMatchHandled.current) return;
+    if (!tournamentId) return; // Only handle if this is a tournament match
+    
     if (match?.status === "completed" && match.winner_id && id) {
+      tournamentMatchHandled.current = true;
       completeTournamentMatch(id, match.winner_id);
     }
-  }, [match?.status, match?.winner_id, id]);
+  }, [match?.status, match?.winner_id, id, tournamentId]);
 
   // Auto-redirect to tournament after match completion
   useEffect(() => {

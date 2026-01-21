@@ -320,7 +320,8 @@
     "leagues": "Ligor",
     "matches": "Matcher",
     "tournaments": "Turneringar",
-    "profile": "Profil"
+    "profile": "Profil",
+    "offline": "Offline"
   },
   "theme": {
     "light": "Ljust",
@@ -522,6 +523,8 @@
     "notFull": "Turneringen är inte full",
     "botsWillFill": "{{count}} bot(ar) fyller tomma platser",
     "botDifficulty": "Bot-svårighet",
+    "botLevel": "Nivå",
+    "avg": "Snitt",
     "botEasy": "Lätt",
     "botMedium": "Medium",
     "botHard": "Svår",
@@ -572,5 +575,33 @@
     "switchTitle": "Byt turnering?",
     "switchDesc": "Du är redan anmäld till \"{{current}}\". För att gå med i \"{{new}}\" måste du avanmäla dig från den nuvarande turneringen.",
     "switchConfirm": "Byt turnering"
+  },
+  "offlineTournament": {
+    "title": "Offline Turnering",
+    "create": "Skapa Turnering",
+    "created": "Turnering skapad!",
+    "deleted": "Turnering raderad",
+    "description": "Spela turnering mot dartbots",
+    "startNow": "Starta Nu",
+    "playNow": "Spela Nu",
+    "yourMatch": "Din Match",
+    "waitingForBots": "Simulerar bot-matcher...",
+    "tournamentWon": "Grattis! Du vann turneringen!",
+    "tournamentWonDesc": "Du besegrade alla bots och tog vinsten!",
+    "tournamentLost": "Turneringen är över - du blev utslagen",
+    "eliminated": "Du blev utslagen ur turneringen",
+    "activeTournaments": "Aktiva Turneringar",
+    "noTournaments": "Inga aktiva offline-turneringar",
+    "defaultName": "Min Turnering",
+    "sizeDesc": "Du mot {{count}} bots"
+  },
+  "offline": {
+    "subtitle": "Spela matcher och turneringar utan internet",
+    "activeMatches": "Aktiva Offline-matcher",
+    "completedTournaments": "Avslutade Turneringar",
+    "matchHistory": "Matchhistorik",
+    "noMatches": "Inga offline-matcher spelade ännu",
+    "emptyTitle": "Inget offline-innehåll ännu",
+    "emptyDesc": "Starta en offline-match eller turnering för att spela utan internetanslutning!"
   }
 }

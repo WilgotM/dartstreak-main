@@ -415,7 +415,7 @@ export default function League() {
 
   return (
     <AppLayout>
-      <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-[calc(3.5rem+env(safe-area-inset-top))] md:top-16 z-40 transition-all duration-200">
+      <header className="border-b border-border bg-card/80 backdrop-blur-md fixed top-[calc(56px+env(safe-area-inset-top))] md:top-16 left-0 right-0 z-40 transition-all duration-200">
         <div className="container mx-auto px-4 py-3">
           {/* Top row: back button + title */}
           <div className="flex items-center gap-3 mb-2">
@@ -483,7 +483,7 @@ export default function League() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 pb-32">
+      <main className="container mx-auto px-4 py-8 pb-32 pt-32">
         <div className="max-w-4xl mx-auto space-y-8">
           {/* League Finished View */}
           {isFinished && winner && (

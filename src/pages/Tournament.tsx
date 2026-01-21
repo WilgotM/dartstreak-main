@@ -65,15 +65,18 @@ export default function Tournament() {
   }, [id, getTournamentDetails]);
 
   // Check for scheduled matches and redirect user to their match
+  // BUG FIX: Combined with loadDetails to prevent double-fetching
   const checkMatchesAndRedirect = useCallback(async () => {
-    if (!id || !user || !details?.tournament) return;
+    if (!id || !user) return;
+
+    // Fetch latest details (single fetch instead of double)
+    const updatedData = await getTournamentDetails(id);
+    if (!updatedData?.tournament) return;
+    
+    setDetails(updatedData);
 
     // Check and start any scheduled matches
     await checkAndStartScheduledMatches(id);
-
-    // Reload details after potential changes
-    const updatedData = await getTournamentDetails(id);
-    setDetails(updatedData);
 
     // Check if user has an active match they should be in
     const activeMatch = await getActiveMatchForUser(id, user.id) as any;
@@ -118,23 +121,23 @@ export default function Tournament() {
         }
       }
     }
-  }, [id, user, details, checkAndStartScheduledMatches, getActiveMatchForUser, startTournamentMatch, navigate, getTournamentDetails]);
+  }, [id, user, checkAndStartScheduledMatches, getActiveMatchForUser, startTournamentMatch, navigate, getTournamentDetails]);
 
   useEffect(() => {
     loadDetails(true);
   }, [id]);
 
   // Poll for updates and check for match redirects
+  // BUG FIX: Only call checkMatchesAndRedirect (which now includes detail fetching)
   useEffect(() => {
     if (!id || !details?.tournament) return;
 
     const interval = setInterval(async () => {
-      await loadDetails(false);
       await checkMatchesAndRedirect();
     }, 2000);
 
     return () => clearInterval(interval);
-  }, [id, details?.tournament?.status, loadDetails, checkMatchesAndRedirect]);
+  }, [id, details?.tournament?.status, checkMatchesAndRedirect]);
 
   // Countdown timer
   useEffect(() => {

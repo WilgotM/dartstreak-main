@@ -16,6 +16,8 @@ import OfflineMatch from "./pages/OfflineMatch";
 import RemoteCamera from "./pages/RemoteCamera";
 import Tournaments from "./pages/Tournaments";
 import Tournament from "./pages/Tournament";
+import OfflineTournament from "./pages/OfflineTournament";
+import Offline from "./pages/Offline";
 import ProfilePage from "./pages/ProfilePage";
 import InstallGuide from "./pages/InstallGuide";
 import NotFound from "./pages/NotFound";
@@ -30,44 +32,46 @@ const queryClient = new QueryClient();
 const App = () => {
   return (
     <div className="animate-app-enter">
-    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <HashRouter>
-              <UsernameGuard>
-                <TournamentGuard>
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/auth" element={<Auth />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/leagues" element={<Leagues />} />
-                    <Route path="/league/:id" element={<League />} />
-                    <Route path="/matches" element={<Matches />} />
-                    <Route path="/match/:id" element={<Match />} />
-                    <Route path="/offline-match/:id" element={<OfflineMatch />} />
-                    <Route path="/remote-camera/:matchId" element={<RemoteCamera />} />
-                    <Route path="/tournaments" element={<Tournaments />} />
-                    <Route path="/tournament/:id" element={<Tournament />} />
-                    <Route path="/profile" element={<ProfilePage />} />
-                    <Route path="/profile/:id" element={<ProfilePage />} />
-                    <Route path="/install-guide" element={<InstallGuide />} />
-                    <Route path="/privacy" element={<Legal />} />
-                    <Route path="/terms" element={<Legal />} />
-                    <Route path="/contact" element={<Legal />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </TournamentGuard>
-              </UsernameGuard>
-              <InstallPrompt />
-              <IOSInstallReminder />
-            </HashRouter>
-          </TooltipProvider>
-        </AuthProvider>
-      </QueryClientProvider>
-    </ThemeProvider>
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <HashRouter>
+                <UsernameGuard>
+                  <TournamentGuard>
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/auth" element={<Auth />} />
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/leagues" element={<Leagues />} />
+                      <Route path="/league/:id" element={<League />} />
+                      <Route path="/matches" element={<Matches />} />
+                      <Route path="/match/:id" element={<Match />} />
+                      <Route path="/offline-match/:id" element={<OfflineMatch />} />
+                      <Route path="/remote-camera/:matchId" element={<RemoteCamera />} />
+                      <Route path="/tournaments" element={<Tournaments />} />
+                      <Route path="/tournament/:id" element={<Tournament />} />
+                      <Route path="/offline-tournament/:id" element={<OfflineTournament />} />
+                      <Route path="/offline" element={<Offline />} />
+                      <Route path="/profile" element={<ProfilePage />} />
+                      <Route path="/profile/:id" element={<ProfilePage />} />
+                      <Route path="/install-guide" element={<InstallGuide />} />
+                      <Route path="/privacy" element={<Legal />} />
+                      <Route path="/terms" element={<Legal />} />
+                      <Route path="/contact" element={<Legal />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </TournamentGuard>
+                </UsernameGuard>
+                <InstallPrompt />
+                <IOSInstallReminder />
+              </HashRouter>
+            </TooltipProvider>
+          </AuthProvider>
+        </QueryClientProvider>
+      </ThemeProvider>
     </div>
   );
 };

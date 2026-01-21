@@ -320,7 +320,8 @@
     "leagues": "Leagues",
     "matches": "Matches",
     "tournaments": "Tournaments",
-    "profile": "Profile"
+    "profile": "Profile",
+    "offline": "Offline"
   },
   "theme": {
     "light": "Light",
@@ -522,6 +523,8 @@
     "notFull": "Tournament not full",
     "botsWillFill": "{{count}} bot(s) will fill empty spots",
     "botDifficulty": "Bot Difficulty",
+    "botLevel": "Level",
+    "avg": "Avg",
     "botEasy": "Easy",
     "botMedium": "Medium",
     "botHard": "Hard",
@@ -572,5 +575,33 @@
     "switchTitle": "Switch tournament?",
     "switchDesc": "You are already registered for \"{{current}}\". To join \"{{new}}\", you must leave your current tournament.",
     "switchConfirm": "Switch tournament"
+  },
+  "offlineTournament": {
+    "title": "Offline Tournament",
+    "create": "Create Tournament",
+    "created": "Tournament created!",
+    "deleted": "Tournament deleted",
+    "description": "Play tournament against dartbots",
+    "startNow": "Start Now",
+    "playNow": "Play Now",
+    "yourMatch": "Your Match",
+    "waitingForBots": "Simulating bot matches...",
+    "tournamentWon": "Congratulations! You won the tournament!",
+    "tournamentWonDesc": "You defeated all the bots and claimed victory!",
+    "tournamentLost": "Tournament Over - You were eliminated",
+    "eliminated": "You were eliminated from the tournament",
+    "activeTournaments": "Active Tournaments",
+    "noTournaments": "No active offline tournaments",
+    "defaultName": "My Tournament",
+    "sizeDesc": "You vs {{count}} bots"
+  },
+  "offline": {
+    "subtitle": "Play matches and tournaments without internet",
+    "activeMatches": "Active Offline Matches",
+    "completedTournaments": "Completed Tournaments",
+    "matchHistory": "Match History",
+    "noMatches": "No offline matches played yet",
+    "emptyTitle": "No offline content yet",
+    "emptyDesc": "Start an offline match or tournament to play without an internet connection!"
   }
 }
