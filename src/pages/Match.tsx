@@ -30,6 +30,7 @@ import { toast } from "sonner";
 import { Target, ArrowLeft, Trophy, Clock, Video, VideoOff, Check, X, Swords, SwitchCamera, ZoomIn, WifiOff, Smartphone, LogOut } from "lucide-react";
 import { MatchThrowInput } from "@/components/MatchThrowInput";
 import { QRCodeSVG } from "qrcode.react";
+import { VideoManager } from "@/components/Video/VideoManager";
 
 export default function Match() {
   const { id } = useParams<{ id: string }>();
@@ -86,6 +87,7 @@ export default function Match() {
   const [showLeaveMatchDialog, setShowLeaveMatchDialog] = useState(false);
   const [inviteCountdown, setInviteCountdown] = useState<number | null>(null);
   const [throwCountdown, setThrowCountdown] = useState<number | null>(null);
+  const [showCloudflareVideo, setShowCloudflareVideo] = useState(false);
   const remoteCameraEnabled = useRef(false);
   const [tournamentId, setTournamentId] = useState<string | null>(null);
   const tournamentMatchHandled = useRef(false); // BUG FIX: Prevent double-advance
@@ -93,12 +95,12 @@ export default function Match() {
   // Calculate 3-dart averages from throws
   const player1Throws = throws.filter(t => t.player_id === match?.player1_id);
   const player2Throws = throws.filter(t => t.player_id === match?.player2_id);
-  
-  const player1Average = player1Throws.length > 0 
-    ? Math.round((player1Throws.reduce((sum, t) => sum + t.total, 0) / player1Throws.length) * 10) / 10 
+
+  const player1Average = player1Throws.length > 0
+    ? Math.round((player1Throws.reduce((sum, t) => sum + t.total, 0) / player1Throws.length) * 10) / 10
     : 0;
-  const player2Average = player2Throws.length > 0 
-    ? Math.round((player2Throws.reduce((sum, t) => sum + t.total, 0) / player2Throws.length) * 10) / 10 
+  const player2Average = player2Throws.length > 0
+    ? Math.round((player2Throws.reduce((sum, t) => sum + t.total, 0) / player2Throws.length) * 10) / 10
     : 0;
 
   // Check if this match is part of a tournament
@@ -136,42 +138,13 @@ export default function Match() {
   }, [localStream]);
 
   // Set up remote video - always keep srcObject attached
-  // iOS Safari fix: attach onunmute handlers to ensure playback resumes
   useEffect(() => {
     const el = remoteVideoRef.current;
-    if (!el || !remoteStream) return;
-
-    console.log("Setting remote video srcObject");
-    el.srcObject = remoteStream;
-
-    const tryPlay = () => {
-      requestAnimationFrame(() => {
-        el.play?.().then(() => {
-          console.log("Remote video play() succeeded, readyState:", el.readyState, "videoWidth:", el.videoWidth);
-        }).catch((err) => {
-          console.error("Remote video play() failed:", err);
-        });
-      });
-    };
-
-    tryPlay();
-
-    // Log video element state for debugging
-    console.log("Remote video element state - paused:", el.paused, "readyState:", el.readyState);
-
-    // iOS Safari needs play() triggered when tracks unmute
-    const tracks = remoteStream.getVideoTracks();
-    tracks.forEach(track => {
-      track.onunmute = tryPlay;
-      track.onended = tryPlay;
-    });
-
-    return () => {
-      tracks.forEach(track => {
-        track.onunmute = null;
-        track.onended = null;
-      });
-    };
+    if (el && remoteStream) {
+      console.log("Setting remote video srcObject");
+      el.srcObject = remoteStream;
+      el.play?.().catch(() => {});
+    }
   }, [remoteStream]);
 
   // Set up remote camera video
@@ -257,7 +230,7 @@ export default function Match() {
   useEffect(() => {
     if (tournamentMatchHandled.current) return;
     if (!tournamentId) return; // Only handle if this is a tournament match
-    
+
     if (match?.status === "completed" && match.winner_id && id) {
       tournamentMatchHandled.current = true;
       completeTournamentMatch(id, match.winner_id);
@@ -392,17 +365,9 @@ export default function Match() {
   };
 
   const handleStartVideo = async () => {
-    const success = await initializeWebRTC();
-    if (success) {
-      setVideoEnabled(true);
-
-      // If player1, create offer. If player2, wait for offer then create answer
-      if (match && user?.id === match.player1_id) {
-        setTimeout(() => createOffer(), 1000);
-      }
-    } else {
-      toast.error(t("match.cameraError"));
-    }
+    // Initialize Cloudflare Calls video
+    await initializeWebRTC();
+    setShowCloudflareVideo(true);
   };
 
   // Answer is now automatically created via realtime subscription in useMatch
@@ -784,6 +749,17 @@ export default function Match() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Cloudflare Video Manager */}
+      {match && (
+        <VideoManager
+          matchId={match.id}
+          isPlayer1={isPlayer1}
+          participantId={user?.id}
+          isOpen={showCloudflareVideo}
+          onToggle={() => setShowCloudflareVideo(!showCloudflareVideo)}
+        />
+      )}
 
       {/* Header with scores */}
       <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-10 pt-[env(safe-area-inset-top)]">

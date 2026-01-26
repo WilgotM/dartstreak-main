@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useCloudflareCalls } from "@/hooks/useCloudflareCalls";
 import type { Json } from "@/integrations/supabase/types";
 
 export interface Match {
@@ -55,14 +56,6 @@ export interface MatchThrow {
   created_at: string;
 }
 
-interface SignalPayload {
-  type: string;
-  sdp?: string;
-  candidate?: string;
-  sdpMid?: string | null;
-  sdpMLineIndex?: number | null;
-}
-
 export function useMatch(matchId?: string) {
   const { user, isGuest } = useAuth();
   const [match, setMatch] = useState<Match | null>(null);
@@ -71,28 +64,29 @@ export function useMatch(matchId?: string) {
   const [pendingMatches, setPendingMatches] = useState<Match[]>([]);
   const [h2h, setH2h] = useState<HeadToHead | null>(null);
 
-  // WebRTC
-  const peerConnection = useRef<RTCPeerConnection | null>(null);
-  const localStream = useRef<MediaStream | null>(null);
-  const remoteMediaStream = useRef<MediaStream | null>(null);
-  const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
-  const [localVideoReady, setLocalVideoReady] = useState(false);
-  const [connectionState, setConnectionState] = useState<string>("new");
-  // Track processed/queued signals to avoid duplicates
-  const processedSignals = useRef<Set<string>>(new Set());
-  const queuedSignals = useRef<Set<string>>(new Set());
-  const pendingSignals = useRef<Array<{ id: string; signalType: string; payload: SignalPayload }>>([]);
+  // Determine if current user is player1 (default to true to avoid undefined issues)
+  const isPlayer1 = match ? match.player1_id === user?.id : true;
 
-  // Camera controls
-  const [facingMode, setFacingMode] = useState<"user" | "environment">("environment");
-  const [zoomLevel, setZoomLevel] = useState(1);
-  const [maxZoom, setMaxZoom] = useState(1);
+  // Cloudflare Calls for video - only initialize when we have a valid matchId
+  const {
+    localStream: cfLocalStream,
+    remoteStream: cfRemoteStream,
+    connectionState: cfConnectionState,
+    localVideoReady: cfLocalVideoReady,
+    initSession: cfInitSession,
+    cleanup: cfCleanup,
+    facingMode: cfFacingMode,
+    switchCamera: cfSwitchCamera,
+    zoomLevel: cfZoomLevel,
+    maxZoom: cfMaxZoom,
+    applyZoom: cfApplyZoom,
+  } = useCloudflareCalls({
+    matchId: match?.id || "",
+    isPlayer1,
+  });
 
   // Real-time opponent input (what they're currently entering)
   const [opponentCurrentDarts, setOpponentCurrentDarts] = useState<number[]>([]);
-
-  // ICE candidates can arrive before remoteDescription; queue them
-  const iceCandidateQueue = useRef<RTCIceCandidateInit[]>([]);
 
   const getOpponentId = useCallback(() => {
     if (!match || !user) return null;
@@ -588,446 +582,7 @@ export function useMatch(matchId?: string) {
     fetchMatch();
   };
 
-  // Send signal via match_signals table
-  const sendSignal = useCallback(
-    async (signalType: "offer" | "answer" | "candidate", payload: SignalPayload) => {
-      if (!match || !user) return;
-
-      const opponentId = getOpponentId();
-      if (!opponentId) {
-        console.error("No opponent ID found");
-        return;
-      }
-
-      console.log(`Sending ${signalType} signal to opponent`);
-
-      const signalData = {
-        match_id: match.id,
-        from_user_id: user.id,
-        to_user_id: opponentId,
-        signal_type: signalType,
-        payload: payload as unknown as Json,
-      };
-
-      const { error } = await supabase.from("match_signals").insert(signalData);
-
-      if (error) {
-        console.error("Error sending signal:", error, "Signal data:", signalData);
-      } else {
-        console.log(`Signal ${signalType} sent successfully`);
-      }
-    },
-    [match, user, getOpponentId]
-  );
-
-  // Signal queueing: signals can arrive before initializeWebRTC() finishes (camera permission etc.)
-  const enqueueSignal = useCallback((signalType: string, payload: SignalPayload, signalId: string) => {
-    if (processedSignals.current.has(signalId) || queuedSignals.current.has(signalId)) return;
-    queuedSignals.current.add(signalId);
-    pendingSignals.current.push({ id: signalId, signalType, payload });
-    console.log(`Queued ${signalType} signal (peer not ready yet)`);
-  }, []);
-
-  // We need processSignal defined before flushQueuedSignals
-  const processSignal = useCallback(
-    async (signalType: string, payload: SignalPayload, signalId: string) => {
-      if (processedSignals.current.has(signalId)) return;
-      if (!peerConnection.current) {
-        console.warn("Cannot process signal - peer connection not ready");
-        return;
-      }
-
-      console.log(`Processing ${signalType} signal`);
-
-      try {
-        if (signalType === "offer") {
-          await peerConnection.current.setRemoteDescription(
-            new RTCSessionDescription({ type: "offer", sdp: payload.sdp })
-          );
-          console.log("Remote description set from offer");
-
-          // Process any queued ICE candidates
-          while (iceCandidateQueue.current.length > 0) {
-            const candidate = iceCandidateQueue.current.shift()!;
-            await peerConnection.current.addIceCandidate(new RTCIceCandidate(candidate));
-            console.log("Added queued ICE candidate");
-          }
-
-          // Create and send answer
-          const answer = await peerConnection.current.createAnswer();
-          await peerConnection.current.setLocalDescription(answer);
-          console.log("Answer created and set as local description");
-
-          await sendSignal("answer", { type: "answer", sdp: answer.sdp });
-        } else if (signalType === "answer") {
-          if (peerConnection.current.signalingState === "have-local-offer") {
-            await peerConnection.current.setRemoteDescription(
-              new RTCSessionDescription({ type: "answer", sdp: payload.sdp })
-            );
-            console.log("Remote description set from answer");
-
-            // Process any queued ICE candidates
-            while (iceCandidateQueue.current.length > 0) {
-              const candidate = iceCandidateQueue.current.shift()!;
-              await peerConnection.current.addIceCandidate(new RTCIceCandidate(candidate));
-              console.log("Added queued ICE candidate");
-            }
-          } else {
-            console.warn(
-              "Ignoring answer - not in have-local-offer state:",
-              peerConnection.current.signalingState
-            );
-            return;
-          }
-        } else if (signalType === "candidate") {
-          const candidate: RTCIceCandidateInit = {
-            candidate: payload.candidate,
-            sdpMid: payload.sdpMid,
-            sdpMLineIndex: payload.sdpMLineIndex,
-          };
-
-          if (peerConnection.current.remoteDescription) {
-            await peerConnection.current.addIceCandidate(new RTCIceCandidate(candidate));
-            console.log("Added ICE candidate");
-          } else {
-            // Queue candidate until remote description is set
-            iceCandidateQueue.current.push(candidate);
-            console.log("Queued ICE candidate (no remote description yet)");
-          }
-        }
-
-        processedSignals.current.add(signalId);
-      } catch (error) {
-        console.error(`Error processing ${signalType} signal:`, error);
-      }
-    },
-    [sendSignal]
-  );
-
-  const flushQueuedSignals = useCallback(async () => {
-    if (!peerConnection.current) return;
-
-    // Keep original order
-    const queued = [...pendingSignals.current];
-    pendingSignals.current = [];
-
-    for (const item of queued) {
-      queuedSignals.current.delete(item.id);
-      await processSignal(item.signalType, item.payload, item.id);
-    }
-  }, [processSignal]);
-
-  const processOrQueueSignal = useCallback(async (signalType: string, payload: SignalPayload, signalId: string) => {
-    if (processedSignals.current.has(signalId) || queuedSignals.current.has(signalId)) return;
-
-    if (!peerConnection.current) {
-      enqueueSignal(signalType, payload, signalId);
-      return;
-    }
-
-    await processSignal(signalType, payload, signalId);
-  }, [enqueueSignal, processSignal]);
-
-  // Fetch and process existing signals
-  const fetchExistingSignals = async () => {
-    if (!matchId || !user) return;
-
-    const { data: signals, error } = await supabase
-      .from("match_signals")
-      .select("*")
-      .eq("match_id", matchId)
-      .eq("to_user_id", user.id)
-      .order("created_at", { ascending: true });
-
-    if (error) {
-      console.error("Error fetching signals:", error, "matchId:", matchId, "userId:", user.id);
-      return;
-    }
-    console.log(`Fetched ${signals?.length || 0} existing signals`);
-
-    for (const signal of signals || []) {
-      await processOrQueueSignal(
-        signal.signal_type,
-        signal.payload as unknown as SignalPayload,
-        signal.id
-      );
-    }
-  };
-
-  // Realtime subscription for signals
-  useEffect(() => {
-    if (!matchId || !user) return;
-
-    const channel = supabase
-      .channel(`signals-${matchId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "match_signals",
-          filter: `match_id=eq.${matchId}`,
-        },
-        async (payload) => {
-          const signal = payload.new as {
-            id: string;
-            to_user_id: string;
-            signal_type: string;
-            payload: unknown;
-          };
-
-          // Only process signals sent to us
-          if (signal.to_user_id === user.id) {
-            console.log(`Realtime: received ${signal.signal_type} signal`);
-            await processOrQueueSignal(signal.signal_type, signal.payload as unknown as SignalPayload, signal.id);
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [matchId, user?.id, processOrQueueSignal]);
-
-  // WebRTC functions
-  const initializeWebRTC = async (preferredFacingMode: "user" | "environment" = "environment") => {
-    try {
-      console.log("Initializing WebRTC...");
-
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        console.error("Camera API not available");
-        return false;
-      }
-
-      // Clear previous state
-      processedSignals.current.clear();
-      queuedSignals.current.clear();
-      pendingSignals.current = [];
-      iceCandidateQueue.current = [];
-
-      try {
-        localStream.current = await navigator.mediaDevices.getUserMedia({
-          video: {
-            width: { ideal: 640 },
-            height: { ideal: 480 },
-            facingMode: preferredFacingMode,
-          },
-          // Audio is disabled to avoid autoplay blocking (white video) on some browsers.
-          audio: false,
-        });
-      } catch (err) {
-        console.warn("Failed to get camera with ideal constraints, trying minimal constraints:", err);
-        // Fallback: try with minimal constraints (just facing mode)
-        localStream.current = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: preferredFacingMode,
-          },
-          audio: false,
-        });
-      }
-      setFacingMode(preferredFacingMode);
-      setLocalVideoReady(true);
-      console.log("Local stream obtained");
-
-      // Check zoom capabilities
-      const videoTrack = localStream.current.getVideoTracks()[0];
-      if (videoTrack) {
-        const capabilities = videoTrack.getCapabilities?.() as MediaTrackCapabilities & { zoom?: { min: number; max: number } };
-        if (capabilities?.zoom) {
-          setMaxZoom(capabilities.zoom.max || 1);
-          setZoomLevel(1);
-        }
-      }
-
-      // Reset remote media stream for this session
-      remoteMediaStream.current = null;
-      setRemoteStream(null);
-
-      peerConnection.current = new RTCPeerConnection({
-        iceServers: [
-          { urls: "stun:stun.l.google.com:19302" },
-          { urls: "stun:stun1.l.google.com:19302" },
-          { urls: "stun:stun2.l.google.com:19302" },
-          { urls: "stun:stun3.l.google.com:19302" },
-        ],
-      });
-
-      localStream.current.getTracks().forEach((track) => {
-        if (localStream.current && peerConnection.current) {
-          peerConnection.current.addTrack(track, localStream.current);
-          console.log("Added track:", track.kind);
-        }
-      });
-
-      // Safari/iOS: ensure we have a transceiver configured for receiving video
-      // This helps Safari properly negotiate bidirectional video
-      const transceivers = peerConnection.current.getTransceivers();
-      transceivers.forEach(t => {
-        if (t.receiver.track?.kind === "video" || t.sender.track?.kind === "video") {
-          t.direction = "sendrecv";
-        }
-      });
-
-      peerConnection.current.ontrack = (event) => {
-        console.log("Received remote track:", event.track.kind);
-        const track = event.track;
-
-        if (!remoteMediaStream.current) {
-          remoteMediaStream.current = new MediaStream();
-        }
-
-        // Avoid duplicate tracks (Safari can fire multiple times)
-        const existing = remoteMediaStream.current.getTracks().some(t => t.id === track.id);
-        if (!existing) {
-          remoteMediaStream.current.addTrack(track);
-        }
-
-        // IMPORTANT: Create new MediaStream instance for React state update
-        // Safari/iOS won't re-render if we pass the same object reference
-        setRemoteStream(new MediaStream(remoteMediaStream.current.getTracks()));
-
-        // iOS Safari often needs play() triggered after track unmutes
-        track.onunmute = () => {
-          console.log("Remote track unmuted, triggering state update");
-          setRemoteStream(new MediaStream(remoteMediaStream.current!.getTracks()));
-        };
-      };
-
-      peerConnection.current.onicecandidate = async (event) => {
-        if (event.candidate) {
-          console.log("New ICE candidate");
-          await sendSignal("candidate", {
-            type: "candidate",
-            candidate: event.candidate.candidate,
-            sdpMid: event.candidate.sdpMid,
-            sdpMLineIndex: event.candidate.sdpMLineIndex,
-          });
-        }
-      };
-
-      peerConnection.current.oniceconnectionstatechange = () => {
-        const state = peerConnection.current?.iceConnectionState || "unknown";
-        console.log("ICE connection state:", state);
-        setConnectionState(state);
-      };
-
-      peerConnection.current.onconnectionstatechange = () => {
-        console.log("Connection state:", peerConnection.current?.connectionState);
-      };
-
-      // Fetch any signals that were sent before we subscribed (or while we were waiting on permissions)
-      await fetchExistingSignals();
-      await flushQueuedSignals();
-
-      return true;
-    } catch (error) {
-      console.error("Error initializing WebRTC:", error);
-      return false;
-    }
-  };
-
-  const createOffer = async () => {
-    if (!peerConnection.current || !match) return;
-    console.log("Creating offer...");
-
-    const offer = await peerConnection.current.createOffer();
-    await peerConnection.current.setLocalDescription(offer);
-    console.log("Offer created and set as local description");
-
-    await sendSignal("offer", { type: "offer", sdp: offer.sdp });
-  };
-
-  const cleanupWebRTC = () => {
-    if (localStream.current) {
-      localStream.current.getTracks().forEach((track) => track.stop());
-      localStream.current = null;
-    }
-    if (peerConnection.current) {
-      peerConnection.current.close();
-      peerConnection.current = null;
-    }
-    remoteMediaStream.current = null;
-    setRemoteStream(null);
-    setLocalVideoReady(false);
-    setConnectionState("new");
-    processedSignals.current.clear();
-    queuedSignals.current.clear();
-    pendingSignals.current = [];
-    iceCandidateQueue.current = [];
-    setZoomLevel(1);
-    setMaxZoom(1);
-  };
-
-  // Switch between front/back camera
-  const switchCamera = async () => {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      console.error("Camera API not available");
-      return;
-    }
-
-    const newFacingMode = facingMode === "user" ? "environment" : "user";
-
-    // Stop current tracks
-    if (localStream.current) {
-      localStream.current.getTracks().forEach((track) => track.stop());
-    }
-
-    try {
-      const newStream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          width: { ideal: 640 },
-          height: { ideal: 640 },
-          aspectRatio: 1,
-          facingMode: newFacingMode,
-        },
-        audio: false,
-      });
-
-      localStream.current = newStream;
-      setFacingMode(newFacingMode);
-
-      // Check zoom capabilities for new camera
-      const videoTrack = newStream.getVideoTracks()[0];
-      if (videoTrack) {
-        const capabilities = videoTrack.getCapabilities?.() as MediaTrackCapabilities & { zoom?: { min: number; max: number } };
-        if (capabilities?.zoom) {
-          setMaxZoom(capabilities.zoom.max || 1);
-          setZoomLevel(1);
-        } else {
-          setMaxZoom(1);
-          setZoomLevel(1);
-        }
-      }
-
-      // Replace track in peer connection
-      if (peerConnection.current) {
-        const sender = peerConnection.current.getSenders().find(s => s.track?.kind === "video");
-        if (sender && videoTrack) {
-          await sender.replaceTrack(videoTrack);
-        }
-      }
-    } catch (error) {
-      console.error("Error switching camera:", error);
-    }
-  };
-
-  // Apply zoom to camera
-  const applyZoom = async (zoom: number) => {
-    if (!localStream.current) return;
-
-    const videoTrack = localStream.current.getVideoTracks()[0];
-    if (videoTrack) {
-      try {
-        await videoTrack.applyConstraints({
-          advanced: [{ zoom } as MediaTrackConstraintSet]
-        });
-        setZoomLevel(zoom);
-      } catch (error) {
-        console.error("Error applying zoom:", error);
-      }
-    }
-  };
+  // NOTE: Old P2P WebRTC signaling code removed - now using Cloudflare Calls SFU
 
   // Broadcast current darts to opponent in real-time
   const broadcastCurrentDarts = useCallback(async (darts: number[]) => {
@@ -1075,20 +630,21 @@ export function useMatch(matchId?: string) {
     registerThrow,
     refetch: fetchMatch,
     refetchPending: fetchPendingMatches,
-    localStream: localStream.current,
-    remoteStream,
-    localVideoReady,
-    connectionState,
+    // Cloudflare Calls video
+    localStream: cfLocalStream,
+    remoteStream: cfRemoteStream,
+    localVideoReady: cfLocalVideoReady,
+    connectionState: cfConnectionState,
     isGuest,
-    initializeWebRTC,
-    createOffer,
-    cleanupWebRTC,
+    initializeWebRTC: cfInitSession,
+    createOffer: async () => {}, // No longer needed with SFU
+    cleanupWebRTC: cfCleanup,
     // Camera controls
-    facingMode,
-    switchCamera,
-    zoomLevel,
-    maxZoom,
-    applyZoom,
+    facingMode: cfFacingMode,
+    switchCamera: cfSwitchCamera,
+    zoomLevel: cfZoomLevel,
+    maxZoom: cfMaxZoom,
+    applyZoom: cfApplyZoom,
     // Real-time input
     opponentCurrentDarts,
     broadcastCurrentDarts,

@@ -169,10 +169,10 @@ export function TournamentBracket({
                               className={cn(
                                 "flex items-center gap-2 p-2 rounded",
                                 match.winner_participant_id ===
-                                  match.player1_participant_id &&
-                                  "bg-primary/10",
+                                match.player1_participant_id &&
+                                "bg-primary/10",
                                 match.walkover_loser_id === match.player1_participant_id &&
-                                  "bg-destructive/10"
+                                "bg-destructive/10"
                               )}
                             >
                               {p1?.is_bot && (
@@ -190,8 +190,8 @@ export function TournamentBracket({
                               </span>
                               {match.winner_participant_id ===
                                 match.player1_participant_id && (
-                                <Trophy className="w-3 h-3 text-primary" />
-                              )}
+                                  <Trophy className="w-3 h-3 text-primary" />
+                                )}
                               {match.walkover_loser_id === match.player1_participant_id && (
                                 <span className="text-xs text-destructive">WO</span>
                               )}
@@ -204,10 +204,10 @@ export function TournamentBracket({
                               className={cn(
                                 "flex items-center gap-2 p-2 rounded",
                                 match.winner_participant_id ===
-                                  match.player2_participant_id &&
-                                  "bg-primary/10",
+                                match.player2_participant_id &&
+                                "bg-primary/10",
                                 match.walkover_loser_id === match.player2_participant_id &&
-                                  "bg-destructive/10"
+                                "bg-destructive/10"
                               )}
                             >
                               {p2?.is_bot && (
@@ -225,8 +225,8 @@ export function TournamentBracket({
                               </span>
                               {match.winner_participant_id ===
                                 match.player2_participant_id && (
-                                <Trophy className="w-3 h-3 text-primary" />
-                              )}
+                                  <Trophy className="w-3 h-3 text-primary" />
+                                )}
                               {match.walkover_loser_id === match.player2_participant_id && (
                                 <span className="text-xs text-destructive">WO</span>
                               )}

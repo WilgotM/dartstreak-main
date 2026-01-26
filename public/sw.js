@@ -1,5 +1,5 @@
-const CACHE_NAME = 'dartstreak-v2';
-const STATIC_CACHE = 'dartstreak-static-v1';
+const CACHE_NAME = 'dartstreak-v3';
+const STATIC_CACHE = 'dartstreak-static-v2';
 
 const STATIC_ASSETS = [
   '/logo.png',
@@ -41,7 +41,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  const isStaticAsset = 
+  const isStaticAsset =
     url.pathname.match(/\.(png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/) ||
     STATIC_ASSETS.includes(url.pathname);
 

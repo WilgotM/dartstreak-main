@@ -41,9 +41,10 @@ export function MatchThrowInput({ onComplete, remainingScore, disabled, onDartsC
     setDarts(prev => [...prev, { score, multiplier: 1 }]);
   }, [darts.length, disabled]);
 
-  const { isListening, isSupported, toggleListening } = useVoiceInput({
+  const { isListening, isSupported, needsRestart, toggleListening } = useVoiceInput({
     onScoreDetected: handleVoiceScore,
     disabled: disabled || darts.length >= 3,
+    autoStart: true, // Auto-start when it's the player's turn
   });
 
   // Notify parent of darts changes for real-time broadcast
@@ -106,8 +107,8 @@ export function MatchThrowInput({ onComplete, remainingScore, disabled, onDartsC
           <div
             key={i}
             className={`w-14 h-14 rounded-xl border-2 flex items-center justify-center text-xl font-display font-bold transition-all ${darts[i] !== undefined
-                ? "border-primary bg-primary/10 text-primary"
-                : "border-border bg-card text-muted-foreground"
+              ? "border-primary bg-primary/10 text-primary"
+              : "border-border bg-card text-muted-foreground"
               }`}
           >
             {darts[i] !== undefined ? darts[i].score : "-"}
@@ -142,6 +143,7 @@ export function MatchThrowInput({ onComplete, remainingScore, disabled, onDartsC
         <VoiceInputButton
           isListening={isListening}
           isSupported={isSupported}
+          needsRestart={needsRestart}
           onToggle={toggleListening}
           disabled={disabled || darts.length >= 3}
         />

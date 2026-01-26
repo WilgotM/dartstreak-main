@@ -36,9 +36,10 @@ export default function ThrowInput({ onComplete, leagueId, userId, leagueTimezon
     setThrows(prev => [...prev, score]);
   }, [throws.length]);
 
-  const { isListening, isSupported, toggleListening } = useVoiceInput({
+  const { isListening, isSupported, needsRestart, toggleListening } = useVoiceInput({
     onScoreDetected: handleVoiceScore,
     disabled: throws.length >= 9,
+    autoStart: true, // Auto-start when it's the player's turn
   });
 
   const {
@@ -218,7 +219,7 @@ export default function ThrowInput({ onComplete, leagueId, userId, leagueTimezon
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-background flex flex-col">
+    <div className="fixed inset-0 z-50 bg-background flex flex-col h-screen">
       {/* Camera preview - Square, takes ~30% of screen on mobile */}
       <div className="relative bg-black flex-shrink-0" style={{ height: "30vh" }}>
         {/* Always render video element so ref can be attached */}
@@ -263,118 +264,109 @@ export default function ThrowInput({ onComplete, leagueId, userId, leagueTimezon
         </div>
       </div>
 
-      {/* Numpad section - Similar size to camera */}
+      {/* Numpad section */}
       <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-        {/* Number pad */}
-        <div className="flex-1 bg-background p-3 flex flex-col justify-center overflow-y-auto">
-          <div className="grid grid-cols-5 gap-1.5 max-w-md mx-auto w-full">
+        {/* Number pad - matching MatchThrowInput layout */}
+        <div className="flex-1 bg-background p-3 flex flex-col justify-center overflow-y-auto space-y-3">
+          {/* Multiplier buttons + Voice - moved to top like MatchThrowInput */}
+          <div className="flex justify-center gap-2 max-w-md mx-auto w-full">
+            {([1, 2, 3] as const).map((m) => (
+              <Button
+                key={m}
+                variant={multiplier === m ? "default" : "outline"}
+                size="sm"
+                onClick={() => setMultiplier(m)}
+                disabled={throws.length >= 9}
+                className="w-16"
+              >
+                {m === 1 ? "Single" : m === 2 ? "Double" : "Triple"}
+              </Button>
+            ))}
+            <VoiceInputButton
+              isListening={isListening}
+              isSupported={isSupported}
+              needsRestart={needsRestart}
+              onToggle={toggleListening}
+              disabled={throws.length >= 9}
+            />
+          </div>
+
+          {/* Number grid - 5 columns like MatchThrowInput */}
+          <div className="grid grid-cols-5 gap-2 max-w-md mx-auto w-full">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map((num) => (
               <Button
                 key={num}
-                variant="outline"
+                variant="secondary"
+                size="sm"
                 onClick={() => handleNumberClick(num)}
                 disabled={throws.length >= 9}
-                className="h-10 sm:h-12 text-base sm:text-lg font-display font-bold hover:bg-primary hover:text-primary-foreground hover:border-primary active:scale-95 transition-all"
+                className="h-14 text-lg font-bold font-mono shadow-sm active:scale-95 transition-transform"
               >
                 {num}
               </Button>
             ))}
           </div>
 
-          {/* Multiplier buttons + Voice */}
-          <div className="flex gap-1.5 max-w-md mx-auto w-full mt-2">
-            <Button
-              variant={multiplier === 1 ? "default" : "outline"}
-              onClick={() => setMultiplier(1)}
-              disabled={throws.length >= 9}
-              className="flex-1 h-9 text-xs font-semibold"
-            >
-              Single
-            </Button>
-            <Button
-              variant={multiplier === 2 ? "default" : "outline"}
-              onClick={() => setMultiplier(2)}
-              disabled={throws.length >= 9}
-              className={`flex-1 h-9 text-xs font-semibold ${multiplier === 2 ? "bg-primary" : "border-primary text-primary hover:bg-primary hover:text-primary-foreground"}`}
-            >
-              Double
-            </Button>
-            <Button
-              variant={multiplier === 3 ? "default" : "outline"}
-              onClick={() => setMultiplier(3)}
-              disabled={throws.length >= 9}
-              className={`flex-1 h-9 text-xs font-semibold ${multiplier === 3 ? "bg-accent" : "border-accent text-accent hover:bg-accent hover:text-accent-foreground"}`}
-            >
-              Triple
-            </Button>
-            <VoiceInputButton
-              isListening={isListening}
-              isSupported={isSupported}
-              onToggle={toggleListening}
-              disabled={throws.length >= 9}
-              className="h-9"
-            />
-          </div>
-
-          {/* Special scores row */}
-          <div className="flex gap-1.5 max-w-md mx-auto w-full mt-1.5">
+          {/* Special buttons - Miss, 25, BULL, Undo (like MatchThrowInput) */}
+          <div className="flex gap-2 max-w-md mx-auto w-full">
             <Button
               variant="outline"
-              onClick={() => { setThrows((prev) => [...prev, 25]); setMultiplier(1); }}
-              disabled={throws.length >= 9}
-              className="flex-1 h-9 text-xs font-semibold border-dart-gold text-dart-gold hover:bg-dart-gold hover:text-foreground"
-            >
-              Bull 25
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => { setThrows((prev) => [...prev, 50]); setMultiplier(1); }}
-              disabled={throws.length >= 9}
-              className="flex-1 h-9 text-xs font-semibold border-dart-gold text-dart-gold hover:bg-dart-gold hover:text-foreground"
-            >
-              Bullseye
-            </Button>
-          </div>
-
-          {/* Action buttons */}
-          <div className="flex gap-1.5 max-w-md mx-auto w-full mt-1.5">
-            <Button
-              variant="secondary"
-              onClick={handleBackspace}
-              disabled={throws.length === 0}
-              className="flex-1 h-10"
-            >
-              <Delete className="w-4 h-4 mr-1" />
-              {t("throwInput.undo")}
-            </Button>
-            <Button
-              variant="secondary"
+              size="sm"
               onClick={handleMiss}
               disabled={throws.length >= 9}
-              className="flex-1 h-10 text-sm font-semibold uppercase tracking-wider"
+              className="flex-1 h-14 font-bold border-destructive/50 text-destructive hover:bg-destructive/10"
             >
               {t("throwInput.miss")}
             </Button>
-            {throws.length === 9 && (
-              <Button
-                onClick={handleComplete}
-                disabled={isCompleting || isUploading}
-                variant="hero"
-                className="flex-[2] h-10 font-bold text-sm uppercase tracking-wider"
-              >
-                {isUploading ? (
-                  <>
-                    <Upload className="w-4 h-4 mr-2 animate-pulse" />
-                    {t("throwInput.uploading")}
-                  </>
-                ) : isCompleting ? (
-                  t("throwInput.saving")
-                ) : (
-                  t("throwInput.done")
-                )}
-              </Button>
-            )}
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => { setThrows((prev) => [...prev, 25]); setMultiplier(1); }}
+              disabled={throws.length >= 9}
+              className="flex-1 h-14 font-bold text-emerald-600 dark:text-emerald-400 border-2 border-emerald-500/20"
+            >
+              25
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => { setThrows((prev) => [...prev, 50]); setMultiplier(1); }}
+              disabled={throws.length >= 9}
+              className="flex-1 h-14 font-black shadow-lg shadow-destructive/20"
+            >
+              BULL
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleBackspace}
+              disabled={throws.length === 0}
+              className="h-14 px-3"
+            >
+              <Delete className="w-6 h-6" />
+            </Button>
           </div>
+
+          {/* Confirm button - only show when 9 throws are done */}
+          {throws.length === 9 && (
+            <Button
+              onClick={handleComplete}
+              disabled={isCompleting || isUploading}
+              variant="hero"
+              className="w-full max-w-md mx-auto"
+            >
+              {isUploading ? (
+                <>
+                  <Upload className="w-4 h-4 mr-2 animate-pulse" />
+                  {t("throwInput.uploading")}
+                </>
+              ) : isCompleting ? (
+                t("throwInput.saving")
+              ) : (
+                `${t("throwInput.done")} (${totalScore})`
+              )}
+            </Button>
+          )}
         </div>
 
         {/* Score section at bottom - more compact */}
