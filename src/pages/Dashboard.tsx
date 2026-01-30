@@ -2,15 +2,11 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
-import { Trophy, Swords, ArrowRight, Award, Mail } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Trophy, ArrowRight } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { AppLayout } from "@/components/AppLayout";
-import { Button } from "@/components/ui/button";
-import { useMatch } from "@/hooks/useMatch";
 import { useFriends } from "@/hooks/useFriends";
-import { useTournaments } from "@/hooks/useTournaments";
 import { FriendsSheet } from "@/components/FriendsSheet";
-import { TournamentCountdown } from "@/components/TournamentCountdown";
 import { GuestWarningBanner } from "@/components/GuestWarningBanner";
 import { GuestInfoModal } from "@/components/GuestInfoModal";
 
@@ -18,12 +14,7 @@ export default function Dashboard() {
   const { user, profile, loading, isGuest, showGuestInfoModal, setShowGuestInfoModal } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { pendingMatches } = useMatch();
   const { totalNotifications } = useFriends();
-  const { myTournaments, tournamentInvites } = useTournaments();
-
-  const activeTournaments = myTournaments.filter(t => t.status === "in_progress");
-  const scheduledTournaments = myTournaments.filter(t => t.status === "scheduled");
 
   useEffect(() => {
     if (!loading && !user && !isGuest) {
@@ -63,166 +54,19 @@ export default function Dashboard() {
         {/* Guest Warning Banner */}
         {isGuest && <GuestWarningBanner variant="full" />}
 
-        {/* Quick Actions - All available for guests now */}
-        <section className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {/* Quick Actions - Leagues only */}
+        <section className="grid grid-cols-1 gap-3">
           <Card
             className="cursor-pointer hover:shadow-glow transition-all border-2 hover:border-primary/50"
             onClick={() => navigate("/leagues")}
           >
-            <CardContent className="py-6 text-center">
-              <Trophy className="w-10 h-10 mx-auto text-primary mb-2" />
-              <h3 className="font-display font-semibold">{t("nav.leagues")}</h3>
-              <p className="text-xs text-muted-foreground mt-1">{t("dashboard.competeDaily")}</p>
-            </CardContent>
-          </Card>
-
-          <Card
-            className="cursor-pointer hover:shadow-glow transition-all border-2 hover:border-primary/50 relative"
-            onClick={() => navigate("/matches")}
-          >
-            <CardContent className="py-6 text-center">
-              <Swords className="w-10 h-10 mx-auto text-primary mb-2" />
-              <h3 className="font-display font-semibold">{t("nav.matches")}</h3>
-              <p className="text-xs text-muted-foreground mt-1">{t("match.oneVsOne")}</p>
-              {pendingMatches.length > 0 && (
-                <span className="absolute top-2 right-2 w-6 h-6 bg-accent text-accent-foreground text-xs rounded-full flex items-center justify-center">
-                  {pendingMatches.length}
-                </span>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card
-            className="cursor-pointer hover:shadow-glow transition-all border-2 hover:border-primary/50"
-            onClick={() => navigate("/tournaments")}
-          >
-            <CardContent className="py-6 text-center">
-              <Award className="w-10 h-10 mx-auto text-primary mb-2" />
-              <h3 className="font-display font-semibold">{t("nav.tournaments")}</h3>
-              <p className="text-xs text-muted-foreground mt-1">{t("match.tournamentsDesc")}</p>
+            <CardContent className="py-8 text-center">
+              <Trophy className="w-12 h-12 mx-auto text-primary mb-3" />
+              <h3 className="font-display font-semibold text-lg">{t("nav.leagues")}</h3>
+              <p className="text-sm text-muted-foreground mt-1">{t("dashboard.competeDaily")}</p>
             </CardContent>
           </Card>
         </section>
-
-        {/* Pending Challenges */}
-        {pendingMatches.length > 0 && (
-          <section className="animate-slide-up">
-            <h2 className="text-lg font-display font-semibold mb-3 flex items-center gap-2">
-              <Swords className="w-5 h-5 text-accent" />
-              {t("match.challenges")}
-            </h2>
-            <div className="space-y-3">
-              {pendingMatches.slice(0, 3).map((match) => (
-                <Card
-                  key={match.id}
-                  className="cursor-pointer hover:shadow-glow transition-all border-2 border-accent/30 bg-accent/5"
-                  onClick={() => navigate(`/match/${match.id}`)}
-                >
-                  <CardContent className="py-4 flex items-center justify-between">
-                    <div>
-                      <p className="font-semibold">{match.player1_name} {t("match.challengesYou")}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {match.starting_score} • {match.checkout_type === "double_out" ? t("match.doubleOut") : t("match.straightOut")}
-                      </p>
-                    </div>
-                    <ArrowRight className="w-5 h-5 text-accent" />
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Tournament Invites */}
-        {tournamentInvites.length > 0 && (
-          <section className="animate-slide-up">
-            <h2 className="text-lg font-display font-semibold mb-3 flex items-center gap-2">
-              <Mail className="w-5 h-5 text-primary" />
-              {t("tournament.invites")}
-            </h2>
-            <div className="space-y-3">
-              {tournamentInvites.map((invite) => (
-                <Card
-                  key={invite.id}
-                  className="cursor-pointer hover:shadow-glow transition-all border-2 border-primary/30 bg-primary/5"
-                  onClick={() => navigate("/tournaments")}
-                >
-                  <CardContent className="py-4 flex items-center justify-between">
-                    <div>
-                      <p className="font-semibold">{t("tournament.invitedBy", { name: invite.from_profile?.display_name })}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {invite.tournament?.name}
-                      </p>
-                    </div>
-                    <ArrowRight className="w-5 h-5 text-primary" />
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Scheduled Tournaments - UPCOMING */}
-        {scheduledTournaments.length > 0 && (
-          <section className="animate-slide-up">
-            <h2 className="text-lg font-display font-semibold mb-3 flex items-center gap-2">
-              <Award className="w-5 h-5 text-amber-500" />
-              {t("tournament.upcoming") || "Kommande turneringar"}
-            </h2>
-            <div className="space-y-3">
-              {scheduledTournaments.map((tournament) => (
-                <Card
-                  key={tournament.id}
-                  className="cursor-pointer hover:shadow-glow transition-all border-2 border-amber-500/30 bg-amber-500/5 overflow-hidden"
-                  onClick={() => navigate(`/tournament/${tournament.id}`)}
-                >
-                  <CardContent className="py-4 flex items-center justify-between gap-4">
-                    <div className="min-w-0 flex-1">
-                      <p className="font-semibold truncate">{tournament.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {tournament.participant_count} {t("tournament.players")}
-                      </p>
-                    </div>
-                    {tournament.scheduled_start_at && (
-                      <div className="shrink-0 bg-background/50 p-2 rounded-lg border border-border/50 backdrop-blur-sm">
-                        <TournamentCountdown targetDate={tournament.scheduled_start_at} compact={false} />
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Active Tournaments */}
-        {activeTournaments.length > 0 && (
-          <section className="animate-slide-up">
-            <h2 className="text-lg font-display font-semibold mb-3 flex items-center gap-2">
-              <Award className="w-5 h-5 text-primary" />
-              {t("tournament.ongoing")}
-            </h2>
-            <div className="space-y-3">
-              {activeTournaments.map((tournament) => (
-                <Card
-                  key={tournament.id}
-                  className="cursor-pointer hover:shadow-glow transition-all border-2 border-primary/30"
-                  onClick={() => navigate(`/tournament/${tournament.id}`)}
-                >
-                  <CardContent className="py-4 flex items-center justify-between">
-                    <div>
-                      <p className="font-semibold">{tournament.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {t("tournament.statusInProgress")} • {tournament.participant_count} {t("tournament.players")}
-                      </p>
-                    </div>
-                    <ArrowRight className="w-5 h-5 text-primary" />
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </section>
-        )}
 
         {/* Notifications hint */}
         {totalNotifications > 0 && (

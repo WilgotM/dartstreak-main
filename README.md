@@ -2,17 +2,15 @@
 
 ![DartStreak Banner](public/og.png)
 
-DartStreak is a premium, modern platform for darts enthusiasts. Whether you're playing solo, challenging friends online, or competing in global leagues, DartStreak provides the ultimate tracking and social experience for the modern player.
+DartStreak is a premium, modern platform for darts enthusiasts. Track your performance in leagues and compete with friends to climb the ranks.
 
 **Play for free at [dartstreak.pages.dev](https://dartstreak.pages.dev/)**
 
 ## ✨ Key Features
 
-- **🎥 Online Multiplayer**: Play against opponents worldwide with real-time video support. Feel like you're in the same room!
-- **🏆 Leagues & Tournaments**: Create private leagues or join public tournaments. Track standings and climb the ranks.
-- **🎯 Daily Challenges**: Throw 9 darts every day, submit your score, and see where you rank on the global leaderboard.
+- ** Leagues**: Create private leagues or join public ones. Track standings and climb the ranks.
 - **📊 Advanced Analytics**: Detailed statistics and performance graphs to help you track your progress and improve your game.
-- **👥 Social Experience**: Invite friends via share links, add them to your friend list, and challenge them to live matches.
+- **👥 Social Experience**: Invite friends via share links and add them to your friend list.
 - **🌍 Multi-language**: Fully localized in **English** and **Swedish** (Spela på svenska!).
 - **📱 PWA Ready**: Install DartStreak on your home screen for a fast, native-app experience on iOS and Android.
 

@@ -156,38 +156,6 @@ export default function Index() {
           </div>
         </section>
 
-        {/* Why Us / USP Section */}
-        <section className="container mx-auto px-4 py-16 md:py-24 border-t border-border/50 bg-secondary/20">
-          <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl font-display font-bold text-center mb-16">
-              {t("landing.whyUsTitle")}
-            </h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              <FeatureCard
-                icon={<Video className="w-7 h-7" />}
-                title={t("landing.whyUs1Title")}
-                description={t("landing.whyUs1Desc")}
-                color="bg-blue-500/10 text-blue-500"
-                delay={0}
-              />
-              <FeatureCard
-                icon={<Gamepad2 className="w-7 h-7" />}
-                title={t("landing.whyUs2Title")}
-                description={t("landing.whyUs2Desc")}
-                color="bg-green-500/10 text-green-500"
-                delay={100}
-              />
-              <FeatureCard
-                icon={<Trophy className="w-7 h-7" />}
-                title={t("landing.whyUs3Title")}
-                description={t("landing.whyUs3Desc")}
-                color="bg-yellow-500/10 text-yellow-500"
-                delay={200}
-              />
-            </div>
-          </div>
-        </section>
-
         {/* League Explanation Section */}
         <section id="leagues" className="py-24 relative overflow-hidden">
           {/* Background Decorative Elements */}
@@ -237,6 +205,38 @@ export default function Index() {
                   />
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Why Us / USP Section */}
+        <section className="container mx-auto px-4 py-16 md:py-24 border-t border-border/50 bg-secondary/20">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-3xl font-display font-bold text-center mb-16">
+              {t("landing.whyUsTitle")}
+            </h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              <FeatureCard
+                icon={<Video className="w-7 h-7" />}
+                title={t("landing.whyUs1Title")}
+                description={t("landing.whyUs1Desc")}
+                color="bg-blue-500/10 text-blue-500"
+                delay={0}
+              />
+              <FeatureCard
+                icon={<Target className="w-7 h-7" />}
+                title={t("landing.whyUs2Title")}
+                description={t("landing.whyUs2Desc")}
+                color="bg-green-500/10 text-green-500"
+                delay={100}
+              />
+              <FeatureCard
+                icon={<Trophy className="w-7 h-7" />}
+                title={t("landing.whyUs3Title")}
+                description={t("landing.whyUs3Desc")}
+                color="bg-yellow-500/10 text-yellow-500"
+                delay={200}
+              />
             </div>
           </div>
         </section>

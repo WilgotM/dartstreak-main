@@ -56,7 +56,7 @@ export function GuestInfoModal({ open, onClose }: GuestInfoModalProps) {
     return (
         <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
             <DialogContent className="sm:max-w-md">
-                <DialogHeader className="text-center">
+                <DialogHeader className="text-center sm:text-center">
                     <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center">
                         <AlertTriangle className="w-8 h-8 text-amber-500" />
                     </div>
@@ -97,7 +97,7 @@ export function GuestInfoModal({ open, onClose }: GuestInfoModalProps) {
                     </p>
                 </div>
 
-                <DialogFooter className="flex-col gap-2 mt-4">
+                <DialogFooter className="flex-col gap-2 mt-4 sm:flex-col sm:space-x-0">
                     <Button
                         variant="hero"
                         size="lg"

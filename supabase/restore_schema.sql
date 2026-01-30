@@ -1,6 +1,6 @@
 -- =====================================================
--- DARTSTREAK FULL SCHEMA RESTORE
--- Run this in Supabase SQL Editor to restore everything
+-- DARTSTREAK SCHEMA RESTORE (LEAGUES ONLY)
+-- Run this in Supabase SQL Editor to restore league schema
 -- =====================================================
 
 -- 1. PROFILES TABLE
@@ -137,147 +137,6 @@ CREATE TABLE IF NOT EXISTS public.league_invites (
 
 ALTER TABLE public.league_invites ENABLE ROW LEVEL SECURITY;
 
--- 8. MATCHES TABLE
-CREATE TABLE IF NOT EXISTS public.matches (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  player1_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
-  player2_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
-  starting_score INTEGER NOT NULL DEFAULT 501 CHECK (starting_score IN (301, 501, 701)),
-  checkout_type TEXT NOT NULL DEFAULT 'double_out' CHECK (checkout_type IN ('straight_out', 'double_out')),
-  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'active', 'completed', 'cancelled')),
-  winner_id UUID REFERENCES public.profiles(id),
-  player1_score INTEGER NOT NULL,
-  player2_score INTEGER,
-  current_turn UUID,
-  is_offline BOOLEAN NOT NULL DEFAULT false,
-  legs_to_win INTEGER NOT NULL DEFAULT 1,
-  sets_to_win INTEGER NOT NULL DEFAULT 1,
-  player1_legs INTEGER NOT NULL DEFAULT 0,
-  player2_legs INTEGER NOT NULL DEFAULT 0,
-  player1_sets INTEGER NOT NULL DEFAULT 0,
-  player2_sets INTEGER NOT NULL DEFAULT 0,
-  signaling_data JSONB DEFAULT '{}'::jsonb,
-  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-  started_at TIMESTAMP WITH TIME ZONE,
-  completed_at TIMESTAMP WITH TIME ZONE
-);
-
-ALTER TABLE public.matches ENABLE ROW LEVEL SECURITY;
-
--- 9. MATCH THROWS TABLE
-CREATE TABLE IF NOT EXISTS public.match_throws (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  match_id UUID NOT NULL REFERENCES public.matches(id) ON DELETE CASCADE,
-  player_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
-  throw_number INTEGER NOT NULL,
-  dart_1 INTEGER NOT NULL DEFAULT 0,
-  dart_2 INTEGER NOT NULL DEFAULT 0,
-  dart_3 INTEGER NOT NULL DEFAULT 0,
-  total INTEGER NOT NULL DEFAULT 0,
-  remaining_score INTEGER NOT NULL,
-  is_bust BOOLEAN NOT NULL DEFAULT false,
-  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
-);
-
-ALTER TABLE public.match_throws ENABLE ROW LEVEL SECURITY;
-
--- 10. MATCH SIGNALS TABLE
-CREATE TABLE IF NOT EXISTS public.match_signals (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  match_id UUID NOT NULL REFERENCES public.matches(id) ON DELETE CASCADE,
-  from_user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
-  to_user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
-  signal_type TEXT NOT NULL CHECK (signal_type IN ('offer', 'answer', 'candidate')),
-  payload JSONB NOT NULL,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-
-CREATE INDEX IF NOT EXISTS match_signals_match_id_created_at_idx ON public.match_signals(match_id, created_at);
-ALTER TABLE public.match_signals ENABLE ROW LEVEL SECURITY;
-
--- 11. HEAD TO HEAD TABLE
-CREATE TABLE IF NOT EXISTS public.head_to_head (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  player1_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
-  player2_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
-  player1_wins INTEGER NOT NULL DEFAULT 0,
-  player2_wins INTEGER NOT NULL DEFAULT 0,
-  draws INTEGER NOT NULL DEFAULT 0,
-  last_match_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-  UNIQUE(player1_id, player2_id),
-  CONSTRAINT different_players CHECK (player1_id != player2_id)
-);
-
-ALTER TABLE public.head_to_head ENABLE ROW LEVEL SECURITY;
-
--- 12. TOURNAMENTS TABLE
-CREATE TABLE IF NOT EXISTS public.tournaments (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT NOT NULL,
-  created_by UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
-  is_public BOOLEAN NOT NULL DEFAULT false,
-  max_players INTEGER NOT NULL DEFAULT 8,
-  starting_score INTEGER NOT NULL DEFAULT 501,
-  checkout_type TEXT NOT NULL DEFAULT 'double_out',
-  legs_to_win INTEGER NOT NULL DEFAULT 1,
-  sets_to_win INTEGER NOT NULL DEFAULT 1,
-  bot_average INTEGER DEFAULT 50,
-  status TEXT NOT NULL DEFAULT 'open',
-  current_round INTEGER NOT NULL DEFAULT 1,
-  winner_id UUID REFERENCES public.profiles(id),
-  scheduled_start_at TIMESTAMP WITH TIME ZONE,
-  round_started_at TIMESTAMP WITH TIME ZONE,
-  started_at TIMESTAMP WITH TIME ZONE,
-  completed_at TIMESTAMP WITH TIME ZONE,
-  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
-);
-
-ALTER TABLE public.tournaments ENABLE ROW LEVEL SECURITY;
-
--- 13. TOURNAMENT PARTICIPANTS TABLE
-CREATE TABLE IF NOT EXISTS public.tournament_participants (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  tournament_id UUID NOT NULL REFERENCES public.tournaments(id) ON DELETE CASCADE,
-  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
-  is_bot BOOLEAN NOT NULL DEFAULT false,
-  bot_name TEXT,
-  seed INTEGER,
-  eliminated_at_round INTEGER,
-  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
-);
-
-ALTER TABLE public.tournament_participants ENABLE ROW LEVEL SECURITY;
-
--- 14. TOURNAMENT MATCHES TABLE
-CREATE TABLE IF NOT EXISTS public.tournament_matches (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  tournament_id UUID NOT NULL REFERENCES public.tournaments(id) ON DELETE CASCADE,
-  round INTEGER NOT NULL,
-  match_number INTEGER NOT NULL,
-  player1_participant_id UUID REFERENCES public.tournament_participants(id),
-  player2_participant_id UUID REFERENCES public.tournament_participants(id),
-  winner_participant_id UUID REFERENCES public.tournament_participants(id),
-  match_id UUID REFERENCES public.matches(id),
-  status TEXT NOT NULL DEFAULT 'pending',
-  scheduled_start_at TIMESTAMP WITH TIME ZONE,
-  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
-);
-
-ALTER TABLE public.tournament_matches ENABLE ROW LEVEL SECURITY;
-
--- 15. TOURNAMENT INVITES TABLE
-CREATE TABLE IF NOT EXISTS public.tournament_invites (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  tournament_id UUID NOT NULL REFERENCES public.tournaments(id) ON DELETE CASCADE,
-  from_user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
-  to_user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
-  status TEXT NOT NULL DEFAULT 'pending',
-  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
-);
-
-ALTER TABLE public.tournament_invites ENABLE ROW LEVEL SECURITY;
-
 -- =====================================================
 -- HELPER FUNCTIONS
 -- =====================================================
@@ -319,58 +178,6 @@ AS $$
     SELECT 1 FROM public.friendships
     WHERE (user_id = _user_id AND friend_id = _friend_id)
        OR (user_id = _friend_id AND friend_id = _user_id)
-  )
-$$;
-
-CREATE OR REPLACE FUNCTION public.is_tournament_creator(_tournament_id UUID, _user_id UUID)
-RETURNS BOOLEAN
-LANGUAGE sql
-STABLE
-SECURITY DEFINER
-SET search_path = public
-AS $$
-  SELECT EXISTS (
-    SELECT 1 FROM public.tournaments
-    WHERE id = _tournament_id AND created_by = _user_id
-  )
-$$;
-
-CREATE OR REPLACE FUNCTION public.is_tournament_participant(_tournament_id UUID, _user_id UUID)
-RETURNS BOOLEAN
-LANGUAGE sql
-STABLE
-SECURITY DEFINER
-SET search_path = public
-AS $$
-  SELECT EXISTS (
-    SELECT 1 FROM public.tournament_participants
-    WHERE tournament_id = _tournament_id AND user_id = _user_id
-  )
-$$;
-
-CREATE OR REPLACE FUNCTION public.is_tournament_public(_tournament_id UUID)
-RETURNS BOOLEAN
-LANGUAGE sql
-STABLE
-SECURITY DEFINER
-SET search_path = public
-AS $$
-  SELECT EXISTS (
-    SELECT 1 FROM public.tournaments
-    WHERE id = _tournament_id AND is_public = true
-  )
-$$;
-
-CREATE OR REPLACE FUNCTION public.is_tournament_open_and_public(_tournament_id UUID)
-RETURNS BOOLEAN
-LANGUAGE sql
-STABLE
-SECURITY DEFINER
-SET search_path = public
-AS $$
-  SELECT EXISTS (
-    SELECT 1 FROM public.tournaments
-    WHERE id = _tournament_id AND is_public = true AND status = 'open'
   )
 $$;
 
@@ -489,300 +296,28 @@ CREATE POLICY "Users can delete their invites" ON public.league_invites
   FOR DELETE USING (auth.uid() = from_user_id OR auth.uid() = to_user_id);
 
 -- =====================================================
--- RLS POLICIES - MATCHES
+-- CLEANUP FUNCTION
 -- =====================================================
-
-DROP POLICY IF EXISTS "Players can view their matches" ON public.matches;
-DROP POLICY IF EXISTS "Users can create matches" ON public.matches;
-DROP POLICY IF EXISTS "Players can update their matches" ON public.matches;
-
-CREATE POLICY "Players can view their matches" ON public.matches
-  FOR SELECT USING (auth.uid() = player1_id OR auth.uid() = player2_id);
-
-CREATE POLICY "Users can create matches" ON public.matches
-  FOR INSERT WITH CHECK (auth.uid() = player1_id);
-
-CREATE POLICY "Players can update their matches" ON public.matches
-  FOR UPDATE USING (auth.uid() = player1_id OR auth.uid() = player2_id);
-
--- =====================================================
--- RLS POLICIES - MATCH THROWS
--- =====================================================
-
-DROP POLICY IF EXISTS "Players can view match throws" ON public.match_throws;
-DROP POLICY IF EXISTS "Players can insert their throws" ON public.match_throws;
-
-CREATE POLICY "Players can view match throws" ON public.match_throws
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM public.matches
-      WHERE matches.id = match_throws.match_id
-      AND (matches.player1_id = auth.uid() OR matches.player2_id = auth.uid())
-    )
-  );
-
-CREATE POLICY "Players can insert their throws" ON public.match_throws
-  FOR INSERT WITH CHECK (auth.uid() = player_id);
-
--- =====================================================
--- RLS POLICIES - MATCH SIGNALS
--- =====================================================
-
-DROP POLICY IF EXISTS "Match participants can view signals" ON public.match_signals;
-DROP POLICY IF EXISTS "Match participants can send signals" ON public.match_signals;
-
-CREATE POLICY "Match participants can view signals" ON public.match_signals
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM public.matches m
-      WHERE m.id = match_signals.match_id
-        AND (m.player1_id = auth.uid() OR m.player2_id = auth.uid())
-    )
-  );
-
-CREATE POLICY "Match participants can send signals" ON public.match_signals
-  FOR INSERT WITH CHECK (
-    from_user_id = auth.uid()
-    AND EXISTS (
-      SELECT 1 FROM public.matches m
-      WHERE m.id = match_signals.match_id
-        AND (m.player1_id = auth.uid() OR m.player2_id = auth.uid())
-        AND (m.player1_id = to_user_id OR m.player2_id = to_user_id)
-        AND to_user_id <> auth.uid()
-    )
-  );
-
--- =====================================================
--- RLS POLICIES - HEAD TO HEAD
--- =====================================================
-
-DROP POLICY IF EXISTS "Users can view their own head_to_head records" ON public.head_to_head;
-
-CREATE POLICY "Users can view their own head_to_head records" ON public.head_to_head
-  FOR SELECT USING (auth.uid() = player1_id OR auth.uid() = player2_id);
-
--- =====================================================
--- RLS POLICIES - TOURNAMENTS
--- =====================================================
-
-DROP POLICY IF EXISTS "Anyone can view public tournaments" ON public.tournaments;
-DROP POLICY IF EXISTS "Creators can view their tournaments" ON public.tournaments;
-DROP POLICY IF EXISTS "Participants can view their tournaments" ON public.tournaments;
-DROP POLICY IF EXISTS "Users can create tournaments" ON public.tournaments;
-DROP POLICY IF EXISTS "Creators can update their tournaments" ON public.tournaments;
-DROP POLICY IF EXISTS "Creators can delete their tournaments" ON public.tournaments;
-
-CREATE POLICY "Anyone can view public tournaments" ON public.tournaments
-  FOR SELECT USING (is_public = true);
-
-CREATE POLICY "Creators can view their tournaments" ON public.tournaments
-  FOR SELECT USING (created_by = auth.uid());
-
-CREATE POLICY "Participants can view their tournaments" ON public.tournaments
-  FOR SELECT USING (public.is_tournament_participant(id, auth.uid()));
-
-CREATE POLICY "Users can create tournaments" ON public.tournaments
-  FOR INSERT WITH CHECK (auth.uid() = created_by);
-
-CREATE POLICY "Creators can update their tournaments" ON public.tournaments
-  FOR UPDATE USING (auth.uid() = created_by);
-
-CREATE POLICY "Creators can delete their tournaments" ON public.tournaments
-  FOR DELETE USING (auth.uid() = created_by);
-
--- =====================================================
--- RLS POLICIES - TOURNAMENT PARTICIPANTS
--- =====================================================
-
-DROP POLICY IF EXISTS "View participants of public tournaments" ON public.tournament_participants;
-DROP POLICY IF EXISTS "View own participation" ON public.tournament_participants;
-DROP POLICY IF EXISTS "Creators can view their tournament participants" ON public.tournament_participants;
-DROP POLICY IF EXISTS "Users can join open public tournaments" ON public.tournament_participants;
-DROP POLICY IF EXISTS "Creators can insert participants" ON public.tournament_participants;
-DROP POLICY IF EXISTS "Creators can update participants" ON public.tournament_participants;
-DROP POLICY IF EXISTS "Creators can delete participants" ON public.tournament_participants;
-
-CREATE POLICY "View participants of public tournaments" ON public.tournament_participants
-  FOR SELECT USING (public.is_tournament_public(tournament_id));
-
-CREATE POLICY "View own participation" ON public.tournament_participants
-  FOR SELECT USING (user_id = auth.uid());
-
-CREATE POLICY "Creators can view their tournament participants" ON public.tournament_participants
-  FOR SELECT USING (public.is_tournament_creator(tournament_id, auth.uid()));
-
-CREATE POLICY "Users can join open public tournaments" ON public.tournament_participants
-  FOR INSERT WITH CHECK (user_id = auth.uid() AND public.is_tournament_open_and_public(tournament_id));
-
-CREATE POLICY "Creators can insert participants" ON public.tournament_participants
-  FOR INSERT WITH CHECK (public.is_tournament_creator(tournament_id, auth.uid()));
-
-CREATE POLICY "Creators can update participants" ON public.tournament_participants
-  FOR UPDATE USING (public.is_tournament_creator(tournament_id, auth.uid()));
-
-CREATE POLICY "Creators can delete participants" ON public.tournament_participants
-  FOR DELETE USING (public.is_tournament_creator(tournament_id, auth.uid()));
-
--- =====================================================
--- RLS POLICIES - TOURNAMENT MATCHES
--- =====================================================
-
-DROP POLICY IF EXISTS "View matches of public tournaments" ON public.tournament_matches;
-DROP POLICY IF EXISTS "Participants can view their tournament matches" ON public.tournament_matches;
-DROP POLICY IF EXISTS "Creators can view their tournament matches" ON public.tournament_matches;
-DROP POLICY IF EXISTS "Creators can insert matches" ON public.tournament_matches;
-DROP POLICY IF EXISTS "Creators can update matches" ON public.tournament_matches;
-DROP POLICY IF EXISTS "Creators can delete matches" ON public.tournament_matches;
-DROP POLICY IF EXISTS "Participants can update their matches" ON public.tournament_matches;
-
-CREATE POLICY "View matches of public tournaments" ON public.tournament_matches
-  FOR SELECT USING (public.is_tournament_public(tournament_id));
-
-CREATE POLICY "Participants can view their tournament matches" ON public.tournament_matches
-  FOR SELECT USING (public.is_tournament_participant(tournament_id, auth.uid()));
-
-CREATE POLICY "Creators can view their tournament matches" ON public.tournament_matches
-  FOR SELECT USING (public.is_tournament_creator(tournament_id, auth.uid()));
-
-CREATE POLICY "Creators can insert matches" ON public.tournament_matches
-  FOR INSERT WITH CHECK (public.is_tournament_creator(tournament_id, auth.uid()));
-
-CREATE POLICY "Creators can update matches" ON public.tournament_matches
-  FOR UPDATE USING (public.is_tournament_creator(tournament_id, auth.uid()));
-
-CREATE POLICY "Creators can delete matches" ON public.tournament_matches
-  FOR DELETE USING (public.is_tournament_creator(tournament_id, auth.uid()));
-
-CREATE POLICY "Participants can update their matches" ON public.tournament_matches
-  FOR UPDATE USING (
-    EXISTS (
-      SELECT 1 FROM public.tournament_participants tp
-      WHERE tp.tournament_id = tournament_id AND tp.user_id = auth.uid()
-    )
-  );
-
--- =====================================================
--- RLS POLICIES - TOURNAMENT INVITES
--- =====================================================
-
-DROP POLICY IF EXISTS "Users can view their tournament invites" ON public.tournament_invites;
-DROP POLICY IF EXISTS "Tournament creators can send invites" ON public.tournament_invites;
-DROP POLICY IF EXISTS "Recipients can update invites" ON public.tournament_invites;
-DROP POLICY IF EXISTS "Users can delete their invites" ON public.tournament_invites;
-
-CREATE POLICY "Users can view their tournament invites" ON public.tournament_invites
-  FOR SELECT USING (from_user_id = auth.uid() OR to_user_id = auth.uid());
-
-CREATE POLICY "Tournament creators can send invites" ON public.tournament_invites
-  FOR INSERT WITH CHECK (
-    from_user_id = auth.uid() AND
-    EXISTS (
-      SELECT 1 FROM public.tournaments t
-      WHERE t.id = tournament_id AND t.created_by = auth.uid()
-    )
-  );
-
-CREATE POLICY "Recipients can update invites" ON public.tournament_invites
-  FOR UPDATE USING (to_user_id = auth.uid());
-
-CREATE POLICY "Users can delete their invites" ON public.tournament_invites
-  FOR DELETE USING (from_user_id = auth.uid() OR to_user_id = auth.uid());
-
--- =====================================================
--- TRIGGERS AND FUNCTIONS
--- =====================================================
-
-CREATE OR REPLACE FUNCTION public.update_head_to_head()
-RETURNS TRIGGER AS $$
-DECLARE
-  p1_id UUID;
-  p2_id UUID;
-  winner_id UUID;
-  h2h_id UUID;
-BEGIN
-  IF NEW.status = 'completed' AND NEW.player2_id IS NOT NULL THEN
-    IF NEW.player1_id < NEW.player2_id THEN
-      p1_id := NEW.player1_id;
-      p2_id := NEW.player2_id;
-      winner_id := NEW.winner_id;
-    ELSE
-      p1_id := NEW.player2_id;
-      p2_id := NEW.player1_id;
-      winner_id := NEW.winner_id;
-    END IF;
-
-    INSERT INTO public.head_to_head (player1_id, player2_id)
-    VALUES (p1_id, p2_id)
-    ON CONFLICT (player1_id, player2_id) DO NOTHING
-    RETURNING id INTO h2h_id;
-
-    IF h2h_id IS NULL THEN
-      SELECT id INTO h2h_id FROM public.head_to_head
-      WHERE player1_id = p1_id AND player2_id = p2_id;
-    END IF;
-
-    IF winner_id IS NULL THEN
-      UPDATE public.head_to_head
-      SET draws = draws + 1, last_match_at = now()
-      WHERE id = h2h_id;
-    ELSIF winner_id = p1_id THEN
-      UPDATE public.head_to_head
-      SET player1_wins = player1_wins + 1, last_match_at = now()
-      WHERE id = h2h_id;
-    ELSE
-      UPDATE public.head_to_head
-      SET player2_wins = player2_wins + 1, last_match_at = now()
-      WHERE id = h2h_id;
-    END IF;
-  END IF;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 CREATE OR REPLACE FUNCTION public.cleanup_old_data()
 RETURNS TRIGGER AS $$
 BEGIN
-  DELETE FROM public.matches WHERE created_at < (now() - interval '1 month');
-
-  DELETE FROM public.matches
-  WHERE (player1_id = NEW.player1_id OR player2_id = NEW.player1_id)
-  AND id NOT IN (
-    SELECT id FROM public.matches
-    WHERE (player1_id = NEW.player1_id OR player2_id = NEW.player1_id)
-    ORDER BY created_at DESC LIMIT 10
-  );
-
-  IF NEW.player2_id IS NOT NULL THEN
-    DELETE FROM public.matches
-    WHERE (player1_id = NEW.player2_id OR player2_id = NEW.player2_id)
-    AND id NOT IN (
-      SELECT id FROM public.matches
-      WHERE (player1_id = NEW.player2_id OR player2_id = NEW.player2_id)
-      ORDER BY created_at DESC LIMIT 10
-    );
-  END IF;
-
-  DELETE FROM public.friend_requests WHERE created_at < (now() - interval '1 month') OR status != 'pending';
-  DELETE FROM public.league_invites WHERE created_at < (now() - interval '1 month') OR status != 'pending';
-  DELETE FROM public.tournament_invites WHERE created_at < (now() - interval '1 month') OR status != 'pending';
-
-  DELETE FROM public.tournaments WHERE status = 'completed' AND completed_at < (now() - interval '1 hour');
-  DELETE FROM public.tournaments WHERE (status = 'open' OR status = 'scheduled') AND created_at < (now() - interval '48 hours');
-
+  -- Clean up old non-pending friend requests (older than 1 month or not pending)
+  DELETE FROM public.friend_requests 
+  WHERE created_at < (now() - interval '1 month') OR status != 'pending';
+  
+  -- Clean up old non-pending league invites (older than 1 month or not pending)
+  DELETE FROM public.league_invites 
+  WHERE created_at < (now() - interval '1 month') OR status != 'pending';
+  
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-DROP TRIGGER IF EXISTS on_match_completed ON public.matches;
-CREATE TRIGGER on_match_completed
-  AFTER UPDATE OF status ON public.matches
-  FOR EACH ROW
-  WHEN (NEW.status = 'completed')
-  EXECUTE FUNCTION public.update_head_to_head();
-
-DROP TRIGGER IF EXISTS on_match_cleanup ON public.matches;
-CREATE TRIGGER on_match_cleanup
-  AFTER INSERT OR UPDATE OF status ON public.matches
+-- Trigger for cleanup
+DROP TRIGGER IF EXISTS on_league_cleanup ON public.league_invites;
+CREATE TRIGGER on_league_cleanup
+  AFTER INSERT OR UPDATE ON public.league_invites
   FOR EACH ROW
   EXECUTE FUNCTION public.cleanup_old_data();
 
@@ -794,44 +329,44 @@ DO $$
 BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_publication_tables
-    WHERE pubname = 'supabase_realtime' AND tablename = 'matches'
+    WHERE pubname = 'supabase_realtime' AND tablename = 'leagues'
   ) THEN
-    ALTER PUBLICATION supabase_realtime ADD TABLE public.matches;
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.leagues;
   END IF;
 
   IF NOT EXISTS (
     SELECT 1 FROM pg_publication_tables
-    WHERE pubname = 'supabase_realtime' AND tablename = 'match_throws'
+    WHERE pubname = 'supabase_realtime' AND tablename = 'league_members'
   ) THEN
-    ALTER PUBLICATION supabase_realtime ADD TABLE public.match_throws;
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.league_members;
   END IF;
 
   IF NOT EXISTS (
     SELECT 1 FROM pg_publication_tables
-    WHERE pubname = 'supabase_realtime' AND tablename = 'match_signals'
+    WHERE pubname = 'supabase_realtime' AND tablename = 'daily_throws'
   ) THEN
-    ALTER PUBLICATION supabase_realtime ADD TABLE public.match_signals;
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.daily_throws;
   END IF;
 
   IF NOT EXISTS (
     SELECT 1 FROM pg_publication_tables
-    WHERE pubname = 'supabase_realtime' AND tablename = 'tournaments'
+    WHERE pubname = 'supabase_realtime' AND tablename = 'friendships'
   ) THEN
-    ALTER PUBLICATION supabase_realtime ADD TABLE public.tournaments;
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.friendships;
   END IF;
 
   IF NOT EXISTS (
     SELECT 1 FROM pg_publication_tables
-    WHERE pubname = 'supabase_realtime' AND tablename = 'tournament_participants'
+    WHERE pubname = 'supabase_realtime' AND tablename = 'friend_requests'
   ) THEN
-    ALTER PUBLICATION supabase_realtime ADD TABLE public.tournament_participants;
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.friend_requests;
   END IF;
 
   IF NOT EXISTS (
     SELECT 1 FROM pg_publication_tables
-    WHERE pubname = 'supabase_realtime' AND tablename = 'tournament_matches'
+    WHERE pubname = 'supabase_realtime' AND tablename = 'league_invites'
   ) THEN
-    ALTER PUBLICATION supabase_realtime ADD TABLE public.tournament_matches;
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.league_invites;
   END IF;
 END $$;
 

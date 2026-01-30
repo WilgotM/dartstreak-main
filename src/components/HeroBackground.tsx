@@ -20,7 +20,7 @@ export function HeroBackground() {
                 className="fixed top-0 left-0 w-full h-[100vh] flex items-center justify-center z-0 will-change-transform"
                 style={{
                     opacity: Math.max(0.3, 1 - scrollY / 800),
-                    transform: `translateY(${100 + scrollY * 0.05}px)`
+                    transform: `translateY(${-40 + scrollY * 0.05}px)`
                 }}
             >
                 <style>
@@ -75,7 +75,7 @@ function DartboardSVG() {
     return (
         <svg
             viewBox="-250 -250 500 500"
-            className="w-[90vw] h-[90vw] md:w-[650px] md:h-[650px] overflow-visible"
+            className="w-[90vw] h-[90vw] md:w-[650px] md:h-[650px] max-h-[75vh] max-w-[75vh] overflow-visible"
             style={{
                 filter: "drop-shadow(30px 30px 50px rgba(0,0,0,0.6))"
             }}

@@ -35,14 +35,13 @@ export default function Legal() {
                                         we collect your email address, display name, and avatar URL to create your profile.
                                     </li>
                                     <li>
-                                        <span className="text-foreground font-medium">Game Data:</span> We store your match history,
+                                        <span className="text-foreground font-medium">Game Data:</span> We store your throw history,
                                         statistics, and league participation data to provide the core functionality of the service.
                                     </li>
                                     <li>
-                                        <span className="text-foreground font-medium">Video Data:</span> If you use the online match feature
-                                        with camera enabled, video streams are transmitted directly between peers (P2P). We do not record
-                                        or store these streams unless explicitly stated for specific tournament verification purposes,
-                                        in which case temporary recordings may be stored in our secure database.
+                                        <span className="text-foreground font-medium">Video Data:</span> When you record your daily throws in a league,
+                                        short video clips are captured and stored securely in our database for verification purposes.
+                                        These recordings are associated with your throw submissions and may be viewed by other league members.
                                     </li>
                                 </ul>
                             </section>
@@ -53,7 +52,7 @@ export default function Legal() {
                                 <ul className="list-disc pl-5 space-y-2">
                                     <li><span className="text-foreground font-medium">Supabase:</span> Used for our database, authentication, and secure data storage.</li>
                                     <li><span className="text-foreground font-medium">Google OAuth:</span> Used solely for secure user authentication.</li>
-                                    <li><span className="text-foreground font-medium">Daily.co / WebRTC:</span> Used for facilitating real-time video connections (if applicable).</li>
+                                    <li><span className="text-foreground font-medium">Supabase Storage:</span> Used for storing throw verification videos securely.</li>
                                 </ul>
                             </section>
 
