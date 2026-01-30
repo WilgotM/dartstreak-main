@@ -6,7 +6,7 @@ import { useCamera } from "@/hooks/useCamera";
 import { supabase } from "@/integrations/supabase/client";
 import { useVoiceInput } from "@/hooks/useVoiceInput";
 import { VoiceInputButton } from "@/components/VoiceInputButton";
-import { useDartCaller } from "@/hooks/useDartCaller";
+
 
 type Multiplier = 1 | 2 | 3;
 
@@ -27,8 +27,8 @@ export default function ThrowInput({ onComplete, leagueId, userId, leagueTimezon
   const [isUploading, setIsUploading] = useState(false);
   const [cameraStarted, setCameraStarted] = useState(false);
   const [multiplier, setMultiplier] = useState<Multiplier>(1);
-  const lastCalledRoundRef = useRef(0);
-  const { playScore } = useDartCaller();
+
+
 
   // Handle voice score detection
   const handleVoiceScore = useCallback((score: number) => {
@@ -59,18 +59,7 @@ export default function ThrowInput({ onComplete, leagueId, userId, leagueTimezon
     }
   }, [cameraStarted, startRecording]);
 
-  // Play dart caller sound after each completed round (every 3 darts)
-  useEffect(() => {
-    const currentRound = Math.floor(throws.length / 3);
 
-    // If we just completed a round and haven't called it yet
-    if (throws.length > 0 && throws.length % 3 === 0 && currentRound > lastCalledRoundRef.current) {
-      const roundStart = (currentRound - 1) * 3;
-      const roundScore = throws[roundStart] + throws[roundStart + 1] + throws[roundStart + 2];
-      playScore(roundScore);
-      lastCalledRoundRef.current = currentRound;
-    }
-  }, [throws, playScore]);
 
   // Timer countdown
   useEffect(() => {

@@ -1,4 +1,4 @@
-# DartStreak - Free Online Darts Game
+# DartStreak - Free Online Darts Leagues
 # https://dartstreak.pages.dev
 
 User-agent: Googlebot

@@ -10,12 +10,12 @@ interface AppLayoutProps {
 
 export function AppLayout({ children, hideNav = false }: AppLayoutProps) {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex flex-col h-[100dvh] bg-background overflow-hidden">
       {!hideNav && <DesktopNav />}
       {!hideNav && <MobileHeader />}
-      <div className={hideNav ? "" : "pb-20 pt-[calc(56px+env(safe-area-inset-top))] md:pb-0 md:pt-16"}>
+      <main className={`flex-1 overflow-y-auto overscroll-contain ${hideNav ? "" : "pt-[calc(56px+env(safe-area-inset-top))] md:pt-16"}`}>
         {children}
-      </div>
+      </main>
       {!hideNav && <BottomNav />}
     </div>
   );

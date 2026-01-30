@@ -9,12 +9,15 @@ import { useFriends } from "@/hooks/useFriends";
 import { FriendsSheet } from "@/components/FriendsSheet";
 import { GuestWarningBanner } from "@/components/GuestWarningBanner";
 import { GuestInfoModal } from "@/components/GuestInfoModal";
+import { motion } from "framer-motion";
+import { useHaptics } from "@/hooks/useHaptics";
 
 export default function Dashboard() {
   const { user, profile, loading, isGuest, showGuestInfoModal, setShowGuestInfoModal } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { totalNotifications } = useFriends();
+  const { light, medium } = useHaptics();
 
   useEffect(() => {
     if (!loading && !user && !isGuest) {
@@ -56,31 +59,47 @@ export default function Dashboard() {
 
         {/* Quick Actions - Leagues only */}
         <section className="grid grid-cols-1 gap-3">
-          <Card
-            className="cursor-pointer hover:shadow-glow transition-all border-2 hover:border-primary/50"
-            onClick={() => navigate("/leagues")}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.3 }}
+            whileTap={{ scale: 0.98 }}
           >
-            <CardContent className="py-8 text-center">
-              <Trophy className="w-12 h-12 mx-auto text-primary mb-3" />
-              <h3 className="font-display font-semibold text-lg">{t("nav.leagues")}</h3>
-              <p className="text-sm text-muted-foreground mt-1">{t("dashboard.competeDaily")}</p>
-            </CardContent>
-          </Card>
+            <Card
+              className="cursor-pointer hover:shadow-glow transition-all border-2 hover:border-primary/50"
+              onClick={() => {
+                medium();
+                navigate("/leagues");
+              }}
+            >
+              <CardContent className="py-8 text-center">
+                <Trophy className="w-12 h-12 mx-auto text-primary mb-3" />
+                <h3 className="font-display font-semibold text-lg">{t("nav.leagues")}</h3>
+                <p className="text-sm text-muted-foreground mt-1">{t("dashboard.competeDaily")}</p>
+              </CardContent>
+            </Card>
+          </motion.div>
         </section>
 
         {/* Notifications hint */}
         {totalNotifications > 0 && (
-          <FriendsSheet>
-            <Card className="cursor-pointer hover:shadow-soft transition-all">
-              <CardContent className="py-4 flex items-center justify-between">
-                <div>
-                  <p className="font-semibold">{t("dashboard.youHaveNotifications", { count: totalNotifications })}</p>
-                  <p className="text-sm text-muted-foreground">{t("dashboard.checkProfile")}</p>
-                </div>
-                <ArrowRight className="w-5 h-5 text-muted-foreground" />
-              </CardContent>
-            </Card>
-          </FriendsSheet>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.3 }}
+          >
+            <FriendsSheet>
+              <Card className="cursor-pointer hover:shadow-soft transition-all">
+                <CardContent className="py-4 flex items-center justify-between">
+                  <div>
+                    <p className="font-semibold">{t("dashboard.youHaveNotifications", { count: totalNotifications })}</p>
+                    <p className="text-sm text-muted-foreground">{t("dashboard.checkProfile")}</p>
+                  </div>
+                  <ArrowRight className="w-5 h-5 text-muted-foreground" />
+                </CardContent>
+              </Card>
+            </FriendsSheet>
+          </motion.div>
         )}
       </main>
 

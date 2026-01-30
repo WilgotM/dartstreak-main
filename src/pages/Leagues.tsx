@@ -9,10 +9,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Target, Plus, Users, Trophy, ArrowRight, Calendar } from "lucide-react";
+import { Plus, Users, Trophy, ArrowRight, Calendar } from "lucide-react";
 import { format } from "date-fns";
 import { enUS, sv } from "date-fns/locale";
 import { AppLayout } from "@/components/AppLayout";
+import { motion } from "framer-motion";
+import { useHaptics } from "@/hooks/useHaptics";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface League {
   id: string;
@@ -29,6 +32,7 @@ export default function Leagues() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
+  const { light, medium } = useHaptics();
   const [leagues, setLeagues] = useState<League[]>([]);
   const [loadingLeagues, setLoadingLeagues] = useState(true);
   const [newLeagueName, setNewLeagueName] = useState("");
@@ -285,13 +289,24 @@ export default function Leagues() {
         </div>
 
         {loadingLeagues ? (
-          <div className="space-y-4">
-            {[1, 2].map((i) => (
-              <Card key={i} className="animate-pulse">
-                <CardHeader>
-                  <div className="h-6 bg-muted rounded w-1/2" />
-                  <div className="h-4 bg-muted rounded w-1/3 mt-2" />
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <Card key={i} className="overflow-hidden">
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2 flex-1">
+                      <Skeleton className="h-5 w-2/3" />
+                      <Skeleton className="h-4 w-1/3" />
+                    </div>
+                    <Skeleton className="w-5 h-5 rounded" />
+                  </div>
                 </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="h-6 w-16 rounded-md" />
+                    <Skeleton className="h-4 w-24" />
+                  </div>
+                </CardContent>
               </Card>
             ))}
           </div>
@@ -310,40 +325,53 @@ export default function Leagues() {
             {leagues.map((league, index) => {
               const status = getLeagueStatus(league);
               return (
-                <Card
+                <motion.div
                   key={league.id}
-                  className="group cursor-pointer hover:shadow-glow transition-all duration-300 border-2 hover:border-primary/50 animate-slide-up"
-                  style={{ animationDelay: `${index * 50}ms` }}
-                  onClick={() => navigate(`/league/${league.id}`)}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    delay: index * 0.05,
+                    duration: 0.3,
+                    ease: [0.25, 0.46, 0.45, 0.94]
+                  }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle className="font-display text-lg group-hover:text-primary transition-colors">
-                          {league.name}
-                        </CardTitle>
-                        <CardDescription className="mt-1">
-                          {t("dashboard.round")} {league.current_round} {t("dashboard.of")} {league.total_rounds}
-                        </CardDescription>
+                  <Card
+                    className="group cursor-pointer hover:shadow-glow transition-all duration-300 border-2 hover:border-primary/50"
+                    onClick={() => {
+                      light();
+                      navigate(`/league/${league.id}`);
+                    }}
+                  >
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <CardTitle className="font-display text-lg group-hover:text-primary transition-colors">
+                            {league.name}
+                          </CardTitle>
+                          <CardDescription className="mt-1">
+                            {t("dashboard.round")} {league.current_round} {t("dashboard.of")} {league.total_rounds}
+                          </CardDescription>
+                        </div>
+                        <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
                       </div>
-                      <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <span className="px-2 py-1 bg-secondary rounded-md font-mono text-xs">
-                        {league.invite_code}
-                      </span>
-                      <span>• {t("dashboard.inviteCode")}</span>
-                    </div>
-                    {status && (
-                      <div className="flex items-center gap-2 mt-2 text-sm text-primary">
-                        <Calendar className="w-4 h-4" />
-                        <span>{status}</span>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <span className="px-2 py-1 bg-secondary rounded-md font-mono text-xs">
+                          {league.invite_code}
+                        </span>
+                        <span>• {t("dashboard.inviteCode")}</span>
                       </div>
-                    )}
-                  </CardContent>
-                </Card>
+                      {status && (
+                        <div className="flex items-center gap-2 mt-2 text-sm text-primary">
+                          <Calendar className="w-4 h-4" />
+                          <span>{status}</span>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </motion.div>
               );
             })}
           </div>
