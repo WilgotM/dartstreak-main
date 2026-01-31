@@ -1,14 +1,10 @@
-import { Home, Trophy, User, Users } from "lucide-react";
+import { Home, Trophy, User } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useTranslation } from "react-i18next";
-import { useFriends } from "@/hooks/useFriends";
-import { FriendsSheet } from "@/components/FriendsSheet";
-import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 export function DesktopNav() {
   const { t } = useTranslation();
-  const { totalNotifications } = useFriends();
 
   return (
     <nav className="hidden md:flex fixed top-0 left-0 right-0 z-50 h-20">
@@ -49,20 +45,9 @@ export function DesktopNav() {
           </NavLink>
         </div>
 
-        {/* Friends/Inbox and Theme Toggle */}
+        {/* Theme Toggle */}
         <div className="flex items-center gap-3">
           <ThemeToggle />
-          <FriendsSheet>
-            <Button variant="ghost" size="sm" className="relative h-10 px-4 rounded-full text-white hover:bg-white/10 hover:text-white border border-transparent hover:border-white/10">
-              <Users className="w-4 h-4 mr-2" />
-              {t("friends.title")}
-              {totalNotifications > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-neon-orange text-white text-xs font-bold rounded-full flex items-center justify-center shadow-[0_0_10px_rgba(255,100,0,0.5)]">
-                  {totalNotifications}
-                </span>
-              )}
-            </Button>
-          </FriendsSheet>
         </div>
       </div>
     </nav>

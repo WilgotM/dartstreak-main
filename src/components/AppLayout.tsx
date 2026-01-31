@@ -16,7 +16,7 @@ export function AppLayout({ children, hideNav = false }: AppLayoutProps) {
 
       {!hideNav && <DesktopNav />}
       {!hideNav && <MobileHeader />}
-      <main className={`flex-1 overflow-y-auto overscroll-contain ${hideNav ? "" : "pt-[calc(56px+env(safe-area-inset-top))] md:pt-16"}`}>
+      <main className={`flex-1 overflow-y-auto overscroll-contain ${hideNav ? "" : "pt-[calc(56px+env(safe-area-inset-top))] md:pt-20"}`}>
         {children}
       </main>
       {!hideNav && <BottomNav />}

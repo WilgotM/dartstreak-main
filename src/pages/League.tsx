@@ -17,14 +17,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { Target, ArrowLeft, Trophy, Calendar, TrendingUp, Copy, Check, Trash2, Crown, Award, Video, UserPlus } from "lucide-react";
+import { Target, ArrowLeft, Trophy, Calendar, TrendingUp, Copy, Check, Trash2, Crown, Award, Video, QrCode } from "lucide-react";
 import { format, addWeeks, isWithinInterval } from "date-fns";
 import { enUS, sv } from "date-fns/locale";
 import ThrowInput from "@/components/ThrowInput";
 import { VideoDialog } from "@/components/VideoDialog";
-import { InviteFriendDialog } from "@/components/InviteFriendDialog";
 import { CountdownTimer } from "@/components/CountdownTimer";
 import { AppLayout } from "@/components/AppLayout";
+import { LeagueQRDialog } from "@/components/LeagueQRDialog";
 
 interface League {
   id: string;
@@ -417,7 +417,7 @@ export default function League() {
 
   return (
     <AppLayout>
-      <header className="fixed top-0 left-0 right-0 z-40 p-4 pt-[calc(env(safe-area-inset-top)+1rem)] md:pt-6">
+      <header className="sticky top-0 z-40 p-4 pt-[calc(env(safe-area-inset-top)+1rem)] md:pt-6 bg-background/80 backdrop-blur-md border-b border-white/10">
         <div className="container mx-auto px-2">
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" onClick={() => navigate("/leagues")} className="shrink-0 text-white hover:bg-white/10 rounded-full w-10 h-10">
@@ -434,13 +434,33 @@ export default function League() {
             </div>
 
             <div className="flex items-center gap-2">
-              {!isFinished && (
-                <InviteFriendDialog leagueId={league.id} leagueName={league.name}>
-                  <Button variant="ghost" size="icon" className="shrink-0 text-white hover:bg-white/10 rounded-full w-10 h-10">
-                    <UserPlus className="w-5 h-5" />
+              {/* Show invite code and QR for owner only */}
+              {isOwner && (
+                <div className="flex items-center gap-1 bg-white/10 rounded-full px-3 py-1.5">
+                  <span className="text-sm font-mono text-white">{league.invite_code}</span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      copyInviteCode();
+                      toast.success(t("league.inviteCodeCopied"));
+                    }}
+                    className="shrink-0 text-white hover:bg-white/10 rounded-full w-8 h-8"
+                  >
+                    {copied ? <Check className="w-4 h-4 text-neon-green" /> : <Copy className="w-4 h-4" />}
                   </Button>
-                </InviteFriendDialog>
+                  <LeagueQRDialog inviteCode={league.invite_code} leagueName={league.name}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="shrink-0 text-white hover:bg-white/10 rounded-full w-8 h-8"
+                    >
+                      <QrCode className="w-4 h-4" />
+                    </Button>
+                  </LeagueQRDialog>
+                </div>
               )}
+
               {isOwner && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
@@ -473,7 +493,7 @@ export default function League() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 pb-32 pt-28 md:pt-32">
+      <main className="container mx-auto px-4 py-6 pb-32">
         <div className="max-w-4xl mx-auto space-y-8">
           {/* League Finished View */}
           {isFinished && winner && (

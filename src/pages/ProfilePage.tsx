@@ -87,14 +87,14 @@ export default function ProfilePage() {
         dragElastic={0.2}
         onDragEnd={handleDragEnd}
       >
-        <header className="border-b border-border bg-card/80 backdrop-blur-md fixed top-[calc(56px+env(safe-area-inset-top))] md:top-16 left-0 right-0 z-40">
+        <header className="sticky top-0 z-40 bg-card/80 backdrop-blur-md border-b border-border">
           <div className="container mx-auto px-4 py-4 flex items-center justify-between">
             <h1 className="text-xl font-display font-bold text-foreground">{t("nav.profile")}</h1>
             <LanguageSwitch />
           </div>
         </header>
 
-        <main className="container mx-auto px-4 py-6 space-y-6 pt-24 pb-24">
+        <main className="container mx-auto px-4 py-6 space-y-6 pb-24">
           {/* Guest Warning Banner */}
           {isGuest && <GuestWarningBanner variant="full" />}
 
