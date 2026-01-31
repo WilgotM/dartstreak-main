@@ -193,39 +193,40 @@ export default function Leagues() {
 
   return (
     <AppLayout>
-      <header className="border-b border-border bg-card/80 backdrop-blur-md fixed top-[calc(56px+env(safe-area-inset-top))] md:top-16 left-0 right-0 z-40">
-        <div className="container mx-auto px-4 py-4">
-          <h1 className="text-xl font-display font-bold">{t("nav.leagues")}</h1>
+      <header className="fixed top-0 left-0 right-0 z-40 p-4 pt-[calc(env(safe-area-inset-top)+1rem)] md:pt-6">
+        <div className="container mx-auto px-2">
+          <h1 className="text-3xl font-display font-bold text-white drop-shadow-md">{t("nav.leagues")}</h1>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6 pt-24">
-        <div className="flex gap-3 mb-6">
+      <main className="container mx-auto px-4 py-6 pt-28 md:pt-32 pb-24">
+        <div className="flex gap-4 mb-8">
           <Dialog open={joinDialogOpen} onOpenChange={setJoinDialogOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline" className="flex-1">
-                <Users className="w-4 h-4 mr-2" />
+              <Button variant="outline" className="flex-1 h-12 glass-panel border-white/10 hover:bg-white/5 hover:text-white transition-all text-base">
+                <Users className="w-5 h-5 mr-2 text-neon-green" />
                 {t("dashboard.join")}
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="glass-card border-white/10 text-white">
               <DialogHeader>
-                <DialogTitle>{t("dashboard.joinLeague")}</DialogTitle>
-                <DialogDescription>
+                <DialogTitle className="text-white">{t("dashboard.joinLeague")}</DialogTitle>
+                <DialogDescription className="text-gray-400">
                   {t("dashboard.enterInviteCode")}
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4 pt-4">
                 <div className="space-y-2">
-                  <Label htmlFor="joinCode">{t("dashboard.inviteCode")}</Label>
+                  <Label htmlFor="joinCode" className="text-gray-300">{t("dashboard.inviteCode")}</Label>
                   <Input
                     id="joinCode"
                     placeholder="abc123"
                     value={joinCode}
                     onChange={(e) => setJoinCode(e.target.value)}
+                    className="bg-black/20 border-white/10 text-white placeholder:text-gray-600 focus:border-neon-green/50"
                   />
                 </div>
-                <Button onClick={joinLeague} className="w-full" variant="hero">
+                <Button onClick={joinLeague} className="w-full bg-neon-green text-black hover:bg-neon-green/90 font-bold">
                   {t("dashboard.joinButton")}
                 </Button>
               </div>
@@ -234,30 +235,31 @@ export default function Leagues() {
 
           <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
             <DialogTrigger asChild>
-              <Button variant="hero" className="flex-1">
-                <Plus className="w-4 h-4 mr-2" />
+              <Button className="flex-1 h-12 bg-neon-orange text-white hover:bg-neon-orange/90 shadow-[0_0_20px_rgba(255,100,0,0.3)] transition-all text-base font-bold border-none">
+                <Plus className="w-5 h-5 mr-2" />
                 {t("dashboard.createLeague")}
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="glass-card border-white/10 text-white">
               <DialogHeader>
-                <DialogTitle>{t("dashboard.createNewLeague")}</DialogTitle>
-                <DialogDescription>
+                <DialogTitle className="text-white">{t("dashboard.createNewLeague")}</DialogTitle>
+                <DialogDescription className="text-gray-400">
                   {t("dashboard.createLeagueDesc")}
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4 pt-4">
                 <div className="space-y-2">
-                  <Label htmlFor="leagueName">{t("dashboard.leagueName")}</Label>
+                  <Label htmlFor="leagueName" className="text-gray-300">{t("dashboard.leagueName")}</Label>
                   <Input
                     id="leagueName"
                     placeholder=""
                     value={newLeagueName}
                     onChange={(e) => setNewLeagueName(e.target.value)}
+                    className="bg-black/20 border-white/10 text-white placeholder:text-gray-600 focus:border-neon-orange/50"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="rounds">{t("dashboard.numberOfRounds")}</Label>
+                  <Label htmlFor="rounds" className="text-gray-300">{t("dashboard.numberOfRounds")}</Label>
                   <Input
                     id="rounds"
                     type="number"
@@ -265,22 +267,24 @@ export default function Leagues() {
                     max={52}
                     value={totalRounds}
                     onChange={(e) => setTotalRounds(parseInt(e.target.value) || 4)}
+                    className="bg-black/20 border-white/10 text-white placeholder:text-gray-600 focus:border-neon-orange/50"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="startDate">{t("dashboard.leagueStarts")}</Label>
+                  <Label htmlFor="startDate" className="text-gray-300">{t("dashboard.leagueStarts")}</Label>
                   <Input
                     id="startDate"
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
                     min={format(new Date(), "yyyy-MM-dd")}
+                    className="bg-black/20 border-white/10 text-white placeholder:text-gray-600 focus:border-neon-orange/50"
                   />
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-gray-500">
                     {t("dashboard.leagueCanStartNow")}
                   </p>
                 </div>
-                <Button onClick={createLeague} className="w-full" variant="hero">
+                <Button onClick={createLeague} className="w-full bg-neon-orange text-white hover:bg-neon-orange/90 font-bold">
                   {t("dashboard.create")}
                 </Button>
               </div>
@@ -289,39 +293,29 @@ export default function Leagues() {
         </div>
 
         {loadingLeagues ? (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {[1, 2, 3].map((i) => (
-              <Card key={i} className="overflow-hidden">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-2 flex-1">
-                      <Skeleton className="h-5 w-2/3" />
-                      <Skeleton className="h-4 w-1/3" />
-                    </div>
-                    <Skeleton className="w-5 h-5 rounded" />
+              <div key={i} className="glass-card p-6 rounded-2xl animate-pulse">
+                <div className="flex items-start justify-between">
+                  <div className="space-y-3 flex-1">
+                    <div className="h-6 w-1/2 bg-white/10 rounded" />
+                    <div className="h-4 w-1/3 bg-white/5 rounded" />
                   </div>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="flex items-center gap-2">
-                    <Skeleton className="h-6 w-16 rounded-md" />
-                    <Skeleton className="h-4 w-24" />
-                  </div>
-                </CardContent>
-              </Card>
+                  <div className="w-8 h-8 bg-white/10 rounded-full" />
+                </div>
+              </div>
             ))}
           </div>
         ) : leagues.length === 0 ? (
-          <Card className="text-center py-12">
-            <CardContent>
-              <Trophy className="w-16 h-16 mx-auto text-muted-foreground/50 mb-4" />
-              <h3 className="text-xl font-display font-semibold mb-2">{t("dashboard.noLeaguesYet")}</h3>
-              <p className="text-muted-foreground mb-6">
-                {t("dashboard.noLeaguesDesc")}
-              </p>
-            </CardContent>
-          </Card>
+          <div className="glass-card rounded-[2rem] p-12 text-center border-white/5">
+            <Trophy className="w-20 h-20 mx-auto text-white/20 mb-6" />
+            <h3 className="text-2xl font-display font-bold mb-3 text-white">{t("dashboard.noLeaguesYet")}</h3>
+            <p className="text-gray-400 text-lg">
+              {t("dashboard.noLeaguesDesc")}
+            </p>
+          </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {leagues.map((league, index) => {
               const status = getLeagueStatus(league);
               return (
@@ -336,41 +330,44 @@ export default function Leagues() {
                   }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <Card
-                    className="group cursor-pointer hover:shadow-glow transition-all duration-300 border-2 hover:border-primary/50"
+                  <div
+                    className="group cursor-pointer glass-card rounded-2xl p-6 hover:shadow-glow transition-all duration-300 relative overflow-hidden"
                     onClick={() => {
                       light();
                       navigate(`/league/${league.id}`);
                     }}
                   >
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <CardTitle className="font-display text-lg group-hover:text-primary transition-colors">
-                            {league.name}
-                          </CardTitle>
-                          <CardDescription className="mt-1">
-                            {t("dashboard.round")} {league.current_round} {t("dashboard.of")} {league.total_rounds}
-                          </CardDescription>
-                        </div>
-                        <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                    <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-neon-green to-transparent opacity-50 group-hover:opacity-100 transition-opacity" />
+
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <h3 className="font-display font-bold text-xl text-white group-hover:text-neon-green transition-colors">
+                          {league.name}
+                        </h3>
+                        <p className="text-sm text-gray-400 mt-1">
+                          {t("dashboard.round")} <span className="text-white">{league.current_round}</span> {t("dashboard.of")} {league.total_rounds}
+                        </p>
                       </div>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <span className="px-2 py-1 bg-secondary rounded-md font-mono text-xs">
+                      <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-neon-green/20 group-hover:text-neon-green transition-all">
+                        <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-neon-green" />
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/5">
+                      <div className="flex items-center gap-2 text-xs text-gray-500">
+                        <span className="px-3 py-1 bg-black/30 rounded-full font-mono text-xs border border-white/5">
                           {league.invite_code}
                         </span>
-                        <span>• {t("dashboard.inviteCode")}</span>
+                        <span>{t("dashboard.inviteCode")}</span>
                       </div>
                       {status && (
-                        <div className="flex items-center gap-2 mt-2 text-sm text-primary">
-                          <Calendar className="w-4 h-4" />
+                        <div className="flex items-center gap-1.5 text-xs text-neon-green font-medium bg-neon-green/10 px-2 py-1 rounded-full">
+                          <Calendar className="w-3 h-3" />
                           <span>{status}</span>
                         </div>
                       )}
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </div>
                 </motion.div>
               );
             })}

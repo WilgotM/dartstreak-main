@@ -226,6 +226,7 @@ export default function League() {
         if (score > winnerScore) {
           winnerScore = score;
           const member = members.find((m) => m.user_id === userId);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           winner = (member?.profiles as any)?.display_name || t("common.unknown");
         }
       });
@@ -250,6 +251,7 @@ export default function League() {
 
       return {
         user_id: member.user_id,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         display_name: (member.profiles as any)?.display_name || t("common.unknown"),
         today_score: todayThrow?.total_score || 0,
         week_score: currentRoundThrows.reduce((sum, t) => sum + (t.total_score || 0), 0),
@@ -415,126 +417,111 @@ export default function League() {
 
   return (
     <AppLayout>
-      <header className="border-b border-border bg-card/80 backdrop-blur-md fixed top-[calc(56px+env(safe-area-inset-top))] md:top-16 left-0 right-0 z-40 transition-all duration-200">
-        <div className="container mx-auto px-4 py-3">
-          {/* Top row: back button + title */}
-          <div className="flex items-center gap-3 mb-2">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/leagues")} className="shrink-0">
-              <ArrowLeft className="w-5 h-5" />
+      <header className="fixed top-0 left-0 right-0 z-40 p-4 pt-[calc(env(safe-area-inset-top)+1rem)] md:pt-6">
+        <div className="container mx-auto px-2">
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="icon" onClick={() => navigate("/leagues")} className="shrink-0 text-white hover:bg-white/10 rounded-full w-10 h-10">
+              <ArrowLeft className="w-6 h-6" />
             </Button>
             <div className="min-w-0 flex-1">
-              <h1 className="font-display font-bold text-lg truncate">{league.name}</h1>
-              <p className="text-xs text-muted-foreground truncate">
+              <h1 className="font-display font-bold text-2xl text-white truncate drop-shadow-md">{league.name}</h1>
+              <p className="text-sm text-gray-300 truncate font-medium">
                 {isFinished
                   ? t("league.finished")
-                  : `${t("league.round")} ${league.current_round} ${t("league.of")} ${league.total_rounds} • ${t("league.newRoundEvery")} ${getWeekdayName(league.round_start_day)}`
+                  : `${t("league.round")} ${league.current_round} ${t("league.of")} ${league.total_rounds}`
                 }
               </p>
             </div>
-          </div>
-          {/* Bottom row: actions */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
-            {!isFinished && (
-              <>
-                <Button variant="outline" size="sm" onClick={copyInviteCode} className="shrink-0">
-                  {copied ? (
-                    <Check className="w-4 h-4 mr-1.5" />
-                  ) : (
-                    <Copy className="w-4 h-4 mr-1.5" />
-                  )}
-                  <span className="text-xs">{league.invite_code}</span>
-                </Button>
+
+            <div className="flex items-center gap-2">
+              {!isFinished && (
                 <InviteFriendDialog leagueId={league.id} leagueName={league.name}>
-                  <Button variant="default" size="sm" className="shrink-0">
-                    <UserPlus className="w-4 h-4 mr-1.5" />
-                    <span className="text-xs">{t("friends.inviteFriend")}</span>
+                  <Button variant="ghost" size="icon" className="shrink-0 text-white hover:bg-white/10 rounded-full w-10 h-10">
+                    <UserPlus className="w-5 h-5" />
                   </Button>
                 </InviteFriendDialog>
-              </>
-            )}
-            {isOwner && (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive hover:bg-destructive/10 shrink-0 ml-auto">
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>{t("league.deleteConfirmTitle")}</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      {t("league.deleteConfirmDesc", { name: league.name })}
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={handleDeleteLeague}
-                      disabled={deleting}
-                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                    >
-                      {deleting ? t("league.deleting") : t("league.deleteLeague")}
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            )}
+              )}
+              {isOwner && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="ghost" size="icon" className="shrink-0 text-white hover:bg-red-500/20 hover:text-red-400 rounded-full w-10 h-10">
+                      <Trash2 className="w-5 h-5" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent className="glass-card border-white/10 text-white">
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="text-white">{t("league.deleteConfirmTitle")}</AlertDialogTitle>
+                      <AlertDialogDescription className="text-gray-400">
+                        {t("league.deleteConfirmDesc", { name: league.name })}
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel className="bg-transparent border-white/10 text-white hover:bg-white/10">{t("common.cancel")}</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleDeleteLeague}
+                        disabled={deleting}
+                        className="bg-red-600 hover:bg-red-700 text-white"
+                      >
+                        {deleting ? t("league.deleting") : t("league.deleteLeague")}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
+            </div>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 pb-32 pt-32">
+      <main className="container mx-auto px-4 py-8 pb-32 pt-28 md:pt-32">
         <div className="max-w-4xl mx-auto space-y-8">
           {/* League Finished View */}
           {isFinished && winner && (
-            <Card className="border-2 border-dart-gold/50 bg-gradient-to-b from-dart-gold/10 to-transparent animate-slide-up relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-8 opacity-10">
-                <Trophy className="w-64 h-64 rotate-12" />
-              </div>
-              <CardContent className="py-12 text-center relative z-10">
-                <div className="w-24 h-24 rounded-full bg-dart-gold/20 flex items-center justify-center mx-auto mb-6 ring-4 ring-dart-gold/30">
-                  <Trophy className="w-12 h-12 text-dart-gold" />
+            <div className="glass-card rounded-[2.5rem] p-0 overflow-hidden shadow-[0_0_50px_rgba(251,191,36,0.15)] animate-slide-up relative">
+              <div className="absolute inset-0 bg-gradient-to-b from-dart-gold/10 to-transparent pointer-events-none" />
+
+              <div className="relative z-10 p-8 sm:p-12 text-center">
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-dart-gold to-yellow-600 flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(251,191,36,0.4)]">
+                  <Trophy className="w-12 h-12 text-black fill-current" />
                 </div>
 
                 <h2 className="text-sm font-bold uppercase tracking-widest text-dart-gold mb-2">
                   {t("league.winner")}
                 </h2>
-                <h1 className="text-4xl sm:text-5xl font-display font-bold mb-4">
+                <h1 className="text-4xl sm:text-5xl font-display font-bold text-white mb-4">
                   {winner.display_name}
                 </h1>
-                <p className="text-xl text-muted-foreground mb-8 max-w-lg mx-auto">
+                <p className="text-lg text-gray-300 mb-8 max-w-lg mx-auto">
                   {t("league.congratulations", {
                     name: winner.display_name,
                     league: league.name
                   })}
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                  <div className="text-center p-4 bg-background/50 backdrop-blur-sm rounded-xl border border-border">
-                    <p className="text-xs text-muted-foreground uppercase">{t("league.finalScore")}</p>
-                    <p className="text-2xl font-mono font-bold">{winner.total_score}</p>
-                  </div>
+                <div className="inline-block px-8 py-4 bg-black/30 backdrop-blur-md rounded-2xl border border-dart-gold/20">
+                  <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">{t("league.finalScore")}</p>
+                  <p className="text-3xl font-mono font-bold text-dart-gold">{winner.total_score}</p>
                 </div>
 
                 {isOwner && (
-                  <div className="mt-8 flex flex-col items-center gap-3">
+                  <div className="mt-10">
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <Button variant="hero" size="lg" className="w-full sm:w-auto">
+                        <Button className="bg-dart-gold text-black hover:bg-dart-gold/90 font-bold px-8 py-6 rounded-full text-lg shadow-lg">
                           <Crown className="w-5 h-5 mr-2" />
                           {t("league.startNewSeason")}
                         </Button>
                       </AlertDialogTrigger>
-                      <AlertDialogContent>
+                      <AlertDialogContent className="glass-card border-white/10 text-white">
                         <AlertDialogHeader>
-                          <AlertDialogTitle>{t("league.restartConfirmTitle")}</AlertDialogTitle>
-                          <AlertDialogDescription>
+                          <AlertDialogTitle className="text-white">{t("league.restartConfirmTitle")}</AlertDialogTitle>
+                          <AlertDialogDescription className="text-gray-400">
                             {t("league.restartConfirmDesc")}
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
-                          <AlertDialogAction onClick={handleRestartLeague}>
+                          <AlertDialogCancel className="bg-transparent border-white/10 text-white hover:bg-white/10">{t("common.cancel")}</AlertDialogCancel>
+                          <AlertDialogAction onClick={handleRestartLeague} className="bg-dart-gold text-black hover:bg-dart-gold/90">
                             {t("league.restart")}
                           </AlertDialogAction>
                         </AlertDialogFooter>
@@ -542,203 +529,191 @@ export default function League() {
                     </AlertDialog>
                   </div>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           )}
 
           {/* League not started notice */}
           {!leagueStarted && !isFinished && league.started_at && (
-            <Card className="border-2 border-primary/50 bg-primary/5 animate-slide-up">
-              <CardContent className="py-8 text-center">
-                <Calendar className="w-12 h-12 mx-auto text-primary mb-4" />
-                <h2 className="text-2xl font-display font-bold text-primary mb-2">
-                  {t("league.leagueNotStarted")}
-                </h2>
-                <p className="text-muted-foreground">
-                  {t("league.firstRoundStarts")}{" "}
-                  <span className="font-semibold text-foreground">
-                    {format(new Date(league.started_at), "EEEE d MMMM", { locale: dateLocale })}
-                  </span>
-                </p>
-              </CardContent>
-            </Card>
+            <div className="glass-card rounded-2xl p-8 text-center animate-slide-up border-neon-green/30 bg-neon-green/5">
+              <Calendar className="w-12 h-12 mx-auto text-neon-green mb-4" />
+              <h2 className="text-2xl font-display font-bold text-white mb-2">
+                {t("league.leagueNotStarted")}
+              </h2>
+              <p className="text-gray-400">
+                {t("league.firstRoundStarts")}{" "}
+                <span className="font-semibold text-neon-green">
+                  {format(new Date(league.started_at), "EEEE d MMMM", { locale: dateLocale })}
+                </span>
+              </p>
+            </div>
           )}
 
-          {/* Today's throws - only show if league has started AND not finished */}
+          {/* Today's throws */}
           {leagueStarted && !isFinished && (
-            <Card className="border-2 animate-slide-up">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-5 h-5 text-primary" />
-                    <CardTitle className="font-display">
-                      {format(new Date(), "EEEE d MMMM", { locale: dateLocale })}
-                    </CardTitle>
+            <div className="glass-card rounded-3xl p-6 sm:p-8 animate-slide-up bg-gradient-to-br from-white/5 to-transparent">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-neon-green/20 flex items-center justify-center">
+                    <Calendar className="w-5 h-5 text-neon-green" />
                   </div>
-                  <CountdownTimer timezone={creatorTimezone} />
+                  <div>
+                    <p className="text-xs text-neon-green font-bold uppercase tracking-wider">{t("league.today")}</p>
+                    <h2 className="text-xl font-display font-bold text-white">
+                      {format(new Date(), "EEEE d MMMM", { locale: dateLocale })}
+                    </h2>
+                  </div>
                 </div>
-              </CardHeader>
-              <CardContent>
+                <CountdownTimer timezone={creatorTimezone} />
+              </div>
+
+              <div className="bg-black/20 rounded-2xl p-6 border border-white/5">
                 {hasThrown ? (
-                  <div className="text-center py-4">
-                    <p className="text-muted-foreground mb-2">{t("league.todaysPoints")}</p>
-                    <p className="text-4xl font-display font-bold text-primary">{totalToday}</p>
+                  <div className="text-center py-2">
+                    <p className="text-gray-400 text-sm mb-1 uppercase tracking-wider">{t("league.todaysPoints")}</p>
+                    <p className="text-6xl font-display font-bold text-neon-green drop-shadow-[0_0_15px_rgba(72,255,160,0.3)]">{totalToday}</p>
                   </div>
                 ) : (
-                  <div className="text-center py-6 space-y-4">
-                    <p className="text-muted-foreground">
+                  <div className="text-center py-4 space-y-6">
+                    <p className="text-gray-300 text-lg">
                       {t("league.notRegisteredToday")}
                     </p>
                     <Button
-                      variant="hero"
-                      size="lg"
                       onClick={() => setIsPlaying(true)}
-                      className="px-8"
+                      className="bg-neon-green text-black hover:bg-neon-green/90 font-bold px-8 py-6 rounded-full text-lg shadow-[0_0_20px_rgba(72,255,160,0.3)] transition-all hover:scale-105 active:scale-95"
                     >
-                      <Target className="w-5 h-5 mr-2" />
+                      <Target className="w-6 h-6 mr-2" />
                       {t("league.startTodaysThrows")}
                     </Button>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-gray-500">
                       {t("league.fiveMinuteWarning")}
                     </p>
                   </div>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           )}
 
           {/* Previous round results */}
           {roundResults.length > 0 && (
-            <Card className="border-2 animate-slide-up" style={{ animationDelay: "50ms" }}>
-              <CardHeader>
-                <div className="flex items-center gap-2">
-                  <Award className="w-5 h-5 text-dart-gold" />
-                  <CardTitle className="font-display">{t("league.previousRounds")}</CardTitle>
+            <div className="glass-card rounded-2xl p-6 animate-slide-up" style={{ animationDelay: "50ms" }}>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-8 h-8 rounded-full bg-dart-gold/20 flex items-center justify-center">
+                  <Award className="w-4 h-4 text-dart-gold" />
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {roundResults.map((result) => (
-                    <div
-                      key={result.round_number}
-                      className="flex items-center justify-between p-3 rounded-lg bg-secondary/50"
-                    >
-                      <div>
-                        <p className="font-display font-semibold">
-                          {t("league.round")} {result.round_number}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {format(result.start_date, "d MMM", { locale: dateLocale })} –{" "}
-                          {format(result.end_date, "d MMM", { locale: dateLocale })}
-                        </p>
-                      </div>
-                      {result.winner ? (
-                        <div className="flex items-center gap-2 text-right">
-                          <div>
-                            <div className="flex items-center gap-1">
-                              <Crown className="w-4 h-4 text-dart-gold" />
-                              <span className="font-semibold">{result.winner}</span>
-                            </div>
-                            <p className="text-sm text-muted-foreground">{result.winner_score} {i18n.language === "sv" ? "poäng" : "points"}</p>
-                          </div>
-                        </div>
-                      ) : (
-                        <span className="text-muted-foreground text-sm">{t("league.noThrows")}</span>
-                      )}
+                <h3 className="text-lg font-display font-bold text-white">{t("league.previousRounds")}</h3>
+              </div>
+
+              <div className="space-y-3">
+                {roundResults.map((result) => (
+                  <div
+                    key={result.round_number}
+                    className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/5"
+                  >
+                    <div>
+                      <p className="font-display font-bold text-white">
+                        {t("league.round")} {result.round_number}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        {format(result.start_date, "d MMM", { locale: dateLocale })} –{" "}
+                        {format(result.end_date, "d MMM", { locale: dateLocale })}
+                      </p>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                    {result.winner ? (
+                      <div className="text-right">
+                        <div className="flex items-center gap-2 justify-end">
+                          <Crown className="w-4 h-4 text-dart-gold" />
+                          <span className="font-semibold text-white">{result.winner}</span>
+                        </div>
+                        <p className="text-sm text-gray-400 font-mono">{result.winner_score} p</p>
+                      </div>
+                    ) : (
+                      <span className="text-gray-500 text-sm">{t("league.noThrows")}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
 
-          {/* Leaderboard - only show if league has started */}
+          {/* Leaderboard */}
           {leagueStarted && (
-            <Card className="border-2 animate-slide-up" style={{ animationDelay: "100ms" }}>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Trophy className="w-5 h-5 text-dart-gold" />
-                    <CardTitle className="font-display">
-                      {isFinished ? t("league.finalScore") : `${t("league.standings")} – ${t("league.round")} ${league.current_round}`}
-                    </CardTitle>
+            <div className="glass-card rounded-3xl overflow-hidden animate-slide-up" style={{ animationDelay: "100ms" }}>
+              <div className="p-6 pb-2 border-b border-white/5">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                    <Trophy className="w-5 h-5 text-blue-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-display font-bold text-white">
+                      {isFinished ? t("league.finalScore") : t("league.standings")}
+                    </h3>
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {/* Header */}
-                  <div className="grid grid-cols-12 gap-2 text-xs font-medium text-muted-foreground px-3 py-2">
-                    <div className="col-span-1">#</div>
-                    <div className="col-span-4">{t("league.player")}</div>
-                    <div className="col-span-1"></div>
-                    <div className="col-span-2 text-right">{t("league.today")}</div>
-                    <div className="col-span-2 text-right">{t("league.week")}</div>
-                    <div className="col-span-2 text-right">{t("league.total")}</div>
-                  </div>
+              </div>
 
+              <div className="p-4">
+                <div className="grid grid-cols-12 gap-2 text-xs font-bold text-gray-500 uppercase tracking-wider px-3 py-3">
+                  <div className="col-span-1">#</div>
+                  <div className="col-span-5">{t("league.player")}</div>
+                  <div className="col-span-2 text-right hidden sm:block">{t("league.today")}</div>
+                  <div className="col-span-2 text-right hidden sm:block">{t("league.week")}</div>
+                  <div className="col-span-2 text-right">{t("league.total")}</div>
+                </div>
+
+                <div className="space-y-1">
                   {leaderboard.map((entry, index) => (
                     <div
                       key={entry.user_id}
-                      className={`grid grid-cols-12 gap-2 items-center px-3 py-3 rounded-lg transition-colors ${entry.user_id === user?.id
-                        ? "bg-primary/10 border border-primary/20"
-                        : "hover:bg-secondary/50"
+                      className={`grid grid-cols-12 gap-2 items-center px-3 py-4 rounded-xl transition-all ${entry.user_id === user?.id
+                        ? "bg-neon-green/10 border border-neon-green/30"
+                        : "hover:bg-white/5 border border-transparent"
                         }`}
                     >
-                      <div className={`col-span-1 font-display font-bold ${getMedalColor(index)}`}>
+                      <div className={`col-span-1 font-display font-bold text-lg ${getMedalColor(index)}`}>
                         {index + 1}
                       </div>
-                      <div className="col-span-4 font-medium truncate">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/profile/${entry.user_id}`);
-                          }}
-                          className="hover:text-primary transition-colors text-left"
-                        >
+                      <div className="col-span-5 flex items-center gap-2 truncate">
+                        <span className={`font-semibold truncate ${entry.user_id === user?.id ? "text-neon-green" : "text-white"}`}>
                           {entry.display_name}
-                        </button>
-                        {entry.user_id === user?.id && (
-                          <span className="text-xs text-muted-foreground ml-1">({t("league.you")})</span>
-                        )}
-                      </div>
-                      <div className="col-span-1 flex justify-center">
+                        </span>
                         {entry.today_score > 0 && (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7"
-                            onClick={() => setSelectedVideo({
-                              url: entry.today_video_url,
-                              playerName: entry.display_name,
-                              throwDate: entry.today_throw_date ? format(new Date(entry.today_throw_date), "d MMM", { locale: dateLocale }) : t("league.today")
-                            })}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedVideo({
+                                url: entry.today_video_url,
+                                playerName: entry.display_name,
+                                throwDate: entry.today_throw_date ? format(new Date(entry.today_throw_date), "d MMM", { locale: dateLocale }) : t("league.today")
+                              });
+                            }}
+                            className="p-1 rounded-full hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
                           >
-                            <Video className={`w-4 h-4 ${entry.today_video_url ? "text-primary" : "text-muted-foreground/50"}`} />
-                          </Button>
+                            <Video className={`w-3.5 h-3.5 ${entry.today_video_url ? "text-neon-green" : "opacity-30"}`} />
+                          </button>
                         )}
                       </div>
-                      <div className="col-span-2 text-right font-mono">
+                      <div className="col-span-2 text-right font-mono text-gray-400 hidden sm:block">
                         {entry.today_score || "-"}
                       </div>
-                      <div className="col-span-2 text-right font-mono font-semibold">
+                      <div className="col-span-2 text-right font-mono text-gray-300 hidden sm:block">
                         {entry.week_score}
                       </div>
-                      <div className="col-span-2 text-right font-mono text-muted-foreground">
+                      <div className="col-span-2 text-right font-mono font-bold text-lg text-white">
                         {entry.total_score}
                       </div>
                     </div>
                   ))}
 
                   {leaderboard.length === 0 && (
-                    <div className="text-center py-8 text-muted-foreground">
-                      <TrendingUp className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                    <div className="text-center py-12 text-gray-500">
+                      <TrendingUp className="w-12 h-12 mx-auto mb-3 opacity-30" />
                       <p>{t("league.noThrowsYet")}</p>
                     </div>
                   )}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           )}
         </div>
       </main>

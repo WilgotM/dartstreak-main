@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 interface Profile {
   id: string;
   display_name: string;
+  avatar_url?: string;
 }
 
 interface AuthContextType {
@@ -105,6 +106,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     console.log(`Migrating ${localMatches.length} guest matches...`);
 
     // Prepare matches for insertion (remove local IDs and update player1_id)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const matchesToMigrate = localMatches.map((m: any) => ({
       player1_id: userId,
       player2_id: null, // Guest matches are always offline/solo

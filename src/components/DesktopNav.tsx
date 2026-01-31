@@ -11,51 +11,53 @@ export function DesktopNav() {
   const { totalNotifications } = useFriends();
 
   return (
-    <nav className="hidden md:flex fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-b border-border h-16">
-      <div className="container mx-auto px-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <img src="/logo.png" alt="DartStreak Logo" className="w-10 h-10 object-contain" />
+    <nav className="hidden md:flex fixed top-0 left-0 right-0 z-50 h-20">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-md border-b border-white/10" />
+      <div className="container mx-auto px-6 flex items-center justify-between relative z-10 h-full">
+        <div className="flex items-center gap-3">
+          <img src="/logo.png" alt="DartStreak Logo" className="w-10 h-10 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]" />
+          <span className="font-display font-bold text-xl text-white tracking-wide">DartStreak</span>
         </div>
 
         {/* Navigation Links */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2 bg-white/5 p-1 rounded-full border border-white/5 backdrop-blur-sm">
           <NavLink
             to="/dashboard"
-            className="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-secondary"
-            activeClassName="text-primary bg-primary/10"
+            className="flex items-center gap-2 px-6 py-2.5 text-gray-400 hover:text-white transition-all rounded-full hover:bg-white/5"
+            activeClassName="bg-neon-green/10 text-neon-green font-bold shadow-[0_0_15px_rgba(72,255,160,0.1)]"
           >
             <Home className="w-4 h-4" />
-            <span className="font-medium">{t("nav.home")}</span>
+            <span className="text-sm">{t("nav.home")}</span>
           </NavLink>
 
           <NavLink
             to="/leagues"
-            className="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-secondary"
-            activeClassName="text-primary bg-primary/10"
+            className="flex items-center gap-2 px-6 py-2.5 text-gray-400 hover:text-white transition-all rounded-full hover:bg-white/5"
+            activeClassName="bg-neon-green/10 text-neon-green font-bold shadow-[0_0_15px_rgba(72,255,160,0.1)]"
           >
             <Trophy className="w-4 h-4" />
-            <span className="font-medium">{t("nav.leagues")}</span>
+            <span className="text-sm">{t("nav.leagues")}</span>
           </NavLink>
 
           <NavLink
             to="/profile"
-            className="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-secondary"
-            activeClassName="text-primary bg-primary/10"
+            className="flex items-center gap-2 px-6 py-2.5 text-gray-400 hover:text-white transition-all rounded-full hover:bg-white/5"
+            activeClassName="bg-neon-green/10 text-neon-green font-bold shadow-[0_0_15px_rgba(72,255,160,0.1)]"
           >
             <User className="w-4 h-4" />
-            <span className="font-medium">{t("nav.profile")}</span>
+            <span className="text-sm">{t("nav.profile")}</span>
           </NavLink>
         </div>
 
         {/* Friends/Inbox and Theme Toggle */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-3">
           <ThemeToggle />
           <FriendsSheet>
-            <Button variant="ghost" size="sm" className="relative">
+            <Button variant="ghost" size="sm" className="relative h-10 px-4 rounded-full text-white hover:bg-white/10 hover:text-white border border-transparent hover:border-white/10">
               <Users className="w-4 h-4 mr-2" />
               {t("friends.title")}
               {totalNotifications > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-accent text-accent-foreground text-xs rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-neon-orange text-white text-xs font-bold rounded-full flex items-center justify-center shadow-[0_0_10px_rgba(255,100,0,0.5)]">
                   {totalNotifications}
                 </span>
               )}
