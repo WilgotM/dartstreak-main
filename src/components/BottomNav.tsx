@@ -25,10 +25,10 @@ export function BottomNav() {
         {activeIndex >= 0 && (
           <motion.div
             className="absolute top-0 h-0.5 bg-primary rounded-full"
+            style={{ width: 24 }}
             initial={false}
             animate={{
-              left: `calc(${(activeIndex / navItems.length) * 100}% + ${100 / navItems.length / 2}% - 12px)`,
-              width: 24,
+              left: `calc(${((2 * activeIndex + 1) / (2 * navItems.length)) * 100}% - 12px)`,
             }}
             transition={{
               type: "spring",

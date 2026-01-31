@@ -208,48 +208,48 @@ export default function ThrowInput({ onComplete, leagueId, userId, leagueTimezon
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-background flex flex-col h-screen">
-      {/* Camera preview - Square, takes ~30% of screen on mobile */}
-      <div className="relative bg-black flex-shrink-0" style={{ height: "30vh" }}>
-        {/* Always render video element so ref can be attached */}
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          playsInline
-          className={`w-full h-full object-cover ${hasCamera && isRecording ? 'block' : 'hidden'}`}
-          style={{ aspectRatio: "1/1", margin: "0 auto" }}
-        />
+    <div className="fixed inset-0 z-50 bg-background flex flex-col" style={{ height: '100dvh' }}>
+      {/* Camera preview - Square, centered */}
+      <div className="relative bg-black flex-shrink-0 flex items-center justify-center" style={{ height: '25dvh' }}>
+        <div className="relative aspect-square h-full max-w-full">
+          {/* Always render video element so ref can be attached */}
+          <video
+            ref={videoRef}
+            autoPlay
+            muted
+            playsInline
+            className={`w-full h-full object-cover rounded-lg ${hasCamera && isRecording ? 'block' : 'hidden'}`}
+          />
 
-        {hasCamera && isRecording && (
-          <div className="absolute top-3 left-3 flex items-center gap-2 bg-destructive/90 text-destructive-foreground px-3 py-1.5 rounded-full text-xs font-semibold">
-            <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-            REC
+          {hasCamera && isRecording && (
+            <div className="absolute top-2 left-2 flex items-center gap-1.5 bg-destructive/90 text-destructive-foreground px-2 py-1 rounded-full text-[10px] font-semibold">
+              <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
+              REC
+            </div>
+          )}
+
+          {cameraError && (
+            <div className="w-full h-full flex flex-col items-center justify-center text-center p-2">
+              <AlertTriangle className="w-8 h-8 text-destructive mb-2" />
+              <p className="text-destructive text-xs font-medium">{t("throwInput.cameraError")}</p>
+            </div>
+          )}
+
+          {!hasCamera && !cameraError && (
+            <div className="w-full h-full flex flex-col items-center justify-center">
+              <VideoOff className="w-8 h-8 text-muted-foreground mb-2" />
+              <p className="text-muted-foreground text-xs">{t("throwInput.startingCamera")}</p>
+            </div>
+          )}
+
+          {/* Timer overlay */}
+          <div className={`absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-full text-xs font-mono ${timeLeft < 60
+            ? "bg-destructive/90 text-destructive-foreground animate-pulse"
+            : "bg-background/80 text-foreground"
+            }`}>
+            <Timer className="w-3 h-3" />
+            {formatTime(timeLeft)}
           </div>
-        )}
-
-        {cameraError && (
-          <div className="w-full h-full flex flex-col items-center justify-center text-center p-4">
-            <AlertTriangle className="w-12 h-12 text-destructive mb-3" />
-            <p className="text-destructive text-sm font-medium mb-2">{t("throwInput.cameraError")}</p>
-            <p className="text-muted-foreground text-xs max-w-[250px]">{cameraError}</p>
-          </div>
-        )}
-
-        {!hasCamera && !cameraError && (
-          <div className="w-full h-full flex flex-col items-center justify-center">
-            <VideoOff className="w-12 h-12 text-muted-foreground mb-3" />
-            <p className="text-muted-foreground text-sm">{t("throwInput.startingCamera")}</p>
-          </div>
-        )}
-
-        {/* Timer overlay */}
-        <div className={`absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-mono ${timeLeft < 60
-          ? "bg-destructive/90 text-destructive-foreground animate-pulse"
-          : "bg-background/80 text-foreground"
-          }`}>
-          <Timer className="w-4 h-4" />
-          {formatTime(timeLeft)}
         </div>
       </div>
 
@@ -358,8 +358,8 @@ export default function ThrowInput({ onComplete, leagueId, userId, leagueTimezon
           )}
         </div>
 
-        {/* Score section at bottom - more compact */}
-        <div className="bg-card border-t border-border py-2 px-3">
+        {/* Score section at bottom - with safe area for iOS Safari */}
+        <div className="bg-card border-t border-border py-2 px-3" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
           <div className="flex items-center justify-between max-w-md mx-auto">
             {/* Round indicators - compact */}
             <div className="flex gap-1.5">
