@@ -75,15 +75,23 @@ export const UsernameGuard = ({ children }: { children: React.ReactNode }) => {
         }
     };
 
-    // If loading, wait
-    if (loading) return children;
+    // If loading, show loading spinner to prevent flash of username screen
+    if (loading) {
+        return (
+            <div className="fixed inset-0 z-[100] bg-background flex items-center justify-center">
+                <div className="animate-pulse-soft">
+                    <img src="/logo.png" alt="DartStreak Logo" className="w-16 h-16 object-contain" />
+                </div>
+            </div>
+        );
+    }
 
     // If logged in but no profile, and not a guest, show the username choice screen
     if (user && !profile && !isGuest) {
         return (
             <div className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center p-4">
                 <div className="w-full max-w-md animate-slide-up">
-                    <Card className="shadow-premium border-2 border-primary/20 bg-card/50 backdrop-blur-xl">
+                    <Card className="shadow-premium border-2 border-primary/20 bg-card/95 md:bg-card/50 md:backdrop-blur-xl">
                         <CardHeader className="text-center space-y-2">
                             <div className="mx-auto mb-4 bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center">
                                 <Target className="w-8 h-8 text-primary" />
@@ -108,10 +116,10 @@ export const UsernameGuard = ({ children }: { children: React.ReactNode }) => {
                                             onChange={(e) => handleDisplayNameChange(e.target.value)}
                                             required
                                             className={`h-12 text-lg ${usernameAvailable === false
-                                                    ? "border-destructive focus-visible:ring-destructive"
-                                                    : usernameAvailable === true
-                                                        ? "border-primary focus-visible:ring-primary"
-                                                        : ""
+                                                ? "border-destructive focus-visible:ring-destructive"
+                                                : usernameAvailable === true
+                                                    ? "border-primary focus-visible:ring-primary"
+                                                    : ""
                                                 }`}
                                         />
                                         {displayName.length >= 2 && !checkingUsername && (

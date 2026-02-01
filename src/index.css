@@ -61,6 +61,10 @@
     --sidebar-accent-foreground: 150 25% 15%;
     --sidebar-border: 45 20% 85%;
     --sidebar-ring: 158 45% 22%;
+
+    /* Neon colors (light mode fallback) */
+    --neon-green: 130 100% 40%;
+    --neon-orange: 25 100% 50%;
   }
 
   .dark {

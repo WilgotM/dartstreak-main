@@ -70,6 +70,8 @@ export default {
           "green-light": "hsl(var(--dart-green-light))",
           cream: "hsl(var(--dart-cream))",
         },
+        "neon-green": "hsl(var(--neon-green))",
+        "neon-orange": "hsl(var(--neon-orange))",
       },
       borderRadius: {
         lg: "var(--radius)",

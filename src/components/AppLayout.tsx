@@ -11,8 +11,19 @@ interface AppLayoutProps {
 export function AppLayout({ children, hideNav = false }: AppLayoutProps) {
   return (
     <div className="flex flex-col h-[100dvh] bg-background overflow-hidden relative">
-      <div className="fixed top-0 right-0 w-[300px] h-[300px] bg-primary/20 blur-[100px] rounded-full pointer-events-none z-0" />
-      <div className="fixed bottom-0 left-0 w-[200px] h-[200px] bg-orange-500/10 blur-[80px] rounded-full pointer-events-none z-0" />
+      {/* Noise overlay to eliminate color banding - only on desktop */}
+      <div
+        className="hidden md:block fixed inset-0 pointer-events-none z-[1] opacity-[0.015]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+        }}
+      />
+
+      {/* Background gradient orbs - only on desktop due to performance */}
+      <div className="hidden md:block fixed -top-[200px] -right-[200px] w-[600px] h-[600px] bg-primary/15 blur-[150px] rounded-full pointer-events-none z-0" />
+      <div className="hidden md:block fixed top-[10%] right-[5%] w-[400px] h-[400px] bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none z-0" />
+      <div className="hidden md:block fixed -bottom-[150px] -left-[150px] w-[500px] h-[500px] bg-orange-500/8 blur-[130px] rounded-full pointer-events-none z-0" />
+      <div className="hidden md:block fixed bottom-[20%] left-[10%] w-[300px] h-[300px] bg-amber-500/5 blur-[100px] rounded-full pointer-events-none z-0" />
 
       {!hideNav && <DesktopNav />}
       {!hideNav && <MobileHeader />}
