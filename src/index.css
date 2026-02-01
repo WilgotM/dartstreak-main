@@ -294,16 +294,28 @@ a,
 
   .glass-panel {
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   .glass-card {
-    background: linear-gradient(180deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
-    backdrop-filter: blur(12px);
+    background: linear-gradient(180deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Only enable backdrop-blur on desktop where GPU can handle it */
+  @media (min-width: 768px) {
+    .glass-panel {
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    }
+
+    .glass-card {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background: linear-gradient(180deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
+    }
   }
 
   .text-neon-green {
@@ -322,6 +334,19 @@ a,
 
   .shadow-neon-orange {
     box-shadow: 0 0 30px hsl(var(--neon-orange) / 0.3);
+  }
+
+  /* Responsive backdrop-blur - disabled on mobile for performance */
+  .backdrop-blur-responsive {
+    background-color: hsl(var(--background) / 0.95);
+  }
+
+  @media (min-width: 768px) {
+    .backdrop-blur-responsive {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background-color: hsl(var(--background) / 0.8);
+    }
   }
 }
 

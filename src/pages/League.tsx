@@ -417,7 +417,7 @@ export default function League() {
 
   return (
     <AppLayout>
-      <header className="sticky top-0 z-40 p-4 pt-[calc(env(safe-area-inset-top)+1rem)] md:pt-6 bg-background/80 backdrop-blur-md border-b border-white/10">
+      <header className="sticky top-0 z-40 p-4 pt-[calc(env(safe-area-inset-top)+1rem)] md:pt-6 bg-background/95 md:bg-background/80 md:backdrop-blur-md border-b border-white/10">
         <div className="container mx-auto px-2">
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" onClick={() => navigate("/leagues")} className="shrink-0 text-white hover:bg-white/10 rounded-full w-10 h-10">
