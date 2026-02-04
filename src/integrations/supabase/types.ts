@@ -276,6 +276,7 @@ export type Database = {
       }
       leagues: {
         Row: {
+          camera_required: boolean | null
           created_at: string
           created_by: string
           current_round: number
@@ -287,6 +288,7 @@ export type Database = {
           total_rounds: number
         }
         Insert: {
+          camera_required?: boolean | null
           created_at?: string
           created_by: string
           current_round?: number
@@ -298,6 +300,7 @@ export type Database = {
           total_rounds?: number
         }
         Update: {
+          camera_required?: boolean | null
           created_at?: string
           created_by?: string
           current_round?: number

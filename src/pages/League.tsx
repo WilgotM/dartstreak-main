@@ -25,6 +25,7 @@ import { VideoDialog } from "@/components/VideoDialog";
 import { CountdownTimer } from "@/components/CountdownTimer";
 import { AppLayout } from "@/components/AppLayout";
 import { LeagueQRDialog } from "@/components/LeagueQRDialog";
+import { Switch } from "@/components/ui/switch";
 
 interface League {
   id: string;
@@ -35,6 +36,7 @@ interface League {
   created_by: string;
   round_start_day: number;
   started_at: string | null;
+  camera_required?: boolean | null;
 }
 
 interface LeaderboardEntry {
@@ -83,6 +85,8 @@ export default function League() {
   const [deleting, setDeleting] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<{ url: string | null; playerName: string; throwDate: string } | null>(null);
   const [creatorTimezone, setCreatorTimezone] = useState<string>("Europe/Stockholm");
+  const [cameraRequired, setCameraRequired] = useState(true);
+  const [updatingCameraRequirement, setUpdatingCameraRequirement] = useState(false);
 
   const dateLocale = i18n.language === "sv" ? sv : enUS;
 
@@ -117,6 +121,7 @@ export default function League() {
     }
 
     setLeague(leagueData);
+    setCameraRequired(leagueData.camera_required ?? true);
 
     // Fetch creator's timezone
     const { data: creatorProfile } = await supabase
@@ -339,6 +344,30 @@ export default function League() {
     return "text-muted-foreground";
   };
 
+  const handleCameraRequirementChange = async (nextValue: boolean) => {
+    if (!league || user?.id !== league.created_by) return;
+
+    const previousValue = cameraRequired;
+    setCameraRequired(nextValue);
+    setUpdatingCameraRequirement(true);
+
+    const { error } = await supabase
+      .from("leagues")
+      .update({ camera_required: nextValue })
+      .eq("id", league.id);
+
+    if (error) {
+      console.error("Error updating camera requirement:", error);
+      setCameraRequired(previousValue);
+      toast.error(t("league.cameraRequirementUpdateError"));
+    } else {
+      setLeague((prev) => (prev ? { ...prev, camera_required: nextValue } : prev));
+      toast.success(t("league.cameraRequirementUpdated"));
+    }
+
+    setUpdatingCameraRequirement(false);
+  };
+
   if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -377,6 +406,7 @@ export default function League() {
         total_rounds: league.total_rounds,
         round_start_day: new Date().getDay() || 7,
         created_by: user!.id,
+        camera_required: cameraRequired,
       })
       .select()
       .single();
@@ -411,6 +441,7 @@ export default function League() {
         leagueId={id!}
         userId={user.id}
         leagueTimezone={creatorTimezone}
+        cameraRequired={cameraRequired}
       />
     );
   }
@@ -495,6 +526,29 @@ export default function League() {
 
       <main className="container mx-auto px-4 py-6 pb-32">
         <div className="max-w-4xl mx-auto space-y-8">
+          {isOwner && (
+            <div className="glass-card rounded-2xl p-6 border border-white/10">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="space-y-1">
+                  <p className="text-xs text-gray-400 uppercase tracking-wider">{t("league.settings")}</p>
+                  <h3 className="text-lg font-display font-bold text-white">{t("league.cameraRequirementTitle")}</h3>
+                  <p className="text-sm text-gray-400">
+                    {cameraRequired ? t("league.cameraRequiredDesc") : t("league.cameraNotRequiredDesc")}
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className={`text-xs font-semibold ${cameraRequired ? "text-neon-green" : "text-gray-400"}`}>
+                    {cameraRequired ? t("league.cameraRequiredLabel") : t("league.cameraNotRequiredLabel")}
+                  </span>
+                  <Switch
+                    checked={cameraRequired}
+                    onCheckedChange={handleCameraRequirementChange}
+                    disabled={updatingCameraRequirement}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
           {/* League Finished View */}
           {isFinished && winner && (
             <div className="glass-card rounded-[2.5rem] p-0 overflow-hidden shadow-[0_0_50px_rgba(251,191,36,0.15)] animate-slide-up relative">
@@ -588,6 +642,12 @@ export default function League() {
               </div>
 
               <div className="bg-black/20 rounded-2xl p-6 border border-white/5">
+                <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-gray-400 mb-4">
+                  <span>{t("league.cameraRequirementTitle")}</span>
+                  <span className={cameraRequired ? "text-neon-green" : "text-gray-300"}>
+                    {cameraRequired ? t("league.cameraRequiredLabel") : t("league.cameraNotRequiredLabel")}
+                  </span>
+                </div>
                 {hasThrown ? (
                   <div className="text-center py-2">
                     <p className="text-gray-400 text-sm mb-1 uppercase tracking-wider">{t("league.todaysPoints")}</p>

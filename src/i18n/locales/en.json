@@ -62,7 +62,6 @@
     "alreadyInLeague": "You are already in this league",
     "checkProfile": "Check your profile",
     "competeDaily": "Compete against your friends every day",
-    "viewStats": "View your stats",
     "convertToAccount": "Create account now",
     "couldNotCreateLeague": "Could not create the league",
     "couldNotFindLeague": "Could not find the league",
@@ -71,6 +70,10 @@
     "createLeague": "Create league",
     "createLeagueDesc": "Create a league and invite your friends to compete",
     "createNewLeague": "Create a new league",
+    "cameraRequirement": "Camera requirement",
+    "cameraRequirementDesc": "If enabled, players must record video for their daily throws.",
+    "cameraRequired": "Required",
+    "cameraNotRequired": "Not required",
     "enterCode": "Enter Code",
     "enterInviteCode": "Enter the invite code you received from the league creator",
     "enterLeagueName": "Enter a name for the league",
@@ -90,11 +93,12 @@
     "playDarts": "Play Darts",
     "round": "Round",
     "starts": "Starts",
+    "viewStandings": "View Standings",
+    "viewStats": "View your stats",
     "welcomeBack": "Welcome back, {{name}}!",
     "welcomeTo": "Welcome to {{name}}! 🎯",
     "youHaveNotifications": "You have {{count}} notification(s)",
-    "yourLeagues": "Your leagues",
-    "viewStandings": "View Standings"
+    "yourLeagues": "Your leagues"
   },
   "guest": {
     "bannerDesc": "Your guest account will be deleted after 30 days of inactivity. Create an account to secure everything!",
@@ -167,6 +171,14 @@
     "congratulations": "Congratulations to {{name}} for winning {{league}}!",
     "couldNotDelete": "Could not delete the league",
     "couldNotFindLeague": "Could not find the league",
+    "cameraRequirementTitle": "Camera requirement",
+    "cameraRequiredLabel": "Required",
+    "cameraNotRequiredLabel": "Not required",
+    "cameraRequiredDesc": "Players must record their throws with a camera.",
+    "cameraNotRequiredDesc": "Players can submit throws without recording.",
+    "cameraRequirementUpdated": "Camera requirement updated",
+    "cameraRequirementUpdateError": "Could not update camera requirement",
+    "settings": "League settings",
     "deleteConfirmDesc": "Are you sure you want to delete \"{{name}}\"? This cannot be undone and all data will be removed.",
     "deleteConfirmTitle": "Delete league",
     "deleteLeague": "Delete league",
@@ -207,16 +219,11 @@
     "winner": "Winner",
     "you": "you"
   },
-  "qrScanner": {
-    "cameraError": "Could not access camera",
-    "pointCamera": "Point camera at QR code",
-    "scanQR": "Scan QR Code",
-    "scanToJoin": "Scan to Join"
-  },
   "match": {
     "accept": "Accept",
     "activeMatches": "Active Matches",
     "avg": "Avg",
+    "botLevel": "Bot Difficulty",
     "bust": "Bust!",
     "cameraError": "Could not access camera",
     "challengeSent": "Challenge sent!",
@@ -272,6 +279,8 @@
     "opponentLeftDesc": "Your opponent has left the match. The match will be cancelled.",
     "opponentTurn": "Waiting for {{name}}...",
     "phoneCam": "Phone",
+    "playVsBot": "Play vs Bot",
+    "playVsBotDesc": "Practice against an AI opponent",
     "player1": "Player 1",
     "player2": "Player 2",
     "playerTurn": "{{name}}'s turn",
@@ -312,10 +321,7 @@
     "youHaveBeenChallenged": "You've been challenged!",
     "youLost": "You lost",
     "youWon": "You won!",
-    "yourTurn": "Your turn - throw your darts!",
-    "playVsBot": "Play vs Bot",
-    "playVsBotDesc": "Practice against an AI opponent",
-    "botLevel": "Bot Difficulty"
+    "yourTurn": "Your turn - throw your darts!"
   },
   "nav": {
     "home": "Home",
@@ -402,6 +408,12 @@
     "step3Android": "Confirm the installation",
     "step3Ios": "Tap \"Add\" to confirm"
   },
+  "qrScanner": {
+    "cameraError": "Could not access camera",
+    "pointCamera": "Point camera at QR code",
+    "scanQR": "Scan QR Code",
+    "scanToJoin": "Scan to Join"
+  },
   "remoteCamera": {
     "cameraError": "Failed to access camera. Please check permissions.",
     "cameraInUse": "Camera is in use by another app. Please close other apps using the camera.",
@@ -419,19 +431,16 @@
   "stats": {
     "avgPerDay": "Avg Per Day",
     "bestDay": "Best Day",
-    "bestMatchAvg": "Best Match Avg",
+    "bestThreeDartAvg": "Best 3-Dart Avg",
+    "currentStreak": "Current Streak",
+    "day": "day",
+    "days": "days",
     "daysPlayed": "Days Played",
-    "leagueStats": "Leagues",
     "leaguesPlayed": "Leagues Played",
-    "losses": "Losses",
-    "matchStats": "Matches",
-    "matchesPlayed": "Matches",
+    "longestStreak": "Longest Streak",
     "statistics": "Statistics",
     "threeDartAvg": "3-Dart Avg",
-    "totalDarts": "Total Darts",
-    "totalPoints": "Total Points",
-    "winRate": "Win Rate",
-    "wins": "Wins"
+    "totalPoints": "Total Points"
   },
   "test": {
     "skill": {
@@ -445,6 +454,7 @@
   },
   "throwInput": {
     "cameraError": "Camera error",
+    "cameraNotRequired": "Camera not required for this league",
     "didNotComplete": "You didn't complete all throws within 5 minutes.",
     "done": "Done!",
     "miss": "Miss (0)",

@@ -16,7 +16,7 @@ export default function Legal() {
                     icon: <Shield className="w-8 h-8 text-primary" />,
                     content: (
                         <div className="space-y-6 text-muted-foreground leading-relaxed">
-                            <p className="text-sm">Last updated: January 18, 2026</p>
+                            <p className="text-sm">Last updated: February 4, 2026</p>
 
                             <section className="space-y-3">
                                 <h3 className="text-xl font-semibold text-foreground">1. Introduction</h3>
@@ -39,9 +39,10 @@ export default function Legal() {
                                         statistics, and league participation data to provide the core functionality of the service.
                                     </li>
                                     <li>
-                                        <span className="text-foreground font-medium">Video Data:</span> When you record your daily throws in a league,
-                                        short video clips are captured and stored securely in our database for verification purposes.
-                                        These recordings are associated with your throw submissions and may be viewed by other league members.
+                                        <span className="text-foreground font-medium">Video Data:</span> Some leagues may require video recording for
+                                        verification. If a league requires video, short clips are captured and stored securely in our database
+                                        and associated with your throw submissions, and they may be viewed by other league members. If a league
+                                        does not require video, no recordings are collected for those throws.
                                     </li>
                                 </ul>
                             </section>
@@ -72,7 +73,7 @@ export default function Legal() {
                     icon: <Scale className="w-8 h-8 text-primary" />,
                     content: (
                         <div className="space-y-6 text-muted-foreground leading-relaxed">
-                            <p className="text-sm">Last updated: January 18, 2026</p>
+                            <p className="text-sm">Last updated: February 4, 2026</p>
 
                             <section className="space-y-3">
                                 <h3 className="text-xl font-semibold text-foreground">1. Acceptance of Terms</h3>

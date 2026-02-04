@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Plus, Users, Trophy, ArrowRight, Calendar, ScanLine, Keyboard } from "lucide-react";
 import { format } from "date-fns";
@@ -28,6 +29,7 @@ interface League {
   created_by: string;
   round_start_day: number;
   started_at: string | null;
+  camera_required?: boolean | null;
 }
 
 export default function Leagues() {
@@ -43,6 +45,7 @@ export default function Leagues() {
   const [joinCode, setJoinCode] = useState("");
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [joinDialogOpen, setJoinDialogOpen] = useState(false);
+  const [cameraRequired, setCameraRequired] = useState(true);
 
   const dateLocale = i18n.language === "sv" ? sv : enUS;
 
@@ -111,6 +114,7 @@ export default function Leagues() {
         round_start_day: dayOfWeek,
         started_at: startedAt,
         created_by: user!.id,
+        camera_required: cameraRequired,
       })
       .select()
       .single();
@@ -130,6 +134,7 @@ export default function Leagues() {
     setNewLeagueName("");
     setTotalRounds(4);
     setStartDate(format(new Date(), "yyyy-MM-dd"));
+    setCameraRequired(true);
     setCreateDialogOpen(false);
     fetchLeagues();
   };
@@ -336,6 +341,23 @@ export default function Leagues() {
                   <p className="text-xs text-gray-500">
                     {t("dashboard.leagueCanStartNow")}
                   </p>
+                </div>
+                <div className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 p-3">
+                  <div className="space-y-1">
+                    <Label className="text-gray-300">{t("dashboard.cameraRequirement")}</Label>
+                    <p className="text-xs text-gray-500">
+                      {t("dashboard.cameraRequirementDesc")}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-400">
+                      {cameraRequired ? t("dashboard.cameraRequired") : t("dashboard.cameraNotRequired")}
+                    </span>
+                    <Switch
+                      checked={cameraRequired}
+                      onCheckedChange={setCameraRequired}
+                    />
+                  </div>
                 </div>
                 <Button onClick={createLeague} className="w-full bg-neon-orange text-white hover:bg-neon-orange/90 font-bold">
                   {t("dashboard.create")}

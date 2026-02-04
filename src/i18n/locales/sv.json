@@ -62,7 +62,6 @@
     "alreadyInLeague": "Du är redan med i denna liga",
     "checkProfile": "Kolla din profil",
     "competeDaily": "Tävla mot dina vänner varje dag",
-    "viewStats": "Se din statistik",
     "convertToAccount": "Skapa konto nu",
     "couldNotCreateLeague": "Kunde inte skapa ligan",
     "couldNotFindLeague": "Kunde inte hitta ligan",
@@ -71,6 +70,10 @@
     "createLeague": "Skapa liga",
     "createLeagueDesc": "Skapa en liga och bjud in dina vänner att tävla",
     "createNewLeague": "Skapa en ny liga",
+    "cameraRequirement": "Kamerakrav",
+    "cameraRequirementDesc": "Om det är på måste spelare filma sina dagliga kast.",
+    "cameraRequired": "Krävs",
+    "cameraNotRequired": "Inte krävs",
     "enterCode": "Ange kod",
     "enterInviteCode": "Ange inbjudningskoden du fått av ligans skapare",
     "enterLeagueName": "Ange ett namn för ligan",
@@ -90,11 +93,12 @@
     "playDarts": "Kasta Dagens Pilar",
     "round": "Omgång",
     "starts": "Startar",
+    "viewStandings": "Se Tabell",
+    "viewStats": "Se din statistik",
     "welcomeBack": "Välkommen tillbaka, {{name}}!",
     "welcomeTo": "Välkommen till {{name}}! 🎯",
     "youHaveNotifications": "Du har {{count}} notis(er)",
-    "yourLeagues": "Dina ligor",
-    "viewStandings": "Se Tabell"
+    "yourLeagues": "Dina ligor"
   },
   "guest": {
     "bannerDesc": "Ditt gästkonto raderas efter 30 dagars inaktivitet. Skapa ett konto för att säkra allt!",
@@ -167,6 +171,14 @@
     "congratulations": "Stort grattis till {{name}} som kammade hem vinsten i {{league}}!",
     "couldNotDelete": "Kunde inte radera ligan",
     "couldNotFindLeague": "Kunde inte hitta ligan",
+    "cameraRequirementTitle": "Kamerakrav",
+    "cameraRequiredLabel": "Krävs",
+    "cameraNotRequiredLabel": "Inte krävs",
+    "cameraRequiredDesc": "Spelare måste filma sina kast.",
+    "cameraNotRequiredDesc": "Spelare kan registrera kast utan video.",
+    "cameraRequirementUpdated": "Kamerakrav uppdaterat",
+    "cameraRequirementUpdateError": "Kunde inte uppdatera kamerakravet",
+    "settings": "Ligainställningar",
     "deleteConfirmDesc": "Är du säker på att du vill radera \"{{name}}\"? Detta går inte att ångra och all data kommer tas bort.",
     "deleteConfirmTitle": "Radera liga",
     "deleteLeague": "Radera liga",
@@ -207,16 +219,11 @@
     "winner": "Vinnare",
     "you": "du"
   },
-  "qrScanner": {
-    "cameraError": "Kunde inte komma åt kameran",
-    "pointCamera": "Rikta kameran mot QR-koden",
-    "scanQR": "Skanna QR-kod",
-    "scanToJoin": "Skanna för att gå med"
-  },
   "match": {
     "accept": "Acceptera",
     "activeMatches": "Aktiva matcher",
     "avg": "Snitt",
+    "botLevel": "Bot-svårighetsgrad",
     "bust": "Bust!",
     "cameraError": "Kunde inte komma åt kameran",
     "challengeSent": "Utmaning skickad!",
@@ -272,6 +279,8 @@
     "opponentLeftDesc": "Din motståndare har lämnat matchen. Matchen kommer att avbrytas.",
     "opponentTurn": "Väntar på {{name}}...",
     "phoneCam": "Telefon",
+    "playVsBot": "Spela mot bot",
+    "playVsBotDesc": "Träna mot en AI-motståndare",
     "player1": "Spelare 1",
     "player2": "Spelare 2",
     "playerTurn": "{{name}}s tur",
@@ -312,10 +321,7 @@
     "youHaveBeenChallenged": "Du har blivit utmanad!",
     "youLost": "Du förlorade",
     "youWon": "Du vann!",
-    "yourTurn": "Din tur - kasta dina pilar!",
-    "playVsBot": "Spela mot bot",
-    "playVsBotDesc": "Träna mot en AI-motståndare",
-    "botLevel": "Bot-svårighetsgrad"
+    "yourTurn": "Din tur - kasta dina pilar!"
   },
   "nav": {
     "home": "Hem",
@@ -402,6 +408,12 @@
     "step3Android": "Bekräfta installationen",
     "step3Ios": "Tryck på \"Lägg till\" för att bekräfta"
   },
+  "qrScanner": {
+    "cameraError": "Kunde inte komma åt kameran",
+    "pointCamera": "Rikta kameran mot QR-koden",
+    "scanQR": "Skanna QR-kod",
+    "scanToJoin": "Skanna för att gå med"
+  },
   "remoteCamera": {
     "cameraError": "Kunde inte komma åt kameran. Kontrollera behörigheterna.",
     "cameraInUse": "Kameran används av en annan app. Stäng andra appar som använder kameran.",
@@ -419,19 +431,16 @@
   "stats": {
     "avgPerDay": "Snitt Per Dag",
     "bestDay": "Bästa Dag",
-    "bestMatchAvg": "Bästa Matchsnitt",
+    "bestThreeDartAvg": "Bästa 3-Pils Snitt",
+    "currentStreak": "Nuvarande Streak",
+    "day": "dag",
+    "days": "dagar",
     "daysPlayed": "Spelade Dagar",
-    "leagueStats": "Ligor",
     "leaguesPlayed": "Spelade Ligor",
-    "losses": "Förluster",
-    "matchStats": "Matcher",
-    "matchesPlayed": "Matcher",
+    "longestStreak": "Längsta Streak",
     "statistics": "Statistik",
     "threeDartAvg": "3-Pils Snitt",
-    "totalDarts": "Totala Pilar",
-    "totalPoints": "Totala Poäng",
-    "winRate": "Vinstprocent",
-    "wins": "Vinster"
+    "totalPoints": "Totala Poäng"
   },
   "test": {
     "skill": {
@@ -445,6 +454,7 @@
   },
   "throwInput": {
     "cameraError": "Kamerafel",
+    "cameraNotRequired": "Kamera krävs inte i den här ligan",
     "didNotComplete": "Du hann inte fylla i alla kast inom 5 minuter.",
     "done": "Klar!",
     "miss": "Miss (0)",

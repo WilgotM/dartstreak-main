@@ -16,9 +16,16 @@ interface ThrowInputProps {
   leagueId: string;
   userId: string;
   leagueTimezone?: string;
+  cameraRequired?: boolean;
 }
 
-export default function ThrowInput({ onComplete, leagueId, userId, leagueTimezone = "Europe/Stockholm" }: ThrowInputProps) {
+export default function ThrowInput({
+  onComplete,
+  leagueId,
+  userId,
+  leagueTimezone = "Europe/Stockholm",
+  cameraRequired = true,
+}: ThrowInputProps) {
   const { t } = useTranslation();
   const [throws, setThrows] = useState<number[]>([]);
   const [timeLeft, setTimeLeft] = useState(5 * 60);
@@ -53,11 +60,11 @@ export default function ThrowInput({ onComplete, leagueId, userId, leagueTimezon
 
   // Start camera when component mounts
   useEffect(() => {
-    if (!cameraStarted) {
+    if (!cameraStarted && cameraRequired) {
       setCameraStarted(true);
       startRecording();
     }
-  }, [cameraStarted, startRecording]);
+  }, [cameraStarted, cameraRequired, startRecording]);
 
 
 
@@ -161,23 +168,25 @@ export default function ThrowInput({ onComplete, leagueId, userId, leagueTimezon
 
     setIsCompleting(true);
 
-    // Stop recording and get the blob directly
-    const blob = await stopRecording();
-
     let videoUrl: string | undefined;
 
-    if (blob && blob.size > 0) {
-      console.log("Uploading video blob:", blob.size, "bytes");
-      setIsUploading(true);
-      videoUrl = await uploadVideo(blob);
-      setIsUploading(false);
-      console.log("Video uploaded, URL:", videoUrl);
-    } else {
-      console.log("No video blob to upload");
+    if (cameraRequired) {
+      // Stop recording and get the blob directly
+      const blob = await stopRecording();
+
+      if (blob && blob.size > 0) {
+        console.log("Uploading video blob:", blob.size, "bytes");
+        setIsUploading(true);
+        videoUrl = await uploadVideo(blob);
+        setIsUploading(false);
+        console.log("Video uploaded, URL:", videoUrl);
+      } else {
+        console.log("No video blob to upload");
+      }
     }
 
     onComplete(throws, videoUrl);
-  }, [throws, onComplete, isCompleting, stopRecording, leagueId, userId]);
+  }, [throws, onComplete, isCompleting, stopRecording, leagueId, userId, cameraRequired]);
 
   const getRoundThrows = (round: number) => {
     const start = (round - 1) * 3;
@@ -212,33 +221,42 @@ export default function ThrowInput({ onComplete, leagueId, userId, leagueTimezon
       {/* Camera preview - Square, centered */}
       <div className="relative bg-black flex-shrink-0 flex items-center justify-center" style={{ height: '25dvh' }}>
         <div className="relative aspect-square h-full max-w-full">
-          {/* Always render video element so ref can be attached */}
-          <video
-            ref={videoRef}
-            autoPlay
-            muted
-            playsInline
-            className={`w-full h-full object-cover rounded-lg ${hasCamera && isRecording ? 'block' : 'hidden'}`}
-          />
+          {cameraRequired ? (
+            <>
+              {/* Always render video element so ref can be attached */}
+              <video
+                ref={videoRef}
+                autoPlay
+                muted
+                playsInline
+                className={`w-full h-full object-cover rounded-lg ${hasCamera && isRecording ? 'block' : 'hidden'}`}
+              />
 
-          {hasCamera && isRecording && (
-            <div className="absolute top-2 left-2 flex items-center gap-1.5 bg-destructive/90 text-destructive-foreground px-2 py-1 rounded-full text-[10px] font-semibold">
-              <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
-              REC
-            </div>
-          )}
+              {hasCamera && isRecording && (
+                <div className="absolute top-2 left-2 flex items-center gap-1.5 bg-destructive/90 text-destructive-foreground px-2 py-1 rounded-full text-[10px] font-semibold">
+                  <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
+                  REC
+                </div>
+              )}
 
-          {cameraError && (
+              {cameraError && (
+                <div className="w-full h-full flex flex-col items-center justify-center text-center p-2">
+                  <AlertTriangle className="w-8 h-8 text-destructive mb-2" />
+                  <p className="text-destructive text-xs font-medium">{t("throwInput.cameraError")}</p>
+                </div>
+              )}
+
+              {!hasCamera && !cameraError && (
+                <div className="w-full h-full flex flex-col items-center justify-center">
+                  <VideoOff className="w-8 h-8 text-muted-foreground mb-2" />
+                  <p className="text-muted-foreground text-xs">{t("throwInput.startingCamera")}</p>
+                </div>
+              )}
+            </>
+          ) : (
             <div className="w-full h-full flex flex-col items-center justify-center text-center p-2">
-              <AlertTriangle className="w-8 h-8 text-destructive mb-2" />
-              <p className="text-destructive text-xs font-medium">{t("throwInput.cameraError")}</p>
-            </div>
-          )}
-
-          {!hasCamera && !cameraError && (
-            <div className="w-full h-full flex flex-col items-center justify-center">
               <VideoOff className="w-8 h-8 text-muted-foreground mb-2" />
-              <p className="text-muted-foreground text-xs">{t("throwInput.startingCamera")}</p>
+              <p className="text-muted-foreground text-xs">{t("throwInput.cameraNotRequired")}</p>
             </div>
           )}
 

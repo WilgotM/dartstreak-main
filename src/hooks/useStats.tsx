@@ -7,23 +7,14 @@ export interface LeagueStats {
   totalScore: number;
   threeDartAverage: number; // Average per 3 darts (9 darts / 3)
   bestDay: number;
+  bestThreeDartAverage: number; // Best single-day 3-dart average
   leaguesPlayed: number;
-}
-
-export interface MatchStats {
-  totalMatches: number;
-  wins: number;
-  losses: number;
-  winRate: number;
-  threeDartAverage: number;
-  totalDartsThrown: number;
-  totalPointsScored: number;
-  bestThreeDartAverage: number;
+  currentStreak: number; // Consecutive days thrown
+  longestStreak: number; // Best ever streak
 }
 
 export interface UserStats {
   leagues: LeagueStats;
-  matches: MatchStats;
 }
 
 export function useStats(userId?: string) {
@@ -47,8 +38,9 @@ export function useStats(userId?: string) {
       // Fetch league stats from daily_throws
       const { data: throws } = await supabase
         .from("daily_throws")
-        .select("total_score, league_id, throw_1, throw_2, throw_3, throw_4, throw_5, throw_6, throw_7, throw_8, throw_9")
-        .eq("user_id", targetUserId);
+        .select("total_score, league_id, throw_date, throw_1, throw_2, throw_3, throw_4, throw_5, throw_6, throw_7, throw_8, throw_9")
+        .eq("user_id", targetUserId)
+        .order("throw_date", { ascending: false });
 
       // Calculate league stats
       let leagueStats: LeagueStats = {
@@ -56,102 +48,109 @@ export function useStats(userId?: string) {
         totalScore: 0,
         threeDartAverage: 0,
         bestDay: 0,
+        bestThreeDartAverage: 0,
         leaguesPlayed: 0,
+        currentStreak: 0,
+        longestStreak: 0,
       };
 
       if (throws && throws.length > 0) {
         const uniqueLeagues = new Set(throws.map((t) => t.league_id));
         const scores = throws.map((t) => t.total_score || 0);
         const totalScore = scores.reduce((a, b) => a + b, 0);
-        
+
         // Each day has 9 darts = 3 sets of 3 darts
         // Three dart average = total score / (total days * 3)
         const totalThreeDartSets = throws.length * 3;
         const threeDartAverage = totalThreeDartSets > 0 ? Math.round(totalScore / totalThreeDartSets * 10) / 10 : 0;
+
+        // Calculate best single-day 3-dart average
+        let bestThreeDartAverage = 0;
+        throws.forEach((t) => {
+          const dayScore = t.total_score || 0;
+          // Each day has 3 sets of 3 darts
+          const dayAverage = dayScore / 3;
+          if (dayAverage > bestThreeDartAverage) {
+            bestThreeDartAverage = dayAverage;
+          }
+        });
+
+        // Calculate streaks based on throw_date
+        const sortedDates = throws
+          .map((t) => t.throw_date)
+          .filter((d): d is string => d !== null)
+          .sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+
+        // Get unique dates only
+        const uniqueDates = [...new Set(sortedDates)];
+
+        let currentStreak = 0;
+        let longestStreak = 0;
+        let tempStreak = 0;
+
+        // Check current streak (starting from today/yesterday)
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (uniqueDates.length > 0) {
+          const lastThrowDate = new Date(uniqueDates[0]);
+          lastThrowDate.setHours(0, 0, 0, 0);
+
+          const daysDiff = Math.floor((today.getTime() - lastThrowDate.getTime()) / (1000 * 60 * 60 * 24));
+
+          // Only count streak if last throw was today or yesterday
+          if (daysDiff <= 1) {
+            currentStreak = 1;
+            for (let i = 1; i < uniqueDates.length; i++) {
+              const prevDate = new Date(uniqueDates[i - 1]);
+              const currDate = new Date(uniqueDates[i]);
+              prevDate.setHours(0, 0, 0, 0);
+              currDate.setHours(0, 0, 0, 0);
+
+              const diff = Math.floor((prevDate.getTime() - currDate.getTime()) / (1000 * 60 * 60 * 24));
+              if (diff === 1) {
+                currentStreak++;
+              } else {
+                break;
+              }
+            }
+          }
+
+          // Calculate longest streak ever
+          tempStreak = 1;
+          longestStreak = 1;
+          for (let i = 1; i < uniqueDates.length; i++) {
+            const prevDate = new Date(uniqueDates[i - 1]);
+            const currDate = new Date(uniqueDates[i]);
+            prevDate.setHours(0, 0, 0, 0);
+            currDate.setHours(0, 0, 0, 0);
+
+            const diff = Math.floor((prevDate.getTime() - currDate.getTime()) / (1000 * 60 * 60 * 24));
+            if (diff === 1) {
+              tempStreak++;
+              if (tempStreak > longestStreak) {
+                longestStreak = tempStreak;
+              }
+            } else {
+              tempStreak = 1;
+            }
+          }
+        }
 
         leagueStats = {
           totalDays: throws.length,
           totalScore,
           threeDartAverage,
           bestDay: Math.max(...scores, 0),
+          bestThreeDartAverage: Math.round(bestThreeDartAverage * 10) / 10,
           leaguesPlayed: uniqueLeagues.size,
-        };
-      }
-
-      // Fetch match stats from completed matches
-      const { data: matchData } = await supabase
-        .from("matches")
-        .select("id, player1_id, player2_id, winner_id, player1_score, player2_score")
-        .eq("status", "completed")
-        .or(`player1_id.eq.${targetUserId},player2_id.eq.${targetUserId}`);
-
-      // Fetch match throws for the user
-      const { data: matchThrows } = await supabase
-        .from("match_throws")
-        .select("dart_1, dart_2, dart_3, total, match_id")
-        .eq("player_id", targetUserId);
-
-      // Calculate match stats
-      let matchStats: MatchStats = {
-        totalMatches: 0,
-        wins: 0,
-        losses: 0,
-        winRate: 0,
-        threeDartAverage: 0,
-        totalDartsThrown: 0,
-        totalPointsScored: 0,
-        bestThreeDartAverage: 0,
-      };
-
-      if (matchData && matchData.length > 0) {
-        const wins = matchData.filter((m) => m.winner_id === targetUserId).length;
-        const losses = matchData.length - wins;
-        
-        // Calculate three dart average from match throws
-        let totalPoints = 0;
-        let totalThrows = 0;
-        const matchAverages: { [matchId: string]: { points: number; throws: number } } = {};
-
-        if (matchThrows && matchThrows.length > 0) {
-          matchThrows.forEach((t) => {
-            const throwTotal = t.total || (t.dart_1 + t.dart_2 + t.dart_3);
-            totalPoints += throwTotal;
-            totalThrows += 1;
-
-            if (!matchAverages[t.match_id]) {
-              matchAverages[t.match_id] = { points: 0, throws: 0 };
-            }
-            matchAverages[t.match_id].points += throwTotal;
-            matchAverages[t.match_id].throws += 1;
-          });
-        }
-
-        const threeDartAverage = totalThrows > 0 ? Math.round(totalPoints / totalThrows * 10) / 10 : 0;
-        
-        // Find best three dart average in a single match
-        let bestAvg = 0;
-        Object.values(matchAverages).forEach(({ points, throws }) => {
-          if (throws > 0) {
-            const avg = points / throws;
-            if (avg > bestAvg) bestAvg = avg;
-          }
-        });
-
-        matchStats = {
-          totalMatches: matchData.length,
-          wins,
-          losses,
-          winRate: matchData.length > 0 ? Math.round((wins / matchData.length) * 100) : 0,
-          threeDartAverage,
-          totalDartsThrown: totalThrows * 3,
-          totalPointsScored: totalPoints,
-          bestThreeDartAverage: Math.round(bestAvg * 10) / 10,
+          currentStreak,
+          longestStreak,
         };
       }
 
       setStats({
         leagues: leagueStats,
-        matches: matchStats,
       });
     } catch (error) {
       console.error("Error fetching stats:", error);

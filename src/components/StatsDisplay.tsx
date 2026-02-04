@@ -1,26 +1,22 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Target, Trophy, Swords, TrendingUp, Calendar, Award } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Target, Trophy, TrendingUp, Calendar, Award, Flame } from "lucide-react";
 import { useStats } from "@/hooks/useStats";
 
 interface StatsDisplayProps {
   userId?: string;
-  showTabs?: boolean;
 }
 
-export function StatsDisplay({ userId, showTabs = true }: StatsDisplayProps) {
+export function StatsDisplay({ userId }: StatsDisplayProps) {
   const { t } = useTranslation();
   const { stats, loading } = useStats(userId);
-  const [activeTab, setActiveTab] = useState<"leagues" | "matches">("matches");
 
   if (loading) {
     return (
-      <div className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
+      <div className="space-y-4 p-4">
+        <div className="grid grid-cols-2 gap-3">
           {[1, 2, 3, 4].map((i) => (
-            <Card key={i} className="animate-pulse">
+            <Card key={i} className="animate-pulse border-none bg-white/5">
               <CardContent className="pt-6 h-24" />
             </Card>
           ))}
@@ -31,136 +27,112 @@ export function StatsDisplay({ userId, showTabs = true }: StatsDisplayProps) {
 
   if (!stats) return null;
 
-  const renderLeagueStats = () => (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        <Card>
-          <CardContent className="pt-6 text-center">
-            <Target className="w-8 h-8 mx-auto text-primary mb-2" />
-            <p className="text-2xl font-display font-bold">{stats.leagues.threeDartAverage}</p>
-            <p className="text-xs text-muted-foreground">{t("stats.threeDartAvg")}</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6 text-center">
-            <TrendingUp className="w-8 h-8 mx-auto text-primary mb-2" />
-            <p className="text-2xl font-display font-bold">{stats.leagues.totalScore}</p>
-            <p className="text-xs text-muted-foreground">{t("stats.totalPoints")}</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6 text-center">
-            <Trophy className="w-8 h-8 mx-auto text-dart-gold mb-2" />
-            <p className="text-2xl font-display font-bold">{stats.leagues.bestDay}</p>
-            <p className="text-xs text-muted-foreground">{t("stats.bestDay")}</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6 text-center">
-            <Calendar className="w-8 h-8 mx-auto text-primary mb-2" />
-            <p className="text-2xl font-display font-bold">{stats.leagues.totalDays}</p>
-            <p className="text-xs text-muted-foreground">{t("stats.daysPlayed")}</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card>
-        <CardContent className="pt-4 space-y-2">
-          <div className="flex justify-between items-center py-2 border-b border-border">
-            <span className="text-muted-foreground">{t("stats.leaguesPlayed")}</span>
-            <span className="font-semibold">{stats.leagues.leaguesPlayed}</span>
-          </div>
-          <div className="flex justify-between items-center py-2">
-            <span className="text-muted-foreground">{t("stats.avgPerDay")}</span>
-            <span className="font-semibold">{stats.leagues.totalDays > 0 ? Math.round(stats.leagues.totalScore / stats.leagues.totalDays) : 0}</span>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-
-  const renderMatchStats = () => (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        <Card>
-          <CardContent className="pt-6 text-center">
-            <Target className="w-8 h-8 mx-auto text-primary mb-2" />
-            <p className="text-2xl font-display font-bold">{stats.matches.threeDartAverage}</p>
-            <p className="text-xs text-muted-foreground">{t("stats.threeDartAvg")}</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6 text-center">
-            <Award className="w-8 h-8 mx-auto text-dart-gold mb-2" />
-            <p className="text-2xl font-display font-bold">{stats.matches.winRate}%</p>
-            <p className="text-xs text-muted-foreground">{t("stats.winRate")}</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6 text-center">
-            <Trophy className="w-8 h-8 mx-auto text-primary mb-2" />
-            <p className="text-2xl font-display font-bold">{stats.matches.wins}</p>
-            <p className="text-xs text-muted-foreground">{t("stats.wins")}</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6 text-center">
-            <Swords className="w-8 h-8 mx-auto text-accent mb-2" />
-            <p className="text-2xl font-display font-bold">{stats.matches.totalMatches}</p>
-            <p className="text-xs text-muted-foreground">{t("stats.matchesPlayed")}</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card>
-        <CardContent className="pt-4 space-y-2">
-          <div className="flex justify-between items-center py-2 border-b border-border">
-            <span className="text-muted-foreground">{t("stats.bestMatchAvg")}</span>
-            <span className="font-semibold">{stats.matches.bestThreeDartAverage}</span>
-          </div>
-          <div className="flex justify-between items-center py-2 border-b border-border">
-            <span className="text-muted-foreground">{t("stats.totalDarts")}</span>
-            <span className="font-semibold">{stats.matches.totalDartsThrown}</span>
-          </div>
-          <div className="flex justify-between items-center py-2">
-            <span className="text-muted-foreground">{t("stats.losses")}</span>
-            <span className="font-semibold">{stats.matches.losses}</span>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-
-  if (!showTabs) {
-    return activeTab === "matches" ? renderMatchStats() : renderLeagueStats();
-  }
+  const { leagues } = stats;
 
   return (
-    <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "leagues" | "matches")}>
-      <TabsList className="grid w-full grid-cols-2 mb-4">
-        <TabsTrigger value="matches" className="flex items-center gap-2">
-          <Swords className="w-4 h-4" />
-          {t("stats.matchStats")}
-        </TabsTrigger>
-        <TabsTrigger value="leagues" className="flex items-center gap-2">
-          <Trophy className="w-4 h-4" />
-          {t("stats.leagueStats")}
-        </TabsTrigger>
-      </TabsList>
+    <div className="space-y-4 p-4">
+      {/* Main Stats Grid */}
+      <div className="grid grid-cols-2 gap-3">
+        {/* 3-Dart Average */}
+        <Card className="border-none bg-white/5 hover:bg-white/10 transition-colors">
+          <CardContent className="pt-5 pb-4 text-center">
+            <Target className="w-7 h-7 mx-auto text-primary mb-2" />
+            <p className="text-2xl font-display font-bold text-foreground">
+              {leagues.threeDartAverage}
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">{t("stats.threeDartAvg")}</p>
+          </CardContent>
+        </Card>
 
-      <TabsContent value="matches">
-        {renderMatchStats()}
-      </TabsContent>
+        {/* Best Day Score */}
+        <Card className="border-none bg-white/5 hover:bg-white/10 transition-colors">
+          <CardContent className="pt-5 pb-4 text-center">
+            <Trophy className="w-7 h-7 mx-auto text-dart-gold mb-2" />
+            <p className="text-2xl font-display font-bold text-foreground">
+              {leagues.bestDay}
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">{t("stats.bestDay")}</p>
+          </CardContent>
+        </Card>
 
-      <TabsContent value="leagues">
-        {renderLeagueStats()}
-      </TabsContent>
-    </Tabs>
+        {/* Total Points */}
+        <Card className="border-none bg-white/5 hover:bg-white/10 transition-colors">
+          <CardContent className="pt-5 pb-4 text-center">
+            <TrendingUp className="w-7 h-7 mx-auto text-primary mb-2" />
+            <p className="text-2xl font-display font-bold text-foreground">
+              {leagues.totalScore.toLocaleString()}
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">{t("stats.totalPoints")}</p>
+          </CardContent>
+        </Card>
+
+        {/* Days Played */}
+        <Card className="border-none bg-white/5 hover:bg-white/10 transition-colors">
+          <CardContent className="pt-5 pb-4 text-center">
+            <Calendar className="w-7 h-7 mx-auto text-primary mb-2" />
+            <p className="text-2xl font-display font-bold text-foreground">
+              {leagues.totalDays}
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">{t("stats.daysPlayed")}</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Additional Stats */}
+      <Card className="border-none bg-white/5">
+        <CardContent className="pt-4 pb-3 space-y-0">
+          {/* Best 3-Dart Average (single day) */}
+          <div className="flex justify-between items-center py-3 border-b border-white/10">
+            <div className="flex items-center gap-2">
+              <Award className="w-4 h-4 text-dart-gold" />
+              <span className="text-sm text-muted-foreground">{t("stats.bestThreeDartAvg")}</span>
+            </div>
+            <span className="font-semibold text-foreground">{leagues.bestThreeDartAverage}</span>
+          </div>
+
+          {/* Leagues Played */}
+          <div className="flex justify-between items-center py-3 border-b border-white/10">
+            <div className="flex items-center gap-2">
+              <Trophy className="w-4 h-4 text-primary" />
+              <span className="text-sm text-muted-foreground">{t("stats.leaguesPlayed")}</span>
+            </div>
+            <span className="font-semibold text-foreground">{leagues.leaguesPlayed}</span>
+          </div>
+
+          {/* Avg Per Day */}
+          <div className="flex justify-between items-center py-3 border-b border-white/10">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-primary" />
+              <span className="text-sm text-muted-foreground">{t("stats.avgPerDay")}</span>
+            </div>
+            <span className="font-semibold text-foreground">
+              {leagues.totalDays > 0 ? Math.round(leagues.totalScore / leagues.totalDays) : 0}
+            </span>
+          </div>
+
+          {/* Current Streak */}
+          <div className="flex justify-between items-center py-3 border-b border-white/10">
+            <div className="flex items-center gap-2">
+              <Flame className="w-4 h-4 text-orange-500" />
+              <span className="text-sm text-muted-foreground">{t("stats.currentStreak")}</span>
+            </div>
+            <span className="font-semibold text-foreground">
+              {leagues.currentStreak} {leagues.currentStreak === 1 ? t("stats.day") : t("stats.days")}
+            </span>
+          </div>
+
+          {/* Longest Streak */}
+          <div className="flex justify-between items-center py-3">
+            <div className="flex items-center gap-2">
+              <Flame className="w-4 h-4 text-red-500" />
+              <span className="text-sm text-muted-foreground">{t("stats.longestStreak")}</span>
+            </div>
+            <span className="font-semibold text-foreground">
+              {leagues.longestStreak} {leagues.longestStreak === 1 ? t("stats.day") : t("stats.days")}
+            </span>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
