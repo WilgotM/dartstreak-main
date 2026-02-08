@@ -147,6 +147,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setIsPasswordRecovery(true);
         }
 
+        if (event === 'SIGNED_IN') {
+          setLoading(true);
+        }
+
         if (session?.user) {
           // Check if this is an anonymous (guest) user
           const isAnonymousUser = session.user.is_anonymous === true;
@@ -168,12 +172,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             localStorage.removeItem("dartstreak_guest_info_shown");
           }
 
-          fetchProfile(session.user.id);
+          await fetchProfile(session.user.id);
         } else {
           setProfile(null);
           setIsGuest(false);
+          setLoading(false);
         }
-        setLoading(false);
       }
     );
 
@@ -189,9 +193,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setGuestDaysRemaining(calculateGuestDaysRemaining());
         }
 
-        fetchProfile(session.user.id);
+        await fetchProfile(session.user.id);
+      } else {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     // Update activity periodically for guests

@@ -13,8 +13,12 @@ interface LeagueQRDialogProps {
 export function LeagueQRDialog({ inviteCode, leagueName, children }: LeagueQRDialogProps) {
     const { t } = useTranslation();
 
-    // Create a URL that works with phone camera apps
-    const joinUrl = `${window.location.origin}/join/${inviteCode}`;
+    // Create a URL that works with HashRouter + phone camera apps
+    const baseUrl = window.location.href.split("#")[0];
+    const normalizedBase = baseUrl.endsWith("/") || baseUrl.endsWith(".html")
+        ? baseUrl
+        : `${baseUrl}/`;
+    const joinUrl = `${normalizedBase}#/join/${inviteCode}`;
 
     return (
         <Dialog>
