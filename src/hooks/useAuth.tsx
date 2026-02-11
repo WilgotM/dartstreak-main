@@ -364,7 +364,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const { data, error } = await supabase
       .from("profiles")
-      .insert({ id: user.id, display_name: displayName })
+      .upsert({ id: user.id, display_name: displayName }, { onConflict: "id" })
       .select("id, display_name")
       .single();
 

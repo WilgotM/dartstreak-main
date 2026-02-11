@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,6 +16,32 @@ export const UsernameGuard = ({ children }: { children: React.ReactNode }) => {
     const [checkingUsername, setCheckingUsername] = useState(false);
     const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
     const [submitting, setSubmitting] = useState(false);
+    const checkTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const checkUsernameAvailability = useCallback(async (username: string) => {
+        const trimmedUsername = username.trim();
+
+        if (trimmedUsername.length < 2) {
+            setUsernameAvailable(null);
+            return;
+        }
+
+        setCheckingUsername(true);
+        const { data, error } = await supabase
+            .from("profiles")
+            .select("id")
+            .eq("display_name", trimmedUsername)
+            .maybeSingle();
+
+        setCheckingUsername(false);
+        if (error) {
+            setUsernameAvailable(false);
+            return;
+        }
+
+        // If the found username belongs to the current user, it should be allowed.
+        setUsernameAvailable(!data || data.id === user?.id);
+    }, [user?.id]);
 
     // Suggested username from Google metadata
     useEffect(() => {
@@ -30,35 +56,28 @@ export const UsernameGuard = ({ children }: { children: React.ReactNode }) => {
                 checkUsernameAvailability(suggested);
             }
         }
-    }, [user, profile, isGuest, displayName]);
-
-    const checkUsernameAvailability = async (username: string) => {
-        if (username.length < 2) {
-            setUsernameAvailable(null);
-            return;
-        }
-
-        setCheckingUsername(true);
-        const { data, error } = await supabase
-            .from("profiles")
-            .select("id")
-            .eq("display_name", username)
-            .maybeSingle();
-
-        setCheckingUsername(false);
-        setUsernameAvailable(!data && !error);
-    };
+    }, [user, profile, isGuest, displayName, checkUsernameAvailability]);
 
     const handleDisplayNameChange = (value: string) => {
         setDisplayName(value);
         setUsernameAvailable(null);
 
-        const timeoutId = setTimeout(() => {
+        if (checkTimeoutRef.current) {
+            clearTimeout(checkTimeoutRef.current);
+        }
+
+        checkTimeoutRef.current = setTimeout(() => {
             checkUsernameAvailability(value);
         }, 500);
-
-        return () => clearTimeout(timeoutId);
     };
+
+    useEffect(() => {
+        return () => {
+            if (checkTimeoutRef.current) {
+                clearTimeout(checkTimeoutRef.current);
+            }
+        };
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
