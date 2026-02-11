@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { LogOut, User } from "lucide-react";
+import { FileText, LogOut, Mail, Shield, User } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { StatsDisplay } from "@/components/StatsDisplay";
@@ -130,6 +130,28 @@ export default function ProfilePage() {
             <div className="glass-card rounded-xl overflow-hidden border-none text-foreground">
               <StatsDisplay userId={user.id} />
             </div>
+          </section>
+
+          {/* Legal and Contact */}
+          <section className="glass-card rounded-xl border-none p-4 space-y-3">
+            <Link to="/privacy" className="flex items-center justify-between rounded-lg px-3 py-2.5 bg-background/40 hover:bg-background/60 transition-colors">
+              <span className="flex items-center gap-2 text-foreground">
+                <Shield className="w-4 h-4 text-primary" />
+                {t("common.privacyPolicy")}
+              </span>
+            </Link>
+            <Link to="/terms" className="flex items-center justify-between rounded-lg px-3 py-2.5 bg-background/40 hover:bg-background/60 transition-colors">
+              <span className="flex items-center gap-2 text-foreground">
+                <FileText className="w-4 h-4 text-primary" />
+                {t("common.termsOfService")}
+              </span>
+            </Link>
+            <Link to="/contact" className="flex items-center justify-between rounded-lg px-3 py-2.5 bg-background/40 hover:bg-background/60 transition-colors">
+              <span className="flex items-center gap-2 text-foreground">
+                <Mail className="w-4 h-4 text-primary" />
+                {t("common.contact")}
+              </span>
+            </Link>
           </section>
 
           {/* Sign Out */}
