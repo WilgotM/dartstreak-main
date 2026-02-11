@@ -12,11 +12,8 @@ import Leagues from "./pages/Leagues";
 import League from "./pages/League";
 import JoinLeague from "./pages/JoinLeague";
 import ProfilePage from "./pages/ProfilePage";
-import InstallGuide from "./pages/InstallGuide";
 import NotFound from "./pages/NotFound";
-import { InstallPrompt } from "@/components/InstallPrompt";
 import Legal from "./pages/Legal";
-import { IOSInstallReminder } from "@/components/iOSInstallReminder";
 import * as Sentry from "@sentry/react";
 
 const queryClient = new QueryClient();
@@ -41,15 +38,12 @@ const App = () => {
                     <Route path="/join/:code" element={<JoinLeague />} />
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/profile/:id" element={<ProfilePage />} />
-                    <Route path="/install-guide" element={<InstallGuide />} />
                     <Route path="/privacy" element={<Legal />} />
                     <Route path="/terms" element={<Legal />} />
                     <Route path="/contact" element={<Legal />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Sentry.ErrorBoundary>
-                <InstallPrompt />
-                <IOSInstallReminder />
               </BrowserRouter>
             </TooltipProvider>
           </AuthProvider>
