@@ -134,7 +134,7 @@ export default function ThrowInput({
     setThrows((prev) => [...prev, 0]);
   }, [throws.length]);
 
-  const uploadVideo = async (blob: Blob): Promise<string | undefined> => {
+  const uploadVideo = useCallback(async (blob: Blob): Promise<string | undefined> => {
     let throwDate: string;
     try {
       throwDate = new Intl.DateTimeFormat("sv-SE", {
@@ -161,7 +161,7 @@ export default function ThrowInput({
     }
 
     return filePath;
-  };
+  }, [leagueId, leagueTimezone, userId]);
 
   const handleComplete = useCallback(async () => {
     if (throws.length !== 9 || isCompleting) return;
@@ -186,7 +186,7 @@ export default function ThrowInput({
     }
 
     onComplete(throws, videoUrl);
-  }, [throws, onComplete, isCompleting, stopRecording, leagueId, userId, cameraRequired]);
+  }, [throws, onComplete, isCompleting, stopRecording, cameraRequired, uploadVideo]);
 
   const getRoundThrows = (round: number) => {
     const start = (round - 1) * 3;

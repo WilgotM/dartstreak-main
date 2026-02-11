@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
@@ -34,13 +34,7 @@ export default function ProfilePage() {
     }
   }, [user, isGuest, loading, navigate]);
 
-  useEffect(() => {
-    if (user && !isGuest) {
-      fetchExtendedProfile();
-    }
-  }, [user, isGuest]);
-
-  const fetchExtendedProfile = async () => {
+  const fetchExtendedProfile = useCallback(async () => {
     if (!user) return;
     const { data } = await supabase
       .from("profiles")
@@ -51,7 +45,13 @@ export default function ProfilePage() {
     if (data) {
       setExtendedProfile(data);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user && !isGuest) {
+      void fetchExtendedProfile();
+    }
+  }, [user, isGuest, fetchExtendedProfile]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -193,4 +193,3 @@ export default function ProfilePage() {
     </AppLayout>
   );
 }
-

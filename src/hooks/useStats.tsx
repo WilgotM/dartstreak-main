@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -24,13 +24,7 @@ export function useStats(userId?: string) {
 
   const targetUserId = userId || user?.id;
 
-  useEffect(() => {
-    if (targetUserId) {
-      fetchStats();
-    }
-  }, [targetUserId]);
-
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     if (!targetUserId) return;
     setLoading(true);
 
@@ -157,7 +151,11 @@ export function useStats(userId?: string) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [targetUserId]);
+
+  useEffect(() => {
+    void fetchStats();
+  }, [fetchStats]);
 
   return { stats, loading, refetch: fetchStats };
 }

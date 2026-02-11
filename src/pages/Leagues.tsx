@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
@@ -55,13 +55,8 @@ export default function Leagues() {
     }
   }, [user, loading, navigate]);
 
-  useEffect(() => {
-    if (user) {
-      fetchLeagues();
-    }
-  }, [user]);
-
-  const fetchLeagues = async () => {
+  const fetchLeagues = useCallback(async () => {
+    if (!user) return;
     // First get the leagues the user is a member of
     const { data: memberData, error: memberError } = await supabase
       .from("league_members")
@@ -94,7 +89,13 @@ export default function Leagues() {
       setLeagues(data || []);
     }
     setLoadingLeagues(false);
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      void fetchLeagues();
+    }
+  }, [user, fetchLeagues]);
 
   const createLeague = async () => {
     if (!newLeagueName.trim()) {

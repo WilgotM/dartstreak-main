@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
@@ -14,20 +14,7 @@ export default function JoinLeague() {
     const { t } = useTranslation();
     const [joining, setJoining] = useState(false);
 
-    useEffect(() => {
-        if (!authLoading && !user) {
-            // Store the invite code and redirect to auth
-            sessionStorage.setItem("pendingLeagueCode", code || "");
-            navigate("/auth");
-            return;
-        }
-
-        if (user && code && !joining) {
-            joinLeague();
-        }
-    }, [user, authLoading, code]);
-
-    const joinLeague = async () => {
+    const joinLeague = useCallback(async () => {
         if (!code || !user) return;
 
         setJoining(true);
@@ -81,7 +68,20 @@ export default function JoinLeague() {
             toast.error(t("dashboard.couldNotJoinLeague"));
             navigate("/dashboard");
         }
-    };
+    }, [code, user, navigate, t]);
+
+    useEffect(() => {
+        if (!authLoading && !user) {
+            // Store the invite code and redirect to auth
+            sessionStorage.setItem("pendingLeagueCode", code || "");
+            navigate("/auth");
+            return;
+        }
+
+        if (user && code && !joining) {
+            void joinLeague();
+        }
+    }, [authLoading, user, code, joining, navigate, joinLeague]);
 
     return (
         <AppLayout>

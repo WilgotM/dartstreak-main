@@ -181,7 +181,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     );
 
+    // Timeout fallback to prevent infinite loading if Supabase is unresponsive
+    const sessionTimeout = setTimeout(() => {
+      console.warn("Session fetch timeout - continuing without auth");
+      setLoading(false);
+    }, 10000);
+
     supabase.auth.getSession().then(async ({ data: { session } }) => {
+      clearTimeout(sessionTimeout);
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
@@ -197,21 +204,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         setLoading(false);
       }
+    }).catch((error) => {
+      clearTimeout(sessionTimeout);
+      console.error("Error fetching session:", error);
+      setLoading(false);
     });
-
-    // Update activity periodically for guests
-    const activityInterval = setInterval(() => {
-      if (user?.is_anonymous) {
-        updateGuestActivity();
-        setGuestDaysRemaining(calculateGuestDaysRemaining());
-      }
-    }, 60000); // Update every minute
 
     return () => {
       subscription.unsubscribe();
-      clearInterval(activityInterval);
     };
   }, []);
+
+  useEffect(() => {
+    if (!isGuest) return;
+
+    const activityInterval = setInterval(() => {
+      updateGuestActivity();
+      setGuestDaysRemaining(calculateGuestDaysRemaining());
+    }, 60000); // Update every minute
+
+    return () => {
+      clearInterval(activityInterval);
+    };
+  }, [isGuest]);
 
   const signUp = async (email: string, password: string, displayName: string) => {
     const redirectUrl = `${window.location.origin}/`;

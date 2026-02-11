@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
@@ -101,86 +101,7 @@ export default function League() {
     }
   }, [user, authLoading, navigate]);
 
-  useEffect(() => {
-    if (user && id) {
-      fetchLeagueData();
-    }
-  }, [user, id]);
-
-  const fetchLeagueData = async () => {
-    const { data: leagueData, error: leagueError } = await supabase
-      .from("leagues")
-      .select("*")
-      .eq("id", id)
-      .single();
-
-    if (leagueError) {
-      toast.error(t("league.couldNotFindLeague"));
-      navigate("/dashboard");
-      return;
-    }
-
-    setLeague(leagueData);
-    setCameraRequired(leagueData.camera_required ?? true);
-
-    // Fetch creator's timezone
-    const { data: creatorProfile } = await supabase
-      .from("profiles")
-      .select("timezone")
-      .eq("id", leagueData.created_by)
-      .single();
-
-    if (creatorProfile?.timezone) {
-      setCreatorTimezone(creatorProfile.timezone);
-    }
-
-    const leagueStarted = !leagueData.started_at || new Date(leagueData.started_at) <= new Date();
-
-    const getLeagueToday = () => {
-      try {
-        return new Intl.DateTimeFormat("sv-SE", {
-          timeZone: creatorTimezone,
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        }).format(new Date());
-      } catch (e) {
-        return format(new Date(), "yyyy-MM-dd");
-      }
-    };
-
-    if (leagueStarted) {
-      const today = getLeagueToday();
-      const { data: todayThrow } = await supabase
-        .from("daily_throws")
-        .select("*")
-        .eq("league_id", id)
-        .eq("user_id", user!.id)
-        .eq("throw_date", today)
-        .single();
-
-      if (todayThrow) {
-        setHasThrown(true);
-        setThrows([
-          todayThrow.throw_1,
-          todayThrow.throw_2,
-          todayThrow.throw_3,
-          todayThrow.throw_4,
-          todayThrow.throw_5,
-          todayThrow.throw_6,
-          todayThrow.throw_7,
-          todayThrow.throw_8,
-          todayThrow.throw_9,
-        ]);
-      }
-
-      await fetchLeaderboard(leagueData);
-    }
-
-    setLoading(false);
-  };
-
-  const fetchLeaderboard = async (leagueData: League) => {
+  const fetchLeaderboard = useCallback(async (leagueData: League) => {
     // Get creator's timezone first to use for correct 'today'
     const { data: creatorProfile } = await supabase
       .from("profiles")
@@ -268,7 +189,86 @@ export default function League() {
 
     leaderboardData.sort((a, b) => b.week_score - a.week_score || b.total_score - a.total_score);
     setLeaderboard(leaderboardData);
-  };
+  }, [id, t]);
+
+  const fetchLeagueData = useCallback(async () => {
+    const { data: leagueData, error: leagueError } = await supabase
+      .from("leagues")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (leagueError) {
+      toast.error(t("league.couldNotFindLeague"));
+      navigate("/dashboard");
+      return;
+    }
+
+    setLeague(leagueData);
+    setCameraRequired(leagueData.camera_required ?? true);
+
+    // Fetch creator's timezone
+    const { data: creatorProfile } = await supabase
+      .from("profiles")
+      .select("timezone")
+      .eq("id", leagueData.created_by)
+      .single();
+
+    if (creatorProfile?.timezone) {
+      setCreatorTimezone(creatorProfile.timezone);
+    }
+
+    const leagueStarted = !leagueData.started_at || new Date(leagueData.started_at) <= new Date();
+
+    const getLeagueToday = () => {
+      try {
+        return new Intl.DateTimeFormat("sv-SE", {
+          timeZone: creatorTimezone,
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }).format(new Date());
+      } catch (e) {
+        return format(new Date(), "yyyy-MM-dd");
+      }
+    };
+
+    if (leagueStarted) {
+      const today = getLeagueToday();
+      const { data: todayThrow } = await supabase
+        .from("daily_throws")
+        .select("*")
+        .eq("league_id", id)
+        .eq("user_id", user!.id)
+        .eq("throw_date", today)
+        .single();
+
+      if (todayThrow) {
+        setHasThrown(true);
+        setThrows([
+          todayThrow.throw_1,
+          todayThrow.throw_2,
+          todayThrow.throw_3,
+          todayThrow.throw_4,
+          todayThrow.throw_5,
+          todayThrow.throw_6,
+          todayThrow.throw_7,
+          todayThrow.throw_8,
+          todayThrow.throw_9,
+        ]);
+      }
+
+      await fetchLeaderboard(leagueData);
+    }
+
+    setLoading(false);
+  }, [creatorTimezone, fetchLeaderboard, id, navigate, t, user]);
+
+  useEffect(() => {
+    if (user && id) {
+      void fetchLeagueData();
+    }
+  }, [user, id, fetchLeagueData]);
 
   const handleThrowComplete = async (completedThrows: number[], videoUrl?: string) => {
     const today = new Intl.DateTimeFormat("sv-SE", {

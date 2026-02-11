@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
@@ -34,13 +34,7 @@ export default function Profile() {
     }
   }, [user, authLoading, navigate]);
 
-  useEffect(() => {
-    if (user && id) {
-      fetchProfile();
-    }
-  }, [user, id]);
-
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     const { data: profileData, error: profileError } = await supabase
       .from("profiles")
       .select("*")
@@ -55,7 +49,13 @@ export default function Profile() {
 
     setProfile(profileData);
     setLoading(false);
-  };
+  }, [id, navigate, t]);
+
+  useEffect(() => {
+    if (user && id) {
+      void fetchProfile();
+    }
+  }, [user, id, fetchProfile]);
 
   if (authLoading || loading) {
     return (

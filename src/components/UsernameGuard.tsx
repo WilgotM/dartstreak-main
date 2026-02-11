@@ -30,7 +30,7 @@ export const UsernameGuard = ({ children }: { children: React.ReactNode }) => {
                 checkUsernameAvailability(suggested);
             }
         }
-    }, [user, profile, isGuest]);
+    }, [user, profile, isGuest, displayName]);
 
     const checkUsernameAvailability = async (username: string) => {
         if (username.length < 2) {
