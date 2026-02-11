@@ -7,17 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Target, ArrowLeft, Check, X, AlertCircle, Shield } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ArrowLeft, Check, X } from "lucide-react";
 import { z } from "zod";
 
 const GoogleIcon = ({ className }: { className?: string }) => (
@@ -40,25 +31,15 @@ export default function Auth() {
   const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
   const [forgotPassword, setForgotPassword] = useState(false);
 
-  const { signIn, signUp, continueAsGuest, upgradeGuestAccount, resetPassword, updatePassword, isPasswordRecovery, signInWithGoogle, isGuest, user, loading: authLoading } = useAuth();
+  const { signIn, signUp, resetPassword, updatePassword, isPasswordRecovery, signInWithGoogle, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
-
-  // Check if this is a guest trying to upgrade their account
-  const isUpgradeMode = isGuest && location.state?.mode === "signup";
 
   useEffect(() => {
     if (!authLoading && user && !isPasswordRecovery) {
       navigate("/dashboard");
     }
   }, [authLoading, user, isPasswordRecovery, navigate]);
-
-  const handleGuestContinue = async () => {
-    const { error } = await continueAsGuest();
-    if (!error) {
-      navigate("/dashboard");
-    }
-  };
 
   const authSchema = z.object({
     email: z.string().email(t("auth.invalidEmail")),
@@ -158,21 +139,6 @@ export default function Auth() {
           toast.error(t("auth.loginError"));
         }
       } else {
-        navigate("/dashboard");
-      }
-    } else if (isUpgradeMode) {
-      // Upgrade guest account - link email/password to anonymous user
-      const { error } = await upgradeGuestAccount(email, password, displayName);
-      if (error) {
-        if (error.message.includes("already registered") || error.message.includes("already been registered")) {
-          toast.error(t("auth.emailAlreadyRegistered"));
-        } else if (error.message.includes("duplicate key") || error.message.includes("profiles_display_name_unique")) {
-          toast.error(t("auth.usernameTaken"));
-        } else {
-          toast.error(error.message || t("auth.signupError"));
-        }
-      } else {
-        toast.success(t("auth.accountUpgraded") || t("auth.accountCreated"));
         navigate("/dashboard");
       }
     } else {
@@ -431,15 +397,6 @@ export default function Auth() {
                 >
                   <GoogleIcon className="w-5 h-5 absolute left-4" />
                   {t("auth.continueWithGoogle") || "Continue with Google"}
-                </Button>
-
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full border-2 text-muted-foreground"
-                  onClick={handleGuestContinue}
-                >
-                  {t("auth.continueAsGuest")}
                 </Button>
               </div>
             </div>

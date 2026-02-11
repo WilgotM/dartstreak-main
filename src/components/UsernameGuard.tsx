@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { Check, X, Target } from "lucide-react";
 
 export const UsernameGuard = ({ children }: { children: React.ReactNode }) => {
-    const { user, profile, loading, isGuest, createProfile, signOut } = useAuth();
+    const { user, profile, loading, createProfile, signOut } = useAuth();
     const { t } = useTranslation();
     const [displayName, setDisplayName] = useState("");
     const [checkingUsername, setCheckingUsername] = useState(false);
@@ -50,7 +50,7 @@ export const UsernameGuard = ({ children }: { children: React.ReactNode }) => {
 
     // Suggested username from Google metadata
     useEffect(() => {
-        if (user && !profile && !isGuest && !displayName) {
+        if (user && !profile && !displayName) {
             const suggested = user.user_metadata?.display_name
                 || user.user_metadata?.full_name
                 || user.user_metadata?.name
@@ -61,7 +61,7 @@ export const UsernameGuard = ({ children }: { children: React.ReactNode }) => {
                 checkUsernameAvailability(suggested);
             }
         }
-    }, [user, profile, isGuest, displayName, checkUsernameAvailability]);
+    }, [user, profile, displayName, checkUsernameAvailability]);
 
     const handleDisplayNameChange = (value: string) => {
         setDisplayName(value);
@@ -117,8 +117,8 @@ export const UsernameGuard = ({ children }: { children: React.ReactNode }) => {
         );
     }
 
-    // If logged in but no profile, and not a guest, show the username choice screen
-    if (user && !profile && !isGuest) {
+    // If logged in but no profile, show the username choice screen
+    if (user && !profile) {
         return (
             <div className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center p-4">
                 <div className="w-full max-w-md animate-slide-up">

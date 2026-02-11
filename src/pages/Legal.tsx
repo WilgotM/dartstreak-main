@@ -1,5 +1,4 @@
-import { useParams, useLocation, useNavigate } from "react-router-dom";
-import { AppLayout } from "@/components/AppLayout";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Mail, Shield, Scale, Info } from "lucide-react";
 
@@ -16,7 +15,7 @@ export default function Legal() {
                     icon: <Shield className="w-8 h-8 text-primary" />,
                     content: (
                         <div className="space-y-6 text-muted-foreground leading-relaxed">
-                            <p className="text-sm">Last updated: February 4, 2026</p>
+                            <p className="text-sm">Last updated: February 11, 2026</p>
 
                             <section className="space-y-3">
                                 <h3 className="text-xl font-semibold text-foreground">1. Introduction</h3>
@@ -31,8 +30,9 @@ export default function Legal() {
                                 <h3 className="text-xl font-semibold text-foreground">2. Information We Collect</h3>
                                 <ul className="list-disc pl-5 space-y-2">
                                     <li>
-                                        <span className="text-foreground font-medium">Account Data:</span> When you sign in with Google,
-                                        we collect your email address, display name, and avatar URL to create your profile.
+                                        <span className="text-foreground font-medium">Account Data:</span> When you create an account with
+                                        email and password or sign in with Google, we collect your email address and profile details
+                                        (such as display name and avatar URL when available) to create your profile.
                                     </li>
                                     <li>
                                         <span className="text-foreground font-medium">Game Data:</span> We store your throw history,
@@ -45,6 +45,9 @@ export default function Legal() {
                                         does not require video, no recordings are collected for those throws.
                                     </li>
                                 </ul>
+                                <p className="text-sm">
+                                    DartStreak requires a registered account to use the service.
+                                </p>
                             </section>
 
                             <section className="space-y-3">
@@ -52,7 +55,7 @@ export default function Legal() {
                                 <p>We rely on trusted third-party services to operate DartStreak:</p>
                                 <ul className="list-disc pl-5 space-y-2">
                                     <li><span className="text-foreground font-medium">Supabase:</span> Used for our database, authentication, and secure data storage.</li>
-                                    <li><span className="text-foreground font-medium">Google OAuth:</span> Used solely for secure user authentication.</li>
+                                    <li><span className="text-foreground font-medium">Google OAuth:</span> Optional sign-in provider for secure authentication.</li>
                                     <li><span className="text-foreground font-medium">Supabase Storage:</span> Used for storing throw verification videos securely.</li>
                                 </ul>
                             </section>
@@ -73,7 +76,7 @@ export default function Legal() {
                     icon: <Scale className="w-8 h-8 text-primary" />,
                     content: (
                         <div className="space-y-6 text-muted-foreground leading-relaxed">
-                            <p className="text-sm">Last updated: February 4, 2026</p>
+                            <p className="text-sm">Last updated: February 11, 2026</p>
 
                             <section className="space-y-3">
                                 <h3 className="text-xl font-semibold text-foreground">1. Acceptance of Terms</h3>

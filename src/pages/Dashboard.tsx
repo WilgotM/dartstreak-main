@@ -12,7 +12,7 @@ import { format } from "date-fns";
 
 
 export default function Dashboard() {
-  const { user, profile, loading, isGuest } = useAuth();
+  const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { medium, light } = useHaptics();
@@ -103,10 +103,10 @@ export default function Dashboard() {
   }, [user, t]);
 
   useEffect(() => {
-    if (!loading && !user && !isGuest) {
+    if (!loading && !user) {
       navigate("/auth");
     }
-  }, [user, isGuest, loading, navigate]);
+  }, [user, loading, navigate]);
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -137,7 +137,7 @@ export default function Dashboard() {
     }
   };
 
-  if (loading || (!user && !isGuest)) {
+  if (loading || !user) {
     return (
       <AppLayout>
         <div className="min-h-screen flex items-center justify-center bg-background">
@@ -149,7 +149,7 @@ export default function Dashboard() {
     );
   }
 
-  const displayName = profile?.display_name || user?.email?.split('@')[0] || "Guest";
+  const displayName = profile?.display_name || user.email?.split("@")[0] || "Player";
 
   return (
     <AppLayout>

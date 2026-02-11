@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { Target, Users, Trophy, Video, ArrowRight, Zap, Gamepad2, Play } from "lucide-react";
+import { Target, Users, Trophy, Video, ArrowRight, Zap, Gamepad2 } from "lucide-react";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 
 import { toast } from "sonner";
@@ -19,15 +19,15 @@ const GoogleIcon = ({ className }: { className?: string }) => (
 );
 
 export default function Index() {
-  const { user, loading, isGuest, continueAsGuest, signInWithGoogle } = useAuth();
+  const { user, loading, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (!loading && (user || isGuest)) {
+    if (!loading && user) {
       navigate("/dashboard");
     }
-  }, [user, isGuest, loading, navigate]);
+  }, [user, loading, navigate]);
 
   const scrollToLeagues = () => {
     document.getElementById('leagues')?.scrollIntoView({ behavior: 'smooth' });
@@ -117,30 +117,6 @@ export default function Index() {
                 <GoogleIcon className="w-5 h-5 mr-2" />
                 {t("landing.googleLogin")}
               </Button>
-            </div>
-
-            {/* Quick Play - Guest Mode Button */}
-            <div className="flex flex-col items-center gap-4 mb-8">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-2xl blur-xl" />
-                <Button
-                  variant="secondary"
-                  size="xl"
-                  className="relative w-full sm:w-auto text-lg h-14 px-10 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white border-0 shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all"
-                  onClick={async () => {
-                    const { error } = await continueAsGuest();
-                    if (!error) {
-                      navigate("/dashboard");
-                    }
-                  }}
-                >
-                  <Play className="w-5 h-5 mr-2" />
-                  {t("landing.playFreeNoAccount")}
-                </Button>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {t("landing.noSignupRequired")}
-              </p>
             </div>
 
             <div className="flex flex-col items-center gap-6">
