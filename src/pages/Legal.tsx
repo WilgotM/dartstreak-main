@@ -1,70 +1,60 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Mail, Shield, Scale, Info } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function Legal() {
     const location = useLocation();
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const path = location.pathname.substring(1); // remove leading slash
 
     const getContent = () => {
         switch (path) {
             case "privacy":
                 return {
-                    title: "Privacy Policy",
+                    title: t("legal.privacyPolicy.title"),
                     icon: <Shield className="w-8 h-8 text-primary" />,
                     content: (
                         <div className="space-y-6 text-muted-foreground leading-relaxed">
-                            <p className="text-sm">Last updated: February 11, 2026</p>
+                            <p className="text-sm">{t("legal.privacyPolicy.p1")}</p>
 
                             <section className="space-y-3">
-                                <h3 className="text-xl font-semibold text-foreground">1. Introduction</h3>
+                                <h3 className="text-xl font-semibold text-foreground">{t("legal.privacyPolicy.s1Title")}</h3>
                                 <p>
-                                    Welcome to DartStreak ("we," "our," or "us"). We respect your privacy and are committed to protecting
-                                    your personal data. This privacy policy explains how we look after your personal data when you visit
-                                    our application and tells you about your privacy rights.
+                                    {t("legal.privacyPolicy.s1Text")}
                                 </p>
                             </section>
 
                             <section className="space-y-3">
-                                <h3 className="text-xl font-semibold text-foreground">2. Information We Collect</h3>
+                                <h3 className="text-xl font-semibold text-foreground">{t("legal.privacyPolicy.s2Title")}</h3>
                                 <ul className="list-disc pl-5 space-y-2">
                                     <li>
-                                        <span className="text-foreground font-medium">Account Data:</span> When you create an account with
-                                        email and password or sign in with Google, we collect your email address and profile details
-                                        (such as display name and avatar URL when available) to create your profile.
+                                        <span className="text-foreground font-medium">{t("legal.privacyPolicy.li1")}</span>
                                     </li>
                                     <li>
-                                        <span className="text-foreground font-medium">Game Data:</span> We store your throw history,
-                                        statistics, and league participation data to provide the core functionality of the service.
+                                        <span className="text-foreground font-medium">{t("legal.privacyPolicy.li2")}</span>
                                     </li>
                                     <li>
-                                        <span className="text-foreground font-medium">Video Data:</span> Some leagues may require video recording for
-                                        verification. If a league requires video, short clips are captured and stored securely in our database
-                                        and associated with your throw submissions, and they may be viewed by other league members. If a league
-                                        does not require video, no recordings are collected for those throws.
+                                        <span className="text-foreground font-medium">{t("legal.privacyPolicy.li3")}</span>
                                     </li>
-                                </ul>
-                                <p className="text-sm">
-                                    DartStreak requires a registered account to use the service.
-                                </p>
-                            </section>
-
-                            <section className="space-y-3">
-                                <h3 className="text-xl font-semibold text-foreground">3. Third-Party Services</h3>
-                                <p>We rely on trusted third-party services to operate DartStreak:</p>
-                                <ul className="list-disc pl-5 space-y-2">
-                                    <li><span className="text-foreground font-medium">Supabase:</span> Used for our database, authentication, and secure data storage.</li>
-                                    <li><span className="text-foreground font-medium">Google OAuth:</span> Optional sign-in provider for secure authentication.</li>
-                                    <li><span className="text-foreground font-medium">Supabase Storage:</span> Used for storing throw verification videos securely.</li>
                                 </ul>
                             </section>
 
                             <section className="space-y-3">
-                                <h3 className="text-xl font-semibold text-foreground">4. Data Deletion</h3>
+                                <h3 className="text-xl font-semibold text-foreground">{t("legal.privacyPolicy.s3Title")}</h3>
+                                <p>{t("legal.privacyPolicy.s3Text")}</p>
+                                <ul className="list-disc pl-5 space-y-2">
+                                    <li><span className="text-foreground font-medium">{t("legal.privacyPolicy.li4")}</span></li>
+                                    <li><span className="text-foreground font-medium">{t("legal.privacyPolicy.li5")}</span></li>
+                                    <li><span className="text-foreground font-medium">{t("legal.privacyPolicy.li6")}</span></li>
+                                </ul>
+                            </section>
+
+                            <section className="space-y-3">
+                                <h3 className="text-xl font-semibold text-foreground">{t("legal.privacyPolicy.s4Title")}</h3>
                                 <p>
-                                    You have the right to request deletion of your account and all associated data at any time.
-                                    You can do this directly within your profile settings or by contacting us at the email below.
+                                    {t("legal.privacyPolicy.s4Text")}
                                 </p>
                             </section>
                         </div>
@@ -72,89 +62,75 @@ export default function Legal() {
                 };
             case "terms":
                 return {
-                    title: "Terms of Service",
+                    title: t("legal.terms.title"),
                     icon: <Scale className="w-8 h-8 text-primary" />,
                     content: (
                         <div className="space-y-6 text-muted-foreground leading-relaxed">
-                            <p className="text-sm">Last updated: February 11, 2026</p>
+                            <p className="text-sm">{t("legal.terms.p1")}</p>
 
                             <section className="space-y-3">
-                                <h3 className="text-xl font-semibold text-foreground">1. Acceptance of Terms</h3>
+                                <h3 className="text-xl font-semibold text-foreground">{t("legal.terms.s1Title")}</h3>
                                 <p>
-                                    By accessing or using DartStreak, you agree to be bound by these Terms of Service.
-                                    If you do not agree to these terms, please do not use our service.
+                                    {t("legal.terms.s1Text")}
                                 </p>
                             </section>
 
                             <section className="space-y-3">
-                                <h3 className="text-xl font-semibold text-foreground">2. "As Is" Disclaimer</h3>
+                                <h3 className="text-xl font-semibold text-foreground">{t("legal.terms.s2Title")}</h3>
                                 <div className="p-4 bg-secondary/30 rounded-lg border border-border">
                                     <p className="font-medium text-foreground">
-                                        DartStreak is a free, hobbyist project provided "AS IS" and "AS AVAILABLE" without any warranties of any kind,
-                                        either express or implied.
+                                        {t("legal.terms.s2Text1")}
                                     </p>
                                     <p className="mt-2 text-sm">
-                                        We cannot guarantee that the service will be uninterrupted, secure, or error-free.
-                                        We are not liable for any data loss, service interruptions, or issues arising from the use of the service.
+                                        {t("legal.terms.s2Text2")}
                                     </p>
                                 </div>
                             </section>
 
                             <section className="space-y-3">
-                                <h3 className="text-xl font-semibold text-foreground">3. User Conduct</h3>
-                                <p>We value fair play and sportsmanship. By using DartStreak, you agree NOT to:</p>
+                                <h3 className="text-xl font-semibold text-foreground">{t("legal.terms.s3Title")}</h3>
+                                <p>{t("legal.terms.s3Text")}</p>
                                 <ul className="list-disc pl-5 space-y-2">
-                                    <li>Cheat, manipulate scores, or use automated bots.</li>
-                                    <li>Harass, bully, or use hate speech against other players.</li>
-                                    <li>Upload or broadcast inappropriate, offensive, or illegal content.</li>
+                                    <li>{t("legal.terms.li1")}</li>
+                                    <li>{t("legal.terms.li2")}</li>
+                                    <li>{t("legal.terms.li3")}</li>
                                 </ul>
                                 <p className="mt-2">
-                                    We reserve the right to ban any user who violates these rules or disrupts the community.
+                                    {t("legal.terms.s3Text2")}
                                 </p>
                             </section>
 
                             <section className="space-y-3">
-                                <h3 className="text-xl font-semibold text-foreground">4. Intellectual Property</h3>
+                                <h3 className="text-xl font-semibold text-foreground">{t("legal.terms.s4Title")}</h3>
                                 <ul className="list-disc pl-5 space-y-2">
                                     <li>
-                                        <span className="text-foreground font-medium">Your Content:</span> You retain all ownership rights to the content
-                                        you create (e.g., your match history, user profile).
+                                        <span className="text-foreground font-medium">{t("legal.terms.li4")}</span>
                                     </li>
                                     <li>
-                                        <span className="text-foreground font-medium">Our Content:</span> The DartStreak code, design, and logic are
-                                        authored by the DartStreak team. However, we make no broad copyright claims over generic game concepts
-                                        or darts mechanics.
+                                        <span className="text-foreground font-medium">{t("legal.terms.li5")}</span>
                                     </li>
                                 </ul>
-                            </section>
-
-                            <section className="space-y-3">
-                                <h3 className="text-xl font-semibold text-foreground">5. Changes to Terms</h3>
-                                <p>
-                                    We may update these terms from time to time. We will notify users of significant changes,
-                                    but continued use of the service implies acceptance of the new terms.
-                                </p>
                             </section>
                         </div>
                     ),
                 };
             case "contact":
                 return {
-                    title: "Contact Us",
+                    title: t("legal.contact.title"),
                     icon: <Mail className="w-8 h-8 text-primary" />,
                     content: (
                         <div className="space-y-6 text-muted-foreground">
-                            <p>Have questions, feedback, or need support? We're here to help!</p>
+                            <p>{t("legal.contact.p1")}</p>
 
                             <div className="flex items-center gap-4 p-6 rounded-lg bg-card border border-border shadow-sm">
                                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                                     <Mail className="w-6 h-6" />
                                 </div>
                                 <div>
-                                    <h3 className="font-semibold text-foreground text-lg">Email Support</h3>
-                                    <p className="text-sm mb-2">For all inquiries, please email us directly:</p>
-                                    <a href="mailto:support@dartstreak.com" className="text-primary hover:underline font-medium">
-                                        support@dartstreak.com
+                                    <h3 className="font-semibold text-foreground text-lg">{t("legal.contact.emailSupport")}</h3>
+                                    <p className="text-sm mb-2">{t("legal.contact.p2")}</p>
+                                    <a href="mailto:dartstreak@proton.me" className="text-primary hover:underline font-medium">
+                                        dartstreak@proton.me
                                     </a>
                                 </div>
                             </div>
@@ -163,9 +139,9 @@ export default function Legal() {
                 };
             default:
                 return {
-                    title: "Page Not Found",
+                    title: t("legal.notFound.title"),
                     icon: <Info className="w-8 h-8 text-primary" />,
-                    content: <p>The page you are looking for does not exist.</p>,
+                    content: <p>{t("legal.notFound.text")}</p>,
                 };
         }
     };
@@ -177,7 +153,7 @@ export default function Legal() {
             <div className="container mx-auto px-4 py-12 max-w-3xl">
                 <Button variant="ghost" className="mb-8 pl-0 hover:pl-2 transition-all" onClick={() => navigate(-1)}>
                     <ArrowLeft className="w-4 h-4 mr-2" />
-                    Back
+                    {t("common.back")}
                 </Button>
 
                 <div className="space-y-8 animate-fade-in">

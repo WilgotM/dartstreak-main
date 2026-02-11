@@ -126,6 +126,53 @@
     "whyUs3Title": "Tävla med Vänner",
     "whyUsTitle": "Varför DartStreak?"
   },
+  "legal": {
+    "privacyPolicy": {
+      "title": "Integritetspolicy",
+      "p1": "Senast uppdaterad: 11 februari 2026",
+      "s1Title": "1. Introduktion",
+      "s1Text": "Välkommen till DartStreak (\"vi\", \"vår\" eller \"oss\"). Vi värnar om din integritet och är engagerade i att skydda dina personuppgifter. Denna integritetspolicy förklarar hur vi behandlar dina personuppgifter när du besöker vår applikation och informerar dig om dina rättigheter.",
+      "s2Title": "2. Information vi samlar in",
+      "li1": "Kontodata: Vi samlar in din e-postadress och profiluppgifter (såsom visningsnamn och avatar-URL) för att skapa din profil.",
+      "li2": "Speldata: Vi lagrar din kasthistorik, statistik och ligadeltagande för att tillhandahålla tjänstens kärnfunktioner.",
+      "li3": "Videodata: Vissa ligor kan kräva videoinspelning för verifiering. Om en liga kräver video spelas korta klipp in och lagras, och de kan ses av andra ligamedlemmar.",
+      "s3Title": "3. Tredjepartstjänster",
+      "s3Text": "Vi förlitar oss på betrodda tredjepartstjänster för att driva DartStreak:",
+      "li4": "Supabase: Används för vår databas, inloggning och säker datalagring.",
+      "li5": "Google OAuth: Valfri inloggningsmetod för säker autentisering.",
+      "li6": "Supabase Storage: Används för att lagra videoverifieringar säkert.",
+      "s4Title": "4. Radering av data",
+      "s4Text": "Du har rätt att begära radering av ditt konto och all tillhörande data när som helst. Du kan göra detta direkt i dina profilinställningar eller genom att kontakta oss."
+    },
+    "terms": {
+      "title": "Användarvillkor",
+      "p1": "Senast uppdaterad: 11 februari 2026",
+      "s1Title": "1. Godkännande av villkor",
+      "s1Text": "Genom att använda DartStreak godkänner du dessa användarvillkor. Om du inte godkänner dem, vänligen använd inte vår tjänst.",
+      "s2Title": "2. \"I befintligt skick\"-friskrivning",
+      "s2Text1": "DartStreak är ett gratis hobbyprojekt som tillhandahålls \"I BEFINTLIGT SKICK\" utan några garantier.",
+      "s2Text2": "Vi kan inte garantera att tjänsten kommer att vara oavbruten, säker eller felfri. Vi ansvarar inte för dataförlust eller driftstörningar.",
+      "s3Title": "3. Användaruppförande",
+      "s3Text": "Vi värdesätter fair play. Genom att använda DartStreak godkänner du att INTE:",
+      "li1": "Fuska, manipulera poäng eller använda automatiserade bottar.",
+      "li2": "Trakassera, mobba eller använda hets mot folkgrupp mot andra spelare.",
+      "li3": "Ladda upp olämpligt, stötande eller olagligt innehåll.",
+      "s3Text2": "Vi förbehåller oss rätten att stänga av användare som bryter mot dessa regler.",
+      "s4Title": "4. Immateriella rättigheter",
+      "li4": "Ditt innehåll: Du behåller alla rättigheter till innehållet du skapar (t.ex. din matchhistorik).",
+      "li5": "Vårt innehåll: DartStreaks kod, design och logik tillhör DartStreak-teamet."
+    },
+    "contact": {
+      "title": "Kontakta oss",
+      "p1": "Har du frågor, feedback eller behöver hjälp? Vi finns här för dig!",
+      "emailSupport": "E-postsupport",
+      "p2": "För alla ärenden, maila oss direkt:"
+    },
+    "notFound": {
+      "title": "Sidan hittades inte",
+      "text": "Sidan du söker finns inte."
+    }
+  },
   "league": {
     "alreadyRegisteredToday": "Du har redan registrerat dagens kast",
     "congratulations": "Stort grattis till {{name}} som kammade hem vinsten i {{league}}!",
