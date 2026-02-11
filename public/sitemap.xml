@@ -10,4 +10,34 @@
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
+  <url>
+    <loc>https://dartstreak.pages.dev/auth</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dartstreak.pages.dev/install-guide</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dartstreak.pages.dev/privacy</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://dartstreak.pages.dev/terms</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://dartstreak.pages.dev/contact</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
 </urlset>

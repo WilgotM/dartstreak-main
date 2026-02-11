@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Index from "./pages/Index";
@@ -30,7 +30,7 @@ const App = () => {
             <TooltipProvider>
               <Toaster />
               <Sonner />
-              <HashRouter>
+              <BrowserRouter>
                 <UsernameGuard>
                   <Routes>
                     <Route path="/" element={<Index />} />
@@ -50,7 +50,7 @@ const App = () => {
                 </UsernameGuard>
                 <InstallPrompt />
                 <IOSInstallReminder />
-              </HashRouter>
+              </BrowserRouter>
             </TooltipProvider>
           </AuthProvider>
         </QueryClientProvider>
