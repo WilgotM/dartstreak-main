@@ -10,6 +10,9 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Leagues from "./pages/Leagues";
 import League from "./pages/League";
+import CreateLeague from "./pages/CreateLeague";
+import JoinLeaguePage from "./pages/JoinLeaguePage";
+import RestartLeague from "./pages/RestartLeague";
 import JoinLeague from "./pages/JoinLeague";
 import ProfilePage from "./pages/ProfilePage";
 import NotFound from "./pages/NotFound";
@@ -34,6 +37,9 @@ const App = () => {
                     <Route path="/auth" element={<Auth />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/leagues" element={<Leagues />} />
+                    <Route path="/leagues/create" element={<CreateLeague />} />
+                    <Route path="/leagues/join" element={<JoinLeaguePage />} />
+                    <Route path="/leagues/restart/:id" element={<RestartLeague />} />
                     <Route path="/league/:id" element={<League />} />
                     <Route path="/join/:code" element={<JoinLeague />} />
                     <Route path="/profile" element={<ProfilePage />} />

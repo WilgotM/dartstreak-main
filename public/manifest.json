@@ -11,7 +11,7 @@
   ],
   "background_color": "#0a0a0a",
   "theme_color": "#16a34a",
-  "orientation": "portrait",
+  "orientation": "any",
   "scope": "/",
   "lang": "en",
   "dir": "ltr",
