@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,6 +18,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Target, ArrowLeft, Trophy, Calendar, TrendingUp, Copy, Check, Trash2, Crown, Award, Video, QrCode } from "lucide-react";
 import { format, addWeeks, isWithinInterval } from "date-fns";
@@ -87,6 +98,11 @@ export default function League() {
   const [creatorTimezone, setCreatorTimezone] = useState<string>("Europe/Stockholm");
   const [cameraRequired, setCameraRequired] = useState(true);
   const [updatingCameraRequirement, setUpdatingCameraRequirement] = useState(false);
+  const [restartDialogOpen, setRestartDialogOpen] = useState(false);
+  const [restartTotalRounds, setRestartTotalRounds] = useState(4);
+  const [restartStartDate, setRestartStartDate] = useState(format(new Date(), "yyyy-MM-dd"));
+  const [restartCameraRequired, setRestartCameraRequired] = useState(true);
+  const [restartingLeague, setRestartingLeague] = useState(false);
 
   const dateLocale = i18n.language === "sv" ? sv : enUS;
 
@@ -389,30 +405,62 @@ export default function League() {
   const endDate = addWeeks(startDate, league.total_rounds);
   const isFinished = new Date() > endDate;
   const leagueStarted = !league.started_at || new Date(league.started_at) <= new Date();
+  const hasExplicitStartDate = Boolean(league.started_at);
+  const leagueStartDateText = hasExplicitStartDate
+    ? format(startDate, "d MMM yyyy", { locale: dateLocale })
+    : t("common.unknown");
+  const leagueEndDateText = hasExplicitStartDate
+    ? format(endDate, "d MMM yyyy", { locale: dateLocale })
+    : t("common.unknown");
 
   // Find winner based on TOTAL score, not current round/week score
   const winner = leaderboard.length > 0
     ? [...leaderboard].sort((a, b) => b.total_score - a.total_score)[0]
     : null;
 
+  const handleRestartDialogOpenChange = (open: boolean) => {
+    setRestartDialogOpen(open);
+    if (!open || !league) return;
+
+    setRestartTotalRounds(Math.min(52, Math.max(1, league.total_rounds)));
+    setRestartStartDate(format(new Date(), "yyyy-MM-dd"));
+    setRestartCameraRequired(league.camera_required ?? true);
+  };
+
   const handleRestartLeague = async () => {
-    if (!league || !isOwner) return;
+    if (!league || !isOwner || !user) return;
+    if (restartTotalRounds < 1 || restartTotalRounds > 52) {
+      toast.error(t("league.invalidRounds"));
+      return;
+    }
+
+    const selectedDate = new Date(restartStartDate);
+    if (Number.isNaN(selectedDate.getTime())) {
+      toast.error(t("league.invalidStartDate"));
+      return;
+    }
+
+    const dayOfWeek = selectedDate.getDay() === 0 ? 7 : selectedDate.getDay();
+    const startedAt = selectedDate.toISOString();
+    setRestartingLeague(true);
 
     // 1. Create new league
     const { data: newLeague, error: createError } = await supabase
       .from("leagues")
       .insert({
         name: league.name,
-        total_rounds: league.total_rounds,
-        round_start_day: new Date().getDay() || 7,
-        created_by: user!.id,
-        camera_required: cameraRequired,
+        total_rounds: restartTotalRounds,
+        round_start_day: dayOfWeek,
+        started_at: startedAt,
+        created_by: user.id,
+        camera_required: restartCameraRequired,
       })
       .select()
       .single();
 
     if (createError) {
-      toast.error(t("match.couldNotCreate"));
+      setRestartingLeague(false);
+      toast.error(t("dashboard.couldNotCreateLeague"));
       return;
     }
 
@@ -430,6 +478,8 @@ export default function League() {
       await supabase.from("league_members").insert(newMembers);
     }
 
+    setRestartingLeague(false);
+    setRestartDialogOpen(false);
     toast.success(t("league.seasonCreated"));
     navigate(`/league/${newLeague.id}`);
   };
@@ -461,6 +511,11 @@ export default function League() {
                   ? t("league.finished")
                   : `${t("league.round")} ${league.current_round} ${t("league.of")} ${league.total_rounds}`
                 }
+              </p>
+              <p className="text-xs text-gray-400 font-medium">
+                {t("league.startsOn")}: <span className="text-white">{leagueStartDateText}</span>
+                {" \u2022 "}
+                {t("league.endsOn")}: <span className="text-white">{leagueEndDateText}</span>
               </p>
             </div>
 
@@ -579,28 +634,86 @@ export default function League() {
 
                 {isOwner && (
                   <div className="mt-10">
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
+                    <Dialog open={restartDialogOpen} onOpenChange={handleRestartDialogOpenChange}>
+                      <DialogTrigger asChild>
                         <Button className="bg-dart-gold text-black hover:bg-dart-gold/90 font-bold px-8 py-6 rounded-full text-lg shadow-lg">
                           <Crown className="w-5 h-5 mr-2" />
                           {t("league.startNewSeason")}
                         </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent className="glass-card border-white/10 text-white">
-                        <AlertDialogHeader>
-                          <AlertDialogTitle className="text-white">{t("league.restartConfirmTitle")}</AlertDialogTitle>
-                          <AlertDialogDescription className="text-gray-400">
+                      </DialogTrigger>
+                      <DialogContent className="glass-card border-white/10 text-white">
+                        <DialogHeader>
+                          <DialogTitle className="text-white">{t("league.restartConfirmTitle")}</DialogTitle>
+                          <DialogDescription className="text-gray-400">
                             {t("league.restartConfirmDesc")}
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel className="bg-transparent border-white/10 text-white hover:bg-white/10">{t("common.cancel")}</AlertDialogCancel>
-                          <AlertDialogAction onClick={handleRestartLeague} className="bg-dart-gold text-black hover:bg-dart-gold/90">
-                            {t("league.restart")}
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                          </DialogDescription>
+                        </DialogHeader>
+
+                        <div className="space-y-4 pt-2">
+                          <div className="space-y-2">
+                            <Label htmlFor="restart-rounds" className="text-gray-300">{t("dashboard.numberOfRounds")}</Label>
+                            <Input
+                              id="restart-rounds"
+                              type="number"
+                              min={1}
+                              max={52}
+                              value={restartTotalRounds}
+                              onChange={(e) => {
+                                const parsedValue = Number.parseInt(e.target.value, 10);
+                                setRestartTotalRounds(Number.isNaN(parsedValue) ? 1 : parsedValue);
+                              }}
+                              className="bg-black/20 border-white/10 text-white placeholder:text-gray-600 focus:border-dart-gold/50"
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label htmlFor="restart-start-date" className="text-gray-300">{t("dashboard.leagueStarts")}</Label>
+                            <Input
+                              id="restart-start-date"
+                              type="date"
+                              value={restartStartDate}
+                              onChange={(e) => setRestartStartDate(e.target.value)}
+                              min={format(new Date(), "yyyy-MM-dd")}
+                              className="bg-black/20 border-white/10 text-white placeholder:text-gray-600 focus:border-dart-gold/50"
+                            />
+                          </div>
+
+                          <div className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 p-3">
+                            <div className="space-y-1">
+                              <Label className="text-gray-300">{t("dashboard.cameraRequirement")}</Label>
+                              <p className="text-xs text-gray-500">{t("dashboard.cameraRequirementDesc")}</p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-gray-400">
+                                {restartCameraRequired ? t("dashboard.cameraRequired") : t("dashboard.cameraNotRequired")}
+                              </span>
+                              <Switch
+                                checked={restartCameraRequired}
+                                onCheckedChange={setRestartCameraRequired}
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <DialogFooter>
+                          <Button
+                            variant="outline"
+                            onClick={() => setRestartDialogOpen(false)}
+                            className="bg-transparent border-white/10 text-white hover:bg-white/10 hover:text-white"
+                            disabled={restartingLeague}
+                          >
+                            {t("common.cancel")}
+                          </Button>
+                          <Button
+                            onClick={handleRestartLeague}
+                            className="bg-dart-gold text-black hover:bg-dart-gold/90"
+                            disabled={restartingLeague}
+                          >
+                            {restartingLeague ? t("common.loading") : t("league.startNewSeason")}
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 )}
               </div>
