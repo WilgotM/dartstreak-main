@@ -17,7 +17,6 @@ import NotFound from "./pages/NotFound";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import Legal from "./pages/Legal";
 import { IOSInstallReminder } from "@/components/iOSInstallReminder";
-import { UsernameGuard } from "@/components/UsernameGuard";
 
 const queryClient = new QueryClient();
 
@@ -31,23 +30,21 @@ const App = () => {
               <Toaster />
               <Sonner />
               <BrowserRouter>
-                <UsernameGuard>
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/auth" element={<Auth />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/leagues" element={<Leagues />} />
-                    <Route path="/league/:id" element={<League />} />
-                    <Route path="/join/:code" element={<JoinLeague />} />
-                    <Route path="/profile" element={<ProfilePage />} />
-                    <Route path="/profile/:id" element={<ProfilePage />} />
-                    <Route path="/install-guide" element={<InstallGuide />} />
-                    <Route path="/privacy" element={<Legal />} />
-                    <Route path="/terms" element={<Legal />} />
-                    <Route path="/contact" element={<Legal />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </UsernameGuard>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/leagues" element={<Leagues />} />
+                  <Route path="/league/:id" element={<League />} />
+                  <Route path="/join/:code" element={<JoinLeague />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/profile/:id" element={<ProfilePage />} />
+                  <Route path="/install-guide" element={<InstallGuide />} />
+                  <Route path="/privacy" element={<Legal />} />
+                  <Route path="/terms" element={<Legal />} />
+                  <Route path="/contact" element={<Legal />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
                 <InstallPrompt />
                 <IOSInstallReminder />
               </BrowserRouter>

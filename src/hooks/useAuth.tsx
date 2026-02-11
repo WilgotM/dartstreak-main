@@ -1,4 +1,4 @@
-import { useEffect, useState, createContext, useContext, ReactNode } from "react";
+import { useEffect, useState, createContext, useContext, ReactNode, useRef } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -98,6 +98,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [guestDaysRemaining, setGuestDaysRemaining] = useState<number | null>(null);
   const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
   const [showGuestInfoModal, setShowGuestInfoModal] = useState(false);
+  const didHydrateSessionRef = useRef(false);
+
+  const applySessionState = (nextSession: Session | null) => {
+    setSession(nextSession);
+    setUser(nextSession?.user ?? null);
+
+    if (nextSession?.user) {
+      const isAnonymousUser = nextSession.user.is_anonymous === true;
+      setIsGuest(isAnonymousUser);
+
+      if (isAnonymousUser) {
+        updateGuestActivity();
+        setGuestDaysRemaining(calculateGuestDaysRemaining());
+
+        const hasSeenInfo = localStorage.getItem("dartstreak_guest_info_shown");
+        if (!hasSeenInfo) {
+          setShowGuestInfoModal(true);
+        }
+      } else {
+        setGuestDaysRemaining(null);
+        localStorage.removeItem("dartstreak_guest_last_active");
+        localStorage.removeItem("dartstreak_guest_info_shown");
+      }
+
+      setLoading(false);
+      void fetchProfile(nextSession.user);
+      return;
+    }
+
+    setProfile(null);
+    setIsGuest(false);
+    setGuestDaysRemaining(null);
+    setLoading(false);
+  };
 
   const fetchProfile = async (authUser: User) => {
     const userId = authUser.id;
@@ -126,7 +160,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (profileData) {
       setProfile(profileData);
-      setLoading(false);
       return;
     }
 
@@ -150,7 +183,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         if (data) {
           setProfile(data);
-          setLoading(false);
           return;
         }
 
@@ -176,7 +208,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (retryData) {
         setProfile(retryData);
-        setLoading(false);
         return;
       }
 
@@ -190,7 +221,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     setProfile(null);
-    setLoading(false);
   };
 
   const migrateGuestData = async (userId: string) => {
@@ -233,80 +263,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     checkAndCleanExpiredGuestData();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-
+      (event, session) => {
         if (event === 'PASSWORD_RECOVERY') {
           setIsPasswordRecovery(true);
         }
 
-        if (event === 'SIGNED_IN') {
-          setLoading(true);
+        // Ignore transient null auth events until initial session hydration is complete.
+        if (!didHydrateSessionRef.current && !session) {
+          return;
         }
 
-        if (session?.user) {
-          // Check if this is an anonymous (guest) user
-          const isAnonymousUser = session.user.is_anonymous === true;
-          setIsGuest(isAnonymousUser);
-
-          if (isAnonymousUser) {
-            // Track guest activity for 30-day expiration
-            updateGuestActivity();
-            setGuestDaysRemaining(calculateGuestDaysRemaining());
-
-            // Show info modal for first-time guests
-            const hasSeenInfo = localStorage.getItem("dartstreak_guest_info_shown");
-            if (!hasSeenInfo) {
-              setShowGuestInfoModal(true);
-            }
-          } else {
-            setGuestDaysRemaining(null);
-            localStorage.removeItem("dartstreak_guest_last_active");
-            localStorage.removeItem("dartstreak_guest_info_shown");
-          }
-
-          await fetchProfile(session.user);
-        } else {
-          setProfile(null);
-          setIsGuest(false);
-          setLoading(false);
-        }
+        applySessionState(session);
       }
     );
 
     // Timeout fallback to prevent infinite loading if Supabase is unresponsive
     const sessionTimeout = setTimeout(() => {
       console.warn("Session fetch timeout - continuing without auth");
+      didHydrateSessionRef.current = true;
       setLoading(false);
-    }, 10000);
+    }, 3000);
 
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
       clearTimeout(sessionTimeout);
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        const isAnonymousUser = session.user.is_anonymous === true;
-        setIsGuest(isAnonymousUser);
-
-        if (isAnonymousUser) {
-          updateGuestActivity();
-          setGuestDaysRemaining(calculateGuestDaysRemaining());
-        }
-
-        await fetchProfile(session.user);
-      } else {
-        setLoading(false);
-      }
+      didHydrateSessionRef.current = true;
+      applySessionState(session);
     }).catch((error) => {
       clearTimeout(sessionTimeout);
       console.error("Error fetching session:", error);
+      didHydrateSessionRef.current = true;
       setLoading(false);
     });
 
     return () => {
       subscription.unsubscribe();
     };
+    // applySessionState is intentionally not in deps to keep one stable subscription lifecycle.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

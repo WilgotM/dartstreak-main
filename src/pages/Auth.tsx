@@ -40,12 +40,18 @@ export default function Auth() {
   const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
   const [forgotPassword, setForgotPassword] = useState(false);
 
-  const { signIn, signUp, continueAsGuest, upgradeGuestAccount, resetPassword, updatePassword, isPasswordRecovery, signInWithGoogle, isGuest, profile } = useAuth();
+  const { signIn, signUp, continueAsGuest, upgradeGuestAccount, resetPassword, updatePassword, isPasswordRecovery, signInWithGoogle, isGuest, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
 
   // Check if this is a guest trying to upgrade their account
   const isUpgradeMode = isGuest && location.state?.mode === "signup";
+
+  useEffect(() => {
+    if (!authLoading && user && !isPasswordRecovery) {
+      navigate("/dashboard");
+    }
+  }, [authLoading, user, isPasswordRecovery, navigate]);
 
   const handleGuestContinue = async () => {
     const { error } = await continueAsGuest();
