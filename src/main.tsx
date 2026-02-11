@@ -4,6 +4,29 @@ import "./index.css";
 import "./i18n";
 
 // Cleanup legacy service workers/caches once to avoid stale production bundles.
+import * as Sentry from "@sentry/react";
+import { useEffect } from "react";
+import { createRoutesFromChildren, matchRoutes, useLocation, useNavigationType } from "react-router-dom";
+
+Sentry.init({
+  dsn: import.meta.env.VITE_SENTRY_DSN,
+  integrations: [
+    Sentry.reactRouterV6BrowserTracingIntegration({
+      useEffect: useEffect,
+      useLocation,
+      useNavigationType,
+      createRoutesFromChildren,
+      matchRoutes,
+    }),
+    Sentry.replayIntegration(),
+  ],
+  // Performance Monitoring
+  tracesSampleRate: 1.0, //  Capture 100% of the transactions
+  // Session Replay
+  replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
+  replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when an error occurs.
+});
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     void (async () => {

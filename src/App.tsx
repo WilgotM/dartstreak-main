@@ -17,6 +17,7 @@ import NotFound from "./pages/NotFound";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import Legal from "./pages/Legal";
 import { IOSInstallReminder } from "@/components/iOSInstallReminder";
+import * as Sentry from "@sentry/react";
 
 const queryClient = new QueryClient();
 
@@ -30,21 +31,23 @@ const App = () => {
               <Toaster />
               <Sonner />
               <BrowserRouter>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/auth" element={<Auth />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/leagues" element={<Leagues />} />
-                  <Route path="/league/:id" element={<League />} />
-                  <Route path="/join/:code" element={<JoinLeague />} />
-                  <Route path="/profile" element={<ProfilePage />} />
-                  <Route path="/profile/:id" element={<ProfilePage />} />
-                  <Route path="/install-guide" element={<InstallGuide />} />
-                  <Route path="/privacy" element={<Legal />} />
-                  <Route path="/terms" element={<Legal />} />
-                  <Route path="/contact" element={<Legal />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
+                <Sentry.ErrorBoundary fallback={<div className="flex min-h-[50vh] items-center justify-center p-4"><p className="text-muted-foreground">Something went wrong. Please reload the page.</p></div>}>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/auth" element={<Auth />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/leagues" element={<Leagues />} />
+                    <Route path="/league/:id" element={<League />} />
+                    <Route path="/join/:code" element={<JoinLeague />} />
+                    <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="/profile/:id" element={<ProfilePage />} />
+                    <Route path="/install-guide" element={<InstallGuide />} />
+                    <Route path="/privacy" element={<Legal />} />
+                    <Route path="/terms" element={<Legal />} />
+                    <Route path="/contact" element={<Legal />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Sentry.ErrorBoundary>
                 <InstallPrompt />
                 <IOSInstallReminder />
               </BrowserRouter>
