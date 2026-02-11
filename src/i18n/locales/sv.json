@@ -207,8 +207,6 @@
     "invalidRounds": "Ange mellan 1 och 52 omgångar",
     "invalidStartDate": "Välj ett giltigt startdatum",
     "round": "Omgång",
-    "scanToJoin": "Skanna för att gå med",
-    "scanWithCamera": "Skanna med telefonens kamera för att gå med direkt",
     "seasonCreated": "Ny säsong skapad!",
     "standings": "Ställning",
     "startNewSeason": "Starta ny säsong",
@@ -289,7 +287,7 @@
     "player2": "Spelare 2",
     "playerTurn": "{{name}}s tur",
     "players": "Deltagare",
-    "remoteCameraDescription": "Skanna QR-koden med din telefon för att använda den som darttavlekamera.",
+    "remoteCameraDescription": "Öppna kameralänken från matchsidan för att använda din telefon som darttavlekamera.",
     "remoteCameraEnabled": "Extern kamera aktiverad",
     "remoteCameraError": "Kunde inte aktivera extern kamera",
     "remoteCameraTitle": "Använd telefon som kamera",
@@ -412,12 +410,6 @@
     "step3Android": "Bekräfta installationen",
     "step3Ios": "Tryck på \"Lägg till\" för att bekräfta"
   },
-  "qrScanner": {
-    "cameraError": "Kunde inte komma åt kameran",
-    "pointCamera": "Rikta kameran mot QR-koden",
-    "scanQR": "Skanna QR-kod",
-    "scanToJoin": "Skanna för att gå med"
-  },
   "remoteCamera": {
     "cameraError": "Kunde inte komma åt kameran. Kontrollera behörigheterna.",
     "cameraInUse": "Kameran används av en annan app. Stäng andra appar som använder kameran.",
@@ -428,7 +420,7 @@
     "invalidLink": "Ogiltig länk",
     "noCamera": "Ingen kamera hittades på denna enhet.",
     "permissionDenied": "Kamerabehörighet nekad. Tillåt kameraåtkomst i webbläsarinställningarna.",
-    "scanAgain": "Skanna QR-koden från matchsidan igen.",
+    "scanAgain": "Öppna kameralänken från matchsidan igen.",
     "startCamera": "Starta kamera",
     "title": "Darttavlekamera"
   },

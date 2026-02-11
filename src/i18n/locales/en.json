@@ -207,8 +207,6 @@
     "invalidRounds": "Enter between 1 and 52 rounds",
     "invalidStartDate": "Choose a valid start date",
     "round": "Round",
-    "scanToJoin": "Scan to Join",
-    "scanWithCamera": "Scan with your phone camera to join directly",
     "seasonCreated": "New season created!",
     "standings": "Standings",
     "startNewSeason": "Start New Season",
@@ -289,7 +287,7 @@
     "player2": "Player 2",
     "playerTurn": "{{name}}'s turn",
     "players": "Players",
-    "remoteCameraDescription": "Scan this QR code with your phone to use it as a dartboard camera.",
+    "remoteCameraDescription": "Open the camera link from the match page to use your phone as a dartboard camera.",
     "remoteCameraEnabled": "Remote camera enabled",
     "remoteCameraError": "Failed to enable remote camera",
     "remoteCameraTitle": "Use Phone as Camera",
@@ -412,12 +410,6 @@
     "step3Android": "Confirm the installation",
     "step3Ios": "Tap \"Add\" to confirm"
   },
-  "qrScanner": {
-    "cameraError": "Could not access camera",
-    "pointCamera": "Point camera at QR code",
-    "scanQR": "Scan QR Code",
-    "scanToJoin": "Scan to Join"
-  },
   "remoteCamera": {
     "cameraError": "Failed to access camera. Please check permissions.",
     "cameraInUse": "Camera is in use by another app. Please close other apps using the camera.",
@@ -428,7 +420,7 @@
     "invalidLink": "Invalid Link",
     "noCamera": "No camera found on this device.",
     "permissionDenied": "Camera permission denied. Please allow camera access in your browser settings.",
-    "scanAgain": "Please scan the QR code from the match page again.",
+    "scanAgain": "Please open the camera link from the match page again.",
     "startCamera": "Start Camera",
     "title": "Dartboard Camera"
   },

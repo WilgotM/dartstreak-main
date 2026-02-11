@@ -28,14 +28,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Target, ArrowLeft, Trophy, Calendar, TrendingUp, Copy, Check, Trash2, Crown, Award, Video, QrCode } from "lucide-react";
+import { Target, ArrowLeft, Trophy, Calendar, TrendingUp, Copy, Check, Trash2, Crown, Award, Video } from "lucide-react";
 import { format, addWeeks, isWithinInterval } from "date-fns";
 import { enUS, sv } from "date-fns/locale";
 import ThrowInput from "@/components/ThrowInput";
 import { VideoDialog } from "@/components/VideoDialog";
 import { CountdownTimer } from "@/components/CountdownTimer";
 import { AppLayout } from "@/components/AppLayout";
-import { LeagueQRDialog } from "@/components/LeagueQRDialog";
 import { Switch } from "@/components/ui/switch";
 
 interface League {
@@ -520,7 +519,7 @@ export default function League() {
             </div>
 
             <div className="flex items-center gap-2">
-              {/* Show invite code and QR for owner only */}
+              {/* Show invite code for owner only */}
               {isOwner && (
                 <div className="flex items-center gap-1 bg-white/10 rounded-full px-3 py-1.5">
                   <span className="text-sm font-mono text-white">{league.invite_code}</span>
@@ -535,15 +534,6 @@ export default function League() {
                   >
                     {copied ? <Check className="w-4 h-4 text-neon-green" /> : <Copy className="w-4 h-4" />}
                   </Button>
-                  <LeagueQRDialog inviteCode={league.invite_code} leagueName={league.name}>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="shrink-0 text-white hover:bg-white/10 rounded-full w-8 h-8"
-                    >
-                      <QrCode className="w-4 h-4" />
-                    </Button>
-                  </LeagueQRDialog>
                 </div>
               )}
 

@@ -8,17 +8,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Plus, Users, Trophy, ArrowRight, Calendar, ScanLine, Keyboard } from "lucide-react";
+import { Plus, Users, Trophy, ArrowRight, Calendar } from "lucide-react";
 import { format } from "date-fns";
 import { enUS, sv } from "date-fns/locale";
 import { AppLayout } from "@/components/AppLayout";
 import { motion } from "framer-motion";
 import { useHaptics } from "@/hooks/useHaptics";
 import { Skeleton } from "@/components/ui/skeleton";
-import { QRScannerDialog } from "@/components/QRScannerDialog";
 
 interface League {
   id: string;
@@ -220,75 +218,21 @@ export default function Leagues() {
               <DialogHeader>
                 <DialogTitle className="text-white">{t("dashboard.joinLeague")}</DialogTitle>
               </DialogHeader>
-              <Tabs defaultValue="scan" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 bg-white/5">
-                  <TabsTrigger value="scan" className="gap-2 data-[state=active]:bg-neon-green data-[state=active]:text-black">
-                    <ScanLine className="w-4 h-4" />
-                    {t("qrScanner.scanQR")}
-                  </TabsTrigger>
-                  <TabsTrigger value="code" className="gap-2 data-[state=active]:bg-neon-green data-[state=active]:text-black">
-                    <Keyboard className="w-4 h-4" />
-                    {t("dashboard.enterCode")}
-                  </TabsTrigger>
-                </TabsList>
-                <TabsContent value="scan" className="mt-4">
-                  <QRScannerDialog
-                    onScan={async (code) => {
-                      setJoinCode(code);
-                      // Auto-join when QR is scanned
-                      const { data: league, error: findError } = await supabase
-                        .from("leagues")
-                        .select("id, name")
-                        .eq("invite_code", code.toLowerCase().trim())
-                        .single();
-
-                      if (findError || !league) {
-                        toast.error(t("dashboard.couldNotFindLeague"));
-                        return;
-                      }
-
-                      const { error: joinError } = await supabase.from("league_members").insert({
-                        league_id: league.id,
-                        user_id: user!.id,
-                      });
-
-                      if (joinError) {
-                        if (joinError.code === "23505") {
-                          toast.error(t("dashboard.alreadyInLeague"));
-                        } else {
-                          toast.error(t("dashboard.couldNotJoinLeague"));
-                        }
-                        return;
-                      }
-
-                      toast.success(t("dashboard.welcomeTo", { name: league.name }));
-                      setJoinCode("");
-                      setJoinDialogOpen(false);
-                      fetchLeagues();
-                    }}
-                  >
-                    <Button className="w-full h-32 bg-white/5 hover:bg-white/10 border-2 border-dashed border-white/20 hover:border-neon-green/50 transition-all flex flex-col gap-3">
-                      <ScanLine className="w-10 h-10 text-neon-green" />
-                      <span className="text-white">{t("qrScanner.pointCamera")}</span>
-                    </Button>
-                  </QRScannerDialog>
-                </TabsContent>
-                <TabsContent value="code" className="mt-4 space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="joinCode" className="text-gray-300">{t("dashboard.inviteCode")}</Label>
-                    <Input
-                      id="joinCode"
-                      placeholder="abc123"
-                      value={joinCode}
-                      onChange={(e) => setJoinCode(e.target.value)}
-                      className="bg-black/20 border-white/10 text-white placeholder:text-gray-600 focus:border-neon-green/50"
-                    />
-                  </div>
-                  <Button onClick={joinLeague} className="w-full bg-neon-green text-black hover:bg-neon-green/90 font-bold">
-                    {t("dashboard.joinButton")}
-                  </Button>
-                </TabsContent>
-              </Tabs>
+              <div className="mt-4 space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="joinCode" className="text-gray-300">{t("dashboard.inviteCode")}</Label>
+                  <Input
+                    id="joinCode"
+                    placeholder="abc123"
+                    value={joinCode}
+                    onChange={(e) => setJoinCode(e.target.value)}
+                    className="bg-black/20 border-white/10 text-white placeholder:text-gray-600 focus:border-neon-green/50"
+                  />
+                </div>
+                <Button onClick={joinLeague} className="w-full bg-neon-green text-black hover:bg-neon-green/90 font-bold">
+                  {t("dashboard.joinButton")}
+                </Button>
+              </div>
             </DialogContent>
           </Dialog>
 
