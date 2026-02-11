@@ -153,13 +153,11 @@ export default function Dashboard() {
 
   return (
     <AppLayout>
-      <div className="h-full relative overflow-hidden">
-
-
-        <main className="container mx-auto px-6 h-full flex flex-col justify-start md:justify-center pt-8 md:pt-20 pb-24">
+      <div className="min-h-full relative">
+        <main className="container mx-auto px-6 min-h-full flex flex-col justify-start md:justify-center pt-6 md:pt-20 pb-[calc(8.5rem+env(safe-area-inset-bottom))] md:pb-24">
 
           {/* Welcome Section */}
-          <div className="flex flex-col items-center text-center mb-8 md:mb-12 animate-fade-in gap-2">
+          <div className="flex flex-col items-center text-center mb-6 md:mb-12 animate-fade-in gap-2">
             <div className="relative mb-4 md:mb-6">
               <div className="absolute inset-0 bg-orange-500/20 blur-2xl rounded-full" />
               <div className="w-20 h-20 md:w-24 md:h-24 rounded-full border-2 border-orange-500/50 p-1 relative z-10 shadow-neon-orange">
@@ -252,7 +250,7 @@ export default function Dashboard() {
                     setActiveCard('leagues');
                   }
                 }}
-                className={`flex-shrink-0 w-[calc(100vw-104px)] h-72 glass-card rounded-[2.5rem] p-8 text-center cursor-pointer group flex flex-col items-center justify-center shadow-glow transition-all duration-300 ${activeCard === 'leagues' ? 'opacity-100 scale-100' : 'opacity-70 scale-95'}`}
+                className={`flex-shrink-0 w-[calc(100vw-104px)] h-64 sm:h-72 glass-card rounded-[2.5rem] p-8 text-center cursor-pointer group flex flex-col items-center justify-center shadow-glow transition-all duration-300 ${activeCard === 'leagues' ? 'opacity-100 scale-100' : 'opacity-70 scale-95'}`}
               >
                 <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 <div className="relative z-10">
@@ -285,7 +283,7 @@ export default function Dashboard() {
                     setActiveCard('profile');
                   }
                 }}
-                className={`flex-shrink-0 w-[calc(100vw-104px)] h-72 glass-card rounded-[2.5rem] p-8 text-center cursor-pointer group flex flex-col items-center justify-center transition-all duration-300 ${activeCard === 'profile' ? 'opacity-100 scale-100' : 'opacity-70 scale-95'}`}
+                className={`flex-shrink-0 w-[calc(100vw-104px)] h-64 sm:h-72 glass-card rounded-[2.5rem] p-8 text-center cursor-pointer group flex flex-col items-center justify-center transition-all duration-300 ${activeCard === 'profile' ? 'opacity-100 scale-100' : 'opacity-70 scale-95'}`}
               >
                 <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 <div className="relative z-10">
@@ -323,7 +321,7 @@ export default function Dashboard() {
             className="flex justify-center"
           >
             <button
-              className={`group relative px-10 py-5 ${smartAction.type === 'play'
+              className={`group relative px-7 py-4 sm:px-10 sm:py-5 ${smartAction.type === 'play'
                 ? 'bg-gradient-to-r from-neon-green via-emerald-500 to-neon-green shadow-[0_0_30px_rgba(72,255,160,0.5)] hover:shadow-[0_0_50px_rgba(72,255,160,0.7)] border-neon-green/30'
                 : 'bg-gradient-to-r from-orange-600 via-red-500 to-orange-600 shadow-[0_0_30px_rgba(234,88,12,0.5)] hover:shadow-[0_0_50px_rgba(234,88,12,0.7)] border-orange-400/30'
                 } bg-[length:200%_auto] animate-gradient rounded-full flex items-center gap-3 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 border`}
@@ -347,13 +345,13 @@ export default function Dashboard() {
               <div className="absolute inset-0 bg-white/20 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="relative flex items-center gap-3">
                 {smartAction.type === 'play' ? (
-                  <Target className="w-6 h-6 text-black fill-black/20 animate-pulse-soft" />
+                  <Target className="w-5 h-5 sm:w-6 sm:h-6 text-black fill-black/20 animate-pulse-soft" />
                 ) : smartAction.type === 'join' ? (
-                  <User className="w-6 h-6 text-white fill-white/20" />
+                  <User className="w-5 h-5 sm:w-6 sm:h-6 text-white fill-white/20" />
                 ) : (
-                  <Flame className="w-6 h-6 text-white fill-orange-200 animate-pulse-soft" />
+                  <Flame className="w-5 h-5 sm:w-6 sm:h-6 text-white fill-orange-200 animate-pulse-soft" />
                 )}
-                <span className={`font-bold text-xl tracking-wide uppercase drop-shadow-md ${smartAction.type === 'play' ? 'text-black' : 'text-white'
+                <span className={`font-bold text-base sm:text-xl tracking-wide uppercase drop-shadow-md ${smartAction.type === 'play' ? 'text-black' : 'text-white'
                   }`}>
                   {smartAction.label}
                 </span>
