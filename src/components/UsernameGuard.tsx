@@ -15,6 +15,7 @@ export const UsernameGuard = ({ children }: { children: React.ReactNode }) => {
     const [displayName, setDisplayName] = useState("");
     const [checkingUsername, setCheckingUsername] = useState(false);
     const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
+    const [usernameCheckError, setUsernameCheckError] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const checkTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -22,11 +23,13 @@ export const UsernameGuard = ({ children }: { children: React.ReactNode }) => {
         const trimmedUsername = username.trim();
 
         if (trimmedUsername.length < 2) {
+            setUsernameCheckError(false);
             setUsernameAvailable(null);
             return;
         }
 
         setCheckingUsername(true);
+        setUsernameCheckError(false);
         const { data, error } = await supabase
             .from("profiles")
             .select("id")
@@ -35,7 +38,9 @@ export const UsernameGuard = ({ children }: { children: React.ReactNode }) => {
 
         setCheckingUsername(false);
         if (error) {
-            setUsernameAvailable(false);
+            // Treat network/policy errors as unknown so users can still try to continue.
+            setUsernameCheckError(true);
+            setUsernameAvailable(null);
             return;
         }
 
@@ -60,6 +65,7 @@ export const UsernameGuard = ({ children }: { children: React.ReactNode }) => {
 
     const handleDisplayNameChange = (value: string) => {
         setDisplayName(value);
+        setUsernameCheckError(false);
         setUsernameAvailable(null);
 
         if (checkTimeoutRef.current) {
@@ -81,14 +87,20 @@ export const UsernameGuard = ({ children }: { children: React.ReactNode }) => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!usernameAvailable) return;
+        const trimmedName = displayName.trim();
+        if (trimmedName.length < 2 || usernameAvailable === false) return;
 
         setSubmitting(true);
-        const { error } = await createProfile(displayName);
+        const { error } = await createProfile(trimmedName);
         setSubmitting(false);
 
         if (error) {
-            toast.error(t("auth.signupError"));
+            const errorMessage = (error.message || "").toLowerCase();
+            if (errorMessage.includes("duplicate key") || errorMessage.includes("profiles_display_name_unique")) {
+                toast.error(t("auth.usernameTaken"));
+            } else {
+                toast.error(t("auth.signupError"));
+            }
         } else {
             toast.success(t("auth.accountCreated"));
         }
@@ -158,6 +170,11 @@ export const UsernameGuard = ({ children }: { children: React.ReactNode }) => {
                                             {t("auth.usernameAvailable")}
                                         </p>
                                     )}
+                                    {usernameCheckError && (
+                                        <p className="text-xs text-muted-foreground animate-in fade-in slide-in-from-top-1">
+                                            Kunde inte verifiera användarnamnet just nu. Försök att spara ändå.
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div className="pt-2 space-y-3">
@@ -166,7 +183,7 @@ export const UsernameGuard = ({ children }: { children: React.ReactNode }) => {
                                         variant="hero"
                                         size="lg"
                                         className="w-full h-12 text-lg"
-                                        disabled={!usernameAvailable || submitting}
+                                        disabled={displayName.trim().length < 2 || usernameAvailable === false || submitting}
                                     >
                                         {submitting ? t("common.loading") : t("common.save") || "Börja spela"}
                                     </Button>

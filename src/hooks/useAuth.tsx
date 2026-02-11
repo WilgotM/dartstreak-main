@@ -33,6 +33,21 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const GUEST_EXPIRY_DAYS = 30;
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const normalizeDisplayName = (value?: string | null) => {
+  if (!value) return null;
+  const normalized = value.trim().replace(/\s+/g, " ").slice(0, 32);
+  return normalized.length >= 2 ? normalized : null;
+};
+
+const isUniqueConstraintError = (error: unknown, constraintFragment: string) => {
+  if (!error || typeof error !== "object") return false;
+  const code = (error as { code?: string }).code;
+  const message = ((error as { message?: string }).message || "").toLowerCase();
+  return code === "23505" && message.includes(constraintFragment.toLowerCase());
+};
+
 // Helper to calculate days remaining for guest account
 const calculateGuestDaysRemaining = (): number | null => {
   const lastActive = localStorage.getItem("dartstreak_guest_last_active");
@@ -84,18 +99,97 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
   const [showGuestInfoModal, setShowGuestInfoModal] = useState(false);
 
-  const fetchProfile = async (userId: string) => {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("id, display_name")
-      .eq("id", userId)
-      .maybeSingle();
+  const fetchProfile = async (authUser: User) => {
+    const userId = authUser.id;
+    let profileData: { id: string; display_name: string } | null = null;
+    let profileError: unknown = null;
 
-    if (data) {
-      setProfile(data);
-    } else {
-      setProfile(null);
+    // Retry to reduce transient race conditions during auth/session restore.
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, display_name")
+        .eq("id", userId)
+        .maybeSingle();
+
+      if (data) {
+        profileData = data;
+        break;
+      }
+
+      profileError = error;
+
+      if (attempt < 2) {
+        await sleep(300 * (attempt + 1));
+      }
     }
+
+    if (profileData) {
+      setProfile(profileData);
+      setLoading(false);
+      return;
+    }
+
+    // If the profile row is missing, attempt to recover automatically.
+    // This can happen if a trigger failed or data drifted in production.
+    if (!authUser.is_anonymous) {
+      const metadataName =
+        normalizeDisplayName(authUser.user_metadata?.display_name)
+        || normalizeDisplayName(authUser.user_metadata?.full_name)
+        || normalizeDisplayName(authUser.user_metadata?.name)
+        || normalizeDisplayName(authUser.email?.split("@")[0]);
+      const fallbackName = `Player${userId.slice(0, 6)}`;
+      const candidates = Array.from(new Set([metadataName, `${fallbackName}`, `${fallbackName}${userId.slice(6, 10)}`].filter(Boolean) as string[]));
+
+      for (const candidate of candidates) {
+        const { data, error } = await supabase
+          .from("profiles")
+          .insert({ id: userId, display_name: candidate })
+          .select("id, display_name")
+          .single();
+
+        if (data) {
+          setProfile(data);
+          setLoading(false);
+          return;
+        }
+
+        // display_name collision: try the next fallback candidate
+        if (isUniqueConstraintError(error, "profiles_display_name_unique")) {
+          continue;
+        }
+
+        // id collision means row likely exists; stop inserting and retry a direct fetch
+        if (isUniqueConstraintError(error, "profiles_pkey")) {
+          break;
+        }
+
+        console.error("Error recovering missing profile:", error);
+        break;
+      }
+
+      const { data: retryData, error: retryError } = await supabase
+        .from("profiles")
+        .select("id, display_name")
+        .eq("id", userId)
+        .maybeSingle();
+
+      if (retryData) {
+        setProfile(retryData);
+        setLoading(false);
+        return;
+      }
+
+      if (retryError) {
+        console.error("Failed to fetch profile after recovery attempts:", retryError);
+      } else if (profileError) {
+        console.error("Failed to fetch profile:", profileError);
+      }
+    } else if (profileError) {
+      console.error("Failed to fetch guest profile:", profileError);
+    }
+
+    setProfile(null);
     setLoading(false);
   };
 
@@ -172,7 +266,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             localStorage.removeItem("dartstreak_guest_info_shown");
           }
 
-          await fetchProfile(session.user.id);
+          await fetchProfile(session.user);
         } else {
           setProfile(null);
           setIsGuest(false);
@@ -200,7 +294,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setGuestDaysRemaining(calculateGuestDaysRemaining());
         }
 
-        await fetchProfile(session.user.id);
+        await fetchProfile(session.user);
       } else {
         setLoading(false);
       }

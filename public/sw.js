@@ -1,5 +1,4 @@
-const CACHE_NAME = 'dartstreak-v3';
-const STATIC_CACHE = 'dartstreak-static-v2';
+const STATIC_CACHE = 'dartstreak-static-v3';
 
 const STATIC_ASSETS = [
   '/logo.png',
@@ -22,7 +21,7 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames
-          .filter((name) => name !== CACHE_NAME && name !== STATIC_CACHE)
+          .filter((name) => name !== STATIC_CACHE)
           .map((name) => caches.delete(name))
       );
     }).then(() => clients.claim())
