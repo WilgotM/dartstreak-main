@@ -2,13 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
-import { Trophy, Flame, User, Moon, ChevronRight, ChevronLeft, Target } from "lucide-react";
+import { Trophy, User, ChevronRight, ChevronLeft } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { motion, PanInfo } from "framer-motion";
 import { useHaptics } from "@/hooks/useHaptics";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { supabase } from "@/integrations/supabase/client";
-import { format } from "date-fns";
 
 
 export default function Dashboard() {
@@ -17,90 +15,6 @@ export default function Dashboard() {
   const { t } = useTranslation();
   const { medium, light } = useHaptics();
   const [activeCard, setActiveCard] = useState<'leagues' | 'profile'>('leagues');
-  const [smartAction, setSmartAction] = useState<{
-    type: 'join' | 'play' | 'view';
-    targetId?: string;
-    label: string;
-  }>({ type: 'view', label: 'Quick Start' });
-
-  useEffect(() => {
-    if (!user) return;
-
-    const determineSmartAction = async () => {
-      // 1. Get user's leagues
-      const { data: memberData } = await supabase
-        .from("league_members")
-        .select("league_id")
-        .eq("user_id", user.id);
-
-      const leagueIds = memberData?.map(m => m.league_id) || [];
-
-      if (leagueIds.length === 0) {
-        setSmartAction({
-          type: 'join',
-          label: t("dashboard.joinLeague") || "Gå med i Liga"
-        });
-        return;
-      }
-
-      // 2. Access active leagues info to check their timezone/status
-      const { data: leagues } = await supabase
-        .from("leagues")
-        .select("id, name, created_by")
-        .in("id", leagueIds)
-        .order("created_at", { ascending: false });
-
-      if (!leagues || leagues.length === 0) {
-        setSmartAction({
-          type: 'join',
-          label: t("dashboard.joinLeague") || "Gå med i Liga"
-        });
-        return;
-      }
-
-      // 3. Check for pending throws in these leagues
-      // We need to check if a throw exists for 'today' for each league
-      // For simplicity/performance, we'll check against user's local date first
-      // A more robust solution would check creator's timezone for each league
-      const today = format(new Date(), "yyyy-MM-dd");
-
-      const { data: throws } = await supabase
-        .from("daily_throws")
-        .select("league_id")
-        .eq("user_id", user.id)
-        .eq("throw_date", today)
-        .in("league_id", leagueIds);
-
-      const thrownLeagueIds = new Set(throws?.map(t => t.league_id) || []);
-
-      // Find the first league where user hasn't thrown
-      const pendingLeague = leagues.find(l => !thrownLeagueIds.has(l.id));
-
-      if (pendingLeague) {
-        setSmartAction({
-          type: 'play',
-          targetId: pendingLeague.id,
-          label: t("dashboard.playDarts") || "Kasta Dagens Pilar"
-        });
-      } else {
-        // If user has only one league, go directly to it. Otherwise go to list.
-        if (leagues.length === 1) {
-          setSmartAction({
-            type: 'view',
-            targetId: leagues[0].id,
-            label: t("dashboard.viewStandings") || "Se Tabell"
-          });
-        } else {
-          setSmartAction({
-            type: 'view',
-            label: t("dashboard.viewStandings") || "Se Tabell"
-          });
-        }
-      }
-    };
-
-    determineSmartAction();
-  }, [user, t]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -153,7 +67,7 @@ export default function Dashboard() {
 
   return (
     <AppLayout>
-      <div className="min-h-full relative">
+      <div className="min-h-full relative overflow-x-hidden">
         <main className="container mx-auto px-6 min-h-full flex flex-col justify-start md:justify-center pt-6 md:pt-20 pb-[calc(8.5rem+env(safe-area-inset-bottom))] md:pb-24">
 
           {/* Welcome Section */}
@@ -229,7 +143,7 @@ export default function Dashboard() {
           </div>
 
           {/* Mobile: Swipeable carousel with peek */}
-          <div className="md:hidden relative w-full overflow-visible mb-6 md:mb-8">
+          <div className="md:hidden relative w-full overflow-hidden mb-6 md:mb-8">
             <motion.div
               drag="x"
               dragConstraints={{ left: profileX, right: 0 }}
@@ -313,51 +227,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Smart Action Button */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="flex justify-center"
-          >
-            <button
-              className={`group relative px-7 py-4 sm:px-10 sm:py-5 ${smartAction.type === 'play'
-                ? 'bg-gradient-to-r from-neon-green via-emerald-500 to-neon-green shadow-[0_0_30px_rgba(72,255,160,0.5)] hover:shadow-[0_0_50px_rgba(72,255,160,0.7)] border-neon-green/30'
-                : 'bg-gradient-to-r from-orange-600 via-red-500 to-orange-600 shadow-[0_0_30px_rgba(234,88,12,0.5)] hover:shadow-[0_0_50px_rgba(234,88,12,0.7)] border-orange-400/30'
-                } bg-[length:200%_auto] animate-gradient rounded-full flex items-center gap-3 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 border`}
-              onClick={() => {
-                medium();
-                if (smartAction.type === 'play' && smartAction.targetId) {
-                  navigate(`/league/${smartAction.targetId}`);
-                } else if (smartAction.type === 'join') {
-                  // Open join dialog logic would require lifting state or navigating to leagues page with query param
-                  // For now, navigating to leagues page is safest as it has the join button
-                  navigate("/leagues");
-                } else {
-                  if (smartAction.targetId) {
-                    navigate(`/league/${smartAction.targetId}`);
-                  } else {
-                    navigate("/leagues");
-                  }
-                }
-              }}
-            >
-              <div className="absolute inset-0 bg-white/20 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="relative flex items-center gap-3">
-                {smartAction.type === 'play' ? (
-                  <Target className="w-5 h-5 sm:w-6 sm:h-6 text-black fill-black/20 animate-pulse-soft" />
-                ) : smartAction.type === 'join' ? (
-                  <User className="w-5 h-5 sm:w-6 sm:h-6 text-white fill-white/20" />
-                ) : (
-                  <Flame className="w-5 h-5 sm:w-6 sm:h-6 text-white fill-orange-200 animate-pulse-soft" />
-                )}
-                <span className={`font-bold text-base sm:text-xl tracking-wide uppercase drop-shadow-md ${smartAction.type === 'play' ? 'text-black' : 'text-white'
-                  }`}>
-                  {smartAction.label}
-                </span>
-              </div>
-            </button>
-          </motion.div>
+
 
         </main>
       </div>
