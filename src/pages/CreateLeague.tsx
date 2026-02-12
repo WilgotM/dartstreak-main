@@ -65,7 +65,7 @@ export default function CreateLeague() {
             user_id: user!.id,
         });
 
-        toast.success(t("dashboard.leagueCreated"));
+        toast.success(t("dashboard.leagueCreated"), { duration: 5000 });
         navigate(`/league/${league.id}`);
     };
 
