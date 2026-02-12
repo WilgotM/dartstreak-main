@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { toast } from "sonner";
-import { Target, ArrowLeft, Trophy, Calendar, TrendingUp, Copy, Check, Trash2, Crown, Award, Video } from "lucide-react";
+import { Target, ArrowLeft, Trophy, Calendar, TrendingUp, Copy, Check, Trash2, Crown, Award, Video, LogOut } from "lucide-react";
 import { format, addWeeks, isWithinInterval } from "date-fns";
 import { enUS, sv } from "date-fns/locale";
 import ThrowInput from "@/components/ThrowInput";
@@ -82,6 +82,7 @@ export default function League() {
   const [copied, setCopied] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [leaving, setLeaving] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<{ url: string | null; playerName: string; throwDate: string } | null>(null);
   const [creatorTimezone, setCreatorTimezone] = useState<string>("Europe/Stockholm");
   const [cameraRequired, setCameraRequired] = useState(true);
@@ -331,6 +332,25 @@ export default function League() {
     }
   };
 
+  const handleLeaveLeague = async () => {
+    if (!league || !user) return;
+    setLeaving(true);
+
+    const { error } = await supabase
+      .from("league_members")
+      .delete()
+      .eq("league_id", league.id)
+      .eq("user_id", user.id);
+
+    if (error) {
+      toast.error(t("league.couldNotLeave"));
+      setLeaving(false);
+    } else {
+      toast.success(t("league.leagueLeft"));
+      navigate("/dashboard");
+    }
+  };
+
   const copyInviteCode = () => {
     navigator.clipboard.writeText(league?.invite_code || "");
     setCopied(true);
@@ -458,7 +478,7 @@ export default function League() {
                 </div>
               )}
 
-              {isOwner && (
+              {isOwner ? (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="ghost" size="icon" className="shrink-0 text-white hover:bg-red-500/20 hover:text-red-400 rounded-full w-10 h-10">
@@ -480,6 +500,32 @@ export default function League() {
                         className="bg-red-600 hover:bg-red-700 text-white"
                       >
                         {deleting ? t("league.deleting") : t("league.deleteLeague")}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              ) : (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="ghost" size="icon" className="shrink-0 text-white hover:bg-red-500/20 hover:text-red-400 rounded-full w-10 h-10">
+                      <LogOut className="w-5 h-5" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent className="glass-card border-white/10 text-white">
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="text-white">{t("league.leaveConfirmTitle")}</AlertDialogTitle>
+                      <AlertDialogDescription className="text-gray-400">
+                        {t("league.leaveConfirmDesc")}
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel className="bg-transparent border-white/10 text-white hover:bg-white/10">{t("common.cancel")}</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleLeaveLeague}
+                        disabled={leaving}
+                        className="bg-red-600 hover:bg-red-700 text-white"
+                      >
+                        {leaving ? t("league.leaving") : t("league.leave")}
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
