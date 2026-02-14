@@ -6,68 +6,6 @@
 
 @layer base {
   :root {
-    /* Dart pub vibes - warm cream and forest green */
-    --background: 45 30% 96%;
-    --foreground: 150 25% 15%;
-
-    --card: 45 25% 98%;
-    --card-foreground: 150 25% 15%;
-
-    --popover: 45 25% 98%;
-    --popover-foreground: 150 25% 15%;
-
-    /* Forest green primary */
-    --primary: 158 45% 22%;
-    --primary-foreground: 45 30% 96%;
-
-    /* Warm cream secondary */
-    --secondary: 45 35% 90%;
-    --secondary-foreground: 150 25% 15%;
-
-    --muted: 45 20% 92%;
-    --muted-foreground: 150 15% 40%;
-
-    /* Dartboard red accent */
-    --accent: 0 65% 50%;
-    --accent-foreground: 45 30% 96%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 45 30% 96%;
-
-    --border: 45 20% 85%;
-    --input: 45 20% 85%;
-    --ring: 158 45% 22%;
-
-    --radius: 0.75rem;
-
-    /* Custom dart theme colors */
-    --dart-gold: 43 90% 55%;
-    --dart-bronze: 30 60% 45%;
-    --dart-silver: 210 10% 70%;
-    --dart-bullseye: 0 75% 45%;
-    --dart-green-light: 158 35% 35%;
-    --dart-cream: 45 40% 94%;
-
-    /* Shadows */
-    --shadow-soft: 0 4px 20px -4px hsl(150 25% 15% / 0.1);
-    --shadow-card: 0 2px 12px -2px hsl(150 25% 15% / 0.08);
-    --shadow-glow: 0 0 30px hsl(158 45% 22% / 0.15);
-
-    --sidebar-background: 45 25% 98%;
-    --sidebar-foreground: 150 25% 15%;
-    --sidebar-primary: 158 45% 22%;
-    --sidebar-primary-foreground: 45 30% 96%;
-    --sidebar-accent: 45 35% 90%;
-    --sidebar-accent-foreground: 150 25% 15%;
-    --sidebar-border: 45 20% 85%;
-    --sidebar-ring: 158 45% 22%;
-
-    /* Neon colors (light mode fallback) */
-    --neon-green: 130 100% 40%;
-    --neon-orange: 25 100% 50%;
-  }
-
-  .dark {
     /* Deep, rich dark background with subtle warmth */
     --background: 220 20% 6%;
     --foreground: 60 10% 95%;
@@ -102,6 +40,8 @@
     --input: 220 15% 14%;
     --ring: 158 65% 48%;
 
+    --radius: 0.75rem;
+
     /* Rich dart colors for dark mode */
     --dart-gold: 43 95% 65%;
     --dart-bronze: 30 65% 55%;
@@ -113,10 +53,9 @@
     /* Dramatic shadows with colored glows */
     --shadow-soft: 0 8px 32px -8px hsl(0 0% 0% / 0.5), 0 0 0 1px hsl(220 12% 18% / 0.5);
     --shadow-card: 0 4px 24px -4px hsl(0 0% 0% / 0.4), inset 0 1px 0 hsl(60 10% 95% / 0.03);
-    --shadow-card: 0 4px 24px -4px hsl(0 0% 0% / 0.4), inset 0 1px 0 hsl(60 10% 95% / 0.03);
     --shadow-glow: 0 0 40px hsl(158 65% 48% / 0.15), 0 0 80px hsl(158 65% 48% / 0.05);
 
-    /* Neon colors for the new design */
+    /* Neon colors */
     --neon-green: 130 100% 65%;
     --neon-orange: 25 100% 60%;
     --glass-background: 220 20% 10% / 0.4;

@@ -24,7 +24,7 @@ const queryClient = new QueryClient();
 const App = () => {
   return (
     <div className="animate-app-enter">
-      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+      <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark" disableTransitionOnChange>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <TooltipProvider>

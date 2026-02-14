@@ -5,11 +5,23 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, LogOut, Mail, Shield, User } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { FileText, LogOut, Mail, Shield, Trash2, User } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { StatsDisplay } from "@/components/StatsDisplay";
 import { ProfileSettings } from "@/components/ProfileSettings";
+import { toast } from "sonner";
 import { motion } from "framer-motion";
 
 interface ExtendedProfile {
@@ -25,6 +37,7 @@ export default function ProfilePage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [extendedProfile, setExtendedProfile] = useState<ExtendedProfile | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -54,6 +67,35 @@ export default function ProfilePage() {
   const handleSignOut = async () => {
     await signOut();
     navigate("/");
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeleting(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error(t("profile.deleteAccountError"));
+        setDeleting(false);
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke("delete-account", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+
+      if (error) {
+        toast.error(t("profile.deleteAccountError"));
+        setDeleting(false);
+        return;
+      }
+
+      toast.success(t("profile.deleteAccountSuccess"));
+      await signOut();
+      navigate("/");
+    } catch {
+      toast.error(t("profile.deleteAccountError"));
+      setDeleting(false);
+    }
   };
 
   const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: {} & { offset: { x: number; y: number } }) => {
@@ -154,11 +196,48 @@ export default function ProfilePage() {
             </Link>
           </section>
 
-          {/* Sign Out */}
-          <Button variant="outline" onClick={handleSignOut} className="w-full glass-button border-white/10 hover:bg-white/5">
-            <LogOut className="w-4 h-4 mr-2" />
-            {t("auth.logout")}
-          </Button>
+          {/* Danger Zone */}
+          <section className="space-y-3">
+            <Button variant="outline" onClick={handleSignOut} className="w-full glass-button border-white/10 hover:bg-white/5">
+              <LogOut className="w-4 h-4 mr-2" />
+              {t("auth.logout")}
+            </Button>
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-full border-red-500/30 text-red-400 hover:bg-red-500/10 hover:text-red-300"
+                  disabled={deleting}
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  {deleting ? t("profile.deleting") : t("profile.deleteAccount")}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="glass-card border-white/10 text-white">
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="text-white">
+                    {t("profile.deleteAccountConfirmTitle")}
+                  </AlertDialogTitle>
+                  <AlertDialogDescription className="text-gray-400">
+                    {t("profile.deleteAccountConfirmDesc")}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel className="bg-transparent border-white/10 text-white hover:bg-white/10">
+                    {t("common.cancel")}
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDeleteAccount}
+                    className="bg-red-600 hover:bg-red-700 text-white border-none"
+                    disabled={deleting}
+                  >
+                    {deleting ? t("profile.deleting") : t("profile.deleteAccount")}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </section>
         </main>
       </motion.div>
     </AppLayout>

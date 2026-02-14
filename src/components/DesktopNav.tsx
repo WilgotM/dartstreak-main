@@ -1,7 +1,6 @@
 import { Home, Trophy, User } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useTranslation } from "react-i18next";
-import { ThemeToggle } from "@/components/ThemeToggle";
 
 export function DesktopNav() {
   const { t } = useTranslation();
@@ -10,7 +9,7 @@ export function DesktopNav() {
     <nav className="hidden md:flex fixed top-0 left-0 right-0 z-50 h-20">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-md border-b border-white/10" />
       <div className="container mx-auto px-6 flex items-center justify-between relative z-10 h-full">
-        <div className="flex items-center gap-3">
+        <div className="flex-1 min-w-0 flex items-center gap-3">
           <img src="/logo.png" alt="DartStreak Logo" className="w-10 h-10 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]" />
           <span className="font-display font-bold text-xl text-white tracking-wide">DartStreak</span>
         </div>
@@ -45,10 +44,7 @@ export function DesktopNav() {
           </NavLink>
         </div>
 
-        {/* Theme Toggle */}
-        <div className="flex items-center gap-3">
-          <ThemeToggle />
-        </div>
+        <div className="flex-1 min-w-0" />
       </div>
     </nav>
   );
