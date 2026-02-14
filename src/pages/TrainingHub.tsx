@@ -1,0 +1,100 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { ArrowRight, Grid3X3 } from "lucide-react";
+import { AppLayout } from "@/components/AppLayout";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+const trainingCards = [
+  {
+    key: "ticTacToe",
+    to: "/training/tic-tac-toe",
+    icon: Grid3X3,
+    accent: "from-cyan-400/30 via-blue-500/10 to-transparent",
+  },
+] as const;
+
+export default function TrainingHub() {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/auth");
+    }
+  }, [loading, navigate, user]);
+
+  if (loading || !user) {
+    return (
+      <AppLayout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-pulse-soft">
+            <img src="/logo.png" alt="DartStreak Logo" className="w-16 h-16 object-contain" />
+          </div>
+        </div>
+      </AppLayout>
+    );
+  }
+
+  return (
+    <AppLayout>
+      <div className="container mx-auto px-4 py-8 md:py-10 pb-24 md:pb-10 space-y-6">
+        <header className="relative overflow-hidden rounded-3xl border border-white/10 bg-card/70 p-6 md:p-8">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.18),transparent_35%),radial-gradient(circle_at_30%_90%,rgba(34,197,94,0.16),transparent_40%)]" />
+          <div className="relative space-y-2">
+            <p className="text-xs uppercase tracking-[0.22em] text-amber-300/90">
+              {t("trainingHub.kicker")}
+            </p>
+            <h1 className="text-3xl md:text-4xl font-display font-bold text-white">
+              {t("trainingHub.title")}
+            </h1>
+            <p className="max-w-2xl text-muted-foreground">
+              {t("trainingHub.subtitle")}
+            </p>
+          </div>
+        </header>
+
+        <section className="grid gap-4 md:grid-cols-1">
+          {trainingCards.map((card) => {
+            const Icon = card.icon;
+            return (
+              <button
+                key={card.key}
+                type="button"
+                onClick={() => navigate(card.to)}
+                className="group relative overflow-hidden rounded-3xl border border-white/10 bg-card/75 p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:shadow-xl"
+              >
+                <div className={cn("absolute inset-0 opacity-80 bg-gradient-to-br", card.accent)} />
+                <div className="relative flex h-full flex-col gap-4">
+                  <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/15 bg-black/25 px-3 py-1 text-xs text-white/80">
+                    <Icon className="w-4 h-4" />
+                    {t(`trainingHub.cards.${card.key}.badge`)}
+                  </div>
+
+                  <div className="space-y-2">
+                    <h2 className="text-2xl font-display font-bold text-white">
+                      {t(`trainingHub.cards.${card.key}.title`)}
+                    </h2>
+                    <p className="text-sm text-white/75">
+                      {t(`trainingHub.cards.${card.key}.description`)}
+                    </p>
+                  </div>
+
+                  <div className="pt-3 mt-auto">
+                    <Button variant="secondary" className="bg-white/10 text-white hover:bg-white/20">
+                      {t("trainingHub.open")}
+                      <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-0.5" />
+                    </Button>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </section>
+      </div>
+    </AppLayout>
+  );
+}

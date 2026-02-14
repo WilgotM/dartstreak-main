@@ -1,4 +1,4 @@
-import { Home, Trophy, User } from "lucide-react";
+import { Home, Target, Trophy, User } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useTranslation } from "react-i18next";
 
@@ -32,6 +32,15 @@ export function DesktopNav() {
           >
             <Trophy className="w-4 h-4" />
             <span className="text-sm">{t("nav.leagues")}</span>
+          </NavLink>
+
+          <NavLink
+            to="/training"
+            className="flex items-center gap-2 px-6 py-2.5 text-gray-400 hover:text-white transition-all rounded-full hover:bg-white/5"
+            activeClassName="bg-neon-green/10 text-neon-green font-bold shadow-[0_0_15px_rgba(72,255,160,0.1)]"
+          >
+            <Target className="w-4 h-4" />
+            <span className="text-sm">{t("nav.training")}</span>
           </NavLink>
 
           <NavLink

@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Home, Trophy, User } from "lucide-react";
+import { Home, Target, Trophy, User } from "lucide-react";
 import { NavLink as RouterNavLink, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { to: "/dashboard", icon: Home, labelKey: "nav.home" },
   { to: "/leagues", icon: Trophy, labelKey: "nav.leagues" },
+  { to: "/training", icon: Target, labelKey: "nav.training" },
   { to: "/profile", icon: User, labelKey: "nav.profile" },
 ];
 

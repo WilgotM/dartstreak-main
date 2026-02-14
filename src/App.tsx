@@ -17,6 +17,8 @@ import JoinLeague from "./pages/JoinLeague";
 import ProfilePage from "./pages/ProfilePage";
 import NotFound from "./pages/NotFound";
 import Legal from "./pages/Legal";
+import TrainingTicTacToe from "./pages/TrainingTicTacToe";
+import TrainingHub from "./pages/TrainingHub";
 import * as Sentry from "@sentry/react";
 
 const queryClient = new QueryClient();
@@ -44,6 +46,8 @@ const App = () => {
                     <Route path="/join/:code" element={<JoinLeague />} />
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/profile/:id" element={<ProfilePage />} />
+                    <Route path="/training" element={<TrainingHub />} />
+                    <Route path="/training/tic-tac-toe" element={<TrainingTicTacToe />} />
                     <Route path="/privacy" element={<Legal />} />
                     <Route path="/terms" element={<Legal />} />
                     <Route path="/contact" element={<Legal />} />

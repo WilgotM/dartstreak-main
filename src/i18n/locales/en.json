@@ -199,10 +199,11 @@
       "li1": "Account Data: We collect your email address and profile details (such as display name and avatar URL when available) to create your profile.",
       "li2": "Game Data: We store your throw history, statistics, and league participation data to provide the core functionality of the service.",
       "li3": "Video Data: Some leagues may require video recording for verification. If a league requires video, short clips are captured and stored and may be viewed by other league members.",
+      "li7": "Training Data: Tic-Tac-Toe training runs locally in your browser session in this version and is not sent to our backend.",
       "li4": "Supabase: Used for our database, authentication, and secure data storage.",
       "li5": "Google OAuth: Optional sign-in provider for secure authentication.",
       "li6": "Supabase Storage: Used for storing throw verification videos securely.",
-      "p1": "Last updated: February 11, 2026",
+      "p1": "Last updated: February 14, 2026",
       "s1Text": "Welcome to DartStreak (\"we,\" \"our,\" or \"us\"). We respect your privacy and are committed to protecting your personal data. This privacy policy explains how we look after your personal data when you visit our application and tells you about your privacy rights.",
       "s1Title": "1. Introduction",
       "s2Title": "2. Information We Collect",
@@ -218,7 +219,7 @@
       "li3": "Upload or broadcast inappropriate, offensive, or illegal content.",
       "li4": "Your Content: You retain all ownership rights to the content you create (e.g., your match history, user profile).",
       "li5": "Our Content: The DartStreak code, design, and logic are authored by the DartStreak team.",
-      "p1": "Last updated: February 11, 2026",
+      "p1": "Last updated: February 14, 2026",
       "s1Text": "By accessing or using DartStreak, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our service.",
       "s1Title": "1. Acceptance of Terms",
       "s2Text1": "DartStreak is a free, hobbyist project provided \"AS IS\" and \"AS AVAILABLE\" without any warranties of any kind.",
@@ -339,7 +340,122 @@
     "matches": "Matches",
     "offline": "Offline",
     "profile": "Profile",
+    "training": "Training",
     "tournaments": "Tournaments"
+  },
+  "trainingHub": {
+    "kicker": "Pick your training mode",
+    "title": "Training",
+    "subtitle": "Choose a mode based on what you want to practice right now.",
+    "open": "Open mode",
+    "cards": {
+      "ticTacToe": {
+        "badge": "Tactical duel",
+        "title": "Tic-Tac-Toe Darts",
+        "description": "Two-player target control where each round is decided by board management and checkout precision."
+      }
+    }
+  },
+  "trainingTicTacToe": {
+    "actions": {
+      "changeTeams": "Change teams",
+      "enterFullscreen": "Fullscreen",
+      "exitFullscreen": "Exit fullscreen",
+      "newBoard": "New board",
+      "nextRound": "Start next round",
+      "resetMatch": "Reset match"
+    },
+    "board": {
+      "easiest": "Easiest",
+      "fastest": "Fastest",
+      "guideTitle": "Checkout guide",
+      "lockNow": "On target now - lock this square.",
+      "noFinish": "No finish possible this turn.",
+      "open": "Open",
+      "pending": "Pending",
+      "playerPrefix": "P",
+      "target": "Target"
+    },
+    "difficulty": {
+      "advanced_scores": {
+        "description": "Random scores between 61-120.",
+        "label": "Scores (Advanced 61-120)"
+      },
+      "beginner_numbers": {
+        "description": "Random numbers 1-20.",
+        "label": "Numbers (Beginner 1-20)"
+      },
+      "easy_scores": {
+        "description": "Random scores between 21-60.",
+        "label": "Scores (Easy 21-60)"
+      },
+      "expert_checkouts": {
+        "description": "Random checkouts between 41-80. Finish on a double.",
+        "label": "Checkouts (Expert 41-80)"
+      },
+      "intermediate_doubles": {
+        "description": "Random doubles 1-20 and BULL.",
+        "label": "Doubles (Intermediate 1-20)"
+      },
+      "pro_checkouts": {
+        "description": "Random checkouts between 81-120. Finish on a double.",
+        "label": "Checkouts (Pro 81-120)"
+      },
+      "pro_trebles": {
+        "description": "Random trebles 1-20.",
+        "label": "Trebles (Pro 1-20)"
+      }
+    },
+    "help": {
+      "button": "New here? Learn the game",
+      "subtitle": "Quick rules and difficulty overview.",
+      "title": "How Tic-Tac-Toe Darts works"
+    },
+    "levels": {
+      "title": "The different difficult levels"
+    },
+    "players": {
+      "playerA": "Player A",
+      "playerB": "Player B"
+    },
+    "setup": {
+      "colorsMustDiffer": "Teams must use different colors.",
+      "namesRequired": "Both team names are required.",
+      "start": "Start game",
+      "subtitle": "Choose names and colors for both teams before starting.",
+      "teamA": "Team A",
+      "teamB": "Team B",
+      "title": "Set up teams"
+    },
+    "result": {
+      "draw": "Round ended in a draw",
+      "subtitle": "Tap below to continue with a new board.",
+      "winner": "Player {{player}} wins the round!"
+    },
+    "rules": {
+      "r1": "Each turn has 3 darts.",
+      "r2": "Register each dart with Single/Double/Triple and board numbers 1-20.",
+      "r3": "If your running total no longer matches an open square, the queued claim is lost.",
+      "r4": "Lock the queued square at any time, or it auto-locks after throw 3 if still valid.",
+      "title": "How it works"
+    },
+    "status": {
+      "currentTurn": "Current turn: {{player}}"
+    },
+    "title": "Tic-Tac-Toe Darts",
+    "turn": {
+      "activePlayer": "Active player",
+      "double": "Double",
+      "quick25": "25",
+      "selectHint": "Register each dart below. Use MISS if you don't score.",
+      "lockSquare": "Lock square",
+      "miss": "MISS",
+      "single": "Single",
+      "total": "Turn total",
+      "throw": "Throw",
+      "triple": "Triple",
+      "undo": "Undo"
+    }
   },
   "offline": {
     "activeMatches": "Active Offline Matches",
