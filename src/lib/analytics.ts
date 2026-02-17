@@ -6,10 +6,31 @@ declare global {
 }
 
 const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID?.trim();
+const ANALYTICS_CONSENT_KEY = "dartstreak_analytics_consent_v1";
 
 let isInitialized = false;
 
 const isBrowser = () => typeof window !== "undefined" && typeof document !== "undefined";
+
+export type AnalyticsConsent = "accepted" | "rejected";
+
+export const getAnalyticsConsent = (): AnalyticsConsent | null => {
+  if (!isBrowser()) return null;
+
+  const rawConsent = window.localStorage.getItem(ANALYTICS_CONSENT_KEY);
+  if (rawConsent === "accepted" || rawConsent === "rejected") {
+    return rawConsent;
+  }
+
+  return null;
+};
+
+export const setAnalyticsConsent = (consent: AnalyticsConsent) => {
+  if (!isBrowser()) return;
+  window.localStorage.setItem(ANALYTICS_CONSENT_KEY, consent);
+};
+
+export const hasAnalyticsConsent = () => getAnalyticsConsent() === "accepted";
 
 const loadGoogleTagScript = (measurementId: string) => {
   const scriptSrc = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
@@ -25,7 +46,7 @@ const loadGoogleTagScript = (measurementId: string) => {
 };
 
 export const initAnalytics = () => {
-  if (!isBrowser() || !GA_MEASUREMENT_ID || isInitialized) {
+  if (!isBrowser() || !GA_MEASUREMENT_ID || isInitialized || !hasAnalyticsConsent()) {
     return;
   }
 
@@ -49,7 +70,7 @@ export const initAnalytics = () => {
 };
 
 export const trackPageView = (path: string) => {
-  if (!isBrowser() || !GA_MEASUREMENT_ID || !window.gtag) {
+  if (!isBrowser() || !GA_MEASUREMENT_ID || !window.gtag || !hasAnalyticsConsent()) {
     return;
   }
 

@@ -64,6 +64,11 @@ export default function Legal() {
                                     {t("legal.privacyPolicy.s4Text")}
                                 </p>
                             </section>
+
+                            <section className="space-y-3">
+                                <h3 className="text-xl font-semibold text-foreground">{t("legal.privacyPolicy.s5Title")}</h3>
+                                <p>{t("legal.privacyPolicy.s5Text")}</p>
+                            </section>
                         </div>
                     ),
                 };

@@ -54,6 +54,14 @@
     "termsOfService": "Användarvillkor",
     "unknown": "Okänd"
   },
+  "cookie": {
+    "acceptButton": "Acceptera analys",
+    "description": "Vi använder cookies för att få appen att fungera och, med ditt samtycke, för att mäta trafik med Google Analytics.",
+    "privacyLink": "Läs integritetspolicy",
+    "rejectButton": "Endast nödvändiga",
+    "settingsButton": "Cookieinställningar",
+    "title": "Dina integritetsval"
+  },
   "dashboard": {
     "alreadyInLeague": "Du är redan med i denna liga",
     "cameraNotRequired": "Inte krävs",
@@ -213,6 +221,8 @@
       "s3Title": "3. Tredjepartstjänster",
       "s4Text": "Du har rätt att begära radering av ditt konto och all tillhörande data när som helst. Du kan göra detta direkt i dina profilinställningar eller genom att kontakta oss.",
       "s4Title": "4. Radering av data",
+      "s5Text": "Analyscookies används bara efter att du gett samtycke i vår cookiebanner. Du kan ändra ditt val när som helst via knappen Cookieinställningar i appen.",
+      "s5Title": "5. Cookies och samtycke",
       "title": "Integritetspolicy"
     },
     "terms": {

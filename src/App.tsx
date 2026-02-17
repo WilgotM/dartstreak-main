@@ -22,6 +22,7 @@ import TrainingTicTacToe from "./pages/TrainingTicTacToe";
 import TrainingHub from "./pages/TrainingHub";
 import * as Sentry from "@sentry/react";
 import { trackPageView } from "@/lib/analytics";
+import CookieConsent from "@/components/CookieConsent";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +46,7 @@ const App = () => {
               <Toaster />
               <Sonner />
               <BrowserRouter>
+                <CookieConsent />
                 <AnalyticsRouteTracker />
                 <Sentry.ErrorBoundary fallback={<div className="flex min-h-[50vh] items-center justify-center p-4"><p className="text-muted-foreground">Something went wrong. Please reload the page.</p></div>}>
                   <Routes>
