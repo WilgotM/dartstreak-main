@@ -10,9 +10,13 @@
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
+    "@id": "https://dartstreak.pages.dev/#website",
     "name": "DartStreak",
-    "alternateName": ["Dart Streak", "DartStreak App"],
-    "url": "https://dartstreak.pages.dev/"
+    "alternateName": "Dart Streak",
+    "url": "https://dartstreak.pages.dev/",
+    "publisher": {
+      "@id": "https://dartstreak.pages.dev/#organization"
+    }
   }
   </script>
 
@@ -21,6 +25,7 @@
   <meta name="description"
     content="Play free online darts leagues with friends! Compete in daily leagues, track your stats, and verify throws with video. No registration fees - 100% free multiplayer darts leagues." />
   <meta name="author" content="DartStreak" />
+  <meta itemprop="name" content="DartStreak" />
   <meta name="application-name" content="DartStreak" />
   <meta name="apple-mobile-web-app-title" content="DartStreak" />
   <meta name="robots" content="index, follow" />
@@ -170,8 +175,7 @@
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
     "softwareVersion": "1.0",
     "author": {
-      "@type": "Organization",
-      "name": "DartStreak"
+      "@id": "https://dartstreak.pages.dev/#organization"
     }
   }
   </script>
@@ -207,10 +211,13 @@
   {
     "@context": "https://schema.org",
     "@type": "Organization",
+    "@id": "https://dartstreak.pages.dev/#organization",
     "name": "DartStreak",
     "url": "https://dartstreak.pages.dev/",
-    "logo": "https://dartstreak.pages.dev/logo.png",
-    "sameAs": []
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://dartstreak.pages.dev/logo.png"
+    }
   }
   </script>
 
