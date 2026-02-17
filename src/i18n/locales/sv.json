@@ -420,15 +420,23 @@
     },
     "setup": {
       "colorsMustDiffer": "Lagen måste ha olika färger.",
+      "firstTo": "Först till",
+      "legsToWin": "Legs för att vinna",
+      "matchDesc": "Tävlingsmatch",
       "namesRequired": "Båda lagens namn måste fyllas i.",
+      "practiceDesc": "Spela för skoj",
       "start": "Starta spel",
       "subtitle": "Välj namn och färg för båda lagen innan ni börjar.",
       "teamA": "Lag A",
       "teamB": "Lag B",
-      "title": "Ställ in lag"
+      "title": "Ställ in lag",
+      "unlimited": "Obegränsat"
     },
     "result": {
       "draw": "Rundan slutade oavgjort",
+      "matchWinner": "Matchvinnare!",
+      "matchWinnerSubtitle": "{{player}} vinner matchen {{score}}!",
+      "playAgain": "Spela Igen",
       "subtitle": "Tryck nedan för att fortsätta med ett nytt bräde.",
       "winner": "Spelare {{player}} vann rundan!"
     },
@@ -440,7 +448,8 @@
       "title": "Så fungerar det"
     },
     "status": {
-      "currentTurn": "Aktiv tur: {{player}}"
+      "currentTurn": "Aktiv tur: {{player}}",
+      "firstTo": "Först till {{legs}}"
     },
     "title": "Tic-Tac-Toe Darts",
     "turn": {
@@ -450,6 +459,7 @@
       "selectHint": "Registrera varje kast nedan. Använd MISS om du bommar.",
       "lockSquare": "Säkra ruta",
       "miss": "MISS",
+      "noPossibleSquares": "Inga möjliga rutor kvar - turen går över",
       "single": "Single",
       "total": "Turens total",
       "throw": "Pil",

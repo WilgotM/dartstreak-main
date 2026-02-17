@@ -19,6 +19,8 @@ import TicTacToeBoard from "@/components/training/TicTacToeBoard";
 import TicTacToeTurnPanel from "@/components/training/TicTacToeTurnPanel";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
+import { Infinity, Minus, Plus, Target as TargetIcon, Trophy } from "lucide-react";
 import {
   findCheckoutRoutes,
   pickEasiestRoute,
@@ -182,6 +184,9 @@ export default function TrainingTicTacToe() {
     B: { name: "Player B", color: "#F43F5E" },
   });
   const [isTeamsReady, setIsTeamsReady] = useState(false);
+  const [targetLegs, setTargetLegs] = useState<number>(0);
+  const [matchWinner, setMatchWinner] = useState<Player | null>(null);
+  const [isWaitingForTurnSwitch, setIsWaitingForTurnSwitch] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -264,9 +269,12 @@ export default function TrainingTicTacToe() {
     return guides;
   }, [board, finishOnDouble, remainingDarts, throwsThisTurn, turnTotal]);
 
+  const noPossibleSquares = isWaitingForTurnSwitch;
+
   const endTurnWithoutClaim = useCallback(() => {
     setThrowsThisTurn([]);
     setPendingCellId(null);
+    setIsWaitingForTurnSwitch(false);
     setCurrentPlayer((prev) => (prev === "A" ? "B" : "A"));
   }, []);
 
@@ -287,17 +295,23 @@ export default function TrainingTicTacToe() {
       if (evaluated) {
         setRoundResult(evaluated);
         if (evaluated.winner) {
-          setRoundsWon((prev) => ({
-            ...prev,
-            [evaluated.winner]: prev[evaluated.winner] + 1,
-          }));
+          setRoundsWon((prev) => {
+            const newScore = prev[evaluated.winner] + 1;
+            if (targetLegs > 0 && newScore >= targetLegs) {
+              setMatchWinner(evaluated.winner);
+            }
+            return {
+              ...prev,
+              [evaluated.winner]: newScore,
+            };
+          });
         }
         return;
       }
 
       setCurrentPlayer((prev) => (prev === "A" ? "B" : "A"));
     },
-    [board, currentPlayer, roundResult],
+    [board, currentPlayer, roundResult, targetLegs],
   );
 
   const handleAddThrow = useCallback(
@@ -311,8 +325,29 @@ export default function TrainingTicTacToe() {
       const nextPendingCellId = recomputePendingCell(board, nextThrows, finishOnDouble);
 
       if (nextThrows.length < 3) {
+        const nextRemainingDarts = 3 - nextThrows.length;
+        const nextTurnTotal = nextThrows.reduce((sum, item) => sum + item.score, 0);
+        
+        const anyCellPossible = board.some((cell) => {
+          if (cell.owner) return false;
+          const routes = findCheckoutRoutes({
+            currentTotal: nextTurnTotal,
+            target: cell.target,
+            dartsLeft: nextRemainingDarts,
+            finishOnDouble,
+          });
+          return Boolean(pickEasiestRoute(routes) || pickFastestRoute(routes));
+        });
+
         setThrowsThisTurn(nextThrows);
         setPendingCellId(nextPendingCellId);
+
+        if (!anyCellPossible && nextPendingCellId === null) {
+          setIsWaitingForTurnSwitch(true);
+          setTimeout(() => {
+            endTurnWithoutClaim();
+          }, 1500);
+        }
         return;
       }
 
@@ -356,6 +391,7 @@ export default function TrainingTicTacToe() {
   const handleResetMatch = useCallback(() => {
     setRoundsWon({ A: 0, B: 0 });
     setStartingPlayer("A");
+    setMatchWinner(null);
     resetRound("A");
   }, [resetRound]);
 
@@ -367,6 +403,7 @@ export default function TrainingTicTacToe() {
     setThrowsThisTurn([]);
     setPendingCellId(null);
     setRoundResult(null);
+    setMatchWinner(null);
     setBoard(buildBoard(difficulty));
   }, [difficulty]);
 
@@ -408,6 +445,7 @@ export default function TrainingTicTacToe() {
     setThrowsThisTurn([]);
     setPendingCellId(null);
     setRoundResult(null);
+    setMatchWinner(null);
   }, []);
 
   const startNextRound = useCallback(() => {
@@ -585,6 +623,122 @@ export default function TrainingTicTacToe() {
                   </div>
                 </div>
               ))}
+              <div className="rounded-xl border border-white/10 bg-black/20 p-4 md:col-span-2">
+                <div className="flex items-center gap-2 mb-4">
+                  <Trophy className="w-4 h-4 text-primary" />
+                  <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    {t("trainingTicTacToe.setup.legsToWin")}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setTargetLegs(0)}
+                    className={cn(
+                      "relative flex flex-col items-center justify-center gap-2 p-4 rounded-xl border transition-all duration-300 overflow-hidden",
+                      targetLegs === 0
+                        ? "border-primary bg-primary/10 text-primary shadow-[0_0_20px_-5px_rgba(59,130,246,0.3)]"
+                        : "border-white/10 bg-black/20 hover:bg-white/5 text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    <Infinity className="w-6 h-6" />
+                    <span className="text-sm font-semibold">{t("trainingTicTacToe.setup.unlimited")}</span>
+                    <span className="text-xs opacity-70">{t("trainingTicTacToe.setup.practiceDesc")}</span>
+                    {targetLegs === 0 && (
+                      <motion.div
+                        layoutId="active-mode"
+                        className="absolute inset-0 border-2 border-primary rounded-xl"
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      />
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setTargetLegs((prev) => (prev === 0 ? 3 : prev))}
+                    className={cn(
+                      "relative flex flex-col items-center justify-center gap-2 p-4 rounded-xl border transition-all duration-300 overflow-hidden",
+                      targetLegs > 0
+                        ? "border-primary bg-primary/10 text-primary shadow-[0_0_20px_-5px_rgba(59,130,246,0.3)]"
+                        : "border-white/10 bg-black/20 hover:bg-white/5 text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    <TargetIcon className="w-6 h-6" />
+                    <span className="text-sm font-semibold">{t("trainingTicTacToe.setup.matchDesc")}</span>
+                    <span className="text-xs opacity-70">
+                      {targetLegs > 0
+                        ? t("trainingTicTacToe.setup.firstTo") + ` ${targetLegs}`
+                        : t("trainingTicTacToe.setup.matchDesc")}
+                    </span>
+                    {targetLegs > 0 && (
+                      <motion.div
+                        layoutId="active-mode"
+                        className="absolute inset-0 border-2 border-primary rounded-xl"
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      />
+                    )}
+                  </button>
+                </div>
+
+                <AnimatePresence>
+                  {targetLegs > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="pt-4">
+                        <div className="flex items-center justify-center gap-6 bg-black/40 rounded-xl p-4 border border-white/5">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-12 w-12 rounded-full border-white/10 hover:bg-white/10 hover:border-white/20"
+                            onClick={() => setTargetLegs((prev) => Math.max(1, prev - 1))}
+                          >
+                            <Minus className="w-5 h-5" />
+                          </Button>
+                          <div className="text-center min-w-[80px]">
+                            <span className="block text-4xl font-display font-bold tabular-nums text-foreground leading-none mb-1">
+                              {targetLegs}
+                            </span>
+                            <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">
+                              {t("trainingTicTacToe.setup.legsToWin")}
+                            </span>
+                          </div>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-12 w-12 rounded-full border-white/10 hover:bg-white/10 hover:border-white/20"
+                            onClick={() => setTargetLegs((prev) => Math.min(20, prev + 1))}
+                          >
+                            <Plus className="w-5 h-5" />
+                          </Button>
+                        </div>
+
+                        <div className="flex justify-center gap-2 mt-3 overflow-x-auto pb-1 no-scrollbar mask-gradient-x">
+                          {[1, 3, 5, 7, 10, 15].map((val) => (
+                            <button
+                              key={val}
+                              type="button"
+                              onClick={() => setTargetLegs(val)}
+                              className={cn(
+                                "px-3 py-1.5 rounded-full text-xs font-medium border transition-all",
+                                targetLegs === val
+                                  ? "bg-primary text-white border-primary shadow-lg shadow-primary/25 scale-105"
+                                  : "bg-transparent text-muted-foreground border-white/10 hover:border-white/30 hover:bg-white/5",
+                              )}
+                            >
+                              {t("trainingTicTacToe.setup.firstTo")} {val}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
 
             {setupValidationError && (
@@ -600,82 +754,89 @@ export default function TrainingTicTacToe() {
         )}
 
         {isTeamsReady && (
-        <div
-          className={cn(
-            "grid gap-6 md:gap-5 md:grid-cols-[minmax(0,1fr)_520px] md:items-stretch",
-            isFullscreen && "md:grid-cols-[minmax(0,1fr)_600px]",
-          )}
-        >
-          <div className="space-y-6 md:space-y-4">
-            <section className="glass-card rounded-2xl border border-white/10 p-4 sm:p-5">
-              <div className="grid grid-cols-2 gap-4">
-                <div
-                  className="rounded-xl border p-3"
-                  style={{ borderColor: `${teamSetup.A.color}80`, backgroundColor: `${teamSetup.A.color}22` }}
-                >
-                  <p className="text-xs uppercase tracking-wider text-white/90">{teamSetup.A.name}</p>
-                  <p className="text-2xl font-display font-bold">{roundsWon.A}</p>
+          <div
+            className={cn(
+              "grid gap-6 md:gap-5 md:grid-cols-[minmax(0,1fr)_520px] md:items-stretch",
+              isFullscreen && "md:grid-cols-[minmax(0,1fr)_600px]",
+            )}
+          >
+            <div className="space-y-6 md:space-y-4">
+              <section className="glass-card rounded-2xl border border-white/10 p-4 sm:p-5">
+                <div className="grid grid-cols-2 gap-4">
+                  <div
+                    className="rounded-xl border p-3"
+                    style={{ borderColor: `${teamSetup.A.color}80`, backgroundColor: `${teamSetup.A.color}22` }}
+                  >
+                    <p className="text-xs uppercase tracking-wider text-white/90">{teamSetup.A.name}</p>
+                    <p className="text-2xl font-display font-bold">{roundsWon.A}</p>
+                  </div>
+                  <div
+                    className="rounded-xl border p-3"
+                    style={{ borderColor: `${teamSetup.B.color}80`, backgroundColor: `${teamSetup.B.color}22` }}
+                  >
+                    <p className="text-xs uppercase tracking-wider text-white/90">{teamSetup.B.name}</p>
+                    <p className="text-2xl font-display font-bold">{roundsWon.B}</p>
+                  </div>
                 </div>
-                <div
-                  className="rounded-xl border p-3"
-                  style={{ borderColor: `${teamSetup.B.color}80`, backgroundColor: `${teamSetup.B.color}22` }}
-                >
-                  <p className="text-xs uppercase tracking-wider text-white/90">{teamSetup.B.name}</p>
-                  <p className="text-2xl font-display font-bold">{roundsWon.B}</p>
-                </div>
-              </div>
-              <p className="mt-3 text-sm text-muted-foreground">
-                {t("trainingTicTacToe.status.currentTurn", { player: teamSetup[currentPlayer].name })}
-              </p>
-            </section>
+                <p className="mt-3 text-sm text-muted-foreground flex justify-between items-center">
+                  <span>{t("trainingTicTacToe.status.currentTurn", { player: teamSetup[currentPlayer].name })}</span>
+                  {targetLegs > 0 && (
+                    <span className="text-xs font-semibold bg-primary/10 text-primary px-2 py-1 rounded">
+                      {t("trainingTicTacToe.status.firstTo", { legs: targetLegs })}
+                    </span>
+                  )}
+                </p>
+              </section>
 
-            <TicTacToeBoard
-              board={board}
-              pendingCellId={pendingCellId}
-              winningLine={winningLine}
-              players={teamSetup}
-              guides={cardGuides}
-              strings={{
-                target: t("trainingTicTacToe.board.target"),
-                open: t("trainingTicTacToe.board.open"),
-                pending: t("trainingTicTacToe.board.pending"),
-                guideTitle: t("trainingTicTacToe.board.guideTitle"),
-                easiest: t("trainingTicTacToe.board.easiest"),
-                fastest: t("trainingTicTacToe.board.fastest"),
-                noFinish: t("trainingTicTacToe.board.noFinish"),
-                lockNow: t("trainingTicTacToe.board.lockNow"),
-              }}
-            />
-          </div>
+              <TicTacToeBoard
+                board={board}
+                pendingCellId={pendingCellId}
+                winningLine={winningLine}
+                players={teamSetup}
+                guides={cardGuides}
+                strings={{
+                  target: t("trainingTicTacToe.board.target"),
+                  open: t("trainingTicTacToe.board.open"),
+                  pending: t("trainingTicTacToe.board.pending"),
+                  guideTitle: t("trainingTicTacToe.board.guideTitle"),
+                  easiest: t("trainingTicTacToe.board.easiest"),
+                  fastest: t("trainingTicTacToe.board.fastest"),
+                  noFinish: t("trainingTicTacToe.board.noFinish"),
+                  lockNow: t("trainingTicTacToe.board.lockNow"),
+                }}
+              />
+            </div>
 
-          <div className="space-y-6 md:space-y-4 h-full">
-            <TicTacToeTurnPanel
-              currentPlayer={currentPlayer}
-              currentPlayerName={teamSetup[currentPlayer].name}
-              currentPlayerColor={teamSetup[currentPlayer].color}
-              throwsThisTurn={throwsThisTurn}
-              pendingTarget={pendingTarget}
-              disabled={Boolean(roundResult)}
-              className="h-full"
-              strings={{
-                selectHint: t("trainingTicTacToe.turn.selectHint"),
-                miss: t("trainingTicTacToe.turn.miss"),
-                undo: t("trainingTicTacToe.turn.undo"),
-                lockSquare: t("trainingTicTacToe.turn.lockSquare"),
-                throwLabel: t("trainingTicTacToe.turn.throw"),
-                activePlayer: t("trainingTicTacToe.turn.activePlayer"),
-                single: t("trainingTicTacToe.turn.single"),
-                double: t("trainingTicTacToe.turn.double"),
-                triple: t("trainingTicTacToe.turn.triple"),
-                total: t("trainingTicTacToe.turn.total"),
-                quick25: t("trainingTicTacToe.turn.quick25"),
-              }}
-              onAddThrow={handleAddThrow}
-              onUndoThrow={handleUndoThrow}
-              onLockSquare={handleLockSquare}
-            />
+            <div className="space-y-6 md:space-y-4 h-full">
+              <TicTacToeTurnPanel
+                currentPlayer={currentPlayer}
+                currentPlayerName={teamSetup[currentPlayer].name}
+                currentPlayerColor={teamSetup[currentPlayer].color}
+                throwsThisTurn={throwsThisTurn}
+                pendingTarget={pendingTarget}
+                noPossibleSquares={noPossibleSquares}
+                disabled={Boolean(roundResult) || isWaitingForTurnSwitch}
+                className="h-full"
+                strings={{
+                  selectHint: t("trainingTicTacToe.turn.selectHint"),
+                  miss: t("trainingTicTacToe.turn.miss"),
+                  undo: t("trainingTicTacToe.turn.undo"),
+                  lockSquare: t("trainingTicTacToe.turn.lockSquare"),
+                  throwLabel: t("trainingTicTacToe.turn.throw"),
+                  activePlayer: t("trainingTicTacToe.turn.activePlayer"),
+                  single: t("trainingTicTacToe.turn.single"),
+                  double: t("trainingTicTacToe.turn.double"),
+                  triple: t("trainingTicTacToe.turn.triple"),
+                  total: t("trainingTicTacToe.turn.total"),
+                  quick25: t("trainingTicTacToe.turn.quick25"),
+                  noPossibleSquares: t("trainingTicTacToe.turn.noPossibleSquares"),
+                }}
+                onAddThrow={handleAddThrow}
+                onUndoThrow={handleUndoThrow}
+                onLockSquare={handleLockSquare}
+              />
+            </div>
           </div>
-        </div>
         )}
 
         <div className="space-y-6 mt-6 md:hidden">
@@ -709,23 +870,79 @@ export default function TrainingTicTacToe() {
           </section>
         </div>
 
-        {roundResult && (
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-[2px] z-30 flex items-center justify-center p-4">
-            <div className="w-full max-w-md glass-card rounded-2xl border border-white/10 p-6 text-center space-y-4">
-              <h2 className="text-2xl font-display font-bold">
-                {roundResult.isDraw
-                  ? t("trainingTicTacToe.result.draw")
-                  : t("trainingTicTacToe.result.winner", {
-                    player: roundResult.winner ? teamSetup[roundResult.winner].name : "",
-                  })}
-              </h2>
-              <p className="text-sm text-muted-foreground">{t("trainingTicTacToe.result.subtitle")}</p>
-              <Button onClick={startNextRound} className="w-full">
-                {t("trainingTicTacToe.actions.nextRound")}
-              </Button>
+        <AnimatePresence>
+          {(roundResult || matchWinner) && (
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] z-50 flex items-center justify-center p-4">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                transition={{ type: "spring", duration: 0.5 }}
+                className="w-full max-w-sm"
+              >
+                {matchWinner ? (
+                  <div className="relative glass-card border border-primary/20 bg-gradient-to-b from-black/80 to-black/95 rounded-3xl p-8 text-center shadow-2xl overflow-hidden">
+                    <div className="absolute inset-0 bg-primary/5 blur-3xl rounded-full pointer-events-none" />
+
+                    <motion.div
+                      animate={{ y: [0, -10, 0], rotate: [0, -5, 5, 0] }}
+                      transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                      className="w-24 h-24 bg-gradient-to-br from-yellow-400 to-amber-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-amber-500/20 text-white relative z-10"
+                    >
+                      <Trophy className="w-12 h-12" />
+                    </motion.div>
+
+                    <h2 className="text-3xl font-display font-bold text-white mb-2 relative z-10">
+                      {t("trainingTicTacToe.result.matchWinner")}
+                    </h2>
+
+                    <p className="text-xl font-medium text-primary mb-8 relative z-10">
+                      {teamSetup[matchWinner].name}
+                    </p>
+
+                    <div className="flex items-center justify-center gap-6 mb-8 relative z-10 bg-white/5 rounded-2xl p-4 border border-white/5">
+                      <div className="text-center">
+                        <span className="text-3xl font-bold block text-white">{roundsWon.A}</span>
+                        <span className="text-[10px] bg-white/10 px-2 py-0.5 rounded text-muted-foreground uppercase tracking-wider font-bold">
+                          {teamSetup.A.name}
+                        </span>
+                      </div>
+                      <div className="text-xl text-muted-foreground font-light px-2">-</div>
+                      <div className="text-center">
+                        <span className="text-3xl font-bold block text-white">{roundsWon.B}</span>
+                        <span className="text-[10px] bg-white/10 px-2 py-0.5 rounded text-muted-foreground uppercase tracking-wider font-bold">
+                          {teamSetup.B.name}
+                        </span>
+                      </div>
+                    </div>
+
+                    <Button
+                      onClick={handleResetMatch}
+                      size="lg"
+                      className="w-full rounded-xl font-bold text-base h-12 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all relative z-10"
+                    >
+                      {t("trainingTicTacToe.result.playAgain")}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="glass-card rounded-2xl border border-white/10 p-6 text-center space-y-4 shadow-xl">
+                    <h2 className="text-2xl font-display font-bold">
+                      {roundResult?.isDraw
+                        ? t("trainingTicTacToe.result.draw")
+                        : t("trainingTicTacToe.result.winner", {
+                          player: roundResult?.winner ? teamSetup[roundResult.winner].name : "",
+                        })}
+                    </h2>
+                    <p className="text-sm text-muted-foreground">{t("trainingTicTacToe.result.subtitle")}</p>
+                    <Button onClick={startNextRound} className="w-full h-11 text-base">
+                      {t("trainingTicTacToe.actions.nextRound")}
+                    </Button>
+                  </div>
+                )}
+              </motion.div>
             </div>
-          </div>
-        )}
+          )}
+        </AnimatePresence>
       </main>
     </AppLayout>
   );

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Delete } from "lucide-react";
+import { AlertCircle, Delete } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -18,6 +18,7 @@ interface TicTacToeTurnPanelProps {
   currentPlayerColor: string;
   throwsThisTurn: ThrowInputEntry[];
   pendingTarget: number | null;
+  noPossibleSquares?: boolean;
   disabled?: boolean;
   strings: {
     selectHint: string;
@@ -31,6 +32,7 @@ interface TicTacToeTurnPanelProps {
     triple: string;
     total: string;
     quick25: string;
+    noPossibleSquares: string;
   };
   onAddThrow: (entry: ThrowInputEntry) => void;
   onUndoThrow: () => void;
@@ -44,6 +46,7 @@ export default function TicTacToeTurnPanel({
   currentPlayerColor,
   throwsThisTurn,
   pendingTarget,
+  noPossibleSquares = false,
   disabled = false,
   strings,
   onAddThrow,
@@ -127,6 +130,13 @@ export default function TicTacToeTurnPanel({
       {pendingTarget !== null && (
         <p className="text-sm text-emerald-300">
           {strings.lockSquare}: <span className="font-semibold">{pendingTarget}</span>
+        </p>
+      )}
+
+      {noPossibleSquares && pendingTarget === null && (
+        <p className="text-sm text-amber-300 flex items-center gap-2">
+          <AlertCircle className="w-4 h-4" />
+          {strings.noPossibleSquares}
         </p>
       )}
 

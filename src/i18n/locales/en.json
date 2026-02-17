@@ -420,15 +420,23 @@
     },
     "setup": {
       "colorsMustDiffer": "Teams must use different colors.",
+      "firstTo": "First to",
+      "legsToWin": "Legs to win",
+      "matchDesc": "Competitive match",
       "namesRequired": "Both team names are required.",
+      "practiceDesc": "Play for fun",
       "start": "Start game",
       "subtitle": "Choose names and colors for both teams before starting.",
       "teamA": "Team A",
       "teamB": "Team B",
-      "title": "Set up teams"
+      "title": "Set up teams",
+      "unlimited": "Unlimited"
     },
     "result": {
       "draw": "Round ended in a draw",
+      "matchWinner": "Match Winner!",
+      "matchWinnerSubtitle": "{{player}} wins the match {{score}}!",
+      "playAgain": "Play Again",
       "subtitle": "Tap below to continue with a new board.",
       "winner": "Player {{player}} wins the round!"
     },
@@ -440,7 +448,8 @@
       "title": "How it works"
     },
     "status": {
-      "currentTurn": "Current turn: {{player}}"
+      "currentTurn": "Current turn: {{player}}",
+      "firstTo": "First to {{legs}}"
     },
     "title": "Tic-Tac-Toe Darts",
     "turn": {
@@ -450,6 +459,7 @@
       "selectHint": "Register each dart below. Use MISS if you don't score.",
       "lockSquare": "Lock square",
       "miss": "MISS",
+      "noPossibleSquares": "No possible squares left - turn passes",
       "single": "Single",
       "total": "Turn total",
       "throw": "Throw",
