@@ -2,6 +2,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import "./i18n";
+import { initAnalytics } from "@/lib/analytics";
 
 // Cleanup legacy service workers/caches once to avoid stale production bundles.
 import * as Sentry from "@sentry/react";
@@ -51,5 +52,7 @@ if ('serviceWorker' in navigator) {
     })();
   });
 }
+
+initAnalytics();
 
 createRoot(document.getElementById("root")!).render(<App />);

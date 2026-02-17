@@ -56,6 +56,7 @@ DartStreak is built with high-performance, industry-standard technologies:
    ```env
    VITE_SUPABASE_URL=your_supabase_url
    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
    ```
 
 4. **Start the development server**:

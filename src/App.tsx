@@ -2,7 +2,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Index from "./pages/Index";
@@ -20,8 +21,19 @@ import Legal from "./pages/Legal";
 import TrainingTicTacToe from "./pages/TrainingTicTacToe";
 import TrainingHub from "./pages/TrainingHub";
 import * as Sentry from "@sentry/react";
+import { trackPageView } from "@/lib/analytics";
 
 const queryClient = new QueryClient();
+
+const AnalyticsRouteTracker = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    trackPageView(`${location.pathname}${location.search}${location.hash}`);
+  }, [location.pathname, location.search, location.hash]);
+
+  return null;
+};
 
 const App = () => {
   return (
@@ -33,6 +45,7 @@ const App = () => {
               <Toaster />
               <Sonner />
               <BrowserRouter>
+                <AnalyticsRouteTracker />
                 <Sentry.ErrorBoundary fallback={<div className="flex min-h-[50vh] items-center justify-center p-4"><p className="text-muted-foreground">Something went wrong. Please reload the page.</p></div>}>
                   <Routes>
                     <Route path="/" element={<Index />} />

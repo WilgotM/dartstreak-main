@@ -41,6 +41,9 @@ export default function Legal() {
                                     <li>
                                         <span className="text-foreground font-medium">{t("legal.privacyPolicy.li7")}</span>
                                     </li>
+                                    <li>
+                                        <span className="text-foreground font-medium">{t("legal.privacyPolicy.li8")}</span>
+                                    </li>
                                 </ul>
                             </section>
 
@@ -51,6 +54,7 @@ export default function Legal() {
                                     <li><span className="text-foreground font-medium">{t("legal.privacyPolicy.li4")}</span></li>
                                     <li><span className="text-foreground font-medium">{t("legal.privacyPolicy.li5")}</span></li>
                                     <li><span className="text-foreground font-medium">{t("legal.privacyPolicy.li6")}</span></li>
+                                    <li><span className="text-foreground font-medium">{t("legal.privacyPolicy.li9")}</span></li>
                                 </ul>
                             </section>
 
