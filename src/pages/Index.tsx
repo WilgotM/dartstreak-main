@@ -46,6 +46,10 @@ export default function Index() {
     }
   };
 
+  const handleOpenCookieSettings = () => {
+    window.dispatchEvent(new Event("open-cookie-settings"));
+  };
+
   return (
     <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
       <HeroBackground />
@@ -248,6 +252,9 @@ export default function Index() {
           <div className="flex gap-6">
             <Link to="/privacy" className="hover:text-foreground transition-colors">{t("common.privacyPolicy")}</Link>
             <Link to="/terms" className="hover:text-foreground transition-colors">{t("common.termsOfService")}</Link>
+            <button type="button" onClick={handleOpenCookieSettings} className="hover:text-foreground transition-colors">
+              {t("cookie.settingsButton")}
+            </button>
             <Link to="/contact" className="hover:text-foreground transition-colors">{t("common.contact")}</Link>
           </div>
         </div>

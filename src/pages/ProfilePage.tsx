@@ -106,6 +106,10 @@ export default function ProfilePage() {
     }
   };
 
+  const handleOpenCookieSettings = () => {
+    window.dispatchEvent(new Event("open-cookie-settings"));
+  };
+
   if (loading || !user) {
     return (
       <AppLayout>
@@ -188,6 +192,16 @@ export default function ProfilePage() {
                 {t("common.termsOfService")}
               </span>
             </Link>
+            <button
+              type="button"
+              onClick={handleOpenCookieSettings}
+              className="w-full flex items-center justify-between rounded-lg px-3 py-2.5 bg-background/40 hover:bg-background/60 transition-colors"
+            >
+              <span className="flex items-center gap-2 text-foreground">
+                <Shield className="w-4 h-4 text-primary" />
+                {t("cookie.settingsButton")}
+              </span>
+            </button>
             <Link to="/contact" className="flex items-center justify-between rounded-lg px-3 py-2.5 bg-background/40 hover:bg-background/60 transition-colors">
               <span className="flex items-center gap-2 text-foreground">
                 <Mail className="w-4 h-4 text-primary" />

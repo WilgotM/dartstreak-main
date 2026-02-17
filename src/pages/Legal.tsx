@@ -68,6 +68,12 @@ export default function Legal() {
                             <section className="space-y-3">
                                 <h3 className="text-xl font-semibold text-foreground">{t("legal.privacyPolicy.s5Title")}</h3>
                                 <p>{t("legal.privacyPolicy.s5Text")}</p>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => window.dispatchEvent(new Event("open-cookie-settings"))}
+                                >
+                                    {t("cookie.settingsButton")}
+                                </Button>
                             </section>
                         </div>
                     ),
