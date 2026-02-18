@@ -190,7 +190,14 @@
     "total": "Totalt",
     "week": "Omgång",
     "winner": "Vinnare",
-    "you": "du"
+    "you": "du",
+    "globalLeagueLabel": "Global liga",
+    "countryLeagueLabel": "Landsliga: {{country}}",
+    "endsAtLeagueTimezone": "Slutar i ligans tidszon",
+    "endsAtYourTimezone": "Slutar i din lokala tid",
+    "olderWeek": "Äldre vecka",
+    "newerWeek": "Nyare vecka",
+    "historyView": "Historik"
   },
   "legal": {
     "contact": {
@@ -204,16 +211,16 @@
       "title": "Sidan hittades inte"
     },
     "privacyPolicy": {
-      "li1": "Kontodata: Vi samlar in din e-postadress och profiluppgifter (såsom visningsnamn och avatar-URL) för att skapa din profil.",
-      "li2": "Speldata: Vi lagrar din kasthistorik, statistik och ligadeltagande för att tillhandahålla tjänstens kärnfunktioner.",
-      "li3": "Videodata: Vissa ligor kan kräva videoinspelning för verifiering. Om en liga kräver video spelas korta klipp in och lagras, och de kan ses av andra ligamedlemmar.",
+      "li1": "Kontodata: Vi samlar in din e-postadress och profiluppgifter (som användarnamn, land, landets tidszon och avatar-URL när den finns) för att skapa din profil.",
+      "li2": "Speldata: Vi lagrar din kasthistorik, statistik och ligadeltagande för att leverera tjänstens kärnfunktioner, inklusive automatisk placering i global liga och landsliga.",
+      "li3": "Videodata: Vissa ligor kräver videoinspelning för verifiering. Om en liga kräver video lagras klippen så att ligamedlemmar kan se dem under aktiv säsong. För avslutade systemligor tas videoreferenser bort från historiken.",
       "li7": "Träningsdata: Tic-Tac-Toe-träningen körs lokalt i din webbläsarsession i denna version och skickas inte till vår backend.",
       "li8": "Användningsdata: Vi använder Google Analytics för att förstå hur appen används, inklusive sidvisningar, enhets-/webbläsarinformation och ungefärlig plats.",
       "li4": "Supabase: Används för vår databas, inloggning och säker datalagring.",
       "li5": "Google OAuth: Valfri inloggningsmetod för säker autentisering.",
       "li6": "Supabase Storage: Används för att lagra videoverifieringar säkert.",
       "li9": "Google Analytics: Används för trafik- och beteendeanalys. Vi har aktiverat IP-anonymisering där det stöds.",
-      "p1": "Senast uppdaterad: 17 februari 2026",
+      "p1": "Senast uppdaterad: 18 februari 2026",
       "s1Text": "Välkommen till DartStreak (\"vi\", \"vår\" eller \"oss\"). Vi värnar om din integritet och är engagerade i att skydda dina personuppgifter. Denna integritetspolicy förklarar hur vi behandlar dina personuppgifter när du besöker vår applikation och informerar dig om dina rättigheter.",
       "s1Title": "1. Introduktion",
       "s2Title": "2. Information vi samlar in",
@@ -223,7 +230,9 @@
       "s4Title": "4. Radering av data",
       "s5Text": "Analyscookies används bara efter att du gett samtycke i vår cookiebanner. Du kan ändra ditt val när som helst via Cookieinställningar i appen.",
       "s5Title": "5. Cookies och samtycke",
-      "title": "Integritetspolicy"
+      "title": "Integritetspolicy",
+      "s6Title": "6. Systemligor och landdata",
+      "s6Text": "När du väljer land kan vi automatiskt placera dig i en global liga och en liga för ditt land. Systemligor använder fasta tidszoner per liga för veckosäsonger."
     },
     "terms": {
       "li1": "Fuska, manipulera poäng eller använda automatiserade bottar.",
@@ -231,7 +240,7 @@
       "li3": "Ladda upp olämpligt, stötande eller olagligt innehåll.",
       "li4": "Ditt innehåll: Du behåller alla rättigheter till innehållet du skapar (t.ex. din matchhistorik).",
       "li5": "Vårt innehåll: DartStreaks kod, design och logik tillhör DartStreak-teamet.",
-      "p1": "Senast uppdaterad: 14 februari 2026",
+      "p1": "Senast uppdaterad: 18 februari 2026",
       "s1Text": "Genom att använda DartStreak godkänner du dessa användarvillkor. Om du inte godkänner dem, vänligen använd inte vår tjänst.",
       "s1Title": "1. Godkännande av villkor",
       "s2Text1": "DartStreak är ett gratis hobbyprojekt som tillhandahålls \"I BEFINTLIGT SKICK\" utan några garantier.",
@@ -535,7 +544,13 @@
     "unnamed": "Namnlös",
     "updateError": "Kunde inte uppdatera",
     "username": "Användarnamn",
-    "usernameUpdated": "Användarnamn uppdaterat!"
+    "usernameUpdated": "Användarnamn uppdaterat!",
+    "country": "Land",
+    "selectCountry": "Välj land",
+    "countryRequired": "Du måste välja land",
+    "countryUpdated": "Land uppdaterat!",
+    "completeProfileTitle": "Komplettera din profil",
+    "completeProfileDesc": "Välj vilket land du bor i för att kunna spela i globala och nationella ligor."
   },
   "pwa": {
     "alreadyInstalled": "Redan installerad?",

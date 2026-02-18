@@ -1,10 +1,14 @@
 import { useEffect, useState, createContext, useContext, ReactNode, useRef } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { getCountryTimezone } from "@/lib/countries";
 
 interface Profile {
   id: string;
   display_name: string;
+  timezone: string | null;
+  country_code: string | null;
+  country_timezone: string | null;
   avatar_url?: string;
 }
 
@@ -14,13 +18,13 @@ interface AuthContextType {
   profile: Profile | null;
   loading: boolean;
   isPasswordRecovery: boolean;
-  signUp: (email: string, password: string, displayName: string) => Promise<{ error: Error | null }>;
+  signUp: (email: string, password: string, displayName: string, countryCode: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: Error | null }>;
   updatePassword: (password: string) => Promise<{ error: Error | null }>;
   signInWithGoogle: () => Promise<{ error: Error | null }>;
-  createProfile: (displayName: string) => Promise<{ error: Error | null }>;
+  createProfile: (displayName: string, countryCode: string) => Promise<{ error: Error | null }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -50,13 +54,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchProfile = async (authUser: User) => {
     const userId = authUser.id;
-    let profileData: { id: string; display_name: string } | null = null;
+    let profileData: Profile | null = null;
     let profileError: unknown = null;
 
     for (let attempt = 0; attempt < 3; attempt++) {
       const { data, error } = await supabase
         .from("profiles")
-        .select("id, display_name")
+        .select("id, display_name, timezone, country_code, country_timezone")
         .eq("id", userId)
         .maybeSingle();
 
@@ -74,6 +78,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (profileData) {
       setProfile(profileData);
+      if (profileData.country_code && profileData.country_timezone) {
+        await supabase.rpc("ensure_system_memberships", { p_user_id: userId });
+      }
       return;
     }
 
@@ -88,14 +95,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
 
     for (const candidate of candidates) {
+      const metadataCountryCode = authUser.user_metadata?.country_code
+        ? String(authUser.user_metadata.country_code).toUpperCase()
+        : null;
+      const metadataCountryTimezone = authUser.user_metadata?.country_timezone
+        ? String(authUser.user_metadata.country_timezone)
+        : metadataCountryCode
+          ? getCountryTimezone(metadataCountryCode)
+          : null;
+
       const { data, error } = await supabase
         .from("profiles")
-        .insert({ id: userId, display_name: candidate })
-        .select("id, display_name")
+        .insert({
+          id: userId,
+          display_name: candidate,
+          timezone: null,
+          country_code: metadataCountryCode,
+          country_timezone: metadataCountryTimezone,
+        })
+        .select("id, display_name, timezone, country_code, country_timezone")
         .single();
 
       if (data) {
         setProfile(data);
+        if (data.country_code && data.country_timezone) {
+          await supabase.rpc("ensure_system_memberships", { p_user_id: userId });
+        }
         return;
       }
 
@@ -113,12 +138,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const { data: retryData, error: retryError } = await supabase
       .from("profiles")
-      .select("id, display_name")
+      .select("id, display_name, timezone, country_code, country_timezone")
       .eq("id", userId)
       .maybeSingle();
 
     if (retryData) {
       setProfile(retryData);
+      if (retryData.country_code && retryData.country_timezone) {
+        await supabase.rpc("ensure_system_memberships", { p_user_id: userId });
+      }
       return;
     }
 
@@ -184,8 +212,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const signUp = async (email: string, password: string, displayName: string) => {
+  const signUp = async (email: string, password: string, displayName: string, countryCode: string) => {
     const redirectUrl = `${window.location.origin}/`;
+    const normalizedCountryCode = countryCode.toUpperCase();
+    const countryTimezone = getCountryTimezone(normalizedCountryCode);
 
     const { error } = await supabase.auth.signUp({
       email,
@@ -194,6 +224,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         emailRedirectTo: redirectUrl,
         data: {
           display_name: displayName,
+          country_code: normalizedCountryCode,
+          country_timezone: countryTimezone,
         },
       },
     });
@@ -240,17 +272,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error };
   };
 
-  const createProfile = async (displayName: string) => {
+  const createProfile = async (displayName: string, countryCode: string) => {
     if (!user) return { error: new Error("No user") };
+    const normalizedCountryCode = countryCode.toUpperCase();
+    const countryTimezone = getCountryTimezone(normalizedCountryCode);
 
     const { data, error } = await supabase
       .from("profiles")
-      .upsert({ id: user.id, display_name: displayName }, { onConflict: "id" })
-      .select("id, display_name")
+      .upsert({
+        id: user.id,
+        display_name: displayName,
+        country_code: normalizedCountryCode,
+        country_timezone: countryTimezone,
+      }, { onConflict: "id" })
+      .select("id, display_name, timezone, country_code, country_timezone")
       .single();
 
     if (!error && data) {
       setProfile(data);
+      await supabase.rpc("ensure_system_memberships", { p_user_id: user.id });
     }
     return { error };
   };

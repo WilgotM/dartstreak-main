@@ -7,6 +7,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { motion, PanInfo } from "framer-motion";
 import { useHaptics } from "@/hooks/useHaptics";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import PlayerNameWithCountry from "@/components/PlayerNameWithCountry";
 
 
 export default function Dashboard() {
@@ -85,7 +86,15 @@ export default function Dashboard() {
             </div>
             <h1 className="text-3xl md:text-5xl font-display font-bold text-white mb-2 leading-tight">
               {t("dashboard.welcomeBack", { name: "" })}<br />
-              <span className="text-white">{displayName}!</span>
+              <span className="text-white inline-flex items-center gap-2">
+                <PlayerNameWithCountry
+                  displayName={displayName}
+                  countryCode={profile?.country_code}
+                  flagSize="md"
+                  textClassName="text-white"
+                />
+                !
+              </span>
             </h1>
           </div>
 

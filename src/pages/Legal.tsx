@@ -75,6 +75,11 @@ export default function Legal() {
                                     {t("cookie.settingsButton")}
                                 </Button>
                             </section>
+
+                            <section className="space-y-3">
+                                <h3 className="text-xl font-semibold text-foreground">{t("legal.privacyPolicy.s6Title")}</h3>
+                                <p>{t("legal.privacyPolicy.s6Text")}</p>
+                            </section>
                         </div>
                     ),
                 };

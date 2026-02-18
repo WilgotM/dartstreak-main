@@ -9,16 +9,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { Video, X, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import PlayerNameWithCountry from "@/components/PlayerNameWithCountry";
 
 interface VideoDialogProps {
   videoUrl: string | null;
   playerName: string;
+  playerCountryCode?: string | null;
   throwDate: string;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function VideoDialog({ videoUrl, playerName, throwDate, isOpen, onClose }: VideoDialogProps) {
+export function VideoDialog({ videoUrl, playerName, playerCountryCode, throwDate, isOpen, onClose }: VideoDialogProps) {
   const { t } = useTranslation();
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -68,7 +70,11 @@ export function VideoDialog({ videoUrl, playerName, throwDate, isOpen, onClose }
         <DialogHeader className="p-4 pb-2">
           <DialogTitle className="flex items-center gap-2">
             <Video className="w-5 h-5 text-primary" />
-            {playerName} – {throwDate}
+            <span className="inline-flex items-center gap-2">
+              <PlayerNameWithCountry displayName={playerName} countryCode={playerCountryCode} />
+              <span>–</span>
+              <span>{throwDate}</span>
+            </span>
           </DialogTitle>
         </DialogHeader>
 

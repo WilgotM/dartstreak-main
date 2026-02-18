@@ -10,10 +10,12 @@ import { format } from "date-fns";
 import { enUS, sv } from "date-fns/locale";
 import { StatsDisplay } from "@/components/StatsDisplay";
 import { AppLayout } from "@/components/AppLayout";
+import PlayerNameWithCountry from "@/components/PlayerNameWithCountry";
 
 interface ProfileData {
   id: string;
   display_name: string;
+  country_code: string | null;
   created_at: string;
 }
 
@@ -26,7 +28,6 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
 
   const dateLocale = i18n.language === "sv" ? sv : enUS;
-  const isOwnProfile = user?.id === id;
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -80,7 +81,12 @@ export default function Profile() {
               <ArrowLeft className="w-5 h-5" />
             </Button>
             <div>
-              <h1 className="font-display font-bold text-xl">{profile.display_name}</h1>
+              <PlayerNameWithCountry
+                displayName={profile.display_name}
+                countryCode={profile.country_code}
+                flagSize="md"
+                textClassName="font-display font-bold text-xl"
+              />
               <p className="text-sm text-muted-foreground">
                 {t("profile.memberSince")} {format(new Date(profile.created_at), "MMMM yyyy", { locale: dateLocale })}
               </p>

@@ -20,7 +20,7 @@ import TicTacToeTurnPanel from "@/components/training/TicTacToeTurnPanel";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { Infinity, Minus, Plus, Target as TargetIcon, Trophy } from "lucide-react";
+import { Infinity as InfinityIcon, Minus, Plus, Target as TargetIcon, Trophy } from "lucide-react";
 import {
   findCheckoutRoutes,
   pickEasiestRoute,
@@ -642,7 +642,7 @@ export default function TrainingTicTacToe() {
                         : "border-white/10 bg-black/20 hover:bg-white/5 text-muted-foreground hover:text-foreground",
                     )}
                   >
-                    <Infinity className="w-6 h-6" />
+                    <InfinityIcon className="w-6 h-6" />
                     <span className="text-sm font-semibold">{t("trainingTicTacToe.setup.unlimited")}</span>
                     <span className="text-xs opacity-70">{t("trainingTicTacToe.setup.practiceDesc")}</span>
                     {targetLegs === 0 && (

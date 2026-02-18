@@ -11,6 +11,8 @@ import { enUS, sv } from "date-fns/locale";
 import { AppLayout } from "@/components/AppLayout";
 import { motion } from "framer-motion";
 import { useHaptics } from "@/hooks/useHaptics";
+import { addDays, isAfter, isBefore } from "date-fns";
+import { getCountryName } from "@/lib/countries";
 
 interface League {
   id: string;
@@ -18,10 +20,15 @@ interface League {
   invite_code: string;
   total_rounds: number;
   current_round: number;
-  created_by: string;
+  created_by: string | null;
   round_start_day: number;
   started_at: string | null;
   camera_required?: boolean | null;
+  is_system?: boolean;
+  system_scope?: "global" | "country" | null;
+  country_code?: string | null;
+  league_timezone?: string | null;
+  season_key?: string | null;
 }
 
 export default function Leagues() {
@@ -33,6 +40,14 @@ export default function Leagues() {
   const [loadingLeagues, setLoadingLeagues] = useState(true);
 
   const dateLocale = i18n.language === "sv" ? sv : enUS;
+
+  const isActiveSystemLeague = useCallback((league: League) => {
+    if (!league.is_system || !league.started_at) return false;
+    const start = new Date(league.started_at);
+    const end = addDays(start, 7);
+    const now = new Date();
+    return (isAfter(now, start) || now.getTime() === start.getTime()) && isBefore(now, end);
+  }, []);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -70,10 +85,11 @@ export default function Leagues() {
     if (error) {
       console.error("Error fetching leagues:", error);
     } else {
-      setLeagues(data || []);
+      const visibleLeagues = (data || []).filter((league) => !league.is_system || isActiveSystemLeague(league));
+      setLeagues(visibleLeagues);
     }
     setLoadingLeagues(false);
-  }, [user]);
+  }, [isActiveSystemLeague, user]);
 
   useEffect(() => {
     if (user) {
@@ -184,6 +200,15 @@ export default function Leagues() {
                         <h3 className="font-display font-bold text-xl text-white group-hover:text-neon-green transition-colors">
                           {league.name}
                         </h3>
+                        {league.is_system && (
+                          <p className="text-xs text-neon-green uppercase tracking-wider mt-1">
+                            {league.system_scope === "global"
+                              ? t("league.globalLeagueLabel")
+                              : t("league.countryLeagueLabel", {
+                                country: league.country_code ? getCountryName(league.country_code, i18n.language) : "",
+                              })}
+                          </p>
+                        )}
                         <p className="text-sm text-gray-400 mt-1">
                           {t("dashboard.round")} <span className="text-white">{league.current_round}</span> {t("dashboard.of")} {league.total_rounds}
                         </p>
@@ -194,12 +219,18 @@ export default function Leagues() {
                     </div>
 
                     <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/5">
-                      <div className="flex items-center gap-2 text-xs text-gray-500">
-                        <span className="px-3 py-1 bg-black/30 rounded-full font-mono text-xs border border-white/5">
-                          {league.invite_code}
-                        </span>
-                        <span>{t("dashboard.inviteCode")}</span>
-                      </div>
+                      {!league.is_system ? (
+                        <div className="flex items-center gap-2 text-xs text-gray-500">
+                          <span className="px-3 py-1 bg-black/30 rounded-full font-mono text-xs border border-white/5">
+                            {league.invite_code}
+                          </span>
+                          <span>{t("dashboard.inviteCode")}</span>
+                        </div>
+                      ) : (
+                        <div className="text-xs text-gray-400">
+                          {league.season_key}
+                        </div>
+                      )}
                       {status && (
                         <div className="flex items-center gap-1.5 text-xs text-neon-green font-medium bg-neon-green/10 px-2 py-1 rounded-full">
                           <Calendar className="w-3 h-3" />

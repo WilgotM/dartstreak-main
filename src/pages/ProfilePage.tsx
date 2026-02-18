@@ -23,11 +23,14 @@ import { StatsDisplay } from "@/components/StatsDisplay";
 import { ProfileSettings } from "@/components/ProfileSettings";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import PlayerNameWithCountry from "@/components/PlayerNameWithCountry";
 
 interface ExtendedProfile {
   id: string;
   display_name: string;
-  timezone: string;
+  timezone: string | null;
+  country_code: string | null;
+  country_timezone: string | null;
   display_name_changed_at: string | null;
   email_changed_at: string | null;
 }
@@ -49,7 +52,7 @@ export default function ProfilePage() {
     if (!user) return;
     const { data } = await supabase
       .from("profiles")
-      .select("id, display_name, timezone, display_name_changed_at, email_changed_at")
+      .select("id, display_name, timezone, country_code, country_timezone, display_name_changed_at, email_changed_at")
       .eq("id", user.id)
       .single();
 
@@ -148,7 +151,11 @@ export default function ProfilePage() {
                 </div>
                 <div>
                   <CardTitle className="font-display text-xl text-foreground">
-                    {profile?.display_name || t("profile.unnamed")}
+                    <PlayerNameWithCountry
+                      displayName={extendedProfile?.display_name || profile?.display_name || t("profile.unnamed")}
+                      countryCode={extendedProfile?.country_code || profile?.country_code}
+                      flagSize="md"
+                    />
                   </CardTitle>
                   <p className="text-sm text-muted-foreground">{user.email}</p>
                 </div>
@@ -163,6 +170,8 @@ export default function ProfilePage() {
                 currentDisplayName={extendedProfile.display_name}
                 currentEmail={user.email || ""}
                 currentTimezone={extendedProfile.timezone || "Europe/Stockholm"}
+                currentCountryCode={extendedProfile.country_code || ""}
+                currentCountryTimezone={extendedProfile.country_timezone || "UTC"}
                 displayNameChangedAt={extendedProfile.display_name_changed_at}
                 emailChangedAt={extendedProfile.email_changed_at}
                 onUpdate={fetchExtendedProfile}

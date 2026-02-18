@@ -277,38 +277,53 @@ export type Database = {
       leagues: {
         Row: {
           camera_required: boolean | null
+          country_code: string | null
           created_at: string
-          created_by: string
+          created_by: string | null
           current_round: number
           id: string
           invite_code: string
+          is_system: boolean
+          league_timezone: string
           name: string
           round_start_day: number
+          season_key: string | null
           started_at: string | null
+          system_scope: string | null
           total_rounds: number
         }
         Insert: {
           camera_required?: boolean | null
+          country_code?: string | null
           created_at?: string
-          created_by: string
+          created_by?: string | null
           current_round?: number
           id?: string
           invite_code?: string
+          is_system?: boolean
+          league_timezone?: string
           name: string
           round_start_day?: number
+          season_key?: string | null
           started_at?: string | null
+          system_scope?: string | null
           total_rounds?: number
         }
         Update: {
           camera_required?: boolean | null
+          country_code?: string | null
           created_at?: string
-          created_by?: string
+          created_by?: string | null
           current_round?: number
           id?: string
           invite_code?: string
+          is_system?: boolean
+          league_timezone?: string
           name?: string
           round_start_day?: number
+          season_key?: string | null
           started_at?: string | null
+          system_scope?: string | null
           total_rounds?: number
         }
         Relationships: [
@@ -526,6 +541,8 @@ export type Database = {
       }
       profiles: {
         Row: {
+          country_code: string | null
+          country_timezone: string | null
           created_at: string
           display_name: string
           display_name_changed_at: string | null
@@ -534,6 +551,8 @@ export type Database = {
           timezone: string | null
         }
         Insert: {
+          country_code?: string | null
+          country_timezone?: string | null
           created_at?: string
           display_name: string
           display_name_changed_at?: string | null
@@ -542,6 +561,8 @@ export type Database = {
           timezone?: string | null
         }
         Update: {
+          country_code?: string | null
+          country_timezone?: string | null
           created_at?: string
           display_name?: string
           display_name_changed_at?: string | null
@@ -776,6 +797,14 @@ export type Database = {
       are_friends: {
         Args: { _friend_id: string; _user_id: string }
         Returns: boolean
+      }
+      ensure_system_memberships: {
+        Args: {
+          p_previous_country_code?: string | null
+          p_previous_country_timezone?: string | null
+          p_user_id: string
+        }
+        Returns: undefined
       }
       is_league_creator: {
         Args: { _league_id: string; _user_id: string }

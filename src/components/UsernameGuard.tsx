@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import CountrySelect from "@/components/CountrySelect";
 import { toast } from "sonner";
 import { Check, X, Target } from "lucide-react";
 
@@ -17,6 +18,7 @@ export const UsernameGuard = ({ children }: { children: React.ReactNode }) => {
     const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
     const [usernameCheckError, setUsernameCheckError] = useState(false);
     const [submitting, setSubmitting] = useState(false);
+    const [countryCode, setCountryCode] = useState("");
     const checkTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const checkUsernameAvailability = useCallback(async (username: string) => {
@@ -88,10 +90,10 @@ export const UsernameGuard = ({ children }: { children: React.ReactNode }) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const trimmedName = displayName.trim();
-        if (trimmedName.length < 2 || usernameAvailable === false) return;
+        if (trimmedName.length < 2 || usernameAvailable === false || !countryCode) return;
 
         setSubmitting(true);
-        const { error } = await createProfile(trimmedName);
+        const { error } = await createProfile(trimmedName, countryCode);
         setSubmitting(false);
 
         if (error) {
@@ -177,13 +179,22 @@ export const UsernameGuard = ({ children }: { children: React.ReactNode }) => {
                                     )}
                                 </div>
 
+                                <div className="space-y-2">
+                                    <Label htmlFor="onboarding-country">{t("profile.country")}</Label>
+                                    <CountrySelect
+                                        id="onboarding-country"
+                                        value={countryCode}
+                                        onChange={setCountryCode}
+                                    />
+                                </div>
+
                                 <div className="pt-2 space-y-3">
                                     <Button
                                         type="submit"
                                         variant="hero"
                                         size="lg"
                                         className="w-full h-12 text-lg"
-                                        disabled={displayName.trim().length < 2 || usernameAvailable === false || submitting}
+                                        disabled={displayName.trim().length < 2 || usernameAvailable === false || submitting || !countryCode}
                                     >
                                         {submitting ? t("common.loading") : t("common.save") || "Börja spela"}
                                     </Button>

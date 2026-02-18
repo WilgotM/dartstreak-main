@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { Settings, Clock } from "lucide-react";
 import { differenceInDays } from "date-fns";
+import CountrySelect from "@/components/CountrySelect";
+import { getCountryTimezone } from "@/lib/countries";
 
 const TIMEZONES = [
   { value: "Europe/Stockholm", label: "Stockholm (CET)" },
@@ -28,6 +30,8 @@ interface ProfileSettingsProps {
   currentDisplayName: string;
   currentEmail: string;
   currentTimezone: string;
+  currentCountryCode: string;
+  currentCountryTimezone: string;
   displayNameChangedAt: string | null;
   emailChangedAt: string | null;
   onUpdate: () => void;
@@ -37,6 +41,8 @@ export function ProfileSettings({
   currentDisplayName,
   currentEmail,
   currentTimezone,
+  currentCountryCode,
+  currentCountryTimezone,
   displayNameChangedAt,
   emailChangedAt,
   onUpdate,
@@ -46,6 +52,7 @@ export function ProfileSettings({
   const [displayName, setDisplayName] = useState(currentDisplayName);
   const [email, setEmail] = useState(currentEmail);
   const [timezone, setTimezone] = useState(currentTimezone || "Europe/Stockholm");
+  const [countryCode, setCountryCode] = useState(currentCountryCode || "");
   const [saving, setSaving] = useState(false);
 
   const canChangeDisplayName = !displayNameChangedAt || 
@@ -150,6 +157,38 @@ export function ProfileSettings({
     }
   };
 
+  const handleSaveCountry = async () => {
+    if (!user || !countryCode) return;
+
+    setSaving(true);
+    const countryTimezone = getCountryTimezone(countryCode);
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        country_code: countryCode.toUpperCase(),
+        country_timezone: countryTimezone,
+      })
+      .eq("id", user.id);
+
+    if (!error) {
+      await supabase.rpc("ensure_system_memberships", {
+        p_user_id: user.id,
+        p_previous_country_code: currentCountryCode || null,
+        p_previous_country_timezone: currentCountryTimezone || null,
+      });
+    }
+
+    setSaving(false);
+
+    if (error) {
+      toast.error(t("profile.updateError"));
+    } else {
+      toast.success(t("profile.countryUpdated"));
+      onUpdate();
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -208,6 +247,26 @@ export function ProfileSettings({
               {t("profile.canChangeIn", { days: getDaysUntilChange(emailChangedAt) })}
             </p>
           )}
+        </div>
+
+        {/* Timezone */}
+        <div className="space-y-2">
+          <Label htmlFor="country">{t("profile.country")}</Label>
+          <div className="flex gap-2">
+            <CountrySelect
+              id="country"
+              value={countryCode}
+              onChange={setCountryCode}
+              disabled={saving}
+              className="flex-1"
+            />
+            <Button
+              onClick={handleSaveCountry}
+              disabled={saving || !countryCode || countryCode === currentCountryCode}
+            >
+              {t("common.save")}
+            </Button>
+          </div>
         </div>
 
         {/* Timezone */}

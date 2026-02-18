@@ -23,6 +23,7 @@ import TrainingHub from "./pages/TrainingHub";
 import * as Sentry from "@sentry/react";
 import { trackPageView } from "@/lib/analytics";
 import CookieConsent from "@/components/CookieConsent";
+import ProfileCompletionGuard from "@/components/ProfileCompletionGuard";
 
 const queryClient = new QueryClient();
 
@@ -45,31 +46,33 @@ const App = () => {
             <TooltipProvider>
               <Toaster />
               <Sonner />
-              <BrowserRouter>
-                <CookieConsent />
-                <AnalyticsRouteTracker />
-                <Sentry.ErrorBoundary fallback={<div className="flex min-h-[50vh] items-center justify-center p-4"><p className="text-muted-foreground">Something went wrong. Please reload the page.</p></div>}>
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/auth" element={<Auth />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/leagues" element={<Leagues />} />
-                    <Route path="/leagues/create" element={<CreateLeague />} />
-                    <Route path="/leagues/join" element={<JoinLeaguePage />} />
-                    <Route path="/leagues/restart/:id" element={<RestartLeague />} />
-                    <Route path="/league/:id" element={<League />} />
-                    <Route path="/join/:code" element={<JoinLeague />} />
-                    <Route path="/profile" element={<ProfilePage />} />
-                    <Route path="/profile/:id" element={<ProfilePage />} />
-                    <Route path="/training" element={<TrainingHub />} />
-                    <Route path="/training/tic-tac-toe" element={<TrainingTicTacToe />} />
-                    <Route path="/privacy" element={<Legal />} />
-                    <Route path="/terms" element={<Legal />} />
-                    <Route path="/contact" element={<Legal />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </Sentry.ErrorBoundary>
-              </BrowserRouter>
+              <ProfileCompletionGuard>
+                <BrowserRouter>
+                  <CookieConsent />
+                  <AnalyticsRouteTracker />
+                  <Sentry.ErrorBoundary fallback={<div className="flex min-h-[50vh] items-center justify-center p-4"><p className="text-muted-foreground">Something went wrong. Please reload the page.</p></div>}>
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/auth" element={<Auth />} />
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/leagues" element={<Leagues />} />
+                      <Route path="/leagues/create" element={<CreateLeague />} />
+                      <Route path="/leagues/join" element={<JoinLeaguePage />} />
+                      <Route path="/leagues/restart/:id" element={<RestartLeague />} />
+                      <Route path="/league/:id" element={<League />} />
+                      <Route path="/join/:code" element={<JoinLeague />} />
+                      <Route path="/profile" element={<ProfilePage />} />
+                      <Route path="/profile/:id" element={<ProfilePage />} />
+                      <Route path="/training" element={<TrainingHub />} />
+                      <Route path="/training/tic-tac-toe" element={<TrainingTicTacToe />} />
+                      <Route path="/privacy" element={<Legal />} />
+                      <Route path="/terms" element={<Legal />} />
+                      <Route path="/contact" element={<Legal />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </Sentry.ErrorBoundary>
+                </BrowserRouter>
+              </ProfileCompletionGuard>
             </TooltipProvider>
           </AuthProvider>
         </QueryClientProvider>

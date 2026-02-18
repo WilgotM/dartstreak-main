@@ -4,7 +4,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,9 +15,24 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-
 import { toast } from "sonner";
-import { Target, ArrowLeft, Trophy, Calendar, TrendingUp, Copy, Check, Trash2, Crown, Award, Video, LogOut } from "lucide-react";
+import {
+  Target,
+  ArrowLeft,
+  Trophy,
+  Calendar,
+  TrendingUp,
+  Copy,
+  Check,
+  Trash2,
+  Crown,
+  Award,
+  Video,
+  LogOut,
+  ChevronLeft,
+  ChevronRight,
+  Globe,
+} from "lucide-react";
 import { format, addWeeks, isWithinInterval } from "date-fns";
 import { enUS, sv } from "date-fns/locale";
 import ThrowInput from "@/components/ThrowInput";
@@ -26,21 +40,30 @@ import { VideoDialog } from "@/components/VideoDialog";
 import { CountdownTimer } from "@/components/CountdownTimer";
 import { AppLayout } from "@/components/AppLayout";
 import { Switch } from "@/components/ui/switch";
+import PlayerNameWithCountry from "@/components/PlayerNameWithCountry";
+import { getCountryName } from "@/lib/countries";
+
 interface League {
   id: string;
   name: string;
   invite_code: string;
   total_rounds: number;
   current_round: number;
-  created_by: string;
+  created_by: string | null;
   round_start_day: number;
   started_at: string | null;
   camera_required?: boolean | null;
+  is_system?: boolean;
+  system_scope?: "global" | "country" | null;
+  country_code?: string | null;
+  league_timezone?: string | null;
+  season_key?: string | null;
 }
 
 interface LeaderboardEntry {
   user_id: string;
   display_name: string;
+  country_code: string | null;
   today_score: number;
   week_score: number;
   total_score: number;
@@ -50,7 +73,8 @@ interface LeaderboardEntry {
 
 interface RoundResult {
   round_number: number;
-  winner: string | null;
+  winner_name: string | null;
+  winner_country_code: string | null;
   winner_score: number;
   start_date: Date;
   end_date: Date;
@@ -68,11 +92,36 @@ interface DailyThrow {
   throw_9: number;
 }
 
+interface SeasonHistoryItem {
+  id: string;
+  season_key: string | null;
+  started_at: string | null;
+}
+
+const toDayKeyInTimezone = (timeZone: string) => {
+  return new Intl.DateTimeFormat("sv-SE", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+};
+
+const formatWithTimezone = (date: Date, timezone: string, locale: string) => {
+  const localeValue = locale.startsWith("sv") ? "sv-SE" : "en-US";
+  return new Intl.DateTimeFormat(localeValue, {
+    timeZone: timezone,
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(date);
+};
+
 export default function League() {
   const { id } = useParams<{ id: string }>();
-  const { user, loading: authLoading } = useAuth();
+  const { user, profile, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
+
   const [league, setLeague] = useState<League | null>(null);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [roundResults, setRoundResults] = useState<RoundResult[]>([]);
@@ -83,18 +132,19 @@ export default function League() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [leaving, setLeaving] = useState(false);
-  const [selectedVideo, setSelectedVideo] = useState<{ url: string | null; playerName: string; throwDate: string } | null>(null);
-  const [creatorTimezone, setCreatorTimezone] = useState<string>("Europe/Stockholm");
+  const [selectedVideo, setSelectedVideo] = useState<{
+    url: string | null;
+    playerName: string;
+    playerCountryCode: string | null;
+    throwDate: string;
+  } | null>(null);
+  const [leagueTimezone, setLeagueTimezone] = useState<string>("Europe/Stockholm");
   const [cameraRequired, setCameraRequired] = useState(true);
   const [updatingCameraRequirement, setUpdatingCameraRequirement] = useState(false);
-
+  const [historyLeagues, setHistoryLeagues] = useState<SeasonHistoryItem[]>([]);
+  const [historyIndex, setHistoryIndex] = useState<number>(-1);
 
   const dateLocale = i18n.language === "sv" ? sv : enUS;
-
-  const getWeekdayName = (day: number) => {
-    const weekdayKeys = ["weekdays.sunday", "weekdays.monday", "weekdays.tuesday", "weekdays.wednesday", "weekdays.thursday", "weekdays.friday", "weekdays.saturday"];
-    return t(weekdayKeys[day % 7]);
-  };
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -102,33 +152,20 @@ export default function League() {
     }
   }, [user, authLoading, navigate]);
 
-  const fetchLeaderboard = useCallback(async (leagueData: League) => {
-    // Get creator's timezone first to use for correct 'today'
-    const { data: creatorProfile } = await supabase
-      .from("profiles")
-      .select("timezone")
-      .eq("id", leagueData.created_by)
-      .single();
-
-    const tz = creatorProfile?.timezone || "Europe/Stockholm";
-    const today = new Intl.DateTimeFormat("sv-SE", {
-      timeZone: tz,
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }).format(new Date());
+  const fetchLeaderboard = useCallback(async (leagueData: League, timezone: string) => {
+    const today = toDayKeyInTimezone(timezone);
 
     const { data: members } = await supabase
       .from("league_members")
-      .select("user_id, profiles(display_name)")
-      .eq("league_id", id);
+      .select("user_id, profiles(display_name,country_code)")
+      .eq("league_id", leagueData.id);
 
     if (!members) return;
 
     const { data: allThrows } = await supabase
       .from("daily_throws")
       .select("*")
-      .eq("league_id", id);
+      .eq("league_id", leagueData.id);
 
     const startDate = leagueData.started_at ? new Date(leagueData.started_at) : new Date();
 
@@ -137,31 +174,34 @@ export default function League() {
       const roundStart = addWeeks(startDate, round - 1);
       const roundEnd = addWeeks(startDate, round);
 
-      const roundThrows = allThrows?.filter((t) => {
-        const throwDate = new Date(t.throw_date);
-        return t.round_number === round || isWithinInterval(throwDate, { start: roundStart, end: roundEnd });
+      const roundThrows = allThrows?.filter((item) => {
+        const throwDate = new Date(item.throw_date);
+        return item.round_number === round || isWithinInterval(throwDate, { start: roundStart, end: roundEnd });
       }) || [];
 
-      const userTotals: { [key: string]: number } = {};
-      roundThrows.forEach((t) => {
-        userTotals[t.user_id] = (userTotals[t.user_id] || 0) + (t.total_score || 0);
+      const userTotals: Record<string, number> = {};
+      roundThrows.forEach((item) => {
+        userTotals[item.user_id] = (userTotals[item.user_id] || 0) + (item.total_score || 0);
       });
 
-      let winner: string | null = null;
+      let winnerName: string | null = null;
+      let winnerCountryCode: string | null = null;
       let winnerScore = 0;
       Object.entries(userTotals).forEach(([userId, score]) => {
         if (score > winnerScore) {
           winnerScore = score;
-          const member = members.find((m) => m.user_id === userId);
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          winner = (member?.profiles as any)?.display_name || t("common.unknown");
+          const member = members.find((row) => row.user_id === userId);
+          const memberProfile = member?.profiles as { display_name?: string; country_code?: string | null } | null;
+          winnerName = memberProfile?.display_name || t("common.unknown");
+          winnerCountryCode = memberProfile?.country_code || null;
         }
       });
 
       if (round < leagueData.current_round) {
         results.push({
           round_number: round,
-          winner,
+          winner_name: winnerName,
+          winner_country_code: winnerCountryCode,
           winner_score: winnerScore,
           start_date: roundStart,
           end_date: roundEnd,
@@ -171,18 +211,18 @@ export default function League() {
     setRoundResults(results);
 
     const leaderboardData: LeaderboardEntry[] = members.map((member) => {
-      const userThrows = allThrows?.filter((t) => t.user_id === member.user_id) || [];
-      const todayThrow = userThrows.find((t) => t.throw_date === today);
-
-      const currentRoundThrows = userThrows.filter((t) => t.round_number === leagueData.current_round);
+      const userThrows = allThrows?.filter((item) => item.user_id === member.user_id) || [];
+      const todayThrow = userThrows.find((item) => item.throw_date === today);
+      const currentRoundThrows = userThrows.filter((item) => item.round_number === leagueData.current_round);
+      const memberProfile = member.profiles as { display_name?: string; country_code?: string | null } | null;
 
       return {
         user_id: member.user_id,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        display_name: (member.profiles as any)?.display_name || t("common.unknown"),
+        display_name: memberProfile?.display_name || t("common.unknown"),
+        country_code: memberProfile?.country_code || null,
         today_score: todayThrow?.total_score || 0,
-        week_score: currentRoundThrows.reduce((sum, t) => sum + (t.total_score || 0), 0),
-        total_score: userThrows.reduce((sum, t) => sum + (t.total_score || 0), 0),
+        week_score: currentRoundThrows.reduce((sum, item) => sum + (item.total_score || 0), 0),
+        total_score: userThrows.reduce((sum, item) => sum + (item.total_score || 0), 0),
         today_video_url: todayThrow?.video_url || null,
         today_throw_date: todayThrow?.throw_date || null,
       };
@@ -190,16 +230,46 @@ export default function League() {
 
     leaderboardData.sort((a, b) => b.week_score - a.week_score || b.total_score - a.total_score);
     setLeaderboard(leaderboardData);
-  }, [id, t]);
+  }, [t]);
+
+  const fetchHistoryLeagues = useCallback(async (leagueData: League) => {
+    if (!leagueData.is_system || !leagueData.system_scope) {
+      setHistoryLeagues([]);
+      setHistoryIndex(-1);
+      return;
+    }
+
+    let query = supabase
+      .from("leagues")
+      .select("id, season_key, started_at")
+      .eq("is_system", true)
+      .eq("system_scope", leagueData.system_scope)
+      .order("started_at", { ascending: false });
+
+    if (leagueData.system_scope === "country") {
+      query = query.eq("country_code", leagueData.country_code || "");
+    }
+
+    const { data } = await query;
+    const seasons = data || [];
+    setHistoryLeagues(seasons);
+    setHistoryIndex(seasons.findIndex((item) => item.id === leagueData.id));
+  }, []);
 
   const fetchLeagueData = useCallback(async () => {
+    if (!id || !user) return;
+
+    setLoading(true);
+    setHasThrown(false);
+    setThrows(Array(9).fill(0));
+
     const { data: leagueData, error: leagueError } = await supabase
       .from("leagues")
       .select("*")
       .eq("id", id)
       .single();
 
-    if (leagueError) {
+    if (leagueError || !leagueData) {
       toast.error(t("league.couldNotFindLeague"));
       navigate("/dashboard");
       return;
@@ -208,41 +278,34 @@ export default function League() {
     setLeague(leagueData);
     setCameraRequired(leagueData.camera_required ?? true);
 
-    // Fetch creator's timezone
-    const { data: creatorProfile } = await supabase
-      .from("profiles")
-      .select("timezone")
-      .eq("id", leagueData.created_by)
-      .single();
+    let resolvedLeagueTimezone = leagueData.league_timezone || "Europe/Stockholm";
 
-    if (creatorProfile?.timezone) {
-      setCreatorTimezone(creatorProfile.timezone);
+    if (!leagueData.is_system && leagueData.created_by) {
+      const { data: creatorProfile } = await supabase
+        .from("profiles")
+        .select("timezone")
+        .eq("id", leagueData.created_by)
+        .single();
+
+      if (creatorProfile?.timezone) {
+        resolvedLeagueTimezone = creatorProfile.timezone;
+      }
     }
+
+    setLeagueTimezone(resolvedLeagueTimezone);
+    await fetchHistoryLeagues(leagueData);
 
     const leagueStarted = !leagueData.started_at || new Date(leagueData.started_at) <= new Date();
 
-    const getLeagueToday = () => {
-      try {
-        return new Intl.DateTimeFormat("sv-SE", {
-          timeZone: creatorTimezone,
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        }).format(new Date());
-      } catch (e) {
-        return format(new Date(), "yyyy-MM-dd");
-      }
-    };
-
     if (leagueStarted) {
-      const today = getLeagueToday();
+      const today = toDayKeyInTimezone(resolvedLeagueTimezone);
       const { data: todayThrow } = await supabase
         .from("daily_throws")
         .select("*")
-        .eq("league_id", id)
-        .eq("user_id", user!.id)
+        .eq("league_id", leagueData.id)
+        .eq("user_id", user.id)
         .eq("throw_date", today)
-        .single();
+        .maybeSingle();
 
       if (todayThrow) {
         setHasThrown(true);
@@ -259,25 +322,18 @@ export default function League() {
         ]);
       }
 
-      await fetchLeaderboard(leagueData);
+      await fetchLeaderboard(leagueData, resolvedLeagueTimezone);
     }
 
     setLoading(false);
-  }, [creatorTimezone, fetchLeaderboard, id, navigate, t, user]);
+  }, [id, user, navigate, t, fetchHistoryLeagues, fetchLeaderboard]);
 
   useEffect(() => {
-    if (user && id) {
-      void fetchLeagueData();
-    }
-  }, [user, id, fetchLeagueData]);
+    void fetchLeagueData();
+  }, [fetchLeagueData]);
 
   const handleThrowComplete = async (completedThrows: number[], videoUrl?: string) => {
-    const today = new Intl.DateTimeFormat("sv-SE", {
-      timeZone: creatorTimezone,
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }).format(new Date());
+    const today = toDayKeyInTimezone(leagueTimezone);
 
     const throwData: DailyThrow = {
       throw_1: completedThrows[0],
@@ -308,12 +364,14 @@ export default function League() {
       }
       setIsPlaying(false);
     } else {
-      const total = completedThrows.reduce((a, b) => a + b, 0);
+      const total = completedThrows.reduce((sum, value) => sum + value, 0);
       toast.success(t("league.todaysScore", { score: total }));
       setThrows(completedThrows);
       setHasThrown(true);
       setIsPlaying(false);
-      if (league) fetchLeaderboard(league);
+      if (league) {
+        await fetchLeaderboard(league, leagueTimezone);
+      }
     }
   };
 
@@ -365,7 +423,7 @@ export default function League() {
   };
 
   const handleCameraRequirementChange = async (nextValue: boolean) => {
-    if (!league || user?.id !== league.created_by) return;
+    if (!league || user?.id !== league.created_by || league.is_system) return;
 
     const previousValue = cameraRequired;
     setCameraRequired(nextValue);
@@ -377,7 +435,6 @@ export default function League() {
       .eq("id", league.id);
 
     if (error) {
-      console.error("Error updating camera requirement:", error);
       setCameraRequired(previousValue);
       toast.error(t("league.cameraRequirementUpdateError"));
     } else {
@@ -386,6 +443,13 @@ export default function League() {
     }
 
     setUpdatingCameraRequirement(false);
+  };
+
+  const navigateHistory = (offset: number) => {
+    const nextIndex = historyIndex + offset;
+    if (nextIndex < 0 || nextIndex >= historyLeagues.length) return;
+    const nextLeague = historyLeagues[nextIndex];
+    navigate(`/league/${nextLeague.id}`);
   };
 
   if (authLoading || loading) {
@@ -400,11 +464,8 @@ export default function League() {
 
   if (!league) return null;
 
-  const totalToday = throws.reduce((a, b) => a + b, 0);
+  const totalToday = throws.reduce((sum, value) => sum + value, 0);
   const isOwner = user?.id === league.created_by;
-  // Calculate if finished: current_round equals total_rounds AND round end time has passed
-  // Simplification: if current_round > total_rounds (backend logic) OR just check rounds.
-  // We'll rely on checking current date vs end date of last round.
   const startDate = league.started_at ? new Date(league.started_at) : new Date();
   const endDate = addWeeks(startDate, league.total_rounds);
   const isFinished = new Date() > endDate;
@@ -417,12 +478,24 @@ export default function League() {
     ? format(endDate, "d MMM yyyy", { locale: dateLocale })
     : t("common.unknown");
 
-  // Find winner based on TOTAL score, not current round/week score
   const winner = leaderboard.length > 0
     ? [...leaderboard].sort((a, b) => b.total_score - a.total_score)[0]
     : null;
 
+  const isSystemLeague = league.is_system === true;
+  const hideHistoricalVideos = isSystemLeague && isFinished;
 
+  const localizedLeagueEnd = hasExplicitStartDate
+    ? formatWithTimezone(endDate, leagueTimezone || "UTC", i18n.language)
+    : t("common.unknown");
+
+  const localizedUserEnd = hasExplicitStartDate
+    ? formatWithTimezone(
+      endDate,
+      profile?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+      i18n.language
+    )
+    : t("common.unknown");
 
   if (isPlaying && user && !isFinished) {
     return (
@@ -430,7 +503,7 @@ export default function League() {
         onComplete={handleThrowComplete}
         leagueId={id!}
         userId={user.id}
-        leagueTimezone={creatorTimezone}
+        leagueTimezone={leagueTimezone}
         cameraRequired={cameraRequired}
       />
     );
@@ -452,16 +525,30 @@ export default function League() {
                   : `${t("league.round")} ${league.current_round} ${t("league.of")} ${league.total_rounds}`
                 }
               </p>
+              {isSystemLeague && (
+                <p className="text-xs text-neon-green font-semibold">
+                  {league.system_scope === "global"
+                    ? t("league.globalLeagueLabel")
+                    : t("league.countryLeagueLabel", {
+                      country: league.country_code ? getCountryName(league.country_code, i18n.language) : "",
+                    })}
+                </p>
+              )}
               <p className="text-xs text-gray-400 font-medium">
                 {t("league.startsOn")}: <span className="text-white">{leagueStartDateText}</span>
-                {" \u2022 "}
+                {" • "}
                 {t("league.endsOn")}: <span className="text-white">{leagueEndDateText}</span>
+              </p>
+              <p className="text-xs text-gray-400 font-medium mt-1">
+                {t("league.endsAtLeagueTimezone")}: <span className="text-white">{localizedLeagueEnd}</span>
+              </p>
+              <p className="text-xs text-gray-400 font-medium">
+                {t("league.endsAtYourTimezone")}: <span className="text-white">{localizedUserEnd}</span>
               </p>
             </div>
 
             <div className="flex items-center gap-2">
-              {/* Show invite code for owner only */}
-              {isOwner && (
+              {isOwner && !isSystemLeague && (
                 <div className="flex items-center gap-1 bg-white/10 rounded-full px-3 py-1.5">
                   <span className="text-sm font-mono text-white">{league.invite_code}</span>
                   <Button
@@ -478,7 +565,7 @@ export default function League() {
                 </div>
               )}
 
-              {isOwner ? (
+              {!isSystemLeague && (isOwner ? (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="ghost" size="icon" className="shrink-0 text-white hover:bg-red-500/20 hover:text-red-400 rounded-full w-10 h-10">
@@ -530,7 +617,7 @@ export default function League() {
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
-              )}
+              ))}
             </div>
           </div>
         </div>
@@ -538,7 +625,34 @@ export default function League() {
 
       <main className="container mx-auto px-4 py-6 pb-32">
         <div className="max-w-4xl mx-auto space-y-8">
-          {isOwner && (
+          {isSystemLeague && historyLeagues.length > 1 && (
+            <div className="glass-card rounded-2xl p-4 border border-white/10 flex items-center justify-between gap-3">
+              <Button
+                variant="outline"
+                onClick={() => navigateHistory(1)}
+                disabled={historyIndex === -1 || historyIndex >= historyLeagues.length - 1}
+                className="border-white/10 bg-transparent text-white hover:bg-white/10"
+              >
+                <ChevronLeft className="w-4 h-4 mr-2" />
+                {t("league.olderWeek")}
+              </Button>
+              <div className="text-center text-sm text-gray-300">
+                <p className="font-semibold">{league.season_key}</p>
+                <p className="text-xs text-gray-400">{t("league.historyView")}</p>
+              </div>
+              <Button
+                variant="outline"
+                onClick={() => navigateHistory(-1)}
+                disabled={historyIndex === -1 || historyIndex <= 0}
+                className="border-white/10 bg-transparent text-white hover:bg-white/10"
+              >
+                {t("league.newerWeek")}
+                <ChevronRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
+          )}
+
+          {isOwner && !isSystemLeague && (
             <div className="glass-card rounded-2xl p-6 border border-white/10">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="space-y-1">
@@ -561,7 +675,7 @@ export default function League() {
               </div>
             </div>
           )}
-          {/* League Finished View */}
+
           {isFinished && winner && (
             <div className="glass-card rounded-[2.5rem] p-0 overflow-hidden shadow-[0_0_50px_rgba(251,191,36,0.15)] animate-slide-up relative">
               <div className="absolute inset-0 bg-gradient-to-b from-dart-gold/10 to-transparent pointer-events-none" />
@@ -574,13 +688,18 @@ export default function League() {
                 <h2 className="text-sm font-bold uppercase tracking-widest text-dart-gold mb-2">
                   {t("league.winner")}
                 </h2>
-                <h1 className="text-4xl sm:text-5xl font-display font-bold text-white mb-4">
-                  {winner.display_name}
-                </h1>
+                <div className="text-4xl sm:text-5xl font-display font-bold text-white mb-4 flex justify-center">
+                  <PlayerNameWithCountry
+                    displayName={winner.display_name}
+                    countryCode={winner.country_code}
+                    flagSize="md"
+                    textClassName="text-white"
+                  />
+                </div>
                 <p className="text-lg text-gray-300 mb-8 max-w-lg mx-auto">
                   {t("league.congratulations", {
                     name: winner.display_name,
-                    league: league.name
+                    league: league.name,
                   })}
                 </p>
 
@@ -589,7 +708,7 @@ export default function League() {
                   <p className="text-3xl font-mono font-bold text-dart-gold">{winner.total_score}</p>
                 </div>
 
-                {isOwner && (
+                {isOwner && !isSystemLeague && (
                   <div className="mt-10">
                     <Button
                       className="bg-dart-gold text-black hover:bg-dart-gold/90 font-bold px-8 py-6 rounded-full text-lg shadow-lg"
@@ -604,7 +723,6 @@ export default function League() {
             </div>
           )}
 
-          {/* League not started notice */}
           {!leagueStarted && !isFinished && league.started_at && (
             <div className="glass-card rounded-2xl p-8 text-center animate-slide-up border-neon-green/30 bg-neon-green/5">
               <Calendar className="w-12 h-12 mx-auto text-neon-green mb-4" />
@@ -620,7 +738,6 @@ export default function League() {
             </div>
           )}
 
-          {/* Today's throws */}
           {leagueStarted && !isFinished && (
             <div className="glass-card rounded-3xl p-6 sm:p-8 animate-slide-up bg-gradient-to-br from-white/5 to-transparent">
               <div className="flex items-center justify-between mb-6">
@@ -635,7 +752,7 @@ export default function League() {
                     </h2>
                   </div>
                 </div>
-                <CountdownTimer timezone={creatorTimezone} />
+                <CountdownTimer timezone={leagueTimezone} />
               </div>
 
               <div className="bg-black/20 rounded-2xl p-6 border border-white/5">
@@ -671,7 +788,6 @@ export default function League() {
             </div>
           )}
 
-          {/* Previous round results */}
           {roundResults.length > 0 && (
             <div className="glass-card rounded-2xl p-6 animate-slide-up" style={{ animationDelay: "50ms" }}>
               <div className="flex items-center gap-3 mb-6">
@@ -696,11 +812,15 @@ export default function League() {
                         {format(result.end_date, "d MMM", { locale: dateLocale })}
                       </p>
                     </div>
-                    {result.winner ? (
+                    {result.winner_name ? (
                       <div className="text-right">
                         <div className="flex items-center gap-2 justify-end">
                           <Crown className="w-4 h-4 text-dart-gold" />
-                          <span className="font-semibold text-white">{result.winner}</span>
+                          <PlayerNameWithCountry
+                            displayName={result.winner_name}
+                            countryCode={result.winner_country_code}
+                            textClassName="font-semibold text-white"
+                          />
                         </div>
                         <p className="text-sm text-gray-400 font-mono">{result.winner_score} p</p>
                       </div>
@@ -713,13 +833,12 @@ export default function League() {
             </div>
           )}
 
-          {/* Leaderboard */}
           {leagueStarted && (
             <div className="glass-card rounded-3xl overflow-hidden animate-slide-up" style={{ animationDelay: "100ms" }}>
               <div className="p-6 pb-2 border-b border-white/5">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
-                    <Trophy className="w-5 h-5 text-blue-400" />
+                    {isSystemLeague ? <Globe className="w-5 h-5 text-blue-400" /> : <Trophy className="w-5 h-5 text-blue-400" />}
                   </div>
                   <div>
                     <h3 className="text-xl font-display font-bold text-white">
@@ -751,17 +870,22 @@ export default function League() {
                         {index + 1}
                       </div>
                       <div className="col-span-5 flex items-center gap-2 truncate">
-                        <span className={`font-semibold truncate ${entry.user_id === user?.id ? "text-neon-green" : "text-white"}`}>
-                          {entry.display_name}
-                        </span>
-                        {entry.today_score > 0 && (
+                        <PlayerNameWithCountry
+                          displayName={entry.display_name}
+                          countryCode={entry.country_code}
+                          textClassName={`font-semibold ${entry.user_id === user?.id ? "text-neon-green" : "text-white"}`}
+                        />
+                        {!hideHistoricalVideos && entry.today_score > 0 && (
                           <button
-                            onClick={(e) => {
-                              e.stopPropagation();
+                            onClick={(event) => {
+                              event.stopPropagation();
                               setSelectedVideo({
                                 url: entry.today_video_url,
                                 playerName: entry.display_name,
-                                throwDate: entry.today_throw_date ? format(new Date(entry.today_throw_date), "d MMM", { locale: dateLocale }) : t("league.today")
+                                playerCountryCode: entry.country_code,
+                                throwDate: entry.today_throw_date
+                                  ? format(new Date(entry.today_throw_date), "d MMM", { locale: dateLocale })
+                                  : t("league.today"),
                               });
                             }}
                             className="p-1 rounded-full hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
@@ -795,10 +919,10 @@ export default function League() {
         </div>
       </main>
 
-      {/* Video Dialog */}
       <VideoDialog
         videoUrl={selectedVideo?.url || null}
         playerName={selectedVideo?.playerName || ""}
+        playerCountryCode={selectedVideo?.playerCountryCode || null}
         throwDate={selectedVideo?.throwDate || ""}
         isOpen={!!selectedVideo}
         onClose={() => setSelectedVideo(null)}

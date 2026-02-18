@@ -190,7 +190,14 @@
     "total": "Total",
     "week": "Week",
     "winner": "Winner",
-    "you": "you"
+    "you": "you",
+    "globalLeagueLabel": "Global league",
+    "countryLeagueLabel": "Country league: {{country}}",
+    "endsAtLeagueTimezone": "Ends in league timezone",
+    "endsAtYourTimezone": "Ends in your local time",
+    "olderWeek": "Older week",
+    "newerWeek": "Newer week",
+    "historyView": "History"
   },
   "legal": {
     "contact": {
@@ -204,16 +211,16 @@
       "title": "Page Not Found"
     },
     "privacyPolicy": {
-      "li1": "Account Data: We collect your email address and profile details (such as display name and avatar URL when available) to create your profile.",
-      "li2": "Game Data: We store your throw history, statistics, and league participation data to provide the core functionality of the service.",
-      "li3": "Video Data: Some leagues may require video recording for verification. If a league requires video, short clips are captured and stored and may be viewed by other league members.",
+      "li1": "Account Data: We collect your email address and profile details (such as display name, country, country timezone, and avatar URL when available) to create your profile.",
+      "li2": "Game Data: We store your throw history, statistics, and league participation data to provide core service features, including automatic placement in global and country leagues.",
+      "li3": "Video Data: Some leagues may require video recording for verification. If a league requires video, clips are stored so league members can view them during the active season. For completed system leagues, historical video references are removed.",
       "li7": "Training Data: Tic-Tac-Toe training runs locally in your browser session in this version and is not sent to our backend.",
       "li8": "Usage Data: We use Google Analytics to understand app usage, including page views, device/browser information, and approximate location.",
       "li4": "Supabase: Used for our database, authentication, and secure data storage.",
       "li5": "Google OAuth: Optional sign-in provider for secure authentication.",
       "li6": "Supabase Storage: Used for storing throw verification videos securely.",
       "li9": "Google Analytics: Used for traffic and behavior analytics. We have enabled IP anonymization where supported.",
-      "p1": "Last updated: February 17, 2026",
+      "p1": "Last updated: February 18, 2026",
       "s1Text": "Welcome to DartStreak (\"we,\" \"our,\" or \"us\"). We respect your privacy and are committed to protecting your personal data. This privacy policy explains how we look after your personal data when you visit our application and tells you about your privacy rights.",
       "s1Title": "1. Introduction",
       "s2Title": "2. Information We Collect",
@@ -223,7 +230,9 @@
       "s4Title": "4. Data Deletion",
       "s5Text": "Analytics cookies are only used after you give consent in our cookie banner. You can change your choice at any time from Cookie Settings in the app.",
       "s5Title": "5. Cookies and Consent",
-      "title": "Privacy Policy"
+      "title": "Privacy Policy",
+      "s6Title": "6. System Leagues and Country Data",
+      "s6Text": "When you set your country, we may automatically place you in a global league and a country league. System leagues use fixed league timezones for weekly seasons."
     },
     "terms": {
       "li1": "Cheat, manipulate scores, or use automated bots.",
@@ -231,7 +240,7 @@
       "li3": "Upload or broadcast inappropriate, offensive, or illegal content.",
       "li4": "Your Content: You retain all ownership rights to the content you create (e.g., your match history, user profile).",
       "li5": "Our Content: The DartStreak code, design, and logic are authored by the DartStreak team.",
-      "p1": "Last updated: February 14, 2026",
+      "p1": "Last updated: February 18, 2026",
       "s1Text": "By accessing or using DartStreak, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our service.",
       "s1Title": "1. Acceptance of Terms",
       "s2Text1": "DartStreak is a free, hobbyist project provided \"AS IS\" and \"AS AVAILABLE\" without any warranties of any kind.",
@@ -535,7 +544,13 @@
     "unnamed": "Unnamed",
     "updateError": "Could not update",
     "username": "Username",
-    "usernameUpdated": "Username updated!"
+    "usernameUpdated": "Username updated!",
+    "country": "Country",
+    "selectCountry": "Select country",
+    "countryRequired": "You must select a country",
+    "countryUpdated": "Country updated!",
+    "completeProfileTitle": "Complete your profile",
+    "completeProfileDesc": "Choose which country you live in to join global and country leagues."
   },
   "pwa": {
     "alreadyInstalled": "Already installed?",

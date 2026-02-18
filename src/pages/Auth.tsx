@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import CountrySelect from "@/components/CountrySelect";
 import { toast } from "sonner";
 import { ArrowLeft, Check, X } from "lucide-react";
 import { z } from "zod";
@@ -26,6 +27,7 @@ export default function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [countryCode, setCountryCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [checkingUsername, setCheckingUsername] = useState(false);
   const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
@@ -45,6 +47,7 @@ export default function Auth() {
     email: z.string().email(t("auth.invalidEmail")),
     password: z.string().min(6, t("auth.passwordMinLength")),
     displayName: z.string().min(2, t("auth.nameMinLength")).optional(),
+    countryCode: z.string().length(2, t("profile.countryRequired")).optional(),
   });
 
   // ... (checkUsernameAvailability and logic stays same)
@@ -113,7 +116,7 @@ export default function Auth() {
     try {
       const validationData = isLogin
         ? { email, password }
-        : { email, password, displayName };
+        : { email, password, displayName, countryCode };
 
       authSchema.parse(validationData);
     } catch (error) {
@@ -126,6 +129,12 @@ export default function Auth() {
 
     if (!isLogin && usernameAvailable === false) {
       toast.error(t("auth.usernameTaken"));
+      setLoading(false);
+      return;
+    }
+
+    if (!isLogin && !countryCode) {
+      toast.error(t("profile.countryRequired"));
       setLoading(false);
       return;
     }
@@ -143,7 +152,7 @@ export default function Auth() {
       }
     } else {
       // Create new account
-      const { error } = await signUp(email, password, displayName);
+      const { error } = await signUp(email, password, displayName, countryCode);
       if (error) {
         if (error.message.includes("already registered")) {
           toast.error(t("auth.emailAlreadyRegistered"));
@@ -296,32 +305,42 @@ export default function Auth() {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               {!isLogin && (
-                <div className="space-y-2">
-                  <Label htmlFor="displayName">{t("auth.displayName")}</Label>
-                  <div className="relative">
-                    <Input
-                      id="displayName"
-                      type="text"
-                      placeholder={t("auth.yourName")}
-                      value={displayName}
-                      onChange={(e) => handleDisplayNameChange(e.target.value)}
-                      required={!isLogin}
-                      className={usernameAvailable === false ? "border-destructive" : usernameAvailable === true ? "border-primary" : ""}
-                    />
-                    {displayName.length >= 2 && !checkingUsername && (
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                        {usernameAvailable === true && <Check className="w-4 h-4 text-primary" />}
-                        {usernameAvailable === false && <X className="w-4 h-4 text-destructive" />}
-                      </div>
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="displayName">{t("auth.displayName")}</Label>
+                    <div className="relative">
+                      <Input
+                        id="displayName"
+                        type="text"
+                        placeholder={t("auth.yourName")}
+                        value={displayName}
+                        onChange={(e) => handleDisplayNameChange(e.target.value)}
+                        required={!isLogin}
+                        className={usernameAvailable === false ? "border-destructive" : usernameAvailable === true ? "border-primary" : ""}
+                      />
+                      {displayName.length >= 2 && !checkingUsername && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                          {usernameAvailable === true && <Check className="w-4 h-4 text-primary" />}
+                          {usernameAvailable === false && <X className="w-4 h-4 text-destructive" />}
+                        </div>
+                      )}
+                    </div>
+                    {usernameAvailable === false && (
+                      <p className="text-xs text-destructive">{t("auth.usernameTaken")}</p>
+                    )}
+                    {usernameAvailable === true && (
+                      <p className="text-xs text-primary">{t("auth.usernameAvailable")}</p>
                     )}
                   </div>
-                  {usernameAvailable === false && (
-                    <p className="text-xs text-destructive">{t("auth.usernameTaken")}</p>
-                  )}
-                  {usernameAvailable === true && (
-                    <p className="text-xs text-primary">{t("auth.usernameAvailable")}</p>
-                  )}
-                </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-country">{t("profile.country")}</Label>
+                    <CountrySelect
+                      id="signup-country"
+                      value={countryCode}
+                      onChange={setCountryCode}
+                    />
+                  </div>
+                </>
               )}
               <div className="space-y-2">
                 <Label htmlFor="email">{t("auth.email")}</Label>
