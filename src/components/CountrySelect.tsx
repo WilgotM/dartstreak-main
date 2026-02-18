@@ -2,6 +2,13 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { getCountryOptions } from "@/lib/countries";
 import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface CountrySelectProps {
   value: string;
@@ -16,24 +23,17 @@ export default function CountrySelect({ value, onChange, id, disabled, className
   const options = useMemo(() => getCountryOptions(i18n.language), [i18n.language]);
 
   return (
-    <select
-      id={id}
-      value={value}
-      onChange={(event) => onChange(event.target.value)}
-      disabled={disabled}
-      className={cn(
-        "h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-        "disabled:cursor-not-allowed disabled:opacity-50",
-        className
-      )}
-    >
-      <option value="">{t("profile.selectCountry")}</option>
-      {options.map((country) => (
-        <option key={country.code} value={country.code}>
-          {country.label}
-        </option>
-      ))}
-    </select>
+    <Select value={value} onValueChange={onChange} disabled={disabled}>
+      <SelectTrigger id={id} className={cn("w-full", className)}>
+        <SelectValue placeholder={t("profile.selectCountry")} />
+      </SelectTrigger>
+      <SelectContent className="z-[220] max-h-[320px]">
+        {options.map((country) => (
+          <SelectItem key={country.code} value={country.code}>
+            {country.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }

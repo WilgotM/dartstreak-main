@@ -477,17 +477,12 @@ export default function League() {
   const leagueEndDateText = hasExplicitStartDate
     ? format(endDate, "d MMM yyyy", { locale: dateLocale })
     : t("common.unknown");
-
   const winner = leaderboard.length > 0
     ? [...leaderboard].sort((a, b) => b.total_score - a.total_score)[0]
     : null;
 
   const isSystemLeague = league.is_system === true;
   const hideHistoricalVideos = isSystemLeague && isFinished;
-
-  const localizedLeagueEnd = hasExplicitStartDate
-    ? formatWithTimezone(endDate, leagueTimezone || "UTC", i18n.language)
-    : t("common.unknown");
 
   const localizedUserEnd = hasExplicitStartDate
     ? formatWithTimezone(
@@ -496,6 +491,16 @@ export default function League() {
       i18n.language
     )
     : t("common.unknown");
+
+  const countryName = league.country_code
+    ? getCountryName(league.country_code, i18n.language)
+    : "";
+
+  const leagueDisplayName = isSystemLeague
+    ? league.system_scope === "global"
+      ? t("league.globalLeagueTitle")
+      : t("league.countryLeagueTitle", { country: countryName })
+    : league.name;
 
   if (isPlaying && user && !isFinished) {
     return (
@@ -518,31 +523,19 @@ export default function League() {
               <ArrowLeft className="w-6 h-6" />
             </Button>
             <div className="min-w-0 flex-1">
-              <h1 className="font-display font-bold text-2xl text-white truncate drop-shadow-md">{league.name}</h1>
+              <h1 className="font-display font-bold text-2xl text-white truncate drop-shadow-md">{leagueDisplayName}</h1>
               <p className="text-sm text-gray-300 truncate font-medium">
                 {isFinished
                   ? t("league.finished")
                   : `${t("league.round")} ${league.current_round} ${t("league.of")} ${league.total_rounds}`
                 }
               </p>
-              {isSystemLeague && (
-                <p className="text-xs text-neon-green font-semibold">
-                  {league.system_scope === "global"
-                    ? t("league.globalLeagueLabel")
-                    : t("league.countryLeagueLabel", {
-                      country: league.country_code ? getCountryName(league.country_code, i18n.language) : "",
-                    })}
-                </p>
-              )}
               <p className="text-xs text-gray-400 font-medium">
                 {t("league.startsOn")}: <span className="text-white">{leagueStartDateText}</span>
                 {" • "}
                 {t("league.endsOn")}: <span className="text-white">{leagueEndDateText}</span>
               </p>
               <p className="text-xs text-gray-400 font-medium mt-1">
-                {t("league.endsAtLeagueTimezone")}: <span className="text-white">{localizedLeagueEnd}</span>
-              </p>
-              <p className="text-xs text-gray-400 font-medium">
                 {t("league.endsAtYourTimezone")}: <span className="text-white">{localizedUserEnd}</span>
               </p>
             </div>

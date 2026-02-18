@@ -4,9 +4,22 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { Plus, Users, Trophy, ArrowRight, Calendar } from "lucide-react";
-import { format } from "date-fns";
+import {
+  Plus,
+  Users,
+  Trophy,
+  ArrowRight,
+  Calendar,
+  Globe,
+  Flag,
+} from "lucide-react";
+import {
+  format,
+  startOfISOWeek,
+  endOfISOWeek,
+  setISOWeek,
+  setYear,
+} from "date-fns";
 import { enUS, sv } from "date-fns/locale";
 import { AppLayout } from "@/components/AppLayout";
 import { motion } from "framer-motion";
@@ -31,6 +44,27 @@ interface League {
   season_key?: string | null;
 }
 
+/** Parse "YYYY-WNN" → { year, week } */
+function parseSeasonKey(
+  seasonKey: string,
+): { year: number; week: number } | null {
+  const match = seasonKey.match(/^(\d{4})-W(\d{1,2})$/);
+  if (!match) return null;
+  return { year: parseInt(match[1], 10), week: parseInt(match[2], 10) };
+}
+
+/** Get Mon–Sun date range string from a season key like "2025-W07" */
+function getWeekRange(seasonKey: string, locale: Locale): string | null {
+  const parsed = parseSeasonKey(seasonKey);
+  if (!parsed) return null;
+  // Build a date that falls in the correct ISO week
+  const baseDate = setYear(setISOWeek(new Date(), parsed.week), parsed.year);
+  const mon = startOfISOWeek(baseDate);
+  const sun = endOfISOWeek(baseDate);
+  const fmt = "d MMM";
+  return `${format(mon, fmt, { locale })} – ${format(sun, fmt, { locale })}`;
+}
+
 export default function Leagues() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
@@ -46,7 +80,10 @@ export default function Leagues() {
     const start = new Date(league.started_at);
     const end = addDays(start, 7);
     const now = new Date();
-    return (isAfter(now, start) || now.getTime() === start.getTime()) && isBefore(now, end);
+    return (
+      (isAfter(now, start) || now.getTime() === start.getTime()) &&
+      isBefore(now, end)
+    );
   }, []);
 
   useEffect(() => {
@@ -68,7 +105,7 @@ export default function Leagues() {
       return;
     }
 
-    const leagueIds = memberData?.map(m => m.league_id) || [];
+    const leagueIds = memberData?.map((m) => m.league_id) || [];
 
     if (leagueIds.length === 0) {
       setLeagues([]);
@@ -85,7 +122,9 @@ export default function Leagues() {
     if (error) {
       console.error("Error fetching leagues:", error);
     } else {
-      const visibleLeagues = (data || []).filter((league) => !league.is_system || isActiveSystemLeague(league));
+      const visibleLeagues = (data || []).filter(
+        (league) => !league.is_system || isActiveSystemLeague(league),
+      );
       setLeagues(visibleLeagues);
     }
     setLoadingLeagues(false);
@@ -112,7 +151,11 @@ export default function Leagues() {
       <AppLayout>
         <div className="min-h-screen flex items-center justify-center">
           <div className="animate-pulse-soft">
-            <img src="/logo.png" alt="DartStreak Logo" className="w-16 h-16 object-contain" />
+            <img
+              src="/logo.png"
+              alt="DartStreak Logo"
+              className="w-16 h-16 object-contain"
+            />
           </div>
         </div>
       </AppLayout>
@@ -165,7 +208,9 @@ export default function Leagues() {
         ) : leagues.length === 0 ? (
           <div className="glass-card rounded-[2rem] p-12 text-center border-white/5">
             <Trophy className="w-20 h-20 mx-auto text-white/20 mb-6" />
-            <h3 className="text-2xl font-display font-bold mb-3 text-white">{t("dashboard.noLeaguesYet")}</h3>
+            <h3 className="text-2xl font-display font-bold mb-3 text-white">
+              {t("dashboard.noLeaguesYet")}
+            </h3>
             <p className="text-gray-400 text-lg">
               {t("dashboard.noLeaguesDesc")}
             </p>
@@ -174,6 +219,24 @@ export default function Leagues() {
           <div className="space-y-4">
             {leagues.map((league, index) => {
               const status = getLeagueStatus(league);
+              const isSystem = league.is_system;
+              const isGlobal = league.system_scope === "global";
+              const weekRange =
+                isSystem && league.season_key
+                  ? getWeekRange(league.season_key, dateLocale)
+                  : null;
+              const parsed =
+                isSystem && league.season_key
+                  ? parseSeasonKey(league.season_key)
+                  : null;
+              const weekNum = parsed?.week ?? null;
+
+              // Clean display name for system leagues
+              const countryName =
+                !isGlobal && league.country_code
+                  ? getCountryName(league.country_code, i18n.language)
+                  : null;
+
               return (
                 <motion.div
                   key={league.id}
@@ -182,61 +245,116 @@ export default function Leagues() {
                   transition={{
                     delay: index * 0.05,
                     duration: 0.3,
-                    ease: [0.25, 0.46, 0.45, 0.94]
+                    ease: [0.25, 0.46, 0.45, 0.94],
                   }}
                   whileTap={{ scale: 0.98 }}
                 >
                   <div
-                    className="group cursor-pointer glass-card rounded-2xl p-6 hover:shadow-glow transition-all duration-300 relative overflow-hidden"
+                    className="group cursor-pointer glass-card rounded-2xl hover:shadow-glow transition-all duration-300 relative overflow-hidden"
                     onClick={() => {
                       light();
                       navigate(`/league/${league.id}`);
                     }}
                   >
-                    <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-neon-green to-transparent opacity-50 group-hover:opacity-100 transition-opacity" />
+                    {/* Accent bar */}
+                    <div
+                      className={`absolute top-0 left-0 w-1 h-full bg-gradient-to-b ${isGlobal ? "from-blue-400 to-transparent" : isSystem ? "from-neon-green to-transparent" : "from-neon-orange to-transparent"} opacity-60 group-hover:opacity-100 transition-opacity`}
+                    />
 
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <h3 className="font-display font-bold text-xl text-white group-hover:text-neon-green transition-colors">
-                          {league.name}
-                        </h3>
-                        {league.is_system && (
-                          <p className="text-xs text-neon-green uppercase tracking-wider mt-1">
-                            {league.system_scope === "global"
-                              ? t("league.globalLeagueLabel")
-                              : t("league.countryLeagueLabel", {
-                                country: league.country_code ? getCountryName(league.country_code, i18n.language) : "",
-                              })}
-                          </p>
+                    <div className="p-5">
+                      {/* Top row: icon + title + arrow */}
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start gap-3 flex-1 min-w-0">
+                          {/* Icon badge */}
+                          {isSystem ? (
+                            <div
+                              className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center ${isGlobal ? "bg-blue-500/15 text-blue-400" : "bg-neon-green/15 text-neon-green"}`}
+                            >
+                              {isGlobal ? (
+                                <Globe className="w-5 h-5" />
+                              ) : (
+                                <Flag className="w-5 h-5" />
+                              )}
+                            </div>
+                          ) : (
+                            <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-neon-orange/15 text-neon-orange flex items-center justify-center">
+                              <Trophy className="w-5 h-5" />
+                            </div>
+                          )}
+
+                          <div className="flex-1 min-w-0">
+                            {/* League type label */}
+                            {isSystem && (
+                              <p
+                                className={`text-[10px] font-semibold uppercase tracking-widest mb-0.5 ${isGlobal ? "text-blue-400" : "text-neon-green"}`}
+                              >
+                                {isGlobal
+                                  ? t("league.globalLeagueLabel")
+                                  : t("league.countryLeagueLabel", {
+                                      country: "",
+                                    }).replace(": ", "")}
+                              </p>
+                            )}
+
+                            {/* Main title */}
+                            <h3 className="font-display font-bold text-lg text-white group-hover:text-neon-green transition-colors leading-tight truncate">
+                              {isSystem
+                                ? isGlobal
+                                  ? t("league.globalLeagueTitle")
+                                  : (countryName ?? league.name)
+                                : league.name}
+                            </h3>
+
+                            {/* Round info */}
+                            <p className="text-xs text-gray-500 mt-0.5">
+                              {t("dashboard.round")}{" "}
+                              <span className="text-gray-300">
+                                {league.current_round}
+                              </span>{" "}
+                              {t("dashboard.of")} {league.total_rounds}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex-shrink-0 w-9 h-9 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-neon-green/20 transition-all mt-0.5">
+                          <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-neon-green" />
+                        </div>
+                      </div>
+
+                      {/* Bottom row: week info / invite code + status */}
+                      <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/5">
+                        {isSystem && weekNum !== null ? (
+                          <div className="flex items-center gap-2">
+                            <div
+                              className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${isGlobal ? "bg-blue-500/10 text-blue-400 border border-blue-500/20" : "bg-neon-green/10 text-neon-green border border-neon-green/20"}`}
+                            >
+                              <Calendar className="w-3 h-3" />
+                              <span>
+                                {t("league.weekLabel", { week: weekNum })}
+                              </span>
+                            </div>
+                            {weekRange && (
+                              <span className="text-xs text-gray-500">
+                                {weekRange}
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2 text-xs text-gray-500">
+                            <span className="px-3 py-1 bg-black/30 rounded-full font-mono text-xs border border-white/5">
+                              {league.invite_code}
+                            </span>
+                            <span>{t("dashboard.inviteCode")}</span>
+                          </div>
                         )}
-                        <p className="text-sm text-gray-400 mt-1">
-                          {t("dashboard.round")} <span className="text-white">{league.current_round}</span> {t("dashboard.of")} {league.total_rounds}
-                        </p>
-                      </div>
-                      <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-neon-green/20 group-hover:text-neon-green transition-all">
-                        <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-neon-green" />
-                      </div>
-                    </div>
 
-                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/5">
-                      {!league.is_system ? (
-                        <div className="flex items-center gap-2 text-xs text-gray-500">
-                          <span className="px-3 py-1 bg-black/30 rounded-full font-mono text-xs border border-white/5">
-                            {league.invite_code}
-                          </span>
-                          <span>{t("dashboard.inviteCode")}</span>
-                        </div>
-                      ) : (
-                        <div className="text-xs text-gray-400">
-                          {league.season_key}
-                        </div>
-                      )}
-                      {status && (
-                        <div className="flex items-center gap-1.5 text-xs text-neon-green font-medium bg-neon-green/10 px-2 py-1 rounded-full">
-                          <Calendar className="w-3 h-3" />
-                          <span>{status}</span>
-                        </div>
-                      )}
+                        {status && (
+                          <div className="flex items-center gap-1.5 text-xs text-neon-green font-medium bg-neon-green/10 px-2 py-1 rounded-full border border-neon-green/20">
+                            <Calendar className="w-3 h-3" />
+                            <span>{status}</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </motion.div>
