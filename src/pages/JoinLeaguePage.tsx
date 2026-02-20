@@ -82,7 +82,7 @@ export default function JoinLeaguePage() {
                         variant="ghost"
                         size="icon"
                         onClick={() => navigate("/leagues")}
-                        className="shrink-0 text-white hover:bg-white/10 rounded-full w-10 h-10"
+                        className="shrink-0 text-foreground hover:bg-secondary rounded-full w-10 h-10"
                     >
                         <ArrowLeft className="w-5 h-5" />
                     </Button>
@@ -93,20 +93,20 @@ export default function JoinLeaguePage() {
             <main className="container mx-auto px-4 py-6 pb-24">
                 <div className="max-w-lg mx-auto space-y-6">
                     <div className="space-y-2">
-                        <Label htmlFor="joinCode" className="text-gray-300">{t("dashboard.inviteCode")}</Label>
+                        <Label htmlFor="joinCode" className="text-muted-foreground">{t("dashboard.inviteCode")}</Label>
                         <Input
                             id="joinCode"
                             placeholder="abc123"
                             value={joinCode}
                             onChange={(e) => setJoinCode(e.target.value)}
-                            className="bg-black/20 border-white/10 text-white placeholder:text-gray-600 focus:border-neon-green/50"
+                            className="bg-black/20 border-border text-foreground placeholder:text-gray-600 focus:border-primary/50"
                         />
                     </div>
 
                     <Button
                         onClick={joinLeague}
                         disabled={joining}
-                        className="w-full bg-neon-green text-black hover:bg-neon-green/90 font-bold h-12 text-base"
+                        className="w-full bg-primary text-black hover:bg-primary/90 font-bold h-12 text-base"
                     >
                         {joining ? t("common.loading") : t("dashboard.joinButton")}
                     </Button>

@@ -42,13 +42,13 @@ export default function TrainingHub() {
   return (
     <AppLayout>
       <div className="container mx-auto px-4 py-8 md:py-10 pb-24 md:pb-10 space-y-6">
-        <header className="relative overflow-hidden rounded-3xl border border-white/10 bg-card/70 p-6 md:p-8">
+        <header className="relative overflow-hidden rounded-3xl border border-border bg-card/70 p-6 md:p-8">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.18),transparent_35%),radial-gradient(circle_at_30%_90%,rgba(34,197,94,0.16),transparent_40%)]" />
           <div className="relative space-y-2">
             <p className="text-xs uppercase tracking-[0.22em] text-amber-300/90">
               {t("trainingHub.kicker")}
             </p>
-            <h1 className="text-3xl md:text-4xl font-display font-bold text-white">
+            <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground">
               {t("trainingHub.title")}
             </h1>
             <p className="max-w-2xl text-muted-foreground">
@@ -65,26 +65,26 @@ export default function TrainingHub() {
                 key={card.key}
                 type="button"
                 onClick={() => navigate(card.to)}
-                className="group relative overflow-hidden rounded-3xl border border-white/10 bg-card/75 p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:shadow-xl"
+                className="group relative overflow-hidden rounded-3xl border border-border bg-card/75 p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:shadow-xl"
               >
                 <div className={cn("absolute inset-0 opacity-80 bg-gradient-to-br", card.accent)} />
                 <div className="relative flex h-full flex-col gap-4">
-                  <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/15 bg-black/25 px-3 py-1 text-xs text-white/80">
+                  <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/15 bg-black/25 px-3 py-1 text-xs text-foreground/80">
                     <Icon className="w-4 h-4" />
                     {t(`trainingHub.cards.${card.key}.badge`)}
                   </div>
 
                   <div className="space-y-2">
-                    <h2 className="text-2xl font-display font-bold text-white">
+                    <h2 className="text-2xl font-display font-bold text-foreground">
                       {t(`trainingHub.cards.${card.key}.title`)}
                     </h2>
-                    <p className="text-sm text-white/75">
+                    <p className="text-sm text-foreground/75">
                       {t(`trainingHub.cards.${card.key}.description`)}
                     </p>
                   </div>
 
                   <div className="pt-3 mt-auto">
-                    <Button variant="secondary" className="bg-white/10 text-white hover:bg-white/20">
+                    <Button variant="secondary" className="bg-secondary text-foreground hover:bg-white/20">
                       {t("trainingHub.open")}
                       <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-0.5" />
                     </Button>

@@ -174,19 +174,19 @@ export default function Leagues() {
         <div className="flex gap-4 mb-8">
           <Button
             variant="outline"
-            className="flex-1 h-12 glass-panel border-white/10 hover:bg-white/5 hover:text-white transition-all text-base"
+            className="flex-1 h-12 glass-panel border-border hover:bg-secondary hover:text-foreground transition-all text-base"
             onClick={() => navigate("/leagues/join")}
           >
-            <Users className="w-5 h-5 mr-2 text-neon-green" />
+            <Users className="w-5 h-5 mr-2 text-primary" />
             {t("dashboard.join")}
           </Button>
 
           <Button
             variant="outline"
-            className="flex-1 h-12 glass-panel border-white/10 hover:bg-white/5 hover:text-white transition-all text-base"
+            className="flex-1 h-12 glass-panel border-border hover:bg-secondary hover:text-foreground transition-all text-base"
             onClick={() => navigate("/leagues/create")}
           >
-            <Plus className="w-5 h-5 mr-2 text-neon-orange" />
+            <Plus className="w-5 h-5 mr-2 text-accent" />
             {t("dashboard.createLeague")}
           </Button>
         </div>
@@ -197,21 +197,21 @@ export default function Leagues() {
               <div key={i} className="glass-card p-6 rounded-2xl animate-pulse">
                 <div className="flex items-start justify-between">
                   <div className="space-y-3 flex-1">
-                    <div className="h-6 w-1/2 bg-white/10 rounded" />
-                    <div className="h-4 w-1/3 bg-white/5 rounded" />
+                    <div className="h-6 w-1/2 bg-secondary rounded" />
+                    <div className="h-4 w-1/3 bg-secondary rounded" />
                   </div>
-                  <div className="w-8 h-8 bg-white/10 rounded-full" />
+                  <div className="w-8 h-8 bg-secondary rounded-full" />
                 </div>
               </div>
             ))}
           </div>
         ) : leagues.length === 0 ? (
-          <div className="glass-card rounded-[2rem] p-12 text-center border-white/5">
-            <Trophy className="w-20 h-20 mx-auto text-white/20 mb-6" />
-            <h3 className="text-2xl font-display font-bold mb-3 text-white">
+          <div className="glass-card rounded-2xl p-12 text-center border-border">
+            <Trophy className="w-20 h-20 mx-auto text-muted-foreground/30 mb-6" />
+            <h3 className="text-2xl font-display font-bold mb-3 text-foreground">
               {t("dashboard.noLeaguesYet")}
             </h3>
-            <p className="text-gray-400 text-lg">
+            <p className="text-muted-foreground text-lg">
               {t("dashboard.noLeaguesDesc")}
             </p>
           </div>
@@ -250,7 +250,7 @@ export default function Leagues() {
                   whileTap={{ scale: 0.98 }}
                 >
                   <div
-                    className="group cursor-pointer glass-card rounded-2xl hover:shadow-glow transition-all duration-300 relative overflow-hidden"
+                    className="group cursor-pointer glass-card rounded-2xl hover:shadow-md transition-all duration-300 relative overflow-hidden"
                     onClick={() => {
                       light();
                       navigate(`/league/${league.id}`);
@@ -258,7 +258,7 @@ export default function Leagues() {
                   >
                     {/* Accent bar */}
                     <div
-                      className={`absolute top-0 left-0 w-1 h-full bg-gradient-to-b ${isGlobal ? "from-blue-400 to-transparent" : isSystem ? "from-neon-green to-transparent" : "from-neon-orange to-transparent"} opacity-60 group-hover:opacity-100 transition-opacity`}
+                      className={`absolute top-0 left-0 w-1 h-full ${isGlobal ? "bg-accent/60" : isSystem ? "bg-primary/60" : "bg-dart-gold/60"} opacity-60 group-hover:opacity-100 transition-opacity`}
                     />
 
                     <div className="p-5">
@@ -268,7 +268,7 @@ export default function Leagues() {
                           {/* Icon badge */}
                           {isSystem ? (
                             <div
-                              className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center ${isGlobal ? "bg-blue-500/15 text-blue-400" : "bg-neon-green/15 text-neon-green"}`}
+                              className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center ${isGlobal ? "bg-accent/10 text-accent" : "bg-primary/10 text-primary"}`}
                             >
                               {isGlobal ? (
                                 <Globe className="w-5 h-5" />
@@ -277,7 +277,7 @@ export default function Leagues() {
                               )}
                             </div>
                           ) : (
-                            <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-neon-orange/15 text-neon-orange flex items-center justify-center">
+                            <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-dart-gold/10 text-dart-gold flex items-center justify-center">
                               <Trophy className="w-5 h-5" />
                             </div>
                           )}
@@ -286,7 +286,7 @@ export default function Leagues() {
                             {/* League type label */}
                             {isSystem && (
                               <p
-                                className={`text-[10px] font-semibold uppercase tracking-widest mb-0.5 ${isGlobal ? "text-blue-400" : "text-neon-green"}`}
+                                className={`text-[10px] font-semibold uppercase tracking-widest mb-0.5 ${isGlobal ? "text-accent" : "text-primary"}`}
                               >
                                 {isGlobal
                                   ? t("league.globalLeagueLabel")
@@ -297,7 +297,7 @@ export default function Leagues() {
                             )}
 
                             {/* Main title */}
-                            <h3 className="font-display font-bold text-lg text-white group-hover:text-neon-green transition-colors leading-tight truncate">
+                            <h3 className="font-display font-bold text-lg text-foreground group-hover:text-primary transition-colors leading-tight truncate">
                               {isSystem
                                 ? isGlobal
                                   ? t("league.globalLeagueTitle")
@@ -306,9 +306,9 @@ export default function Leagues() {
                             </h3>
 
                             {/* Round info */}
-                            <p className="text-xs text-gray-500 mt-0.5">
+                            <p className="text-xs text-muted-foreground mt-0.5">
                               {t("dashboard.round")}{" "}
-                              <span className="text-gray-300">
+                              <span className="text-foreground">
                                 {league.current_round}
                               </span>{" "}
                               {t("dashboard.of")} {league.total_rounds}
@@ -316,17 +316,17 @@ export default function Leagues() {
                           </div>
                         </div>
 
-                        <div className="flex-shrink-0 w-9 h-9 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-neon-green/20 transition-all mt-0.5">
-                          <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-neon-green" />
+                        <div className="flex-shrink-0 w-9 h-9 rounded-full bg-secondary flex items-center justify-center group-hover:bg-primary/10 transition-all mt-0.5">
+                          <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary" />
                         </div>
                       </div>
 
                       {/* Bottom row: week info / invite code + status */}
-                      <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/5">
+                      <div className="flex items-center justify-between mt-4 pt-3 border-t border-border">
                         {isSystem && weekNum !== null ? (
                           <div className="flex items-center gap-2">
                             <div
-                              className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${isGlobal ? "bg-blue-500/10 text-blue-400 border border-blue-500/20" : "bg-neon-green/10 text-neon-green border border-neon-green/20"}`}
+                              className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${isGlobal ? "bg-accent/10 text-accent border border-accent/20" : "bg-primary/10 text-primary border border-primary/20"}`}
                             >
                               <Calendar className="w-3 h-3" />
                               <span>
@@ -334,14 +334,14 @@ export default function Leagues() {
                               </span>
                             </div>
                             {weekRange && (
-                              <span className="text-xs text-gray-500">
+                              <span className="text-xs text-muted-foreground">
                                 {weekRange}
                               </span>
                             )}
                           </div>
                         ) : (
-                          <div className="flex items-center gap-2 text-xs text-gray-500">
-                            <span className="px-3 py-1 bg-black/30 rounded-full font-mono text-xs border border-white/5">
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span className="px-3 py-1 bg-secondary rounded-full font-mono text-xs border border-border">
                               {league.invite_code}
                             </span>
                             <span>{t("dashboard.inviteCode")}</span>
@@ -349,7 +349,7 @@ export default function Leagues() {
                         )}
 
                         {status && (
-                          <div className="flex items-center gap-1.5 text-xs text-neon-green font-medium bg-neon-green/10 px-2 py-1 rounded-full border border-neon-green/20">
+                          <div className="flex items-center gap-1.5 text-xs text-primary font-medium bg-primary/10 px-2 py-1 rounded-full border border-primary/20">
                             <Calendar className="w-3 h-3" />
                             <span>{status}</span>
                           </div>

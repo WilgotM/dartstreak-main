@@ -21,9 +21,9 @@ export default function PlayerNameWithCountry({
   const { i18n } = useTranslation();
 
   return (
-    <span className={cn("inline-flex items-center gap-2 min-w-0", className)}>
+    <span className={cn("inline-flex items-baseline gap-2 min-w-0", className)}>
       <CountryFlagBadge countryCode={countryCode} size={flagSize} />
-      <span className={cn("truncate", textClassName)}>
+      <span className={cn(textClassName)}>
         {displayName}
       </span>
       {countryCode && (

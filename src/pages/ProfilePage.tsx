@@ -146,7 +146,7 @@ export default function ProfilePage() {
           <Card className="glass-card border-none">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center bg-primary/20 shadow-neon-green">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center bg-primary/20 shadow-sm">
                   <User className="w-8 h-8 text-primary" />
                 </div>
                 <div>
@@ -221,7 +221,7 @@ export default function ProfilePage() {
 
           {/* Danger Zone */}
           <section className="space-y-3">
-            <Button variant="outline" onClick={handleSignOut} className="w-full glass-button border-white/10 hover:bg-white/5">
+            <Button variant="outline" onClick={handleSignOut} className="w-full border-border hover:bg-secondary">
               <LogOut className="w-4 h-4 mr-2" />
               {t("auth.logout")}
             </Button>

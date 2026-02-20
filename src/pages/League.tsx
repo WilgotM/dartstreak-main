@@ -516,34 +516,34 @@ export default function League() {
 
   return (
     <AppLayout>
-      <header className="sticky top-0 z-40 p-4 pt-[calc(env(safe-area-inset-top)+1rem)] md:pt-6 bg-background/95 md:bg-background/80 md:backdrop-blur-md border-b border-white/10">
+      <header className="sticky top-0 z-40 p-4 pt-[calc(env(safe-area-inset-top)+1rem)] md:pt-6 bg-background/95 md:bg-background/80 md:backdrop-blur-md border-b border-border">
         <div className="container mx-auto px-2">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/leagues")} className="shrink-0 text-white hover:bg-white/10 rounded-full w-10 h-10">
+            <Button variant="ghost" size="icon" onClick={() => navigate("/leagues")} className="shrink-0 text-foreground hover:bg-secondary rounded-full w-10 h-10">
               <ArrowLeft className="w-6 h-6" />
             </Button>
             <div className="min-w-0 flex-1">
-              <h1 className="font-display font-bold text-2xl text-white truncate drop-shadow-md">{leagueDisplayName}</h1>
-              <p className="text-sm text-gray-300 truncate font-medium">
+              <h1 className="font-display font-bold text-2xl text-foreground truncate drop-shadow-md">{leagueDisplayName}</h1>
+              <p className="text-sm text-muted-foreground truncate font-medium">
                 {isFinished
                   ? t("league.finished")
                   : `${t("league.round")} ${league.current_round} ${t("league.of")} ${league.total_rounds}`
                 }
               </p>
-              <p className="text-xs text-gray-400 font-medium">
-                {t("league.startsOn")}: <span className="text-white">{leagueStartDateText}</span>
+              <p className="text-xs text-muted-foreground font-medium">
+                {t("league.startsOn")}: <span className="text-foreground">{leagueStartDateText}</span>
                 {" • "}
-                {t("league.endsOn")}: <span className="text-white">{leagueEndDateText}</span>
+                {t("league.endsOn")}: <span className="text-foreground">{leagueEndDateText}</span>
               </p>
-              <p className="text-xs text-gray-400 font-medium mt-1">
-                {t("league.endsAtYourTimezone")}: <span className="text-white">{localizedUserEnd}</span>
+              <p className="text-xs text-muted-foreground font-medium mt-1">
+                {t("league.endsAtYourTimezone")}: <span className="text-foreground">{localizedUserEnd}</span>
               </p>
             </div>
 
             <div className="flex items-center gap-2">
               {isOwner && !isSystemLeague && (
-                <div className="flex items-center gap-1 bg-white/10 rounded-full px-3 py-1.5">
-                  <span className="text-sm font-mono text-white">{league.invite_code}</span>
+                <div className="flex items-center gap-1 bg-secondary rounded-full px-3 py-1.5">
+                  <span className="text-sm font-mono text-foreground">{league.invite_code}</span>
                   <Button
                     variant="ghost"
                     size="icon"
@@ -551,9 +551,9 @@ export default function League() {
                       copyInviteCode();
                       toast.success(t("league.inviteCodeCopied"));
                     }}
-                    className="shrink-0 text-white hover:bg-white/10 rounded-full w-8 h-8"
+                    className="shrink-0 text-foreground hover:bg-secondary rounded-full w-8 h-8"
                   >
-                    {copied ? <Check className="w-4 h-4 text-neon-green" /> : <Copy className="w-4 h-4" />}
+                    {copied ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
                   </Button>
                 </div>
               )}
@@ -561,23 +561,23 @@ export default function League() {
               {!isSystemLeague && (isOwner ? (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button variant="ghost" size="icon" className="shrink-0 text-white hover:bg-red-500/20 hover:text-red-400 rounded-full w-10 h-10">
+                    <Button variant="ghost" size="icon" className="shrink-0 text-foreground hover:bg-red-500/20 hover:text-red-400 rounded-full w-10 h-10">
                       <Trash2 className="w-5 h-5" />
                     </Button>
                   </AlertDialogTrigger>
-                  <AlertDialogContent className="glass-card border-white/10 text-white">
+                  <AlertDialogContent className="glass-card border-border text-foreground">
                     <AlertDialogHeader>
-                      <AlertDialogTitle className="text-white">{t("league.deleteConfirmTitle")}</AlertDialogTitle>
-                      <AlertDialogDescription className="text-gray-400">
+                      <AlertDialogTitle className="text-foreground">{t("league.deleteConfirmTitle")}</AlertDialogTitle>
+                      <AlertDialogDescription className="text-muted-foreground">
                         {t("league.deleteConfirmDesc", { name: league.name })}
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel className="bg-transparent border-white/10 text-white hover:bg-white/10">{t("common.cancel")}</AlertDialogCancel>
+                      <AlertDialogCancel className="bg-transparent border-border text-foreground hover:bg-secondary">{t("common.cancel")}</AlertDialogCancel>
                       <AlertDialogAction
                         onClick={handleDeleteLeague}
                         disabled={deleting}
-                        className="bg-red-600 hover:bg-red-700 text-white"
+                        className="bg-red-600 hover:bg-red-700 text-foreground"
                       >
                         {deleting ? t("league.deleting") : t("league.deleteLeague")}
                       </AlertDialogAction>
@@ -587,23 +587,23 @@ export default function League() {
               ) : (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button variant="ghost" size="icon" className="shrink-0 text-white hover:bg-red-500/20 hover:text-red-400 rounded-full w-10 h-10">
+                    <Button variant="ghost" size="icon" className="shrink-0 text-foreground hover:bg-red-500/20 hover:text-red-400 rounded-full w-10 h-10">
                       <LogOut className="w-5 h-5" />
                     </Button>
                   </AlertDialogTrigger>
-                  <AlertDialogContent className="glass-card border-white/10 text-white">
+                  <AlertDialogContent className="glass-card border-border text-foreground">
                     <AlertDialogHeader>
-                      <AlertDialogTitle className="text-white">{t("league.leaveConfirmTitle")}</AlertDialogTitle>
-                      <AlertDialogDescription className="text-gray-400">
+                      <AlertDialogTitle className="text-foreground">{t("league.leaveConfirmTitle")}</AlertDialogTitle>
+                      <AlertDialogDescription className="text-muted-foreground">
                         {t("league.leaveConfirmDesc")}
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel className="bg-transparent border-white/10 text-white hover:bg-white/10">{t("common.cancel")}</AlertDialogCancel>
+                      <AlertDialogCancel className="bg-transparent border-border text-foreground hover:bg-secondary">{t("common.cancel")}</AlertDialogCancel>
                       <AlertDialogAction
                         onClick={handleLeaveLeague}
                         disabled={leaving}
-                        className="bg-red-600 hover:bg-red-700 text-white"
+                        className="bg-red-600 hover:bg-red-700 text-foreground"
                       >
                         {leaving ? t("league.leaving") : t("league.leave")}
                       </AlertDialogAction>
@@ -619,25 +619,25 @@ export default function League() {
       <main className="container mx-auto px-4 py-6 pb-32">
         <div className="max-w-4xl mx-auto space-y-8">
           {isSystemLeague && historyLeagues.length > 1 && (
-            <div className="glass-card rounded-2xl p-4 border border-white/10 flex items-center justify-between gap-3">
+            <div className="glass-card rounded-2xl p-4 border border-border flex items-center justify-between gap-3">
               <Button
                 variant="outline"
                 onClick={() => navigateHistory(1)}
                 disabled={historyIndex === -1 || historyIndex >= historyLeagues.length - 1}
-                className="border-white/10 bg-transparent text-white hover:bg-white/10"
+                className="border-border bg-transparent text-foreground hover:bg-secondary"
               >
                 <ChevronLeft className="w-4 h-4 mr-2" />
                 {t("league.olderWeek")}
               </Button>
-              <div className="text-center text-sm text-gray-300">
+              <div className="text-center text-sm text-muted-foreground">
                 <p className="font-semibold">{league.season_key}</p>
-                <p className="text-xs text-gray-400">{t("league.historyView")}</p>
+                <p className="text-xs text-muted-foreground">{t("league.historyView")}</p>
               </div>
               <Button
                 variant="outline"
                 onClick={() => navigateHistory(-1)}
                 disabled={historyIndex === -1 || historyIndex <= 0}
-                className="border-white/10 bg-transparent text-white hover:bg-white/10"
+                className="border-border bg-transparent text-foreground hover:bg-secondary"
               >
                 {t("league.newerWeek")}
                 <ChevronRight className="w-4 h-4 ml-2" />
@@ -646,17 +646,17 @@ export default function League() {
           )}
 
           {isOwner && !isSystemLeague && (
-            <div className="glass-card rounded-2xl p-6 border border-white/10">
+            <div className="glass-card rounded-2xl p-6 border border-border">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="space-y-1">
-                  <p className="text-xs text-gray-400 uppercase tracking-wider">{t("league.settings")}</p>
-                  <h3 className="text-lg font-display font-bold text-white">{t("league.cameraRequirementTitle")}</h3>
-                  <p className="text-sm text-gray-400">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider">{t("league.settings")}</p>
+                  <h3 className="text-lg font-display font-bold text-foreground">{t("league.cameraRequirementTitle")}</h3>
+                  <p className="text-sm text-muted-foreground">
                     {cameraRequired ? t("league.cameraRequiredDesc") : t("league.cameraNotRequiredDesc")}
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className={`text-xs font-semibold ${cameraRequired ? "text-neon-green" : "text-gray-400"}`}>
+                  <span className={`text-xs font-semibold ${cameraRequired ? "text-primary" : "text-muted-foreground"}`}>
                     {cameraRequired ? t("league.cameraRequiredLabel") : t("league.cameraNotRequiredLabel")}
                   </span>
                   <Switch
@@ -681,15 +681,15 @@ export default function League() {
                 <h2 className="text-sm font-bold uppercase tracking-widest text-dart-gold mb-2">
                   {t("league.winner")}
                 </h2>
-                <div className="text-4xl sm:text-5xl font-display font-bold text-white mb-4 flex justify-center">
+                <div className="text-4xl sm:text-5xl font-display font-bold text-foreground mb-4 flex justify-center">
                   <PlayerNameWithCountry
                     displayName={winner.display_name}
                     countryCode={winner.country_code}
                     flagSize="md"
-                    textClassName="text-white"
+                    textClassName="text-foreground"
                   />
                 </div>
-                <p className="text-lg text-gray-300 mb-8 max-w-lg mx-auto">
+                <p className="text-lg text-muted-foreground mb-8 max-w-lg mx-auto">
                   {t("league.congratulations", {
                     name: winner.display_name,
                     league: league.name,
@@ -697,7 +697,7 @@ export default function League() {
                 </p>
 
                 <div className="inline-block px-8 py-4 bg-black/30 backdrop-blur-md rounded-2xl border border-dart-gold/20">
-                  <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">{t("league.finalScore")}</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{t("league.finalScore")}</p>
                   <p className="text-3xl font-mono font-bold text-dart-gold">{winner.total_score}</p>
                 </div>
 
@@ -717,14 +717,14 @@ export default function League() {
           )}
 
           {!leagueStarted && !isFinished && league.started_at && (
-            <div className="glass-card rounded-2xl p-8 text-center animate-slide-up border-neon-green/30 bg-neon-green/5">
-              <Calendar className="w-12 h-12 mx-auto text-neon-green mb-4" />
-              <h2 className="text-2xl font-display font-bold text-white mb-2">
+            <div className="glass-card rounded-2xl p-8 text-center animate-slide-up border-primary/30 bg-primary/5">
+              <Calendar className="w-12 h-12 mx-auto text-primary mb-4" />
+              <h2 className="text-2xl font-display font-bold text-foreground mb-2">
                 {t("league.leagueNotStarted")}
               </h2>
-              <p className="text-gray-400">
+              <p className="text-muted-foreground">
                 {t("league.firstRoundStarts")}{" "}
-                <span className="font-semibold text-neon-green">
+                <span className="font-semibold text-primary">
                   {format(new Date(league.started_at), "EEEE d MMMM", { locale: dateLocale })}
                 </span>
               </p>
@@ -732,15 +732,15 @@ export default function League() {
           )}
 
           {leagueStarted && !isFinished && (
-            <div className="glass-card rounded-3xl p-6 sm:p-8 animate-slide-up bg-gradient-to-br from-white/5 to-transparent">
+            <div className="glass-card rounded-3xl p-6 sm:p-8 animate-slide-up">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-neon-green/20 flex items-center justify-center">
-                    <Calendar className="w-5 h-5 text-neon-green" />
+                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                    <Calendar className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <p className="text-xs text-neon-green font-bold uppercase tracking-wider">{t("league.today")}</p>
-                    <h2 className="text-xl font-display font-bold text-white">
+                    <p className="text-xs text-primary font-bold uppercase tracking-wider">{t("league.today")}</p>
+                    <h2 className="text-xl font-display font-bold text-foreground">
                       {format(new Date(), "EEEE d MMMM", { locale: dateLocale })}
                     </h2>
                   </div>
@@ -748,31 +748,31 @@ export default function League() {
                 <CountdownTimer timezone={leagueTimezone} />
               </div>
 
-              <div className="bg-black/20 rounded-2xl p-6 border border-white/5">
-                <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-gray-400 mb-4">
+              <div className="bg-secondary/50 rounded-2xl p-6 border border-border">
+                <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">
                   <span>{t("league.cameraRequirementTitle")}</span>
-                  <span className={cameraRequired ? "text-neon-green" : "text-gray-300"}>
+                  <span className={cameraRequired ? "text-primary" : "text-muted-foreground"}>
                     {cameraRequired ? t("league.cameraRequiredLabel") : t("league.cameraNotRequiredLabel")}
                   </span>
                 </div>
                 {hasThrown ? (
                   <div className="text-center py-2">
-                    <p className="text-gray-400 text-sm mb-1 uppercase tracking-wider">{t("league.todaysPoints")}</p>
-                    <p className="text-6xl font-display font-bold text-neon-green drop-shadow-[0_0_15px_rgba(72,255,160,0.3)]">{totalToday}</p>
+                    <p className="text-muted-foreground text-sm mb-1 uppercase tracking-wider">{t("league.todaysPoints")}</p>
+                    <p className="text-6xl font-display font-bold text-primary">{totalToday}</p>
                   </div>
                 ) : (
                   <div className="text-center py-4 space-y-6">
-                    <p className="text-gray-300 text-lg">
+                    <p className="text-muted-foreground text-lg">
                       {t("league.notRegisteredToday")}
                     </p>
                     <Button
                       onClick={() => setIsPlaying(true)}
-                      className="bg-neon-green text-black hover:bg-neon-green/90 font-bold px-8 py-6 rounded-full text-lg shadow-[0_0_20px_rgba(72,255,160,0.3)] transition-all hover:scale-105 active:scale-95"
+                      className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold px-8 py-6 rounded-full text-lg shadow-md transition-all hover:scale-105 active:scale-95"
                     >
                       <Target className="w-6 h-6 mr-2" />
                       {t("league.startTodaysThrows")}
                     </Button>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-muted-foreground">
                       {t("league.fiveMinuteWarning")}
                     </p>
                   </div>
@@ -787,20 +787,20 @@ export default function League() {
                 <div className="w-8 h-8 rounded-full bg-dart-gold/20 flex items-center justify-center">
                   <Award className="w-4 h-4 text-dart-gold" />
                 </div>
-                <h3 className="text-lg font-display font-bold text-white">{t("league.previousRounds")}</h3>
+                <h3 className="text-lg font-display font-bold text-foreground">{t("league.previousRounds")}</h3>
               </div>
 
               <div className="space-y-3">
                 {roundResults.map((result) => (
                   <div
                     key={result.round_number}
-                    className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/5"
+                    className="flex items-center justify-between p-4 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors border border-border"
                   >
                     <div>
-                      <p className="font-display font-bold text-white">
+                      <p className="font-display font-bold text-foreground">
                         {t("league.round")} {result.round_number}
                       </p>
-                      <p className="text-xs text-gray-400">
+                      <p className="text-xs text-muted-foreground">
                         {format(result.start_date, "d MMM", { locale: dateLocale })} –{" "}
                         {format(result.end_date, "d MMM", { locale: dateLocale })}
                       </p>
@@ -812,13 +812,13 @@ export default function League() {
                           <PlayerNameWithCountry
                             displayName={result.winner_name}
                             countryCode={result.winner_country_code}
-                            textClassName="font-semibold text-white"
+                            textClassName="font-semibold text-foreground"
                           />
                         </div>
-                        <p className="text-sm text-gray-400 font-mono">{result.winner_score} p</p>
+                        <p className="text-sm text-muted-foreground font-mono">{result.winner_score} p</p>
                       </div>
                     ) : (
-                      <span className="text-gray-500 text-sm">{t("league.noThrows")}</span>
+                      <span className="text-muted-foreground text-sm">{t("league.noThrows")}</span>
                     )}
                   </div>
                 ))}
@@ -828,13 +828,13 @@ export default function League() {
 
           {leagueStarted && (
             <div className="glass-card rounded-3xl overflow-hidden animate-slide-up" style={{ animationDelay: "100ms" }}>
-              <div className="p-6 pb-2 border-b border-white/5">
+              <div className="p-6 pb-2 border-b border-border">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
                     {isSystemLeague ? <Globe className="w-5 h-5 text-blue-400" /> : <Trophy className="w-5 h-5 text-blue-400" />}
                   </div>
                   <div>
-                    <h3 className="text-xl font-display font-bold text-white">
+                    <h3 className="text-xl font-display font-bold text-foreground">
                       {isFinished ? t("league.finalScore") : t("league.standings")}
                     </h3>
                   </div>
@@ -842,7 +842,7 @@ export default function League() {
               </div>
 
               <div className="p-4">
-                <div className="grid grid-cols-12 gap-2 text-xs font-bold text-gray-500 uppercase tracking-wider px-3 py-3">
+                <div className="grid grid-cols-12 gap-2 text-xs font-bold text-muted-foreground uppercase tracking-wider px-3 py-3">
                   <div className="col-span-1">#</div>
                   <div className="col-span-5">{t("league.player")}</div>
                   <div className="col-span-2 text-right hidden sm:block">{t("league.today")}</div>
@@ -855,8 +855,8 @@ export default function League() {
                     <div
                       key={entry.user_id}
                       className={`grid grid-cols-12 gap-2 items-center px-3 py-4 rounded-xl transition-all ${entry.user_id === user?.id
-                        ? "bg-neon-green/10 border border-neon-green/30"
-                        : "hover:bg-white/5 border border-transparent"
+                        ? "bg-primary/10 border border-primary/30"
+                        : "hover:bg-secondary/50 border border-transparent"
                         }`}
                     >
                       <div className={`col-span-1 font-display font-bold text-lg ${getMedalColor(index)}`}>
@@ -866,7 +866,7 @@ export default function League() {
                         <PlayerNameWithCountry
                           displayName={entry.display_name}
                           countryCode={entry.country_code}
-                          textClassName={`font-semibold ${entry.user_id === user?.id ? "text-neon-green" : "text-white"}`}
+                          textClassName={`font-semibold ${entry.user_id === user?.id ? "text-primary" : "text-foreground"}`}
                         />
                         {!hideHistoricalVideos && entry.today_score > 0 && (
                           <button
@@ -881,26 +881,26 @@ export default function League() {
                                   : t("league.today"),
                               });
                             }}
-                            className="p-1 rounded-full hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+                            className="p-1 rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
                           >
-                            <Video className={`w-3.5 h-3.5 ${entry.today_video_url ? "text-neon-green" : "opacity-30"}`} />
+                            <Video className={`w-3.5 h-3.5 ${entry.today_video_url ? "text-primary" : "opacity-30"}`} />
                           </button>
                         )}
                       </div>
-                      <div className="col-span-2 text-right font-mono text-gray-400 hidden sm:block">
+                      <div className="col-span-2 text-right font-mono text-muted-foreground hidden sm:block">
                         {entry.today_score || "-"}
                       </div>
-                      <div className="col-span-2 text-right font-mono text-gray-300 hidden sm:block">
+                      <div className="col-span-2 text-right font-mono text-muted-foreground hidden sm:block">
                         {entry.week_score}
                       </div>
-                      <div className="col-span-2 text-right font-mono font-bold text-lg text-white">
+                      <div className="col-span-2 text-right font-mono font-bold text-lg text-foreground">
                         {entry.total_score}
                       </div>
                     </div>
                   ))}
 
                   {leaderboard.length === 0 && (
-                    <div className="text-center py-12 text-gray-500">
+                    <div className="text-center py-12 text-muted-foreground">
                       <TrendingUp className="w-12 h-12 mx-auto mb-3 opacity-30" />
                       <p>{t("league.noThrowsYet")}</p>
                     </div>

@@ -89,7 +89,7 @@ export default function TicTacToeTurnPanel({
   return (
     <section
       className={cn(
-        "h-full space-y-4 md:space-y-4 glass-card rounded-2xl p-4 sm:p-5 md:p-5 border border-white/10",
+        "h-full space-y-4 md:space-y-4 glass-card rounded-2xl p-4 sm:p-5 md:p-5 border border-border",
         className,
       )}
     >
@@ -97,7 +97,7 @@ export default function TicTacToeTurnPanel({
         <h3 className="text-sm uppercase tracking-wider text-muted-foreground">{strings.activePlayer}</h3>
         <div className="text-sm font-semibold text-foreground flex items-center gap-2">
           <span
-            className="w-3 h-3 rounded-full border border-white/50"
+            className="w-3 h-3 rounded-full border border-border0"
             style={{ backgroundColor: currentPlayerColor }}
           />
           <span>{currentPlayerName}</span>
@@ -111,7 +111,7 @@ export default function TicTacToeTurnPanel({
           return (
             <div
               key={index}
-              className="rounded-xl border border-white/10 bg-black/20 h-16 md:h-16 flex flex-col items-center justify-center"
+              className="rounded-xl border border-border bg-black/20 h-16 md:h-16 flex flex-col items-center justify-center"
             >
               <span className="text-[11px] uppercase tracking-wide text-muted-foreground">
                 {strings.throwLabel} {index + 1}

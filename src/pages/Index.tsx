@@ -85,17 +85,17 @@ export default function Index() {
               {t("landing.tagline")}
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight mb-8 text-balance leading-[1.1] text-white">
+            <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight mb-8 text-balance leading-[1.1] text-foreground">
               {t("landing.heroTitle")}{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400">
+              <span className="text-primary">
                 {t("landing.heroHighlight")}
               </span>
               {" "}
               <span className="relative inline-block whitespace-nowrap">
-                <span className="relative z-10 px-3 py-1 text-white">
+                <span className="relative z-10 px-3 py-1 text-foreground">
                   {t("landing.heroHighlight2")}
                 </span>
-                <span className="absolute inset-0 bg-primary/20 rounded-2xl -rotate-1 border border-primary/30" />
+                <span className="absolute inset-0 bg-primary/10 rounded-2xl -rotate-1 border border-primary/20" />
               </span>
             </h1>
 
@@ -138,14 +138,10 @@ export default function Index() {
 
         {/* League Explanation Section */}
         <section id="leagues" className="py-24 relative overflow-hidden">
-          {/* Background Decorative Elements */}
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-primary/5 to-background" />
-          <div className="absolute -left-20 top-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl opacity-30" />
-          <div className="absolute -right-20 bottom-20 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl opacity-30" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background via-card/50 to-background" />
 
           <div className="container mx-auto px-4 relative">
-            <div className="max-w-6xl mx-auto rounded-[2.5rem] border border-primary/20 bg-card/30 backdrop-blur-sm p-8 md:p-16 shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+            <div className="max-w-6xl mx-auto rounded-[2rem] border border-border bg-card p-8 md:p-16 shadow-lg relative overflow-hidden">
 
               <div className="text-center mb-20">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-4">
@@ -224,7 +220,7 @@ export default function Index() {
         {/* Final CTA */}
         <section className="container mx-auto px-4 py-16">
           <div className="max-w-3xl mx-auto text-center">
-            <div className="p-10 rounded-3xl bg-gradient-to-br from-primary/10 to-purple-500/10 border border-primary/20 shadow-2xl">
+            <div className="p-10 rounded-2xl bg-card border border-border shadow-lg">
               <h2 className="text-3xl font-display font-bold mb-6">
                 {t("landing.readyToCompete")}
               </h2>

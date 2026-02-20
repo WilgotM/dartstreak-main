@@ -68,30 +68,29 @@ export default function Dashboard() {
 
   return (
     <AppLayout>
-      <div className="min-h-full relative overflow-x-hidden">
-        <main className="container mx-auto px-6 min-h-full flex flex-col justify-start md:justify-center pt-6 md:pt-20 pb-[calc(8.5rem+env(safe-area-inset-bottom))] md:pb-24">
+      <div className="min-h-full relative overflow-x-hidden overflow-y-auto">
+        <main className="container mx-auto px-6 min-h-full flex flex-col justify-start md:justify-center pt-6 md:pt-20 pb-[calc(10rem+env(safe-area-inset-bottom))] md:pb-24">
 
           {/* Welcome Section */}
           <div className="flex flex-col items-center text-center mb-6 md:mb-12 animate-fade-in gap-2">
             <div className="relative mb-4 md:mb-6">
-              <div className="absolute inset-0 bg-orange-500/20 blur-2xl rounded-full" />
-              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full border-2 border-orange-500/50 p-1 relative z-10 shadow-neon-orange">
+              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full border-2 border-primary/50 p-1 relative z-10 shadow-sm">
                 <Avatar className="w-full h-full">
                   <AvatarImage src={user?.user_metadata?.avatar_url} />
-                  <AvatarFallback className="bg-orange-500 text-white text-3xl font-bold">
+                  <AvatarFallback className="bg-primary text-primary-foreground text-3xl font-bold">
                     {displayName[0]?.toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
               </div>
             </div>
-            <h1 className="text-3xl md:text-5xl font-display font-bold text-white mb-2 leading-tight">
+            <h1 className="text-3xl md:text-5xl font-display font-bold text-foreground mb-2">
               {t("dashboard.welcomeBack", { name: "" })}<br />
-              <span className="text-white inline-flex items-center gap-2">
+              <span className="text-foreground inline-flex items-center gap-2">
                 <PlayerNameWithCountry
                   displayName={displayName}
                   countryCode={profile?.country_code}
                   flagSize="md"
-                  textClassName="text-white"
+                  textClassName="text-foreground"
                 />
                 !
               </span>
@@ -108,15 +107,13 @@ export default function Dashboard() {
                 medium();
                 navigate("/leagues");
               }}
-              className="w-72 h-72 glass-card rounded-[2.5rem] p-8 text-center cursor-pointer group flex flex-col items-center justify-center shadow-glow hover:scale-105 transition-transform duration-300"
+              className="w-72 h-72 glass-card rounded-[2rem] p-8 text-center cursor-pointer group flex flex-col items-center justify-center shadow-md hover:scale-105 transition-transform duration-300"
             >
-              <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
               <div className="relative z-10">
                 <div className="relative mb-4">
-                  <div className="absolute inset-0 bg-neon-green/20 blur-xl rounded-full" />
-                  <Trophy className="w-20 h-20 text-neon-green drop-shadow-[0_0_15px_rgba(72,255,160,0.5)] transform transition-transform group-hover:scale-110 duration-300 mx-auto" />
+                  <Trophy className="w-20 h-20 text-primary transform transition-transform group-hover:scale-110 duration-300 mx-auto" />
                 </div>
-                <h2 className="text-2xl font-display font-bold text-white">
+                <h2 className="text-2xl font-display font-bold text-foreground">
                   {t("nav.leagues")}
                 </h2>
                 <p className="text-muted-foreground text-sm font-medium mt-2">
@@ -133,15 +130,13 @@ export default function Dashboard() {
                 medium();
                 navigate("/profile");
               }}
-              className="w-72 h-72 glass-card rounded-[2.5rem] p-8 text-center cursor-pointer group flex flex-col items-center justify-center hover:scale-105 transition-transform duration-300"
+              className="w-72 h-72 glass-card rounded-[2rem] p-8 text-center cursor-pointer group flex flex-col items-center justify-center shadow-md hover:scale-105 transition-transform duration-300"
             >
-              <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
               <div className="relative z-10">
                 <div className="relative mb-4">
-                  <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full" />
-                  <User className="w-20 h-20 text-blue-400 drop-shadow-[0_0_15px_rgba(96,165,250,0.5)] transform transition-transform group-hover:scale-110 duration-300 mx-auto" />
+                  <User className="w-20 h-20 text-accent transform transition-transform group-hover:scale-110 duration-300 mx-auto" />
                 </div>
-                <h2 className="text-2xl font-display font-bold text-white">
+                <h2 className="text-2xl font-display font-bold text-foreground">
                   {t("nav.profile")}
                 </h2>
                 <p className="text-muted-foreground text-sm font-medium mt-2">
@@ -173,15 +168,13 @@ export default function Dashboard() {
                     setActiveCard('leagues');
                   }
                 }}
-                className={`flex-shrink-0 w-[calc(100vw-104px)] h-64 sm:h-72 glass-card rounded-[2.5rem] p-8 text-center cursor-pointer group flex flex-col items-center justify-center shadow-glow transition-all duration-300 ${activeCard === 'leagues' ? 'opacity-100 scale-100' : 'opacity-70 scale-95'}`}
+                className={`flex-shrink-0 w-[calc(100vw-104px)] h-64 sm:h-72 glass-card rounded-[2rem] p-8 text-center cursor-pointer group flex flex-col items-center justify-center shadow-md transition-all duration-300 ${activeCard === 'leagues' ? 'opacity-100 scale-100' : 'opacity-70 scale-95'}`}
               >
-                <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 <div className="relative z-10">
                   <div className="relative mb-4">
-                    <div className="absolute inset-0 bg-neon-green/20 blur-xl rounded-full" />
-                    <Trophy className="w-20 h-20 text-neon-green drop-shadow-[0_0_15px_rgba(72,255,160,0.5)] transform transition-transform group-hover:scale-110 duration-300 mx-auto" />
+                    <Trophy className="w-20 h-20 text-primary transform transition-transform group-hover:scale-110 duration-300 mx-auto" />
                   </div>
-                  <h2 className="text-2xl font-display font-bold text-white">
+                  <h2 className="text-2xl font-display font-bold text-foreground">
                     {t("nav.leagues")}
                   </h2>
                   <p className="text-muted-foreground text-sm font-medium mt-2">
@@ -190,7 +183,7 @@ export default function Dashboard() {
                 </div>
                 {activeCard === 'leagues' && (
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-50 animate-pulse">
-                    <ChevronRight className="w-6 h-6 text-white/50" />
+                    <ChevronRight className="w-6 h-6 text-muted-foreground" />
                   </div>
                 )}
               </motion.div>
@@ -206,15 +199,13 @@ export default function Dashboard() {
                     setActiveCard('profile');
                   }
                 }}
-                className={`flex-shrink-0 w-[calc(100vw-104px)] h-64 sm:h-72 glass-card rounded-[2.5rem] p-8 text-center cursor-pointer group flex flex-col items-center justify-center transition-all duration-300 ${activeCard === 'profile' ? 'opacity-100 scale-100' : 'opacity-70 scale-95'}`}
+                className={`flex-shrink-0 w-[calc(100vw-104px)] h-64 sm:h-72 glass-card rounded-[2rem] p-8 text-center cursor-pointer group flex flex-col items-center justify-center shadow-md transition-all duration-300 ${activeCard === 'profile' ? 'opacity-100 scale-100' : 'opacity-70 scale-95'}`}
               >
-                <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 <div className="relative z-10">
                   <div className="relative mb-4">
-                    <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full" />
-                    <User className="w-20 h-20 text-blue-400 drop-shadow-[0_0_15px_rgba(96,165,250,0.5)] transform transition-transform group-hover:scale-110 duration-300 mx-auto" />
+                    <User className="w-20 h-20 text-accent transform transition-transform group-hover:scale-110 duration-300 mx-auto" />
                   </div>
-                  <h2 className="text-2xl font-display font-bold text-white">
+                  <h2 className="text-2xl font-display font-bold text-foreground">
                     {t("nav.profile")}
                   </h2>
                   <p className="text-muted-foreground text-sm font-medium mt-2">
@@ -223,7 +214,7 @@ export default function Dashboard() {
                 </div>
                 {activeCard === 'profile' && (
                   <div className="absolute left-4 top-1/2 -translate-y-1/2 opacity-50 animate-pulse">
-                    <ChevronLeft className="w-6 h-6 text-white/50" />
+                    <ChevronLeft className="w-6 h-6 text-muted-foreground" />
                   </div>
                 )}
               </motion.div>
@@ -231,8 +222,8 @@ export default function Dashboard() {
 
             {/* Dot indicators */}
             <div className="flex justify-center gap-2 mt-4">
-              <div className={`w-2 h-2 rounded-full transition-colors ${activeCard === 'leagues' ? 'bg-white' : 'bg-white/30'}`} />
-              <div className={`w-2 h-2 rounded-full transition-colors ${activeCard === 'profile' ? 'bg-white' : 'bg-white/30'}`} />
+              <div className={`w-2 h-2 rounded-full transition-colors ${activeCard === 'leagues' ? 'bg-primary' : 'bg-muted-foreground/30'}`} />
+              <div className={`w-2 h-2 rounded-full transition-colors ${activeCard === 'profile' ? 'bg-primary' : 'bg-muted-foreground/30'}`} />
             </div>
           </div>
 

@@ -89,7 +89,7 @@ export default function CreateLeague() {
                         variant="ghost"
                         size="icon"
                         onClick={() => navigate("/leagues")}
-                        className="shrink-0 text-white hover:bg-white/10 rounded-full w-10 h-10"
+                        className="shrink-0 text-foreground hover:bg-secondary rounded-full w-10 h-10"
                     >
                         <ArrowLeft className="w-5 h-5" />
                     </Button>
@@ -99,21 +99,21 @@ export default function CreateLeague() {
 
             <main className="container mx-auto px-4 py-6 pb-24">
                 <div className="max-w-lg mx-auto space-y-6">
-                    <p className="text-gray-400">{t("dashboard.createLeagueDesc")}</p>
+                    <p className="text-muted-foreground">{t("dashboard.createLeagueDesc")}</p>
 
                     <div className="space-y-2">
-                        <Label htmlFor="leagueName" className="text-gray-300">{t("dashboard.leagueName")}</Label>
+                        <Label htmlFor="leagueName" className="text-muted-foreground">{t("dashboard.leagueName")}</Label>
                         <Input
                             id="leagueName"
                             placeholder=""
                             value={newLeagueName}
                             onChange={(e) => setNewLeagueName(e.target.value)}
-                            className="bg-black/20 border-white/10 text-white placeholder:text-gray-600 focus:border-neon-orange/50"
+                            className="bg-black/20 border-border text-foreground placeholder:text-gray-600 focus:border-accent/50"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="rounds" className="text-gray-300">{t("dashboard.numberOfRounds")}</Label>
+                        <Label htmlFor="rounds" className="text-muted-foreground">{t("dashboard.numberOfRounds")}</Label>
                         <Input
                             id="rounds"
                             type="number"
@@ -121,34 +121,34 @@ export default function CreateLeague() {
                             max={52}
                             value={totalRounds}
                             onChange={(e) => setTotalRounds(parseInt(e.target.value) || 4)}
-                            className="bg-black/20 border-white/10 text-white placeholder:text-gray-600 focus:border-neon-orange/50"
+                            className="bg-black/20 border-border text-foreground placeholder:text-gray-600 focus:border-accent/50"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="startDate" className="text-gray-300">{t("dashboard.leagueStarts")}</Label>
+                        <Label htmlFor="startDate" className="text-muted-foreground">{t("dashboard.leagueStarts")}</Label>
                         <Input
                             id="startDate"
                             type="date"
                             value={startDate}
                             onChange={(e) => setStartDate(e.target.value)}
                             min={format(new Date(), "yyyy-MM-dd")}
-                            className="bg-black/20 border-white/10 text-white placeholder:text-gray-600 focus:border-neon-orange/50"
+                            className="bg-black/20 border-border text-foreground placeholder:text-gray-600 focus:border-accent/50"
                         />
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-muted-foreground">
                             {t("dashboard.leagueCanStartNow")}
                         </p>
                     </div>
 
-                    <div className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 p-4">
+                    <div className="flex items-center justify-between rounded-xl border border-border bg-black/20 p-4">
                         <div className="space-y-1">
-                            <Label className="text-gray-300">{t("dashboard.cameraRequirement")}</Label>
-                            <p className="text-xs text-gray-500">
+                            <Label className="text-muted-foreground">{t("dashboard.cameraRequirement")}</Label>
+                            <p className="text-xs text-muted-foreground">
                                 {t("dashboard.cameraRequirementDesc")}
                             </p>
                         </div>
                         <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-400">
+                            <span className="text-xs text-muted-foreground">
                                 {cameraRequired ? t("dashboard.cameraRequired") : t("dashboard.cameraNotRequired")}
                             </span>
                             <Switch
@@ -161,7 +161,7 @@ export default function CreateLeague() {
                     <Button
                         onClick={createLeague}
                         disabled={creating}
-                        className="w-full bg-neon-orange text-white hover:bg-neon-orange/90 font-bold h-12 text-base"
+                        className="w-full bg-accent text-foreground hover:bg-accent/90 font-bold h-12 text-base"
                     >
                         {creating ? t("common.loading") : t("dashboard.create")}
                     </Button>

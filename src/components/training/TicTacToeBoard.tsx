@@ -60,7 +60,7 @@ export default function TicTacToeBoard({
             }}
             className={cn(
               "relative rounded-2xl border p-3 md:p-3.5 min-h-40 sm:min-h-44 md:min-h-[11rem] flex flex-col justify-between transition-all",
-              !owner && "bg-card/70 border-white/10",
+              !owner && "bg-card/70 border-border",
               isPending && "border-emerald-400/70 shadow-[0_0_0_1px_rgba(52,211,153,0.5)]",
               isWinningCell && "border-amber-400/80 shadow-[0_0_0_1px_rgba(251,191,36,0.55)]",
             )}
@@ -72,8 +72,8 @@ export default function TicTacToeBoard({
               <div
                 className={cn(
                   "h-8 md:h-8 px-3 md:px-3 rounded-full text-xs md:text-xs font-bold flex items-center",
-                  owner && "text-white border",
-                  !owner && "bg-black/20 text-muted-foreground border border-white/10",
+                  owner && "text-foreground border",
+                  !owner && "bg-black/20 text-muted-foreground border border-border",
                 )}
                 style={owner ? { backgroundColor: `${players[owner].color}99`, borderColor: `${players[owner].color}EE` } : undefined}
               >
@@ -83,7 +83,7 @@ export default function TicTacToeBoard({
             </div>
 
             {!owner && guide && (
-              <div className="mt-2.5 pt-2.5 border-t border-white/10 space-y-1.5">
+              <div className="mt-2.5 pt-2.5 border-t border-border space-y-1.5">
                 <p className="text-xs md:text-sm uppercase tracking-wide text-muted-foreground font-semibold">{strings.guideTitle}</p>
 
                 {guide.exactNow ? (

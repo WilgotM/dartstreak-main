@@ -19,11 +19,9 @@ export function AppLayout({ children, hideNav = false }: AppLayoutProps) {
         }}
       />
 
-      {/* Background gradient orbs - only on desktop due to performance */}
-      <div className="hidden md:block fixed -top-[200px] -right-[200px] w-[600px] h-[600px] bg-primary/15 blur-[150px] rounded-full pointer-events-none z-0" />
-      <div className="hidden md:block fixed top-[10%] right-[5%] w-[400px] h-[400px] bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none z-0" />
-      <div className="hidden md:block fixed -bottom-[150px] -left-[150px] w-[500px] h-[500px] bg-orange-500/8 blur-[130px] rounded-full pointer-events-none z-0" />
-      <div className="hidden md:block fixed bottom-[20%] left-[10%] w-[300px] h-[300px] bg-amber-500/5 blur-[100px] rounded-full pointer-events-none z-0" />
+      {/* Subtle gradient orbs - only on desktop due to performance */}
+      <div className="hidden md:block fixed -top-[200px] -right-[200px] w-[600px] h-[600px] bg-primary/5 blur-[150px] rounded-full pointer-events-none z-0" />
+      <div className="hidden md:block fixed -bottom-[150px] -left-[150px] w-[500px] h-[500px] bg-accent/5 blur-[130px] rounded-full pointer-events-none z-0" />
 
       {!hideNav && <DesktopNav />}
       {!hideNav && <MobileHeader />}

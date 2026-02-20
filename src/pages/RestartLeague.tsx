@@ -149,23 +149,23 @@ export default function RestartLeague() {
                         variant="ghost"
                         size="icon"
                         onClick={() => navigate(`/league/${id}`)}
-                        className="shrink-0 text-white hover:bg-white/10 rounded-full w-10 h-10"
+                        className="shrink-0 text-foreground hover:bg-secondary rounded-full w-10 h-10"
                     >
                         <ArrowLeft className="w-5 h-5" />
                     </Button>
                     <div>
                         <h1 className="text-xl font-display font-bold">{t("league.startNewSeason")}</h1>
-                        <p className="text-sm text-gray-400">{league.name}</p>
+                        <p className="text-sm text-muted-foreground">{league.name}</p>
                     </div>
                 </div>
             </header>
 
             <main className="container mx-auto px-4 py-6 pb-24">
                 <div className="max-w-lg mx-auto space-y-6">
-                    <p className="text-gray-400">{t("league.restartConfirmDesc")}</p>
+                    <p className="text-muted-foreground">{t("league.restartConfirmDesc")}</p>
 
                     <div className="space-y-2">
-                        <Label htmlFor="restart-rounds" className="text-gray-300">{t("dashboard.numberOfRounds")}</Label>
+                        <Label htmlFor="restart-rounds" className="text-muted-foreground">{t("dashboard.numberOfRounds")}</Label>
                         <Input
                             id="restart-rounds"
                             type="number"
@@ -176,29 +176,29 @@ export default function RestartLeague() {
                                 const parsedValue = Number.parseInt(e.target.value, 10);
                                 setTotalRounds(Number.isNaN(parsedValue) ? 1 : parsedValue);
                             }}
-                            className="bg-black/20 border-white/10 text-white placeholder:text-gray-600 focus:border-dart-gold/50"
+                            className="bg-black/20 border-border text-foreground placeholder:text-gray-600 focus:border-dart-gold/50"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="restart-start-date" className="text-gray-300">{t("dashboard.leagueStarts")}</Label>
+                        <Label htmlFor="restart-start-date" className="text-muted-foreground">{t("dashboard.leagueStarts")}</Label>
                         <Input
                             id="restart-start-date"
                             type="date"
                             value={startDate}
                             onChange={(e) => setStartDate(e.target.value)}
                             min={format(new Date(), "yyyy-MM-dd")}
-                            className="bg-black/20 border-white/10 text-white placeholder:text-gray-600 focus:border-dart-gold/50"
+                            className="bg-black/20 border-border text-foreground placeholder:text-gray-600 focus:border-dart-gold/50"
                         />
                     </div>
 
-                    <div className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 p-4">
+                    <div className="flex items-center justify-between rounded-xl border border-border bg-black/20 p-4">
                         <div className="space-y-1">
-                            <Label className="text-gray-300">{t("dashboard.cameraRequirement")}</Label>
-                            <p className="text-xs text-gray-500">{t("dashboard.cameraRequirementDesc")}</p>
+                            <Label className="text-muted-foreground">{t("dashboard.cameraRequirement")}</Label>
+                            <p className="text-xs text-muted-foreground">{t("dashboard.cameraRequirementDesc")}</p>
                         </div>
                         <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-400">
+                            <span className="text-xs text-muted-foreground">
                                 {cameraRequired ? t("dashboard.cameraRequired") : t("dashboard.cameraNotRequired")}
                             </span>
                             <Switch
@@ -212,7 +212,7 @@ export default function RestartLeague() {
                         <Button
                             variant="outline"
                             onClick={() => navigate(`/league/${id}`)}
-                            className="flex-1 bg-transparent border-white/10 text-white hover:bg-white/10 hover:text-white h-12"
+                            className="flex-1 bg-transparent border-border text-foreground hover:bg-secondary hover:text-foreground h-12"
                             disabled={restarting}
                         >
                             {t("common.cancel")}
