@@ -110,9 +110,9 @@
     "footer": "© 2025 DartStreak. Tävla. Ha kul. Bli bäst.",
     "googleLogin": "Logga in med Google",
     "heroDescription": "Gå med i dagliga ligor med vänner. Inget krångel, bara spela.",
-    "heroHighlight": "Ligor",
+    "heroHighlight": "Precision.",
     "heroHighlight2": "Helt Gratis",
-    "heroTitle": "Spela Dart Online med",
+    "heroTitle": "Global status möter",
     "howLeaguesStep1": "Skapa Liga",
     "howLeaguesStep1Desc": "Starta en liga på sekunder och bjud in vänner med en kod.",
     "howLeaguesStep2": "9 Pilar Dagligen",
@@ -133,7 +133,11 @@
     "whyUs2Title": "För Nybörjare",
     "whyUs3Desc": "Skapa privata ligor, följ tabellen och se vem som klättrar på topplistan.",
     "whyUs3Title": "Tävla med Vänner",
-    "whyUsTitle": "Varför DartStreak?"
+    "whyUsTitle": "Varför DartStreak?",
+    "coreMechanicsTitle": "Grundfunktioner",
+    "philosophyTitle": "Andra appar fokuserar på ytlig statistik.",
+    "philosophyHighlight": "Vi fokuserar på: \ncommunity & progression.",
+    "footerDesc": "Precisionsmekanik för dina dagliga kast. Ett digitalt instrument för den moderna tävlaren."
   },
   "league": {
     "alreadyRegisteredToday": "Du har redan registrerat dagens kast",

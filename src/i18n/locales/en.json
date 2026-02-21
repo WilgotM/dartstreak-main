@@ -110,9 +110,9 @@
     "footer": "© 2025 DartStreak. Compete. Have fun. Be the best.",
     "googleLogin": "Log in with Google",
     "heroDescription": "Join daily leagues with friends. No complication, just play.",
-    "heroHighlight": "Leagues",
+    "heroHighlight": "Precision.",
     "heroHighlight2": "Completely Free",
-    "heroTitle": "Play Darts Online with",
+    "heroTitle": "Global status meets",
     "howLeaguesStep1": "Create League",
     "howLeaguesStep1Desc": "Set up a league in seconds and invite friends with a code.",
     "howLeaguesStep2": "9 Darts Daily",
@@ -133,7 +133,11 @@
     "whyUs2Title": "Beginner Friendly",
     "whyUs3Desc": "Create private leagues, track standings, and see who climbs the leaderboard.",
     "whyUs3Title": "Compete with Friends",
-    "whyUsTitle": "Why DartStreak?"
+    "whyUsTitle": "Why DartStreak?",
+    "coreMechanicsTitle": "Core Mechanics",
+    "philosophyTitle": "Most apps focus on generic statistics.",
+    "philosophyHighlight": "We focus on: community & progression.",
+    "footerDesc": "Precision mechanics for your daily darts. A digital instrument for the modern competitor."
   },
   "league": {
     "alreadyRegisteredToday": "You have already registered today's throws",

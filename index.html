@@ -1,377 +1,525 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-
-  <!-- Structured Data - WebSite for Google Site Name (Priority for branding) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "@id": "https://dartstreak.pages.dev/#website",
-    "name": "DartStreak",
-    "alternateName": "Dart Streak",
-    "url": "https://dartstreak.pages.dev/",
-    "publisher": {
-      "@id": "https://dartstreak.pages.dev/#organization"
-    }
-  }
-  </script>
-
-  <!-- Primary SEO Meta Tags -->
-  <title>DartStreak - Free Online Darts Leagues | Play Darts with Friends</title>
-  <meta name="description"
-    content="Play free online darts leagues with friends! Compete in daily leagues, track your stats, and verify throws with video. No registration fees - 100% free multiplayer darts leagues." />
-  <meta name="author" content="DartStreak" />
-  <meta itemprop="name" content="DartStreak" />
-  <meta name="application-name" content="DartStreak" />
-  <meta name="apple-mobile-web-app-title" content="DartStreak" />
-  <meta name="robots" content="index, follow" />
-  <meta name="googlebot" content="index, follow" />
-  <meta name="bingbot" content="index, follow" />
-  <meta name="google-site-verification" content="s5SOvCIewiKsen15MCYApmuCEb51ShV1qpKF38xBgXo" />
-
-  <!-- Canonical URL -->
-  <link rel="canonical" href="https://dartstreak.pages.dev/" />
-
-  <!-- Alternate Languages -->
-  <link rel="alternate" hreflang="en" href="https://dartstreak.pages.dev/" />
-  <link rel="alternate" hreflang="sv" href="https://dartstreak.pages.dev/" />
-  <link rel="alternate" hreflang="x-default" href="https://dartstreak.pages.dev/" />
-
-  <!-- PWA Meta Tags -->
-  <meta name="theme-color" content="#16a34a" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="DartStreak" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="application-name" content="DartStreak" />
-  <meta name="msapplication-TileColor" content="#16a34a" />
-  <meta name="msapplication-TileImage" content="/icon-192.png" />
-  <meta name="format-detection" content="telephone=no" />
-  <meta name="apple-touch-fullscreen" content="yes" />
-  <link rel="manifest" href="/manifest.json" />
-
-  <!-- iOS Splash Screens for all device sizes -->
-  <!-- iPhone 15 Pro Max, 14 Pro Max -->
-  <link rel="apple-touch-startup-image" href="/icon-512.png"
-    media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" />
-  <!-- iPhone 15 Pro, 14 Pro -->
-  <link rel="apple-touch-startup-image" href="/icon-512.png"
-    media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" />
-  <!-- iPhone 15, 15 Plus, 14, 14 Plus -->
-  <link rel="apple-touch-startup-image" href="/icon-512.png"
-    media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" />
-  <!-- iPhone 13 Pro Max, 12 Pro Max -->
-  <link rel="apple-touch-startup-image" href="/icon-512.png"
-    media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" />
-  <!-- iPhone 13, 13 Pro, 12, 12 Pro -->
-  <link rel="apple-touch-startup-image" href="/icon-512.png"
-    media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" />
-  <!-- iPhone 13 mini, 12 mini -->
-  <link rel="apple-touch-startup-image" href="/icon-512.png"
-    media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" />
-  <!-- iPhone 11 Pro Max, XS Max -->
-  <link rel="apple-touch-startup-image" href="/icon-512.png"
-    media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" />
-  <!-- iPhone 11, XR -->
-  <link rel="apple-touch-startup-image" href="/icon-512.png"
-    media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" />
-  <!-- iPhone X, XS, 11 Pro -->
-  <link rel="apple-touch-startup-image" href="/icon-512.png"
-    media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" />
-  <!-- iPhone 8 Plus, 7 Plus, 6s Plus -->
-  <link rel="apple-touch-startup-image" href="/icon-512.png"
-    media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)" />
-  <!-- iPhone 8, 7, 6s, SE (2nd gen) -->
-  <link rel="apple-touch-startup-image" href="/icon-512.png"
-    media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" />
-  <!-- iPhone SE (1st gen) -->
-  <link rel="apple-touch-startup-image" href="/icon-512.png"
-    media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" />
-  <!-- iPad Pro 12.9" -->
-  <link rel="apple-touch-startup-image" href="/icon-512.png"
-    media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" />
-  <!-- iPad Pro 11" -->
-  <link rel="apple-touch-startup-image" href="/icon-512.png"
-    media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)" />
-  <!-- iPad Air, iPad 10.2" -->
-  <link rel="apple-touch-startup-image" href="/icon-512.png"
-    media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2)" />
-
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://dartstreak.pages.dev/" />
-  <meta property="og:site_name" content="DartStreak" />
-  <meta property="og:title" content="DartStreak - Free Online Darts Leagues | Play with Friends" />
-  <meta property="og:description"
-    content="Play free online darts leagues with friends! Compete daily, track stats, and verify throws with video. 100% free multiplayer darts - no hidden costs. Spela dart ligor online gratis!" />
-  <meta property="og:image" content="https://dartstreak.pages.dev/og.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="DartStreak - Free Online Darts Leagues" />
-  <meta property="og:locale" content="en_US" />
-  <meta property="og:locale:alternate" content="sv_SE" />
-
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@dartstreak" />
-  <meta name="twitter:url" content="https://dartstreak.pages.dev/" />
-  <meta name="twitter:title" content="DartStreak - Free Online Darts Leagues | Play with Friends" />
-  <meta name="twitter:description"
-    content="Play free online darts leagues with friends! Compete daily, track stats, and verify throws with video. 100% free multiplayer darts leagues." />
-  <meta name="twitter:image" content="https://dartstreak.pages.dev/og.png" />
-  <meta name="twitter:image:alt" content="DartStreak - Free Online Darts Game" />
-
-  <!-- Favicon and App Icons -->
-  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
-  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
-  <link rel="icon" type="image/png" sizes="144x144" href="/favicon-144x144.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-  <link rel="shortcut icon" href="/favicon.ico" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-
-  <!-- Structured Data - WebApplication -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "DartStreak",
-    "alternateName": ["Dart Streak", "DartStreak App", "Free Online Darts Leagues"],
-    "url": "https://dartstreak.pages.dev/",
-    "description": "Play free online darts leagues with friends! Compete daily, track stats, and verify throws with video. 100% free multiplayer darts game.",
-    "applicationCategory": "GameApplication",
-    "operatingSystem": "Web Browser, iOS, Android",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD",
-      "availability": "https://schema.org/InStock"
-    },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "ratingCount": "1250",
-      "bestRating": "5",
-      "worstRating": "1"
-    },
-    "screenshot": "https://dartstreak.pages.dev/og.png",
-    "featureList": [
-      "Free online dart leagues",
-      "Play with friends online",
-      "Video verification",
-      "Daily dart challenges",
-      "Weekly league ranking",
-      "Real-time multiplayer",
-      "No registration fees"
-    ],
-    "inLanguage": ["en", "sv"],
-    "isAccessibleForFree": true,
-    "browserRequirements": "Requires JavaScript. Requires HTML5.",
-    "softwareVersion": "1.0",
-    "author": {
-      "@id": "https://dartstreak.pages.dev/#organization"
-    }
-  }
-  </script>
-
-  <!-- Structured Data - VideoGame -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "VideoGame",
-    "name": "DartStreak - Online Darts Leagues",
-    "description": "Free online multiplayer darts leagues. Compete daily with friends, featuring video verification and league rankings.",
-    "url": "https://dartstreak.pages.dev/",
-    "genre": ["Sports", "Multiplayer", "Casual"],
-    "gamePlatform": ["Web Browser", "Mobile Web"],
-    "playMode": ["MultiPlayer"],
-    "numberOfPlayers": {
-      "@type": "QuantitativeValue",
-      "minValue": 1,
-      "maxValue": 100
-    },
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    },
-    "isAccessibleForFree": true,
-    "inLanguage": ["en", "sv"]
-  }
-  </script>
-
-  <!-- Structured Data - Organization -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "@id": "https://dartstreak.pages.dev/#organization",
-    "name": "DartStreak",
-    "url": "https://dartstreak.pages.dev/",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://dartstreak.pages.dev/logo.png"
-    }
-  }
-  </script>
-
-  <!-- Structured Data - FAQPage for SEO -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
+    <!-- Structured Data - WebSite for Google Site Name (Priority for branding) -->
+    <script type="application/ld+json">
       {
-        "@type": "Question",
-        "name": "Is DartStreak completely free?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes! DartStreak is 100% free to play. There are no hidden costs, no subscription fees, and no in-app purchases required. You can participate in unlimited leagues completely free."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I play darts online with my friends?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Absolutely! DartStreak lets you create private leagues to compete with your friends online. Simply invite them using a share link, and you can play together daily from anywhere in the world."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Does DartStreak have video verification?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes! DartStreak includes free video functionality so you can verify throws and see your friends while playing online leagues. This ensures fair play and makes it feel like you're playing together in person."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How do online dart leagues work?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "You can create free dart leagues on DartStreak where players compete in daily challenges. Throw 9 darts every day and see who tops the leaderboard each week. It's perfect for friendly competitions with friends."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Är DartStreak helt gratis?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Ja! DartStreak är 100% gratis att spela. Det finns inga dolda kostnader, inga prenumerationsavgifter och inga köp i appen. Du kan delta i obegränsat med ligor helt gratis."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Kan jag spela dart online med mina kompisar?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Absolut! Med DartStreak kan du skapa privata ligor för att tävla med dina vänner online. Bjud in dem med en delningslänk så kan ni tävla dagligen tillsammans var ni än befinner er i världen."
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "@id": "https://dartstreak.pages.dev/#website",
+        "name": "DartStreak",
+        "alternateName": "Dart Streak",
+        "url": "https://dartstreak.pages.dev/",
+        "publisher": {
+          "@id": "https://dartstreak.pages.dev/#organization"
         }
       }
-    ]
-  }
-  </script>
+    </script>
 
-  <!-- Structured Data - SoftwareApplication for App Stores -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "DartStreak",
-    "operatingSystem": "Web, iOS, Android",
-    "applicationCategory": "GameApplication",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "reviewCount": "1250"
-    }
-  }
-  </script>
+    <!-- Primary SEO Meta Tags -->
+    <title>
+      DartStreak - Free Online Darts Leagues | Play Darts with Friends
+    </title>
+    <meta
+      name="description"
+      content="Play free online darts leagues with friends! Compete in daily leagues, track your stats, and verify throws with video. No registration fees - 100% free multiplayer darts leagues."
+    />
+    <meta name="author" content="DartStreak" />
+    <meta itemprop="name" content="DartStreak" />
+    <meta name="application-name" content="DartStreak" />
+    <meta name="apple-mobile-web-app-title" content="DartStreak" />
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="bingbot" content="index, follow" />
+    <meta
+      name="google-site-verification"
+      content="s5SOvCIewiKsen15MCYApmuCEb51ShV1qpKF38xBgXo"
+    />
 
-  <!-- Preconnect for performance -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://dartstreak.pages.dev/" />
 
-  <!-- Additional SEO meta tags -->
-  <meta name="rating" content="General" />
-  <meta name="revisit-after" content="3 days" />
-  <meta name="distribution" content="global" />
-  <meta name="language" content="English, Swedish" />
-  <meta name="geo.region" content="SE" />
-  <meta name="geo.placename" content="Sweden" />
-</head>
+    <!-- Alternate Languages -->
+    <link rel="alternate" hreflang="en" href="https://dartstreak.pages.dev/" />
+    <link rel="alternate" hreflang="sv" href="https://dartstreak.pages.dev/" />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href="https://dartstreak.pages.dev/"
+    />
 
-<body>
-  <!-- Hidden SEO content for crawlers -->
-  <div id="root"></div>
+    <!-- PWA Meta Tags -->
+    <meta
+      name="theme-color"
+      content="#16a34a"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#0a0a0a"
+      media="(prefers-color-scheme: dark)"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="DartStreak" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="DartStreak" />
+    <meta name="msapplication-TileColor" content="#16a34a" />
+    <meta name="msapplication-TileImage" content="/icon-192.png" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <link rel="manifest" href="/manifest.json" />
 
-  <!-- Noscript fallback with SEO content -->
-  <noscript>
-    <div style="padding: 40px; font-family: system-ui, sans-serif; max-width: 800px; margin: 0 auto;">
-      <h1>DartStreak - Free Online Darts Leagues</h1>
-      <h2>Play Darts Online with Friends - 100% Free</h2>
-      <p>Welcome to DartStreak, the best free online darts leagues! Compete with friends, verify throws with video, and
-        climb the rankings.</p>
+    <!-- iOS Splash Screens for all device sizes -->
+    <!-- iPhone 15 Pro Max, 14 Pro Max -->
+    <link
+      rel="apple-touch-startup-image"
+      href="/icon-512.png"
+      media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)"
+    />
+    <!-- iPhone 15 Pro, 14 Pro -->
+    <link
+      rel="apple-touch-startup-image"
+      href="/icon-512.png"
+      media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)"
+    />
+    <!-- iPhone 15, 15 Plus, 14, 14 Plus -->
+    <link
+      rel="apple-touch-startup-image"
+      href="/icon-512.png"
+      media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)"
+    />
+    <!-- iPhone 13 Pro Max, 12 Pro Max -->
+    <link
+      rel="apple-touch-startup-image"
+      href="/icon-512.png"
+      media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)"
+    />
+    <!-- iPhone 13, 13 Pro, 12, 12 Pro -->
+    <link
+      rel="apple-touch-startup-image"
+      href="/icon-512.png"
+      media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)"
+    />
+    <!-- iPhone 13 mini, 12 mini -->
+    <link
+      rel="apple-touch-startup-image"
+      href="/icon-512.png"
+      media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)"
+    />
+    <!-- iPhone 11 Pro Max, XS Max -->
+    <link
+      rel="apple-touch-startup-image"
+      href="/icon-512.png"
+      media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)"
+    />
+    <!-- iPhone 11, XR -->
+    <link
+      rel="apple-touch-startup-image"
+      href="/icon-512.png"
+      media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)"
+    />
+    <!-- iPhone X, XS, 11 Pro -->
+    <link
+      rel="apple-touch-startup-image"
+      href="/icon-512.png"
+      media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)"
+    />
+    <!-- iPhone 8 Plus, 7 Plus, 6s Plus -->
+    <link
+      rel="apple-touch-startup-image"
+      href="/icon-512.png"
+      media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)"
+    />
+    <!-- iPhone 8, 7, 6s, SE (2nd gen) -->
+    <link
+      rel="apple-touch-startup-image"
+      href="/icon-512.png"
+      media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"
+    />
+    <!-- iPhone SE (1st gen) -->
+    <link
+      rel="apple-touch-startup-image"
+      href="/icon-512.png"
+      media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)"
+    />
+    <!-- iPad Pro 12.9" -->
+    <link
+      rel="apple-touch-startup-image"
+      href="/icon-512.png"
+      media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)"
+    />
+    <!-- iPad Pro 11" -->
+    <link
+      rel="apple-touch-startup-image"
+      href="/icon-512.png"
+      media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)"
+    />
+    <!-- iPad Air, iPad 10.2" -->
+    <link
+      rel="apple-touch-startup-image"
+      href="/icon-512.png"
+      media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2)"
+    />
 
-      <h3>Why Choose DartStreak?</h3>
-      <ul>
-        <li><strong>Completely Free</strong> - No hidden costs, no subscriptions, no in-app purchases</li>
-        <li><strong>Play with Friends</strong> - Invite friends and compete together online</li>
-        <li><strong>Video Verification</strong> - Verify your daily throws with free video</li>
-        <li><strong>Daily Challenges</strong> - Throw 9 darts every day and climb the leaderboard</li>
-        <li><strong>League Competitions</strong> - Weekly rankings and competitive play</li>
-      </ul>
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://dartstreak.pages.dev/" />
+    <meta property="og:site_name" content="DartStreak" />
+    <meta
+      property="og:title"
+      content="DartStreak - Free Online Darts Leagues | Play with Friends"
+    />
+    <meta
+      property="og:description"
+      content="Play free online darts leagues with friends! Compete daily, track stats, and verify throws with video. 100% free multiplayer darts - no hidden costs. Spela dart ligor online gratis!"
+    />
+    <meta property="og:image" content="https://dartstreak.pages.dev/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="DartStreak - Free Online Darts Leagues"
+    />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="sv_SE" />
 
-      <h3>Free Online Dart Leagues</h3>
-      <p>DartStreak lets you play online dart leagues completely free. Whether you want to practice alone or compete
-        against friends, our platform provides everything you need for the ultimate darts experience.</p>
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@dartstreak" />
+    <meta name="twitter:url" content="https://dartstreak.pages.dev/" />
+    <meta
+      name="twitter:title"
+      content="DartStreak - Free Online Darts Leagues | Play with Friends"
+    />
+    <meta
+      name="twitter:description"
+      content="Play free online darts leagues with friends! Compete daily, track stats, and verify throws with video. 100% free multiplayer darts leagues."
+    />
+    <meta name="twitter:image" content="https://dartstreak.pages.dev/og.png" />
+    <meta
+      name="twitter:image:alt"
+      content="DartStreak - Free Online Darts Game"
+    />
 
-      <h3>Compete with Friends Online</h3>
-      <p>Missing your dart competitions? DartStreak brings the experience online. Compete against your friends
-        from anywhere, verify scores via video, and keep the competitive spirit alive.</p>
+    <!-- Favicon and App Icons -->
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="144x144"
+      href="/favicon-144x144.png"
+    />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
-      <hr />
+    <!-- Structured Data - WebApplication -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "DartStreak",
+        "alternateName": [
+          "Dart Streak",
+          "DartStreak App",
+          "Free Online Darts Leagues"
+        ],
+        "url": "https://dartstreak.pages.dev/",
+        "description": "Play free online darts leagues with friends! Compete daily, track stats, and verify throws with video. 100% free multiplayer darts game.",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Web Browser, iOS, Android",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "ratingCount": "1250",
+          "bestRating": "5",
+          "worstRating": "1"
+        },
+        "screenshot": "https://dartstreak.pages.dev/og.png",
+        "featureList": [
+          "Free online dart leagues",
+          "Play with friends online",
+          "Video verification",
+          "Daily dart challenges",
+          "Weekly league ranking",
+          "Real-time multiplayer",
+          "No registration fees"
+        ],
+        "inLanguage": ["en", "sv"],
+        "isAccessibleForFree": true,
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "softwareVersion": "1.0",
+        "author": {
+          "@id": "https://dartstreak.pages.dev/#organization"
+        }
+      }
+    </script>
 
-      <h2>Spela Dart Ligor Online Gratis - DartStreak</h2>
-      <h3>Spela Dart med Kompisar - 100% Gratis</h3>
-      <p>Välkommen till DartStreak, de bästa gratis dart ligorna online! Tävla med vänner, verifiera kast med video, och
-        klättra i tabellen.</p>
+    <!-- Structured Data - VideoGame -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "DartStreak - Online Darts Leagues",
+        "description": "Free online multiplayer darts leagues. Compete daily with friends, featuring video verification and league rankings.",
+        "url": "https://dartstreak.pages.dev/",
+        "genre": ["Sports", "Multiplayer", "Casual"],
+        "gamePlatform": ["Web Browser", "Mobile Web"],
+        "playMode": ["MultiPlayer"],
+        "numberOfPlayers": {
+          "@type": "QuantitativeValue",
+          "minValue": 1,
+          "maxValue": 100
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "isAccessibleForFree": true,
+        "inLanguage": ["en", "sv"]
+      }
+    </script>
 
-      <h4>Varför Välja DartStreak?</h4>
-      <ul>
-        <li><strong>Helt Gratis</strong> - Inga dolda kostnader, inga prenumerationer, inga köp i appen</li>
-        <li><strong>Spela med Vänner</strong> - Bjud in kompisar och tävla tillsammans online</li>
-        <li><strong>Videoverifiering</strong> - Verifiera dina kast med gratis video</li>
-        <li><strong>Dagliga Utmaningar</strong> - Kasta 9 pilar varje dag och klättra på topplistan</li>
-        <li><strong>Liga Tävlingar</strong> - Veckovis ranking och tävlingsspel</li>
-      </ul>
+    <!-- Structured Data - Organization -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "@id": "https://dartstreak.pages.dev/#organization",
+        "name": "DartStreak",
+        "url": "https://dartstreak.pages.dev/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://dartstreak.pages.dev/logo.png"
+        }
+      }
+    </script>
 
-      <h4>Gratis Dart Ligor Online</h4>
-      <p>Med DartStreak kan du tävla i dart ligor online helt gratis. Oavsett om du vill träna ensam eller tävla mot
-        vänner, vår plattform ger dig allt du behöver för den ultimata dart upplevelsen.</p>
+    <!-- Structured Data - FAQPage for SEO -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is DartStreak completely free?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! DartStreak is 100% free to play. There are no hidden costs, no subscription fees, and no in-app purchases required. You can participate in unlimited leagues completely free."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I play darts online with my friends?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Absolutely! DartStreak lets you create private leagues to compete with your friends online. Simply invite them using a share link, and you can play together daily from anywhere in the world."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does DartStreak have video verification?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! DartStreak includes free video functionality so you can verify throws and see your friends while playing online leagues. This ensures fair play and makes it feel like you're playing together in person."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do online dart leagues work?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "You can create free dart leagues on DartStreak where players compete in daily challenges. Throw 9 darts every day and see who tops the leaderboard each week. It's perfect for friendly competitions with friends."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Är DartStreak helt gratis?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Ja! DartStreak är 100% gratis att spela. Det finns inga dolda kostnader, inga prenumerationsavgifter och inga köp i appen. Du kan delta i obegränsat med ligor helt gratis."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Kan jag spela dart online med mina kompisar?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Absolut! Med DartStreak kan du skapa privata ligor för att tävla med dina vänner online. Bjud in dem med en delningslänk så kan ni tävla dagligen tillsammans var ni än befinner er i världen."
+            }
+          }
+        ]
+      }
+    </script>
 
-      <h4>Tävla i Dart Online med Kompisar</h4>
-      <p>Saknar du tävlingarna med vännerna? DartStreak tar upplevelsen online. Tävla mot dina kompisar var ni än
-        är, verifiera poäng via video och håll tävlingsandan vid liv.</p>
+    <!-- Structured Data - SoftwareApplication for App Stores -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "DartStreak",
+        "operatingSystem": "Web, iOS, Android",
+        "applicationCategory": "GameApplication",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "reviewCount": "1250"
+        }
+      }
+    </script>
 
-      <p><em>Please enable JavaScript to use DartStreak.</em></p>
-      <p><em>Vänligen aktivera JavaScript för att använda DartStreak.</em></p>
-    </div>
-  </noscript>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      rel="stylesheet"
+    />
 
-  <script type="module" src="/src/main.tsx"></script>
-</body>
+    <!-- Additional SEO meta tags -->
+    <meta name="rating" content="General" />
+    <meta name="revisit-after" content="3 days" />
+    <meta name="distribution" content="global" />
+    <meta name="language" content="English, Swedish" />
+    <meta name="geo.region" content="SE" />
+    <meta name="geo.placename" content="Sweden" />
+  </head>
 
+  <body>
+    <!-- Hidden SEO content for crawlers -->
+    <div id="root"></div>
+
+    <!-- Noscript fallback with SEO content -->
+    <noscript>
+      <div
+        style="
+          padding: 40px;
+          font-family: system-ui, sans-serif;
+          max-width: 800px;
+          margin: 0 auto;
+        "
+      >
+        <h1>DartStreak - Free Online Darts Leagues</h1>
+        <h2>Play Darts Online with Friends - 100% Free</h2>
+        <p>
+          Welcome to DartStreak, the best free online darts leagues! Compete
+          with friends, verify throws with video, and climb the rankings.
+        </p>
+
+        <h3>Why Choose DartStreak?</h3>
+        <ul>
+          <li>
+            <strong>Completely Free</strong> - No hidden costs, no
+            subscriptions, no in-app purchases
+          </li>
+          <li>
+            <strong>Play with Friends</strong> - Invite friends and compete
+            together online
+          </li>
+          <li>
+            <strong>Video Verification</strong> - Verify your daily throws with
+            free video
+          </li>
+          <li>
+            <strong>Daily Challenges</strong> - Throw 9 darts every day and
+            climb the leaderboard
+          </li>
+          <li>
+            <strong>League Competitions</strong> - Weekly rankings and
+            competitive play
+          </li>
+        </ul>
+
+        <h3>Free Online Dart Leagues</h3>
+        <p>
+          DartStreak lets you play online dart leagues completely free. Whether
+          you want to practice alone or compete against friends, our platform
+          provides everything you need for the ultimate darts experience.
+        </p>
+
+        <h3>Compete with Friends Online</h3>
+        <p>
+          Missing your dart competitions? DartStreak brings the experience
+          online. Compete against your friends from anywhere, verify scores via
+          video, and keep the competitive spirit alive.
+        </p>
+
+        <hr />
+
+        <h2>Spela Dart Ligor Online Gratis - DartStreak</h2>
+        <h3>Spela Dart med Kompisar - 100% Gratis</h3>
+        <p>
+          Välkommen till DartStreak, de bästa gratis dart ligorna online! Tävla
+          med vänner, verifiera kast med video, och klättra i tabellen.
+        </p>
+
+        <h4>Varför Välja DartStreak?</h4>
+        <ul>
+          <li>
+            <strong>Helt Gratis</strong> - Inga dolda kostnader, inga
+            prenumerationer, inga köp i appen
+          </li>
+          <li>
+            <strong>Spela med Vänner</strong> - Bjud in kompisar och tävla
+            tillsammans online
+          </li>
+          <li>
+            <strong>Videoverifiering</strong> - Verifiera dina kast med gratis
+            video
+          </li>
+          <li>
+            <strong>Dagliga Utmaningar</strong> - Kasta 9 pilar varje dag och
+            klättra på topplistan
+          </li>
+          <li>
+            <strong>Liga Tävlingar</strong> - Veckovis ranking och tävlingsspel
+          </li>
+        </ul>
+
+        <h4>Gratis Dart Ligor Online</h4>
+        <p>
+          Med DartStreak kan du tävla i dart ligor online helt gratis. Oavsett
+          om du vill träna ensam eller tävla mot vänner, vår plattform ger dig
+          allt du behöver för den ultimata dart upplevelsen.
+        </p>
+
+        <h4>Tävla i Dart Online med Kompisar</h4>
+        <p>
+          Saknar du tävlingarna med vännerna? DartStreak tar upplevelsen online.
+          Tävla mot dina kompisar var ni än är, verifiera poäng via video och
+          håll tävlingsandan vid liv.
+        </p>
+
+        <p><em>Please enable JavaScript to use DartStreak.</em></p>
+        <p><em>Vänligen aktivera JavaScript för att använda DartStreak.</em></p>
+      </div>
+    </noscript>
+
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
