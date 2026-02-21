@@ -62,13 +62,17 @@ const Navbar = () => {
         DartStreak
       </div>
       <div className="hidden gap-8 md:flex items-center">
-        {["Features", "Leagues", "Philosophy"].map((link) => (
+        {[
+          { id: "features", label: t("landing.navFeatures") },
+          { id: "leagues", label: t("landing.navLeagues") },
+          { id: "philosophy", label: t("landing.navPhilosophy") },
+        ].map((link) => (
           <a
-            key={link}
-            href={`#${link.toLowerCase()}`}
+            key={link.id}
+            href={`#${link.id}`}
             className="text-sm font-medium text-[#FAF8F5]/70 transition-all hover:-translate-y-[1px] hover:text-[#22C55E]"
           >
-            {link}
+            {link.label}
           </a>
         ))}
         <div className="border-l border-[#2A2A35] pl-8">
@@ -78,14 +82,14 @@ const Navbar = () => {
       {session ? (
         <Link to="/dashboard" className="group relative overflow-hidden rounded-full bg-[#FAF8F5] px-6 py-2.5 text-sm font-semibold text-[#0D0D12] transition-transform duration-300 hover:scale-[1.03] active:scale-[0.97]">
           <span className="relative z-10 transition-colors group-hover:text-[#FAF8F5]">
-            {t("sidebar.dashboard")}
+            {t("landing.dashboard")}
           </span>
           <span className="absolute inset-0 z-0 h-full w-full -translate-x-full bg-[#22C55E] transition-transform duration-500 cubic-bezier(0.25, 0.46, 0.45, 0.94) group-hover:translate-x-0" />
         </Link>
       ) : (
         <Link to="/auth" className="group relative overflow-hidden rounded-full bg-[#FAF8F5] px-6 py-2.5 text-sm font-semibold text-[#0D0D12] transition-transform duration-300 hover:scale-[1.03] active:scale-[0.97]">
           <span className="relative z-10 transition-colors group-hover:text-[#FAF8F5]">
-            {t("auth.login")}
+            {t("landing.login")}
           </span>
           <span className="absolute inset-0 z-0 h-full w-full -translate-x-full bg-[#22C55E] transition-transform duration-500 cubic-bezier(0.25, 0.46, 0.45, 0.94) group-hover:translate-x-0" />
         </Link>
@@ -134,10 +138,10 @@ const Hero = () => {
           {t("landing.tagline")}
         </div>
         <h1 className="hero-elem mb-2 font-sans text-5xl font-bold tracking-tight text-[#FAF8F5] sm:text-7xl lg:text-8xl">
-          {t("landing.heroTitle", "Play Darts Online with")}
+          {t("landing.heroTitle")}
         </h1>
         <h1 className="hero-elem mb-10 font-serif text-6xl italic text-[#FAF8F5] sm:text-8xl lg:text-[10rem] lg:leading-[0.85]">
-          <span className="not-italic font-bold font-sans text-[#22C55E]">{t("landing.heroHighlight", "Leagues")}</span>
+          <span className="not-italic font-bold font-sans text-[#22C55E]">{t("landing.heroHighlight")}</span>
         </h1>
         <div className="hero-elem flex flex-wrap gap-4">
           {session ? (
@@ -146,7 +150,7 @@ const Hero = () => {
               className="group relative overflow-hidden rounded-full bg-[#22C55E] px-8 py-4 text-base font-bold text-[#0D0D12] shadow-xl transition-all duration-300 hover:scale-[1.03]"
             >
               <span className="relative z-10 flex items-center gap-2">
-                {t("sidebar.dashboard")} <ArrowRight size={18} />
+                {t("landing.dashboard")} <ArrowRight size={18} />
               </span>
               <span className="absolute inset-0 z-0 h-full w-full -translate-x-full bg-[#FAF8F5] transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:translate-x-0" />
             </Link>
@@ -172,9 +176,9 @@ const Hero = () => {
 const ShufflerCard = () => {
   const { t } = useTranslation();
   const labels = [
-    t("leagues.leagueDetails", "League Details"),
-    t("sidebar.leaderboard", "Leaderboard"),
-    t("sidebar.dashboard", "Dashboard")
+    t("landing.leagueDetails"),
+    t("landing.leaderboard"),
+    t("landing.dashboard")
   ];
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -227,7 +231,7 @@ const TypewriterCard = () => {
   const { t } = useTranslation();
   const [text, setText] = useState("");
   const fullText =
-    `> ${t("game.status.inProgress", "In Progress")}...\n> P1: T20, T20, D20\n> Score: 180\n> ${t("match.calculating", "Calculating")}...`;
+    `> ${t("landing.inProgress")}...\n> P1: T20, T20, D20\n> Score: 180\n> ${t("landing.calculating")}...`;
 
   useEffect(() => {
     let index = 0;
@@ -247,7 +251,7 @@ const TypewriterCard = () => {
     <div className="relative flex h-full min-h-[300px] flex-col overflow-hidden rounded-[2rem] border border-[#2A2A35] bg-[#16161C] p-8 shadow-2xl">
       <div className="absolute top-8 right-8 flex items-center gap-2 rounded-full border border-green-500/20 bg-green-500/10 px-3 py-1 text-xs font-bold text-[#22C55E]">
         <span className="h-2 w-2 animate-pulse rounded-full bg-[#22C55E]" />
-        {t("sidebar.liveMatches", "Live Matches")}
+        {t("landing.liveMatches")}
       </div>
       <h3 className="mb-2 w-2/3 font-sans text-xl font-bold text-[#FAF8F5]">
         {t("landing.whyUs1Title")}
@@ -338,7 +342,7 @@ const SchedulerCard = () => {
 
         <div className="flex justify-end">
           <div className="save-btn rounded-lg bg-[#2A2A35] px-4 py-2 font-bold text-[#FAF8F5]">
-            {t("common.save")}
+            {t("landing.save")}
           </div>
         </div>
 
@@ -381,7 +385,7 @@ const Features = () => {
     >
       <div className="mx-auto max-w-[1400px]">
         <h2 className="mb-16 font-sans text-4xl font-bold tracking-tight text-[#FAF8F5] md:text-5xl">
-          {t("landing.coreMechanicsTitle", "Core Mechanics")}
+          {t("landing.coreMechanicsTitle")}
         </h2>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div className="feature-card h-full">
@@ -531,10 +535,10 @@ const Philosophy = () => {
       </div>
       <div className="relative z-10 max-w-5xl">
         <p className="phil-elem mb-8 font-sans text-xl font-medium tracking-wide text-[#FAF8F5]/50 md:text-3xl">
-          {t("landing.philosophyTitle", "Most apps focus on generic statistics.")}
+          {t("landing.philosophyTitle")}
         </p>
         <p className="phil-elem font-serif text-5xl italic text-[#FAF8F5] md:text-[5.5rem] md:leading-tight">
-           <span className="whitespace-pre-wrap">{t("landing.philosophyHighlight", "We focus on: \ncommunity & progression.")}</span>
+           <span className="whitespace-pre-wrap">{t("landing.philosophyHighlight")}</span>
         </p>
       </div>
     </section>
@@ -549,7 +553,7 @@ const CTA = () => {
   return (
     <section className="bg-[#0D0D12] px-6 py-32 md:px-16 text-center border-t border-[#2A2A35]">
       <h2 className="font-sans font-bold text-4xl md:text-5xl text-[#FAF8F5] mb-6">
-        {session ? t("sidebar.dashboard", "Dashboard") : t("landing.readyToCompete")}
+        {session ? t("landing.dashboard") : t("landing.readyToCompete")}
       </h2>
       <p className="text-lg text-[#FAF8F5]/60 mb-12 max-w-xl mx-auto font-medium">
         {session ? "" : t("landing.createAccountCta")}
@@ -560,7 +564,7 @@ const CTA = () => {
           className="inline-flex group relative overflow-hidden rounded-full bg-[#22C55E] px-10 py-5 text-lg font-bold text-[#0D0D12] shadow-[0_0_30px_rgba(34,197,94,0.2)] transition-all duration-300 hover:scale-[1.03]"
         >
           <span className="relative z-10 flex items-center gap-3">
-            {t("sidebar.dashboard")} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            {t("landing.dashboard")} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </span>
           <span className="absolute inset-0 z-0 h-full w-full -translate-x-full bg-[#FAF8F5] transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:translate-x-0" />
         </Link>
@@ -591,7 +595,7 @@ const Footer = () => {
             Dartstreak.
           </div>
           <p className="text-[#FAF8F5]/60 max-w-xs mb-8">
-            {t("landing.footerDesc", "Precision mechanics for your daily darts. A digital instrument for the modern competitor.")}
+            {t("landing.footerDesc")}
           </p>
 
           <div className="flex items-center gap-3 font-mono text-xs font-bold text-[#FAF8F5] border border-[#2A2A35] rounded-full px-4 py-2 inline-flex bg-[#0D0D12]">
@@ -599,28 +603,28 @@ const Footer = () => {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22C55E] opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-[#22C55E]"></span>
             </span>
-            SYSTEM OPERATIONAL
+            {t("landing.systemOperational")}
           </div>
         </div>
 
         <div>
            <h4 className="font-sans text-sm font-bold text-[#22C55E] mb-6 uppercase tracking-widest">
-            {t("nav.home", "Home")}
+            {t("landing.footerHome")}
           </h4>
           <ul className="space-y-4 text-sm font-medium text-[#FAF8F5]/70">
-            <li><Link to="/leagues" className="hover:text-[#FAF8F5] transition-colors">{t("nav.leagues")}</Link></li>
-            <li><Link to="/training" className="hover:text-[#FAF8F5] transition-colors">{t("nav.training")}</Link></li>
+            <li><Link to="/leagues" className="hover:text-[#FAF8F5] transition-colors">{t("landing.footerLeagues")}</Link></li>
+            <li><Link to="/training" className="hover:text-[#FAF8F5] transition-colors">{t("landing.footerTraining")}</Link></li>
           </ul>
         </div>
 
         <div>
           <h4 className="font-sans text-sm font-bold text-[#22C55E] mb-6 uppercase tracking-widest">
-            {t("common.legal")}
+            {t("landing.footerLegal")}
           </h4>
           <ul className="space-y-4 text-sm font-medium text-[#FAF8F5]/70">
-            <li><Link to="/privacy" className="hover:text-[#FAF8F5] transition-colors">{t("common.privacyPolicy")}</Link></li>
-            <li><Link to="/terms" className="hover:text-[#FAF8F5] transition-colors">{t("common.termsOfService")}</Link></li>
-            <li><Link to="/contact" className="hover:text-[#FAF8F5] transition-colors">{t("common.contact")}</Link></li>
+            <li><Link to="/privacy" className="hover:text-[#FAF8F5] transition-colors">{t("landing.footerPrivacyPolicy")}</Link></li>
+            <li><Link to="/terms" className="hover:text-[#FAF8F5] transition-colors">{t("landing.footerTermsOfService")}</Link></li>
+            <li><Link to="/contact" className="hover:text-[#FAF8F5] transition-colors">{t("landing.footerContact")}</Link></li>
           </ul>
         </div>
       </div>
