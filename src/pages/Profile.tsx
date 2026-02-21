@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
-import { enUS, sv } from "date-fns/locale";
 import { StatsDisplay } from "@/components/StatsDisplay";
 import { AppLayout } from "@/components/AppLayout";
 import PlayerNameWithCountry from "@/components/PlayerNameWithCountry";
+import { getDateFnsLocale } from "@/i18n/languages";
 
 interface ProfileData {
   id: string;
@@ -27,7 +27,7 @@ export default function Profile() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const dateLocale = i18n.language === "sv" ? sv : enUS;
+  const dateLocale = getDateFnsLocale(i18n.resolvedLanguage || i18n.language);
 
   useEffect(() => {
     if (!authLoading && !user) {

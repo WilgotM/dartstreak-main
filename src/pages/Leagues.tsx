@@ -20,12 +20,12 @@ import {
   setISOWeek,
   setYear,
 } from "date-fns";
-import { enUS, sv } from "date-fns/locale";
 import { AppLayout } from "@/components/AppLayout";
 import { motion } from "framer-motion";
 import { useHaptics } from "@/hooks/useHaptics";
 import { addDays, isAfter, isBefore } from "date-fns";
 import { getCountryName } from "@/lib/countries";
+import { getDateFnsLocale } from "@/i18n/languages";
 
 interface League {
   id: string;
@@ -73,7 +73,8 @@ export default function Leagues() {
   const [leagues, setLeagues] = useState<League[]>([]);
   const [loadingLeagues, setLoadingLeagues] = useState(true);
 
-  const dateLocale = i18n.language === "sv" ? sv : enUS;
+  const appLanguage = i18n.resolvedLanguage || i18n.language;
+  const dateLocale = getDateFnsLocale(appLanguage);
 
   const isActiveSystemLeague = useCallback((league: League) => {
     if (!league.is_system || !league.started_at) return false;
@@ -234,7 +235,7 @@ export default function Leagues() {
               // Clean display name for system leagues
               const countryName =
                 !isGlobal && league.country_code
-                  ? getCountryName(league.country_code, i18n.language)
+                  ? getCountryName(league.country_code, appLanguage)
                   : null;
 
               return (

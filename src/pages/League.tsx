@@ -34,7 +34,6 @@ import {
   Globe,
 } from "lucide-react";
 import { format, addWeeks, isWithinInterval } from "date-fns";
-import { enUS, sv } from "date-fns/locale";
 import ThrowInput from "@/components/ThrowInput";
 import { VideoDialog } from "@/components/VideoDialog";
 import { CountdownTimer } from "@/components/CountdownTimer";
@@ -42,6 +41,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { Switch } from "@/components/ui/switch";
 import PlayerNameWithCountry from "@/components/PlayerNameWithCountry";
 import { getCountryName } from "@/lib/countries";
+import { getDateFnsLocale, getIntlLocale } from "@/i18n/languages";
 
 interface League {
   id: string;
@@ -108,7 +108,7 @@ const toDayKeyInTimezone = (timeZone: string) => {
 };
 
 const formatWithTimezone = (date: Date, timezone: string, locale: string) => {
-  const localeValue = locale.startsWith("sv") ? "sv-SE" : "en-US";
+  const localeValue = getIntlLocale(locale);
   return new Intl.DateTimeFormat(localeValue, {
     timeZone: timezone,
     dateStyle: "medium",
@@ -144,7 +144,8 @@ export default function League() {
   const [historyLeagues, setHistoryLeagues] = useState<SeasonHistoryItem[]>([]);
   const [historyIndex, setHistoryIndex] = useState<number>(-1);
 
-  const dateLocale = i18n.language === "sv" ? sv : enUS;
+  const appLanguage = i18n.resolvedLanguage || i18n.language;
+  const dateLocale = getDateFnsLocale(appLanguage);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -488,12 +489,12 @@ export default function League() {
     ? formatWithTimezone(
       endDate,
       profile?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
-      i18n.language
+      appLanguage
     )
     : t("common.unknown");
 
   const countryName = league.country_code
-    ? getCountryName(league.country_code, i18n.language)
+    ? getCountryName(league.country_code, appLanguage)
     : "";
 
   const leagueDisplayName = isSystemLeague

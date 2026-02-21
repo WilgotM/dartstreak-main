@@ -52,7 +52,8 @@
     "save": "Save",
     "signInToPlay": "Sign in to play",
     "termsOfService": "Terms of Service",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "language": "Language"
   },
   "cookie": {
     "acceptButton": "Accept analytics",
@@ -223,7 +224,7 @@
       "li5": "Google OAuth: Optional sign-in provider for secure authentication.",
       "li6": "Supabase Storage: Used for storing throw verification videos securely.",
       "li9": "Google Analytics: Used for traffic and behavior analytics. We have enabled IP anonymization where supported.",
-      "p1": "Last updated: February 18, 2026",
+      "p1": "Last updated: February 21, 2026",
       "s1Text": "Welcome to DartStreak (\"we,\" \"our,\" or \"us\"). We respect your privacy and are committed to protecting your personal data. This privacy policy explains how we look after your personal data when you visit our application and tells you about your privacy rights.",
       "s1Title": "1. Introduction",
       "s2Title": "2. Information We Collect",
@@ -235,7 +236,8 @@
       "s5Title": "5. Cookies and Consent",
       "title": "Privacy Policy",
       "s6Title": "6. System Leagues and Country Data",
-      "s6Text": "When you set your country, we may automatically place you in a global league and a country league. System leagues use fixed league timezones for weekly seasons."
+      "s6Text": "When you set your country, we may automatically place you in a global league and a country league. System leagues use fixed league timezones for weekly seasons.",
+      "li10": "Language Preference Data: We store your selected app language in your browser local storage so the app can remember your choice across visits."
     },
     "terms": {
       "li1": "Cheat, manipulate scores, or use automated bots.",

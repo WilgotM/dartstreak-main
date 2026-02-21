@@ -7,6 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { normalizeLanguageCode } from "@/i18n/languages";
 
 interface VoiceInputButtonProps {
   isListening: boolean;
@@ -26,15 +27,24 @@ export function VoiceInputButton({
   className,
 }: VoiceInputButtonProps) {
   const { t, i18n } = useTranslation();
-  const isSwedish = i18n.language === "sv";
+  const languageCode = normalizeLanguageCode(i18n.resolvedLanguage || i18n.language);
 
   if (!isSupported) {
     return null;
   }
 
-  const exampleCommand = isSwedish
-    ? 'Säg "trippel tjugo" eller "60"'
-    : 'Say "triple twenty" or "60"';
+  const exampleCommand = (() => {
+    switch (languageCode) {
+      case "sv":
+        return 'Säg "trippel tjugo" eller "60"';
+      case "de":
+        return 'Sag "dreifach zwanzig" oder "60"';
+      case "nl":
+        return 'Zeg "drievoudig twintig" of "60"';
+      default:
+        return 'Say "triple twenty" or "60"';
+    }
+  })();
 
   // Determine button state and styling
   const getButtonStyle = () => {
@@ -69,7 +79,16 @@ export function VoiceInputButton({
 
   const getTooltipText = () => {
     if (needsRestart) {
-      return isSwedish ? "Tryck för att starta om mikrofonen" : "Tap to restart microphone";
+      switch (languageCode) {
+        case "sv":
+          return "Tryck för att starta om mikrofonen";
+        case "de":
+          return "Tippen, um das Mikrofon neu zu starten";
+        case "nl":
+          return "Tik om de microfoon opnieuw te starten";
+        default:
+          return "Tap to restart microphone";
+      }
     }
     if (isListening) {
       return t("voice.listening");

@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { FileText, LogOut, Mail, Shield, Trash2, User } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
-import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { StatsDisplay } from "@/components/StatsDisplay";
 import { ProfileSettings } from "@/components/ProfileSettings";
 import { toast } from "sonner";
@@ -137,7 +136,6 @@ export default function ProfilePage() {
         <header className="sticky top-0 z-40 bg-card/95 md:bg-card/80 md:backdrop-blur-md border-b border-border">
           <div className="container mx-auto px-4 py-4 flex items-center justify-between">
             <h1 className="text-xl font-display font-bold text-foreground">{t("nav.profile")}</h1>
-            <LanguageSwitch />
           </div>
         </header>
 

@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/dialog";
 import TicTacToeBoard from "@/components/training/TicTacToeBoard";
 import TicTacToeTurnPanel from "@/components/training/TicTacToeTurnPanel";
-import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { Infinity as InfinityIcon, Minus, Plus, Target as TargetIcon, Trophy } from "lucide-react";
@@ -488,7 +487,6 @@ export default function TrainingTicTacToe() {
         <div className="container mx-auto px-4 py-4 md:py-3 space-y-4 md:space-y-3">
           <div className="flex items-center justify-between gap-4">
             <h1 className="text-xl font-display font-bold">{t("trainingTicTacToe.title")}</h1>
-            <LanguageSwitch />
           </div>
 
           <div className="grid gap-2 md:grid-cols-[1fr_auto_auto_auto]">

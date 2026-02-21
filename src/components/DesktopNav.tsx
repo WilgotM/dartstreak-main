@@ -1,6 +1,7 @@
 import { Home, Target, Trophy, User } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useTranslation } from "react-i18next";
+import { LanguageSwitch } from "@/components/LanguageSwitch";
 
 export function DesktopNav() {
   const { t } = useTranslation();
@@ -53,7 +54,9 @@ export function DesktopNav() {
           </NavLink>
         </div>
 
-        <div className="flex-1 min-w-0" />
+        <div className="flex-1 min-w-0 flex justify-end">
+          <LanguageSwitch />
+        </div>
       </div>
     </nav>
   );

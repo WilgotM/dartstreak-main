@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { LanguageSwitch } from "@/components/LanguageSwitch";
 
 export function MobileHeader() {
   return (
@@ -13,6 +14,7 @@ export function MobileHeader() {
             whileTap={{ scale: 0.95 }}
           />
         </div>
+        <LanguageSwitch />
       </div>
     </nav>
   );

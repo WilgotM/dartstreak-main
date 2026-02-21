@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { getSpeechLocale, normalizeLanguageCode } from "@/i18n/languages";
 
 // TypeScript declarations for Web Speech API
 interface SpeechRecognitionEvent extends Event {
@@ -111,10 +112,80 @@ const swedishNumbers: Record<string, number> = {
 };
 
 // Multiplier words for better recognition
+const germanNumbers: Record<string, number> = {
+  null: 0,
+  eins: 1, ein: 1,
+  zwei: 2,
+  drei: 3,
+  vier: 4,
+  funf: 5, fünf: 5,
+  sechs: 6,
+  sieben: 7,
+  acht: 8,
+  neun: 9,
+  zehn: 10,
+  elf: 11,
+  zwolf: 12, zwölf: 12,
+  dreizehn: 13,
+  vierzehn: 14,
+  funfzehn: 15, fünfzehn: 15,
+  sechzehn: 16,
+  siebzehn: 17,
+  achtzehn: 18,
+  neunzehn: 19,
+  zwanzig: 20,
+  funfundzwanzig: 25, fünfundzwanzig: 25,
+  bull: 50, bullseye: 50,
+};
+
+const dutchNumbers: Record<string, number> = {
+  nul: 0,
+  een: 1,
+  twee: 2,
+  drie: 3,
+  vier: 4,
+  vijf: 5,
+  zes: 6,
+  zeven: 7,
+  acht: 8,
+  negen: 9,
+  tien: 10,
+  elf: 11,
+  twaalf: 12,
+  dertien: 13,
+  veertien: 14,
+  vijftien: 15,
+  zestien: 16,
+  zeventien: 17,
+  achttien: 18,
+  negentien: 19,
+  twintig: 20,
+  vijfentwintig: 25,
+  bull: 50, bullseye: 50,
+};
+
+const languageNumberMaps: Partial<Record<string, Record<string, number>>> = {
+  sv: swedishNumbers,
+  de: germanNumbers,
+  nl: dutchNumbers,
+};
+
+const languageActivationWords: Partial<Record<string, string[]>> = {
+  sv: ["poäng", "poing", "score"],
+  de: ["punkte", "punktzahl", "score"],
+  nl: ["punten", "score"],
+};
+
+const languageMissWords: Partial<Record<string, string[]>> = {
+  sv: ["missa", "bom", "inget", "noll", "miss"],
+  de: ["vorbei", "fehlwurf", "nichts", "null", "miss"],
+  nl: ["mis", "niets", "nul", "miss"],
+};
+
 const multiplierWords = {
-  triple: 3, trippel: 3, tripple: 3, treble: 3,
-  double: 2, dubbel: 2, dubble: 2,
-  single: 1, singel: 1, enkel: 1,
+  triple: 3, trippel: 3, tripple: 3, treble: 3, dreifach: 3, drievoudig: 3,
+  double: 2, dubbel: 2, dubble: 2, doppelt: 2,
+  single: 1, singel: 1, enkel: 1, einfach: 1,
 } as const;
 
 export function useVoiceInput({ onScoreDetected, disabled, autoStart = false }: UseVoiceInputProps) {
@@ -126,7 +197,7 @@ export function useVoiceInput({ onScoreDetected, disabled, autoStart = false }: 
   const shouldBeListeningRef = useRef(false);
   const processedResultsRef = useRef<Set<string>>(new Set());
   const lastProcessedIndexRef = useRef(-1);
-  const isSwedish = i18n.language === "sv";
+  const languageCode = normalizeLanguageCode(i18n.resolvedLanguage || i18n.language);
 
   // Parse voice command - now supports both with and without activation word
   const parseVoiceCommand = useCallback((transcript: string): VoiceScore | null => {
@@ -137,9 +208,7 @@ export function useVoiceInput({ onScoreDetected, disabled, autoStart = false }: 
     console.log("Processing voice:", text);
 
     // Check for activation word (optional now)
-    const activationWords = isSwedish
-      ? ["poäng", "poing", "score"]
-      : ["score", "points", "point"];
+    const activationWords = languageActivationWords[languageCode] ?? ["score", "points", "point"];
 
     let command = text;
 
@@ -167,13 +236,13 @@ export function useVoiceInput({ onScoreDetected, disabled, autoStart = false }: 
     }
 
     // Handle miss
-    const missWords = ["miss", "missa", "bom", "missed", "nothing", "zero", "noll", "inget"];
+    const missWords = languageMissWords[languageCode] ?? ["miss", "missed", "nothing", "zero"];
     if (missWords.some(word => scoreText === word || scoreText.startsWith(word + " "))) {
       return { score: 0, multiplier: 1 };
     }
 
     // Try to parse number
-    const numberMap = isSwedish ? swedishNumbers : englishNumbers;
+    const numberMap = languageNumberMaps[languageCode] ?? englishNumbers;
 
     // Check word numbers first (longer matches first to avoid partial matches)
     const sortedWords = Object.entries(numberMap).sort((a, b) => b[0].length - a[0].length);
@@ -218,7 +287,7 @@ export function useVoiceInput({ onScoreDetected, disabled, autoStart = false }: 
     }
 
     return null;
-  }, [isSwedish]);
+  }, [languageCode]);
 
   const createRecognition = useCallback(() => {
     const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -238,10 +307,10 @@ export function useVoiceInput({ onScoreDetected, disabled, autoStart = false }: 
     // Get multiple alternatives for better accuracy
     recognition.maxAlternatives = 3;
 
-    recognition.lang = isSwedish ? "sv-SE" : "en-US";
+    recognition.lang = getSpeechLocale(languageCode);
 
     return recognition;
-  }, [isSwedish]);
+  }, [languageCode]);
 
   const startListening = useCallback(() => {
     if (recognitionRef.current) {

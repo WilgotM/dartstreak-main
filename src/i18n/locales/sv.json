@@ -52,7 +52,8 @@
     "save": "Spara",
     "signInToPlay": "Logga in för att spela",
     "termsOfService": "Användarvillkor",
-    "unknown": "Okänd"
+    "unknown": "Okänd",
+    "language": "Språk"
   },
   "cookie": {
     "acceptButton": "Acceptera analys",
@@ -223,7 +224,7 @@
       "li5": "Google OAuth: Valfri inloggningsmetod för säker autentisering.",
       "li6": "Supabase Storage: Används för att lagra videoverifieringar säkert.",
       "li9": "Google Analytics: Används för trafik- och beteendeanalys. Vi har aktiverat IP-anonymisering där det stöds.",
-      "p1": "Senast uppdaterad: 18 februari 2026",
+      "p1": "Senast uppdaterad: 21 februari 2026",
       "s1Text": "Välkommen till DartStreak (\"vi\", \"vår\" eller \"oss\"). Vi värnar om din integritet och är engagerade i att skydda dina personuppgifter. Denna integritetspolicy förklarar hur vi behandlar dina personuppgifter när du besöker vår applikation och informerar dig om dina rättigheter.",
       "s1Title": "1. Introduktion",
       "s2Title": "2. Information vi samlar in",
@@ -235,7 +236,8 @@
       "s5Title": "5. Cookies och samtycke",
       "title": "Integritetspolicy",
       "s6Title": "6. Systemligor och landdata",
-      "s6Text": "När du väljer land kan vi automatiskt placera dig i en global liga och en liga för ditt land. Systemligor använder fasta tidszoner per liga för veckosäsonger."
+      "s6Text": "När du väljer land kan vi automatiskt placera dig i en global liga och en liga för ditt land. Systemligor använder fasta tidszoner per liga för veckosäsonger.",
+      "li10": "Språkpreferensdata: Vi sparar ditt valda appspråk i webbläsarens lokala lagring så att appen kan komma ihåg ditt val mellan besök."
     },
     "terms": {
       "li1": "Fuska, manipulera poäng eller använda automatiserade bottar.",

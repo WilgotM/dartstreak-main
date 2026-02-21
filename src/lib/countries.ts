@@ -1,3 +1,5 @@
+import { normalizeLanguageCode } from "@/i18n/languages";
+
 export interface CountryInfo {
   code: string;
   timezone: string;
@@ -254,8 +256,17 @@ export const COUNTRIES: CountryInfo[] = [
   { code: "ZW", timezone: "Africa/Harare" },
 ];
 
-const countryDisplayNamesEn = new Intl.DisplayNames(["en"], { type: "region" });
-const countryDisplayNamesSv = new Intl.DisplayNames(["sv"], { type: "region" });
+const countryDisplayNamesCache = new Map<string, Intl.DisplayNames>();
+
+const getCountryDisplayNames = (language: string): Intl.DisplayNames => {
+  const normalizedLanguage = normalizeLanguageCode(language);
+  const cached = countryDisplayNamesCache.get(normalizedLanguage);
+  if (cached) return cached;
+
+  const displayNames = new Intl.DisplayNames([normalizedLanguage], { type: "region" });
+  countryDisplayNamesCache.set(normalizedLanguage, displayNames);
+  return displayNames;
+};
 
 export const getCountryTimezone = (countryCode: string): string => {
   const code = countryCode.toUpperCase();
@@ -265,8 +276,7 @@ export const getCountryTimezone = (countryCode: string): string => {
 
 export const getCountryName = (countryCode: string, language: string): string => {
   const code = countryCode.toUpperCase();
-  const normalized = language.toLowerCase().startsWith("sv") ? countryDisplayNamesSv : countryDisplayNamesEn;
-  return normalized.of(code) ?? code;
+  return getCountryDisplayNames(language).of(code) ?? code;
 };
 
 export const getCountryOptions = (language: string): Array<{ code: string; label: string; timezone: string }> => {
