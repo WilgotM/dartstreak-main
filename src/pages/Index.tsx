@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowRight, Crosshair, Map, MousePointer2, Target, Users, Trophy } from "lucide-react";
+import { ArrowRight, CheckCircle2, Flame, Target, TrendingUp, Trophy, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { useAuth } from "@/hooks/useAuth";
@@ -172,185 +172,358 @@ const Hero = () => {
 };
 
 // --- C. FEATURES ---
+const manualEntrySequence = [20, 14, 5];
+const manualEntryCueTimes = [2.29, 4.15, 5.85];
 
-const ShufflerCard = () => {
+const leagueRaceFrames = [
+  [
+    { id: "alex", points: 126 },
+    { id: "you", points: 123 },
+    { id: "lin", points: 121 },
+    { id: "mika", points: 118 },
+  ],
+  [
+    { id: "alex", points: 129 },
+    { id: "lin", points: 128 },
+    { id: "you", points: 127 },
+    { id: "mika", points: 121 },
+  ],
+  [
+    { id: "you", points: 136 },
+    { id: "alex", points: 132 },
+    { id: "lin", points: 130 },
+    { id: "mika", points: 126 },
+  ],
+];
+
+const streakDays = ["M", "T", "W", "T", "F", "S", "S"];
+
+const LiveScoringCard = () => {
   const { t } = useTranslation();
-  const labels = [
-    t("landing.leagueDetails"),
-    t("landing.leaderboard"),
-    t("landing.dashboard")
-  ];
-  const [activeIndex, setActiveIndex] = useState(0);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [step, setStep] = useState(0);
+  const enteredThrows = manualEntrySequence.slice(0, step);
+  const activeSlot = step > 0 ? step - 1 : null;
+  const total = enteredThrows.reduce((sum, value) => sum + value, 0);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % labels.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [labels.length]);
+    let frameId = 0;
 
-  return (
-    <div className="relative flex h-full min-h-[300px] flex-col overflow-hidden rounded-[2rem] border border-[#2A2A35] bg-[#16161C] p-8 shadow-2xl">
-      <h3 className="mb-2 font-sans text-xl font-bold text-[#FAF8F5]">
-        {t("landing.leaguesTitle")}
-      </h3>
-      <p className="font-sans text-sm text-[#FAF8F5]/60 mb-6 font-medium">
-        {t("landing.whyUs3Desc")}
-      </p>
-
-      <div className="relative flex-1">
-        {labels.map((label, idx) => {
-          const offset = (idx - activeIndex + labels.length) % labels.length;
-          const isVisible = offset < 3;
-
-          return (
-            <div
-              key={idx}
-              className="absolute left-0 w-full rounded-2xl border border-[#2A2A35] bg-[#0D0D12] p-4 text-sm font-mono text-[#FAF8F5] transition-all duration-[600ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]"
-              style={{
-                top: `${offset * 15}%`,
-                scale: 1 - offset * 0.05,
-                opacity: isVisible ? 1 - offset * 0.3 : 0,
-                zIndex: labels.length - offset,
-                pointerEvents: offset === 0 ? "auto" : "none",
-              }}
-            >
-              <div className="flex items-center gap-3">
-                <Crosshair size={16} className="text-[#22C55E]" />
-                {label}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-};
-
-const TypewriterCard = () => {
-  const { t } = useTranslation();
-  const [text, setText] = useState("");
-  const fullText =
-    `> ${t("landing.inProgress")}...\n> P1: T20, T20, D20\n> Score: 180\n> ${t("landing.calculating")}...`;
-
-  useEffect(() => {
-    let index = 0;
-    const interval = setInterval(() => {
-      setText(fullText.slice(0, index));
-      index++;
-      if (index > fullText.length) {
-        setTimeout(() => {
-          index = 0;
-        }, 2000);
+    const syncWithVideo = () => {
+      const video = videoRef.current;
+      if (video) {
+        const currentTime = video.currentTime;
+        const nextStep = manualEntryCueTimes.filter((cue) => currentTime >= cue).length;
+        setStep((prev) => (prev === nextStep ? prev : nextStep));
       }
-    }, 50);
-    return () => clearInterval(interval);
-  }, [fullText]);
+      frameId = window.requestAnimationFrame(syncWithVideo);
+    };
 
-  return (
-    <div className="relative flex h-full min-h-[300px] flex-col overflow-hidden rounded-[2rem] border border-[#2A2A35] bg-[#16161C] p-8 shadow-2xl">
-      <div className="absolute top-8 right-8 flex items-center gap-2 rounded-full border border-green-500/20 bg-green-500/10 px-3 py-1 text-xs font-bold text-[#22C55E]">
-        <span className="h-2 w-2 animate-pulse rounded-full bg-[#22C55E]" />
-        {t("landing.liveMatches")}
-      </div>
-      <h3 className="mb-2 w-2/3 font-sans text-xl font-bold text-[#FAF8F5]">
-        {t("landing.whyUs1Title")}
-      </h3>
-      <p className="font-sans text-sm text-[#FAF8F5]/60 mb-6 font-medium">
-        {t("landing.whyUs1Desc")}
-      </p>
-
-      <div className="flex-1 rounded-2xl bg-[#0D0D12] p-6 text-sm font-mono text-[#22C55E]/80 shadow-inner">
-        <pre className="whitespace-pre-wrap">
-          {text}
-          <span className="animate-pulse font-bold text-[#FAF8F5]">_</span>
-        </pre>
-      </div>
-    </div>
-  );
-};
-
-const SchedulerCard = () => {
-  const { t } = useTranslation();
-  const days = ["M", "T", "W", "T", "F", "S", "S"];
-  
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ repeat: -1 });
-
-      tl.to(".fake-cursor", { x: 90, y: 30, duration: 1, ease: "power2.inOut" })
-        .to(".fake-cursor", {
-          scale: 0.8,
-          duration: 0.1,
-          yoyo: true,
-          repeat: 1,
-        })
-        .to(
-          ".day-cell-3",
-          { backgroundColor: "#22C55E", color: "#0D0D12", duration: 0.2 },
-          "-=0.1",
-        )
-        .to(".fake-cursor", {
-          x: 140,
-          y: 75,
-          duration: 1,
-          ease: "power2.inOut",
-          delay: 0.5,
-        })
-        .to(".fake-cursor", {
-          scale: 0.8,
-          duration: 0.1,
-          yoyo: true,
-          repeat: 1,
-        })
-        .to(
-          ".save-btn",
-          { backgroundColor: "#FAF8F5", color: "#0D0D12", duration: 0.2 },
-          "-=0.1",
-        )
-        .to(".fake-cursor", { opacity: 0, duration: 0.5, delay: 0.5 })
-        .set(".day-cell-3", {
-          backgroundColor: "transparent",
-          color: "#FAF8F5",
-        })
-        .set(".save-btn", { backgroundColor: "#2A2A35", color: "#FAF8F5" })
-        .set(".fake-cursor", { x: 0, y: 0, opacity: 1 });
-    });
-    return () => ctx.revert();
+    frameId = window.requestAnimationFrame(syncWithVideo);
+    return () => window.cancelAnimationFrame(frameId);
   }, []);
 
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        ".manual-entry-total",
+        { scale: 0.92 },
+        { scale: 1, duration: 0.4, ease: "power2.out" },
+      );
+
+      gsap.fromTo(
+        ".manual-entry-progress",
+        { width: "0%" },
+        { width: `${(step / 9) * 100}%`, duration: 0.6, ease: "power3.out" },
+      );
+
+      if (activeSlot !== null) {
+        gsap.fromTo(
+          `.manual-entry-chip-${activeSlot}`,
+          { scale: 0.88, y: 8, opacity: 0.6 },
+          {
+            scale: 1,
+            y: 0,
+            opacity: 1,
+            duration: 0.3,
+            ease: "back.out(2)",
+          },
+        );
+      }
+    }, cardRef);
+
+    return () => ctx.revert();
+  }, [step, activeSlot]);
+
   return (
-    <div className="relative flex h-full min-h-[300px] flex-col overflow-hidden rounded-[2rem] border border-[#2A2A35] bg-[#16161C] p-8 shadow-2xl">
-      <h3 className="mb-2 font-sans text-xl font-bold text-[#FAF8F5]">
-        {t("landing.whyUs2Title")}
+    <div
+      ref={cardRef}
+      className="relative flex h-full min-h-[320px] flex-col overflow-hidden rounded-[2rem] border border-[#2A2A35] bg-[#16161C] p-8 shadow-2xl"
+    >
+      <div className="absolute right-8 top-8 inline-flex items-center gap-2 rounded-full border border-[#22C55E]/30 bg-[#22C55E]/10 px-3 py-1 text-xs font-bold text-[#22C55E]">
+        <span className="h-2 w-2 animate-pulse rounded-full bg-[#22C55E]" />
+        {t("landing.featureVideoInputBadge")}
+      </div>
+
+      <h3 className="mb-2 pr-16 font-sans text-xl font-bold text-[#FAF8F5]">
+        {t("landing.featureLiveScoreTitle")}
       </h3>
-      <p className="font-sans text-sm text-[#FAF8F5]/60 mb-6 font-medium">
-        {t("landing.whyUs2Desc")}
+      <p className="mb-6 font-sans text-sm font-medium text-[#FAF8F5]/60">
+        {t("landing.featureLiveScoreDesc")}
       </p>
 
-      <div className="relative flex-1 rounded-2xl bg-[#0D0D12] p-4 font-mono text-xs">
-        <div className="flex justify-between gap-1 mb-6">
-          {days.map((d, i) => (
-            <div
-              key={i}
-              className={`flex h-8 w-8 items-center justify-center rounded-lg border border-[#2A2A35] text-[#FAF8F5] day-cell-${i}`}
-            >
-              {d}
-            </div>
-          ))}
-        </div>
-
-        <div className="flex justify-end">
-          <div className="save-btn rounded-lg bg-[#2A2A35] px-4 py-2 font-bold text-[#FAF8F5]">
-            {t("landing.save")}
+      <div className="flex flex-1 flex-col gap-4">
+        <div className="relative overflow-hidden rounded-2xl border border-[#2A2A35] bg-black">
+          <video
+            ref={videoRef}
+            src="/landing-throw.mov"
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="aspect-square w-full object-contain"
+          />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0D0D12]/80 via-transparent to-transparent" />
+          <div className="absolute bottom-2 left-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#FAF8F5]/65">
+            {t("landing.inProgress")}
           </div>
         </div>
 
-        <MousePointer2
-          className="fake-cursor absolute top-4 left-4 z-10 text-white drop-shadow-md"
-          size={18}
-          fill="black"
-        />
+        <div className="rounded-2xl border border-[#2A2A35] bg-[#0D0D12] p-4">
+          <div className="mb-2 flex items-center justify-between text-xs font-medium text-[#FAF8F5]/60">
+            <span>{t("landing.featureThrowsLoggedLabel")}</span>
+            <span className="manual-entry-total font-bold text-[#FAF8F5]">{step}/9</span>
+          </div>
+          <div className="mb-4 h-2 overflow-hidden rounded-full bg-[#2A2A35]">
+            <div className="manual-entry-progress h-full rounded-full bg-gradient-to-r from-[#22C55E] to-[#7CF29E]" />
+          </div>
+
+          <div className="mb-4 grid grid-cols-3 gap-2">
+            {[0, 1, 2].map((slot) => (
+              <div
+                key={slot}
+                className={`manual-entry-chip manual-entry-chip-${slot} rounded-xl border py-2 text-center font-mono text-sm font-bold ${
+                  enteredThrows[slot] !== undefined
+                    ? "border-[#22C55E]/35 bg-[#22C55E]/10 text-[#FAF8F5]"
+                    : "border-[#2A2A35] bg-[#16161C] text-[#FAF8F5]/35"
+                }`}
+              >
+                {enteredThrows[slot] ?? "—"}
+              </div>
+            ))}
+          </div>
+          <div className="flex items-center justify-between text-xs font-medium text-[#FAF8F5]/60">
+            <span>{t("landing.featureEntryTotalLabel")}</span>
+            <span className="manual-entry-total font-mono text-base font-bold text-[#22C55E]">{total}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="sr-only">
+        {enteredThrows.map((throwValue, idx) => (
+          <span key={`${throwValue}-${idx}`}>
+            {throwValue}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const LeagueMomentumCard = () => {
+  const { t } = useTranslation();
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [frameIndex, setFrameIndex] = useState(0);
+
+  const players = [
+    { id: "you", name: t("match.you"), highlight: true },
+    { id: "alex", name: "Alex", highlight: false },
+    { id: "lin", name: "Lin", highlight: false },
+    { id: "mika", name: "Mika", highlight: false },
+  ];
+
+  const frame = leagueRaceFrames[frameIndex];
+  const positions = new Map(
+    frame.map((entry, index) => [
+      entry.id,
+      { rank: index + 1, points: entry.points },
+    ]),
+  );
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setFrameIndex((prev) => (prev + 1) % leagueRaceFrames.length);
+    }, 2600);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        ".league-row",
+        { opacity: 0.7 },
+        { opacity: 1, duration: 0.35, stagger: 0.05, ease: "power2.out" },
+      );
+
+      gsap.fromTo(
+        ".league-row-you",
+        { boxShadow: "0 0 0 rgba(34,197,94,0)" },
+        {
+          boxShadow: "0 0 24px rgba(34,197,94,0.25)",
+          duration: 0.5,
+          repeat: 1,
+          yoyo: true,
+          ease: "power1.inOut",
+        },
+      );
+    }, cardRef);
+
+    return () => ctx.revert();
+  }, [frameIndex]);
+
+  return (
+    <div
+      ref={cardRef}
+      className="relative flex h-full min-h-[320px] flex-col overflow-hidden rounded-[2rem] border border-[#2A2A35] bg-[#16161C] p-8 shadow-2xl"
+    >
+      <div className="absolute right-8 top-8 inline-flex items-center gap-2 rounded-full border border-[#22C55E]/25 bg-[#22C55E]/10 px-3 py-1 text-xs font-bold text-[#22C55E]">
+        <TrendingUp className="h-3.5 w-3.5" />
+        {t("landing.leaderboard")}
+      </div>
+
+      <h3 className="mb-2 pr-16 font-sans text-xl font-bold text-[#FAF8F5]">
+        {t("landing.featureLeagueRaceTitle")}
+      </h3>
+      <p className="mb-6 font-sans text-sm font-medium text-[#FAF8F5]/60">
+        {t("landing.featureLeagueRaceDesc")}
+      </p>
+
+      <div className="relative flex-1 rounded-2xl border border-[#2A2A35] bg-[#0D0D12] p-4">
+        <div className="relative h-[216px]">
+          {players.map((player) => {
+            const current = positions.get(player.id);
+            if (!current) return null;
+
+            return (
+              <div
+                key={player.id}
+                className={`league-row absolute left-0 right-0 flex items-center justify-between rounded-xl border px-3 py-2 transition-[top] duration-700 ease-out ${
+                  player.highlight
+                    ? "league-row-you border-[#22C55E]/40 bg-[#22C55E]/10"
+                    : "border-[#2A2A35] bg-[#16161C]"
+                }`}
+                style={{ top: `${(current.rank - 1) * 54}px` }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#2A2A35] font-mono text-xs font-bold text-[#FAF8F5]">
+                    {current.rank}
+                  </div>
+                  <div className="font-sans text-sm font-semibold text-[#FAF8F5]">
+                    {player.name}
+                  </div>
+                </div>
+                <div className="font-mono text-sm font-bold text-[#22C55E]">
+                  {current.points}p
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const StreakProgressCard = () => {
+  const { t } = useTranslation();
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [activeDay, setActiveDay] = useState(0);
+  const streakLength = 12 + activeDay;
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setActiveDay((prev) => (prev + 1) % streakDays.length);
+    }, 1100);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        `.streak-day-${activeDay}`,
+        { scale: 0.88, y: 8 },
+        { scale: 1, y: 0, duration: 0.35, ease: "back.out(2)" },
+      );
+
+      gsap.fromTo(
+        ".streak-counter",
+        { scale: 0.9 },
+        { scale: 1, duration: 0.4, ease: "power2.out" },
+      );
+    }, cardRef);
+
+    return () => ctx.revert();
+  }, [activeDay]);
+
+  return (
+    <div
+      ref={cardRef}
+      className="relative flex h-full min-h-[320px] flex-col overflow-hidden rounded-[2rem] border border-[#2A2A35] bg-[#16161C] p-8 shadow-2xl"
+    >
+      <h3 className="mb-2 font-sans text-xl font-bold text-[#FAF8F5]">
+        {t("landing.featureStreakTitle")}
+      </h3>
+      <p className="mb-6 font-sans text-sm font-medium text-[#FAF8F5]/60">
+        {t("landing.featureStreakDesc")}
+      </p>
+
+      <div className="flex flex-1 flex-col rounded-2xl border border-[#2A2A35] bg-[#0D0D12] p-5">
+        <div className="streak-counter mb-5 flex items-center justify-between rounded-xl border border-[#22C55E]/25 bg-[#22C55E]/10 px-4 py-3">
+          <div className="inline-flex items-center gap-2 font-sans text-sm font-semibold text-[#FAF8F5]">
+            <Flame className="h-4 w-4 text-[#22C55E]" />
+            {t("landing.featureCurrentStreakLabel")}
+          </div>
+          <div className="font-mono text-2xl font-bold text-[#22C55E]">
+            {streakLength}
+          </div>
+        </div>
+
+        <div className="mb-5 grid grid-cols-7 gap-2">
+          {streakDays.map((day, index) => {
+            const isDone = index <= activeDay;
+            return (
+              <div
+                key={`${day}-${index}`}
+                className={`streak-day-${index} flex h-12 flex-col items-center justify-center gap-1 rounded-lg border text-xs font-bold transition-colors duration-300 ${
+                  isDone
+                    ? "border-[#22C55E]/35 bg-[#22C55E]/15 text-[#FAF8F5]"
+                    : "border-[#2A2A35] bg-[#16161C] text-[#FAF8F5]/45"
+                }`}
+              >
+                <span>{day}</span>
+                {isDone ? (
+                  <CheckCircle2 className="h-3.5 w-3.5 text-[#22C55E]" />
+                ) : null}
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mt-auto grid h-16 grid-cols-6 items-end gap-2">
+          {[20, 28, 35, 42, 50, 58].map((height, index) => (
+            <div key={index} className="h-full overflow-hidden rounded-md bg-[#2A2A35]">
+              <div
+                className="h-full rounded-md bg-gradient-to-t from-[#22C55E] to-[#7CF29E] transition-transform duration-700 ease-out"
+                style={{
+                  transform: `translateY(${index <= activeDay ? Math.max(0, 65 - height - activeDay * 2) : 70}%)`,
+                }}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -389,13 +562,13 @@ const Features = () => {
         </h2>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div className="feature-card h-full">
-            <ShufflerCard />
+            <LiveScoringCard />
           </div>
           <div className="feature-card h-full">
-            <TypewriterCard />
+            <LeagueMomentumCard />
           </div>
           <div className="feature-card h-full">
-            <SchedulerCard />
+            <StreakProgressCard />
           </div>
         </div>
       </div>
@@ -438,57 +611,57 @@ const HowLeaguesWork = () => {
   }, []);
 
   return (
-    <section id="leagues" ref={containerRef} className="bg-[#16161C] px-6 py-32 md:px-16 lg:px-24 rounded-[3rem] mx-4 my-12 border border-[#2A2A35] relative overflow-hidden">
+    <section id="leagues" ref={containerRef} className="bg-[#16161C] px-6 py-20 md:px-16 lg:px-24 rounded-[3rem] mx-4 my-10 border border-[#2A2A35] relative overflow-hidden">
       <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#0D0D12]/40 to-transparent" />
-      <div className="relative z-10 max-w-6xl mx-auto">
-        <div className="text-center mb-24">
+      <div className="relative z-10 max-w-5xl mx-auto">
+        <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#22C55E]/30 bg-[#22C55E]/10 text-[#22C55E] text-xs font-bold uppercase tracking-widest mb-6 shadow-[0_0_15px_rgba(34,197,94,0.1)]">
             <Trophy className="w-4 h-4" />
             {t("landing.leaguesTitle")}
           </div>
-          <h2 className="text-4xl md:text-6xl font-sans font-bold mb-6 text-[#FAF8F5]">
+          <h2 className="text-4xl md:text-5xl font-sans font-bold mb-5 text-[#FAF8F5]">
             {t("landing.howLeaguesWorkTitle")}
           </h2>
-          <p className="text-xl text-[#FAF8F5]/60 max-w-2xl mx-auto font-medium">
+          <p className="text-lg text-[#FAF8F5]/60 max-w-xl mx-auto font-medium">
             {t("landing.leaguesSubtitle")}
           </p>
         </div>
 
-        <div className="relative pt-12">
+        <div className="relative pt-6">
           {/* Connector Line (Desktop) */}
-          <div className="connector-line hidden md:block absolute top-[4.5rem] left-[15%] right-[15%] h-px border-t-2 border-dashed border-[#22C55E]/30 z-0" />
+          <div className="connector-line hidden md:block absolute top-20 left-[16.6667%] right-[16.6667%] h-px border-t-2 border-dashed border-[#22C55E]/30 z-0" />
 
-          <div className="grid md:grid-cols-3 gap-16 relative z-10">
+          <div className="grid md:grid-cols-3 gap-10 relative z-10">
             <div className="step-card flex flex-col items-center text-center">
-              <div className="w-24 h-24 rounded-full bg-[#0D0D12] border-4 border-[#16161C] flex items-center justify-center text-[#22C55E] mb-8 shadow-[0_0_30px_rgba(34,197,94,0.15)] relative">
+              <div className="w-20 h-20 rounded-full bg-[#0D0D12] border-4 border-[#16161C] flex items-center justify-center text-[#22C55E] mb-6 shadow-[0_0_30px_rgba(34,197,94,0.15)] relative">
                 <div className="absolute -top-1 -right-1 w-8 h-8 rounded-full bg-[#22C55E] text-[#0D0D12] flex items-center justify-center font-bold text-sm shadow-md">
                   1
                 </div>
-                <Users className="w-10 h-10" />
+                <Users className="w-8 h-8" />
               </div>
-              <h3 className="font-sans font-bold text-2xl mb-3 text-[#FAF8F5]">{t("landing.howLeaguesStep1")}</h3>
+              <h3 className="font-sans font-bold text-xl mb-2 text-[#FAF8F5]">{t("landing.howLeaguesStep1")}</h3>
               <p className="text-[#FAF8F5]/60 font-medium leading-relaxed">{t("landing.howLeaguesStep1Desc")}</p>
             </div>
 
             <div className="step-card flex flex-col items-center text-center">
-              <div className="w-24 h-24 rounded-full bg-[#0D0D12] border-4 border-[#16161C] flex items-center justify-center text-[#22C55E] mb-8 shadow-[0_0_30px_rgba(34,197,94,0.15)] relative">
+              <div className="w-20 h-20 rounded-full bg-[#0D0D12] border-4 border-[#16161C] flex items-center justify-center text-[#22C55E] mb-6 shadow-[0_0_30px_rgba(34,197,94,0.15)] relative">
                 <div className="absolute -top-1 -right-1 w-8 h-8 rounded-full bg-[#22C55E] text-[#0D0D12] flex items-center justify-center font-bold text-sm shadow-md">
                   2
                 </div>
-                <Target className="w-10 h-10" />
+                <Target className="w-8 h-8" />
               </div>
-              <h3 className="font-sans font-bold text-2xl mb-3 text-[#FAF8F5]">{t("landing.howLeaguesStep2")}</h3>
+              <h3 className="font-sans font-bold text-xl mb-2 text-[#FAF8F5]">{t("landing.howLeaguesStep2")}</h3>
               <p className="text-[#FAF8F5]/60 font-medium leading-relaxed">{t("landing.howLeaguesStep2Desc")}</p>
             </div>
 
             <div className="step-card flex flex-col items-center text-center">
-              <div className="w-24 h-24 rounded-full bg-[#0D0D12] border-4 border-[#16161C] flex items-center justify-center text-[#22C55E] mb-8 shadow-[0_0_30px_rgba(34,197,94,0.15)] relative">
+              <div className="w-20 h-20 rounded-full bg-[#0D0D12] border-4 border-[#16161C] flex items-center justify-center text-[#22C55E] mb-6 shadow-[0_0_30px_rgba(34,197,94,0.15)] relative">
                 <div className="absolute -top-1 -right-1 w-8 h-8 rounded-full bg-[#22C55E] text-[#0D0D12] flex items-center justify-center font-bold text-sm shadow-md">
                   3
                 </div>
-                <Trophy className="w-10 h-10" />
+                <Trophy className="w-8 h-8" />
               </div>
-              <h3 className="font-sans font-bold text-2xl mb-3 text-[#FAF8F5]">{t("landing.howLeaguesStep3")}</h3>
+              <h3 className="font-sans font-bold text-xl mb-2 text-[#FAF8F5]">{t("landing.howLeaguesStep3")}</h3>
               <p className="text-[#FAF8F5]/60 font-medium leading-relaxed">{t("landing.howLeaguesStep3Desc")}</p>
             </div>
           </div>
@@ -654,8 +827,8 @@ export default function Index() {
       <NoiseOverlay />
       <Navbar />
       <Hero />
-      <Features />
       <HowLeaguesWork />
+      <Features />
       <Philosophy />
       <CTA />
       <Footer />
