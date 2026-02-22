@@ -74,8 +74,8 @@ export default function Profile() {
 
   return (
     <AppLayout>
-      <header className="sticky top-0 z-40 bg-card/80 backdrop-blur-md border-b border-border">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+      <header className="sticky top-0 z-40 px-3 pb-3 pt-3">
+        <div className="app-surface container mx-auto rounded-2xl px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
               <ArrowLeft className="w-5 h-5" />

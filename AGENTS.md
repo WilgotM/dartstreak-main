@@ -29,3 +29,8 @@
 ## Legal Compliance
 - **Update Legal Pages**: When adding new features (e.g., third-party integrations, new data collection, significant functionality changes), you MUST review and update `src/pages/Legal.tsx` (Privacy Policy & Terms of Service) to reflect these changes.
 - **Privacy First**: Always document what data is collected and how it is used.
+
+## i18n Requirements
+- **Translate All New Keys**: When adding or changing any user-facing text, you MUST add/update translations for all app locale files in `src/i18n/locales/`.
+- **No Partial i18n Changes**: Do not leave a translation key added in only one or some languages.
+- **Mandatory Validation**: After i18n changes, ALWAYS run `npm run lint` and ensure it passes before finishing.

@@ -5,10 +5,10 @@ import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { to: "/dashboard", icon: Home, labelKey: "nav.home" },
-  { to: "/leagues", icon: Trophy, labelKey: "nav.leagues" },
-  { to: "/training", icon: Target, labelKey: "nav.training" },
-  { to: "/profile", icon: User, labelKey: "nav.profile" },
+  { to: "/dashboard", icon: Home, labelKey: "nav.home", matchPrefixes: ["/dashboard"] },
+  { to: "/leagues", icon: Trophy, labelKey: "nav.leagues", matchPrefixes: ["/leagues", "/league/", "/join/"] },
+  { to: "/training", icon: Target, labelKey: "nav.training", matchPrefixes: ["/training"] },
+  { to: "/profile", icon: User, labelKey: "nav.profile", matchPrefixes: ["/profile"] },
 ];
 
 export const BottomNav = memo(function BottomNav() {
@@ -16,24 +16,22 @@ export const BottomNav = memo(function BottomNav() {
   const location = useLocation();
 
   return (
-    <nav className="shrink-0 z-50 fixed bottom-0 left-0 right-0 md:hidden px-4 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]">
-      <div className="relative flex items-center justify-center gap-1 h-14 px-2 bg-card/95 rounded-full border border-border shadow-lg">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 shrink-0 px-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] md:hidden">
+      <div className="relative flex h-14 items-center justify-center gap-1 rounded-full border border-white/10 bg-[#0D0D12]/92 px-2 shadow-[0_16px_42px_rgba(0,0,0,0.55)] backdrop-blur-lg">
         {navItems.map((item) => {
           const Icon = item.icon;
-          const isActive = location.pathname.startsWith(item.to);
+          const isActive = item.matchPrefixes.some((prefix) =>
+            location.pathname.startsWith(prefix),
+          );
 
           return (
-            <RouterNavLink
-              key={item.to}
-              to={item.to}
-              className="flex-1"
-            >
+            <RouterNavLink key={item.to} to={item.to} className="flex-1">
               <div
                 className={cn(
-                  "flex items-center justify-center gap-2 py-2.5 px-4 rounded-full transition-colors duration-150 relative z-10 active:scale-95",
+                  "relative z-10 flex items-center justify-center gap-2 rounded-full px-3 py-2.5 transition-all duration-200 active:scale-95",
                   isActive
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground"
+                    ? "bg-[#22C55E]/16 text-[#22C55E]"
+                    : "text-[#FAF8F5]/70"
                 )}
               >
                 <Icon className="w-5 h-5" />

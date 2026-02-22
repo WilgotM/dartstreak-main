@@ -76,8 +76,8 @@ export default function JoinLeaguePage() {
 
     return (
         <AppLayout>
-            <header className="sticky top-0 z-40 bg-card/95 md:bg-card/80 md:backdrop-blur-md border-b border-border">
-                <div className="container mx-auto px-4 py-4 flex items-center gap-3">
+            <header className="sticky top-0 z-40 px-3 pb-3 pt-3">
+                <div className="app-surface container mx-auto rounded-2xl px-4 py-3 flex items-center gap-3">
                     <Button
                         variant="ghost"
                         size="icon"
@@ -91,7 +91,7 @@ export default function JoinLeaguePage() {
             </header>
 
             <main className="container mx-auto px-4 py-6 pb-24">
-                <div className="max-w-lg mx-auto space-y-6">
+                <div className="max-w-lg mx-auto space-y-6 glass-card border-white/10 rounded-2xl p-5">
                     <div className="space-y-2">
                         <Label htmlFor="joinCode" className="text-muted-foreground">{t("dashboard.inviteCode")}</Label>
                         <Input
@@ -99,7 +99,7 @@ export default function JoinLeaguePage() {
                             placeholder="abc123"
                             value={joinCode}
                             onChange={(e) => setJoinCode(e.target.value)}
-                            className="bg-black/20 border-border text-foreground placeholder:text-gray-600 focus:border-primary/50"
+                            className="bg-[#12121A] border-white/12 text-foreground placeholder:text-muted-foreground"
                         />
                     </div>
 

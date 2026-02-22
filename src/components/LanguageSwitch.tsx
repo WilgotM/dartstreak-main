@@ -26,7 +26,7 @@ export function LanguageSwitch() {
         <Button
           variant="outline"
           size="sm"
-          className="h-9 gap-2 border-border/80 bg-background/70 px-3 font-semibold uppercase tracking-wide"
+          className="h-9 gap-2 border-white/20 bg-[#15151D]/90 px-3 font-semibold uppercase tracking-wide text-[#FAF8F5]"
           aria-label={t("common.language")}
         >
           <Globe className="h-4 w-4" />

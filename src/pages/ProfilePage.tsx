@@ -21,7 +21,6 @@ import { AppLayout } from "@/components/AppLayout";
 import { StatsDisplay } from "@/components/StatsDisplay";
 import { ProfileSettings } from "@/components/ProfileSettings";
 import { toast } from "sonner";
-import { motion } from "framer-motion";
 import PlayerNameWithCountry from "@/components/PlayerNameWithCountry";
 
 interface ExtendedProfile {
@@ -100,14 +99,6 @@ export default function ProfilePage() {
     }
   };
 
-  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: {} & { offset: { x: number; y: number } }) => {
-    const SWIPE_THRESHOLD = 50;
-    if (info.offset.x > SWIPE_THRESHOLD) {
-      // Swipe Right -> Go to Dashboard
-      navigate("/dashboard");
-    }
-  };
-
   const handleOpenCookieSettings = () => {
     window.dispatchEvent(new Event("open-cookie-settings"));
   };
@@ -126,22 +117,16 @@ export default function ProfilePage() {
 
   return (
     <AppLayout>
-      <motion.div
-        className="min-h-screen"
-        drag="x"
-        dragConstraints={{ left: 0, right: 0 }}
-        dragElastic={0.2}
-        onDragEnd={handleDragEnd}
-      >
-        <header className="sticky top-0 z-40 bg-card/95 md:bg-card/80 md:backdrop-blur-md border-b border-border">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+      <div className="min-h-screen">
+        <header className="sticky top-0 z-40 px-3 pb-3 pt-3">
+          <div className="app-surface container mx-auto rounded-2xl px-4 py-3 flex items-center justify-between">
             <h1 className="text-xl font-display font-bold text-foreground">{t("nav.profile")}</h1>
           </div>
         </header>
 
         <main className="container mx-auto px-4 py-6 space-y-6 pb-24">
           {/* Profile Card */}
-          <Card className="glass-card border-none">
+          <Card className="glass-card border-white/10">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 rounded-full flex items-center justify-center bg-primary/20 shadow-sm">
@@ -163,7 +148,7 @@ export default function ProfilePage() {
 
           {/* Settings */}
           {extendedProfile && (
-            <div className="glass-panel rounded-xl p-1">
+            <div className="glass-panel rounded-xl p-1 border-white/10">
               <ProfileSettings
                 currentDisplayName={extendedProfile.display_name}
                 currentEmail={user.email || ""}
@@ -180,20 +165,20 @@ export default function ProfilePage() {
           {/* Statistics */}
           <section>
             <h2 className="text-lg font-display font-semibold mb-4 text-foreground">{t("stats.statistics")}</h2>
-            <div className="glass-card rounded-xl overflow-hidden border-none text-foreground">
+            <div className="glass-card rounded-xl overflow-hidden border-white/10 text-foreground">
               <StatsDisplay userId={user.id} />
             </div>
           </section>
 
           {/* Legal and Contact */}
-          <section className="glass-card rounded-xl border-none p-4 space-y-3">
-            <Link to="/privacy" className="flex items-center justify-between rounded-lg px-3 py-2.5 bg-background/40 hover:bg-background/60 transition-colors">
+          <section className="glass-card rounded-xl border-white/10 p-4 space-y-3">
+            <Link to="/privacy" className="flex items-center justify-between rounded-lg px-3 py-2.5 bg-[#12121A] hover:bg-[#1A1A24] transition-colors">
               <span className="flex items-center gap-2 text-foreground">
                 <Shield className="w-4 h-4 text-primary" />
                 {t("common.privacyPolicy")}
               </span>
             </Link>
-            <Link to="/terms" className="flex items-center justify-between rounded-lg px-3 py-2.5 bg-background/40 hover:bg-background/60 transition-colors">
+            <Link to="/terms" className="flex items-center justify-between rounded-lg px-3 py-2.5 bg-[#12121A] hover:bg-[#1A1A24] transition-colors">
               <span className="flex items-center gap-2 text-foreground">
                 <FileText className="w-4 h-4 text-primary" />
                 {t("common.termsOfService")}
@@ -202,14 +187,14 @@ export default function ProfilePage() {
             <button
               type="button"
               onClick={handleOpenCookieSettings}
-              className="w-full flex items-center justify-between rounded-lg px-3 py-2.5 bg-background/40 hover:bg-background/60 transition-colors"
+              className="w-full flex items-center justify-between rounded-lg px-3 py-2.5 bg-[#12121A] hover:bg-[#1A1A24] transition-colors"
             >
               <span className="flex items-center gap-2 text-foreground">
                 <Shield className="w-4 h-4 text-primary" />
                 {t("cookie.settingsButton")}
               </span>
             </button>
-            <Link to="/contact" className="flex items-center justify-between rounded-lg px-3 py-2.5 bg-background/40 hover:bg-background/60 transition-colors">
+            <Link to="/contact" className="flex items-center justify-between rounded-lg px-3 py-2.5 bg-[#12121A] hover:bg-[#1A1A24] transition-colors">
               <span className="flex items-center gap-2 text-foreground">
                 <Mail className="w-4 h-4 text-primary" />
                 {t("common.contact")}
@@ -260,7 +245,7 @@ export default function ProfilePage() {
             </AlertDialog>
           </section>
         </main>
-      </motion.div>
+      </div>
     </AppLayout>
   );
 }

@@ -165,20 +165,18 @@ export default function Leagues() {
 
   return (
     <AppLayout>
-      <header className="sticky top-0 z-40 bg-card/95 md:bg-card/80 md:backdrop-blur-md border-b border-border">
-        <div className="container mx-auto px-4 py-4">
-          <div className="max-w-sm mx-auto">
-            <h1 className="text-xl font-display font-bold">{t("nav.leagues")}</h1>
-          </div>
+      <header className="sticky top-0 z-40 px-3 pb-3 pt-3">
+        <div className="app-surface mx-auto max-w-3xl rounded-2xl px-4 py-3">
+          <h1 className="text-xl font-display font-bold">{t("nav.leagues")}</h1>
         </div>
       </header>
 
       <main className="container mx-auto px-4 py-6 pb-24">
-        <div className="max-w-sm mx-auto">
+        <div className="max-w-3xl mx-auto">
           <div className="flex gap-4 mb-8">
           <Button
             variant="outline"
-            className="flex-1 h-12 glass-panel border-border hover:bg-secondary hover:text-foreground transition-all text-base"
+            className="flex-1 h-12 glass-panel border-white/10 hover:bg-[#1A1A24] hover:text-foreground transition-all text-base"
             onClick={() => navigate("/leagues/join")}
           >
             <Users className="w-5 h-5 mr-2 text-primary" />
@@ -187,7 +185,7 @@ export default function Leagues() {
 
           <Button
             variant="outline"
-            className="flex-1 h-12 glass-panel border-border hover:bg-secondary hover:text-foreground transition-all text-base"
+            className="flex-1 h-12 glass-panel border-white/10 hover:bg-[#1A1A24] hover:text-foreground transition-all text-base"
             onClick={() => navigate("/leagues/create")}
           >
             <Plus className="w-5 h-5 mr-2 text-accent" />
@@ -198,7 +196,7 @@ export default function Leagues() {
         {loadingLeagues ? (
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="glass-card p-6 rounded-2xl animate-pulse">
+              <div key={i} className="glass-card p-6 rounded-2xl animate-pulse border-white/10">
                 <div className="flex items-start justify-between">
                   <div className="space-y-3 flex-1">
                     <div className="h-6 w-1/2 bg-secondary rounded" />
@@ -210,7 +208,7 @@ export default function Leagues() {
             ))}
           </div>
         ) : leagues.length === 0 ? (
-          <div className="glass-card rounded-2xl p-12 text-center border-border">
+          <div className="glass-card rounded-2xl p-12 text-center border-white/10">
             <Trophy className="w-20 h-20 mx-auto text-muted-foreground/30 mb-6" />
             <h3 className="text-2xl font-display font-bold mb-3 text-foreground">
               {t("dashboard.noLeaguesYet")}

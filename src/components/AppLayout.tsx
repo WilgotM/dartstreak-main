@@ -10,22 +10,16 @@ interface AppLayoutProps {
 
 export function AppLayout({ children, hideNav = false }: AppLayoutProps) {
   return (
-    <div className="flex flex-col h-[100dvh] bg-background overflow-hidden relative">
-      {/* Noise overlay to eliminate color banding - only on desktop */}
-      <div
-        className="hidden md:block fixed inset-0 pointer-events-none z-[1] opacity-[0.015]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-        }}
-      />
-
-      {/* Subtle gradient orbs - only on desktop due to performance */}
-      <div className="hidden md:block fixed -top-[200px] -right-[200px] w-[600px] h-[600px] bg-primary/5 blur-[150px] rounded-full pointer-events-none z-0" />
-      <div className="hidden md:block fixed -bottom-[150px] -left-[150px] w-[500px] h-[500px] bg-accent/5 blur-[130px] rounded-full pointer-events-none z-0" />
+    <div className="relative flex h-[100dvh] flex-col overflow-hidden app-shell-bg">
+      <div className="pointer-events-none fixed inset-0 z-0 app-shell-noise" />
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-0 h-[220px] bg-gradient-to-b from-black/30 via-black/12 to-transparent" />
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-0 h-[200px] bg-gradient-to-t from-black/22 via-black/8 to-transparent" />
 
       {!hideNav && <DesktopNav />}
       {!hideNav && <MobileHeader />}
-      <main className={`flex-1 overflow-y-auto overscroll-contain ${hideNav ? "" : "pt-[calc(56px+env(safe-area-inset-top))] md:pt-20"}`}>
+      <main
+        className={`relative z-[2] flex-1 overflow-y-auto overscroll-contain ${hideNav ? "" : "pt-[calc(60px+env(safe-area-inset-top))] md:pt-28"}`}
+      >
         {children}
       </main>
       {!hideNav && <BottomNav />}

@@ -86,7 +86,7 @@ export default function JoinLeague() {
     return (
         <AppLayout>
             <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center">
+                <div className="app-surface rounded-3xl px-8 py-10 text-center">
                     <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
                     <p className="text-foreground text-lg">{t("common.loading")}</p>
                 </div>

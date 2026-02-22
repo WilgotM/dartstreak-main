@@ -191,9 +191,9 @@ export default function Auth() {
   // View: Update Password (from Recovery Link)
   if (isPasswordRecovery) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+      <div className="min-h-screen app-shell-bg flex flex-col items-center justify-center p-4">
         <div className="w-full max-w-md animate-slide-up">
-          <Card className="shadow-card border-2">
+          <Card className="border-white/12 bg-[#12121A]/92 backdrop-blur-xl">
             <CardHeader className="text-center space-y-2">
               <div className="mx-auto mb-4">
                 <img src="/logo.png" alt="DartStreak Logo" className="w-20 h-20 object-contain mx-auto" />
@@ -232,14 +232,14 @@ export default function Auth() {
   // View: Forgot Password
   if (forgotPassword) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+      <div className="min-h-screen app-shell-bg flex flex-col items-center justify-center p-4">
         <div className="w-full max-w-md animate-slide-up">
           <Button variant="ghost" className="mb-6" onClick={() => setForgotPassword(false)}>
             <ArrowLeft className="w-4 h-4 mr-2" />
             {t("common.back")}
           </Button>
 
-          <Card className="shadow-card border-2">
+          <Card className="border-white/12 bg-[#12121A]/92 backdrop-blur-xl">
             <CardHeader className="text-center space-y-2">
               <div className="mx-auto mb-4">
                 <img src="/logo.png" alt="DartStreak Logo" className="w-20 h-20 object-contain mx-auto" />
@@ -277,7 +277,7 @@ export default function Auth() {
 
   // View: Login / Signup
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen app-shell-bg flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md animate-slide-up">
         <Button
           variant="ghost"
@@ -288,7 +288,7 @@ export default function Auth() {
           {t("common.back")}
         </Button>
 
-        <Card className="shadow-card border-2">
+        <Card className="border-white/12 bg-[#12121A]/92 backdrop-blur-xl">
           <CardHeader className="text-center space-y-2">
             <div className="mx-auto mb-4">
               <img src="/logo.png" alt="DartStreak Logo" className="w-20 h-20 object-contain mx-auto" />

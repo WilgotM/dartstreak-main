@@ -1,4 +1,8 @@
 {
+  "auth": {
+    "continueWithGoogle": "Fortsæt med Google",
+    "googleLogin": "Log ind med Google"
+  },
   "common": {
     "language": "Sprog"
   },

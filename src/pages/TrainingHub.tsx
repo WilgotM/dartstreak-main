@@ -42,8 +42,8 @@ export default function TrainingHub() {
   return (
     <AppLayout>
       <div className="container mx-auto px-4 py-8 md:py-10 pb-24 md:pb-10 space-y-6">
-        <header className="relative overflow-hidden rounded-3xl border border-border bg-card/70 p-6 md:p-8">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.18),transparent_35%),radial-gradient(circle_at_30%_90%,rgba(34,197,94,0.16),transparent_40%)]" />
+        <header className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#12121A]/88 p-6 md:p-8 shadow-[0_20px_50px_-26px_rgba(0,0,0,0.75)]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.2),transparent_35%),radial-gradient(circle_at_30%_90%,rgba(34,197,94,0.2),transparent_42%)]" />
           <div className="relative space-y-2">
             <p className="text-xs uppercase tracking-[0.22em] text-amber-300/90">
               {t("trainingHub.kicker")}
@@ -65,7 +65,7 @@ export default function TrainingHub() {
                 key={card.key}
                 type="button"
                 onClick={() => navigate(card.to)}
-                className="group relative overflow-hidden rounded-3xl border border-border bg-card/75 p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:shadow-xl"
+                className="group relative overflow-hidden rounded-3xl border border-white/10 bg-[#13131C]/88 p-6 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-[0_20px_44px_-28px_rgba(34,197,94,0.65)]"
               >
                 <div className={cn("absolute inset-0 opacity-80 bg-gradient-to-br", card.accent)} />
                 <div className="relative flex h-full flex-col gap-4">

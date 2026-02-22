@@ -1,4 +1,8 @@
 {
+  "auth": {
+    "continueWithGoogle": "Continuar con Google",
+    "googleLogin": "Iniciar sesión con Google"
+  },
   "common": {
     "language": "Idioma"
   },

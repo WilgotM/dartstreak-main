@@ -190,9 +190,9 @@ export function ProfileSettings({
   };
 
   return (
-    <Card>
+    <Card className="border-white/10 bg-[#171720]">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-foreground">
           <Settings className="w-5 h-5" />
           {t("profile.settings")}
         </CardTitle>
@@ -212,6 +212,7 @@ export function ProfileSettings({
             <Button 
               onClick={handleSaveDisplayName} 
               disabled={saving || !canChangeDisplayName || displayName === currentDisplayName}
+              className="min-w-20"
             >
               {t("common.save")}
             </Button>
@@ -238,6 +239,7 @@ export function ProfileSettings({
             <Button 
               onClick={handleSaveEmail} 
               disabled={saving || !canChangeEmail || email === currentEmail}
+              className="min-w-20"
             >
               {t("common.save")}
             </Button>
@@ -263,6 +265,7 @@ export function ProfileSettings({
             <Button
               onClick={handleSaveCountry}
               disabled={saving || !countryCode || countryCode === currentCountryCode}
+              className="min-w-20"
             >
               {t("common.save")}
             </Button>
@@ -291,6 +294,7 @@ export function ProfileSettings({
             <Button 
               onClick={handleSaveTimezone} 
               disabled={saving || timezone === currentTimezone}
+              className="min-w-20"
             >
               {t("common.save")}
             </Button>

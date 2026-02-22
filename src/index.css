@@ -6,39 +6,39 @@
 
 @layer base {
   :root {
-    /* Dark background - neutral, not too blue or warm */
-    --background: 220 15% 8%;
-    --foreground: 220 10% 92%;
+    /* Landing-aligned dark palette */
+    --background: 240 18% 6%;
+    --foreground: 36 40% 97%;
 
-    /* Elevated card surfaces */
-    --card: 220 12% 12%;
-    --card-foreground: 220 10% 92%;
+    /* Elevated surfaces */
+    --card: 235 16% 11%;
+    --card-foreground: 36 25% 95%;
 
-    --popover: 220 15% 10%;
-    --popover-foreground: 220 10% 92%;
+    --popover: 236 16% 10%;
+    --popover-foreground: 36 25% 95%;
 
-    /* Normal forest green - natural, not neon */
-    --primary: 145 45% 42%;
-    --primary-foreground: 220 15% 98%;
+    /* Native DartStreak green */
+    --primary: 142 71% 45%;
+    --primary-foreground: 240 20% 8%;
 
     /* Muted surfaces */
-    --secondary: 220 10% 16%;
-    --secondary-foreground: 220 10% 85%;
+    --secondary: 232 14% 17%;
+    --secondary-foreground: 36 25% 92%;
 
-    --muted: 220 8% 18%;
-    --muted-foreground: 220 8% 50%;
+    --muted: 232 11% 19%;
+    --muted-foreground: 225 8% 68%;
 
-    /* Warm gold accent for highlights */
-    --accent: 42 70% 55%;
-    --accent-foreground: 220 15% 10%;
+    /* Warm highlight */
+    --accent: 42 82% 58%;
+    --accent-foreground: 240 20% 8%;
 
     --destructive: 0 55% 50%;
     --destructive-foreground: 220 10% 98%;
 
     /* Subtle borders */
-    --border: 220 10% 20%;
-    --input: 220 10% 14%;
-    --ring: 145 45% 42%;
+    --border: 232 14% 24%;
+    --input: 232 14% 14%;
+    --ring: 142 71% 45%;
 
     --radius: 0.5rem;
 
@@ -50,26 +50,26 @@
     --dart-green-light: 145 40% 45%;
     --dart-cream: 45 15% 85%;
 
-    /* Clean shadows */
-    --shadow-soft: 0 4px 20px -4px hsl(0 0% 0% / 0.4);
-    --shadow-card: 0 2px 16px -2px hsl(0 0% 0% / 0.3);
-    --shadow-glow: 0 4px 24px -4px hsl(0 0% 0% / 0.35);
+    /* Layered shadows */
+    --shadow-soft: 0 14px 38px -20px hsl(240 45% 2% / 0.75);
+    --shadow-card: 0 18px 50px -26px hsl(240 45% 2% / 0.75);
+    --shadow-glow: 0 24px 60px -30px hsl(142 71% 45% / 0.38);
 
-    /* Legacy color names mapped to primary */
-    --neon-green: 145 45% 42%;
-    --neon-orange: 42 70% 55%;
-    --glass-background: 220 12% 12% / 0.95;
-    --glass-border: 220 10% 30% / 0.5;
+    /* Legacy color names mapped to current theme */
+    --neon-green: 142 71% 45%;
+    --neon-orange: 42 82% 58%;
+    --glass-background: 235 16% 11% / 0.88;
+    --glass-border: 232 18% 28% / 0.8;
 
     /* Sidebar */
-    --sidebar-background: 220 15% 6%;
-    --sidebar-foreground: 220 10% 92%;
-    --sidebar-primary: 145 45% 42%;
-    --sidebar-primary-foreground: 220 15% 98%;
-    --sidebar-accent: 220 10% 16%;
-    --sidebar-accent-foreground: 220 10% 85%;
-    --sidebar-border: 220 10% 18%;
-    --sidebar-ring: 145 45% 42%;
+    --sidebar-background: 240 18% 6%;
+    --sidebar-foreground: 36 25% 95%;
+    --sidebar-primary: 142 71% 45%;
+    --sidebar-primary-foreground: 240 20% 8%;
+    --sidebar-accent: 232 14% 17%;
+    --sidebar-accent-foreground: 36 25% 92%;
+    --sidebar-border: 232 14% 20%;
+    --sidebar-ring: 142 71% 45%;
   }
 }
 
@@ -159,6 +159,10 @@ html {
 body {
   /* Prevent highlight on tap */
   -webkit-tap-highlight-color: transparent;
+  background:
+    radial-gradient(circle at 15% -10%, rgba(34, 197, 94, 0.12), transparent 34%),
+    radial-gradient(circle at 88% 8%, rgba(250, 248, 245, 0.06), transparent 30%),
+    hsl(var(--background));
 }
 
 /* iOS notch safe area padding */
@@ -238,24 +242,41 @@ a,
   }
 
   .glass-panel {
-    background: hsl(var(--card));
-    border: 1px solid hsl(var(--border));
+    background:
+      linear-gradient(160deg, hsl(var(--card) / 0.95), hsl(236 16% 9% / 0.9)),
+      hsl(var(--card));
+    border: 1px solid hsl(var(--border) / 0.95);
+    box-shadow: var(--shadow-soft);
   }
 
   .glass-card {
-    background: hsl(var(--card));
-    border: 1px solid hsl(var(--border));
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    background:
+      linear-gradient(165deg, hsl(var(--card) / 0.98), hsl(236 16% 9% / 0.93)),
+      hsl(var(--card));
+    border: 1px solid hsl(var(--border) / 0.98);
+    box-shadow: var(--shadow-card);
+    transition:
+      border-color 180ms ease,
+      box-shadow 220ms ease,
+      transform 220ms ease;
   }
 
   /* Only enable backdrop-blur on desktop where GPU can handle it */
   @media (min-width: 768px) {
     .glass-panel {
-      background: hsl(var(--card) / 0.95);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
     }
 
     .glass-card {
-      background: hsl(var(--card) / 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .glass-card:hover {
+      border-color: hsl(var(--primary) / 0.35);
+      box-shadow: var(--shadow-glow);
+      transform: translateY(-1px);
     }
   }
 
@@ -282,11 +303,32 @@ a,
 
   @media (min-width: 768px) {
     .backdrop-blur-responsive {
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       background-color: hsl(var(--background) / 0.8);
     }
   }
+}
+
+.app-shell-bg {
+  background:
+    radial-gradient(circle at 12% -14%, rgba(34, 197, 94, 0.2), transparent 34%),
+    radial-gradient(circle at 88% -8%, rgba(250, 248, 245, 0.09), transparent 31%),
+    radial-gradient(circle at 75% 115%, rgba(34, 197, 94, 0.12), transparent 42%),
+    hsl(var(--background));
+}
+
+.app-shell-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.32'/%3E%3C/svg%3E");
+  opacity: 0.04;
+}
+
+.app-surface {
+  background:
+    linear-gradient(150deg, hsl(var(--card) / 0.95), hsl(236 16% 9% / 0.9)),
+    hsl(var(--card));
+  border: 1px solid hsl(var(--border) / 0.9);
+  box-shadow: var(--shadow-soft);
 }
 
 @keyframes float {

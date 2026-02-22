@@ -1,60 +1,55 @@
 import { Home, Target, Trophy, User } from "lucide-react";
-import { NavLink } from "@/components/NavLink";
+import { NavLink as RouterNavLink, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
+import { cn } from "@/lib/utils";
 
 export function DesktopNav() {
   const { t } = useTranslation();
+  const location = useLocation();
+  const navItems = [
+    { to: "/dashboard", icon: Home, label: t("nav.home"), matchPrefixes: ["/dashboard"] },
+    { to: "/leagues", icon: Trophy, label: t("nav.leagues"), matchPrefixes: ["/leagues", "/league/", "/join/"] },
+    { to: "/training", icon: Target, label: t("nav.training"), matchPrefixes: ["/training"] },
+    { to: "/profile", icon: User, label: t("nav.profile"), matchPrefixes: ["/profile"] },
+  ];
 
   return (
-    <nav className="hidden md:flex fixed top-0 left-0 right-0 z-50 h-20">
-      <div className="absolute inset-0 bg-background/90 backdrop-blur-md border-b border-border" />
-      <div className="container mx-auto px-6 flex items-center justify-between relative z-10 h-full">
-        <div className="flex-1 min-w-0 flex items-center gap-3">
-          <img src="/logo.png" alt="DartStreak Logo" className="w-10 h-10 object-contain" />
-          <span className="font-display font-bold text-xl text-foreground tracking-wide">DartStreak</span>
+    <nav className="fixed inset-x-0 top-0 z-50 hidden md:block pt-4">
+      <div className="mx-auto flex h-16 w-[min(1120px,calc(100%-2rem))] items-center justify-between rounded-[1.6rem] border border-white/10 bg-[#0D0D12]/78 px-5 shadow-[0_18px_48px_rgba(0,0,0,0.5)] backdrop-blur-xl">
+        <div className="flex min-w-0 flex-1 items-center gap-3">
+          <img src="/logo.png" alt="DartStreak Logo" className="h-9 w-9 object-contain" />
+          <span className="font-display text-xl font-bold tracking-tight text-[#FAF8F5]">
+            DartStreak
+          </span>
         </div>
 
-        {/* Navigation Links */}
-        <div className="flex items-center gap-2 bg-card/50 p-1 rounded-full border border-border">
-          <NavLink
-            to="/dashboard"
-            className="flex items-center gap-2 px-6 py-2.5 text-muted-foreground hover:text-foreground transition-all rounded-full hover:bg-card"
-            activeClassName="bg-primary/10 text-primary font-semibold"
-          >
-            <Home className="w-4 h-4" />
-            <span className="text-sm">{t("nav.home")}</span>
-          </NavLink>
+        <div className="flex items-center gap-1 rounded-full border border-white/10 bg-[#16161C]/85 p-1">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = item.matchPrefixes.some((prefix) =>
+              location.pathname.startsWith(prefix),
+            );
 
-          <NavLink
-            to="/leagues"
-            className="flex items-center gap-2 px-6 py-2.5 text-muted-foreground hover:text-foreground transition-all rounded-full hover:bg-card"
-            activeClassName="bg-primary/10 text-primary font-semibold"
-          >
-            <Trophy className="w-4 h-4" />
-            <span className="text-sm">{t("nav.leagues")}</span>
-          </NavLink>
-
-          <NavLink
-            to="/training"
-            className="flex items-center gap-2 px-6 py-2.5 text-muted-foreground hover:text-foreground transition-all rounded-full hover:bg-card"
-            activeClassName="bg-primary/10 text-primary font-semibold"
-          >
-            <Target className="w-4 h-4" />
-            <span className="text-sm">{t("nav.training")}</span>
-          </NavLink>
-
-          <NavLink
-            to="/profile"
-            className="flex items-center gap-2 px-6 py-2.5 text-muted-foreground hover:text-foreground transition-all rounded-full hover:bg-card"
-            activeClassName="bg-primary/10 text-primary font-semibold"
-          >
-            <User className="w-4 h-4" />
-            <span className="text-sm">{t("nav.profile")}</span>
-          </NavLink>
+            return (
+              <RouterNavLink
+                key={item.to}
+                to={item.to}
+                className={cn(
+                  "flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200",
+                  isActive
+                    ? "bg-[#22C55E]/18 text-[#22C55E]"
+                    : "text-[#FAF8F5]/70 hover:bg-white/5 hover:text-[#FAF8F5]",
+                )}
+              >
+                <Icon className="h-4 w-4" />
+                <span>{item.label}</span>
+              </RouterNavLink>
+            );
+          })}
         </div>
 
-        <div className="flex-1 min-w-0 flex justify-end">
+        <div className="flex min-w-0 flex-1 justify-end">
           <LanguageSwitch />
         </div>
       </div>

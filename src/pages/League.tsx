@@ -517,10 +517,10 @@ export default function League() {
 
   return (
     <AppLayout>
-      <header className="sticky top-0 z-40 p-4 pt-[calc(env(safe-area-inset-top)+1rem)] md:pt-6 bg-background/95 md:bg-background/80 md:backdrop-blur-md border-b border-border">
-        <div className="container mx-auto px-2">
+      <header className="sticky top-0 z-40 px-3 pb-3 pt-[calc(env(safe-area-inset-top)+0.75rem)] md:pt-3">
+        <div className="app-surface container mx-auto rounded-2xl px-2 py-3">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/leagues")} className="shrink-0 text-foreground hover:bg-secondary rounded-full w-10 h-10">
+            <Button variant="ghost" size="icon" onClick={() => navigate("/leagues")} className="shrink-0 text-foreground hover:bg-white/8 rounded-full w-10 h-10">
               <ArrowLeft className="w-6 h-6" />
             </Button>
             <div className="min-w-0 flex-1">
@@ -543,7 +543,7 @@ export default function League() {
 
             <div className="flex items-center gap-2">
               {isOwner && !isSystemLeague && (
-                <div className="flex items-center gap-1 bg-secondary rounded-full px-3 py-1.5">
+                <div className="flex items-center gap-1 bg-[#15151D] border border-white/10 rounded-full px-3 py-1.5">
                   <span className="text-sm font-mono text-foreground">{league.invite_code}</span>
                   <Button
                     variant="ghost"
@@ -552,7 +552,7 @@ export default function League() {
                       copyInviteCode();
                       toast.success(t("league.inviteCodeCopied"));
                     }}
-                    className="shrink-0 text-foreground hover:bg-secondary rounded-full w-8 h-8"
+                    className="shrink-0 text-foreground hover:bg-white/8 rounded-full w-8 h-8"
                   >
                     {copied ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
                   </Button>
@@ -566,7 +566,7 @@ export default function League() {
                       <Trash2 className="w-5 h-5" />
                     </Button>
                   </AlertDialogTrigger>
-                  <AlertDialogContent className="glass-card border-border text-foreground">
+                  <AlertDialogContent className="glass-card border-white/10 text-foreground">
                     <AlertDialogHeader>
                       <AlertDialogTitle className="text-foreground">{t("league.deleteConfirmTitle")}</AlertDialogTitle>
                       <AlertDialogDescription className="text-muted-foreground">
@@ -574,7 +574,7 @@ export default function League() {
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel className="bg-transparent border-border text-foreground hover:bg-secondary">{t("common.cancel")}</AlertDialogCancel>
+                      <AlertDialogCancel className="bg-transparent border-white/20 text-foreground hover:bg-white/8">{t("common.cancel")}</AlertDialogCancel>
                       <AlertDialogAction
                         onClick={handleDeleteLeague}
                         disabled={deleting}
@@ -592,7 +592,7 @@ export default function League() {
                       <LogOut className="w-5 h-5" />
                     </Button>
                   </AlertDialogTrigger>
-                  <AlertDialogContent className="glass-card border-border text-foreground">
+                  <AlertDialogContent className="glass-card border-white/10 text-foreground">
                     <AlertDialogHeader>
                       <AlertDialogTitle className="text-foreground">{t("league.leaveConfirmTitle")}</AlertDialogTitle>
                       <AlertDialogDescription className="text-muted-foreground">
@@ -600,7 +600,7 @@ export default function League() {
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel className="bg-transparent border-border text-foreground hover:bg-secondary">{t("common.cancel")}</AlertDialogCancel>
+                      <AlertDialogCancel className="bg-transparent border-white/20 text-foreground hover:bg-white/8">{t("common.cancel")}</AlertDialogCancel>
                       <AlertDialogAction
                         onClick={handleLeaveLeague}
                         disabled={leaving}
@@ -620,12 +620,12 @@ export default function League() {
       <main className="container mx-auto px-4 py-6 pb-32">
         <div className="max-w-4xl mx-auto space-y-8">
           {isSystemLeague && historyLeagues.length > 1 && (
-            <div className="glass-card rounded-2xl p-4 border border-border flex items-center justify-between gap-3">
+            <div className="glass-card rounded-2xl p-4 border border-white/10 flex items-center justify-between gap-3">
               <Button
                 variant="outline"
                 onClick={() => navigateHistory(1)}
                 disabled={historyIndex === -1 || historyIndex >= historyLeagues.length - 1}
-                className="border-border bg-transparent text-foreground hover:bg-secondary"
+                className="border-white/20 bg-transparent text-foreground hover:bg-white/8"
               >
                 <ChevronLeft className="w-4 h-4 mr-2" />
                 {t("league.olderWeek")}
@@ -638,7 +638,7 @@ export default function League() {
                 variant="outline"
                 onClick={() => navigateHistory(-1)}
                 disabled={historyIndex === -1 || historyIndex <= 0}
-                className="border-border bg-transparent text-foreground hover:bg-secondary"
+                className="border-white/20 bg-transparent text-foreground hover:bg-white/8"
               >
                 {t("league.newerWeek")}
                 <ChevronRight className="w-4 h-4 ml-2" />
@@ -647,7 +647,7 @@ export default function League() {
           )}
 
           {isOwner && !isSystemLeague && (
-            <div className="glass-card rounded-2xl p-6 border border-border">
+            <div className="glass-card rounded-2xl p-6 border border-white/10">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground uppercase tracking-wider">{t("league.settings")}</p>
@@ -749,7 +749,7 @@ export default function League() {
                 <CountdownTimer timezone={leagueTimezone} />
               </div>
 
-              <div className="bg-secondary/50 rounded-2xl p-6 border border-border">
+              <div className="bg-[#14141D] rounded-2xl p-6 border border-white/10">
                 <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">
                   <span>{t("league.cameraRequirementTitle")}</span>
                   <span className={cameraRequired ? "text-primary" : "text-muted-foreground"}>
@@ -783,7 +783,7 @@ export default function League() {
           )}
 
           {roundResults.length > 0 && (
-            <div className="glass-card rounded-2xl p-6 animate-slide-up" style={{ animationDelay: "50ms" }}>
+            <div className="glass-card rounded-2xl p-6 animate-slide-up border-white/10" style={{ animationDelay: "50ms" }}>
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-8 h-8 rounded-full bg-dart-gold/20 flex items-center justify-center">
                   <Award className="w-4 h-4 text-dart-gold" />
@@ -795,7 +795,7 @@ export default function League() {
                 {roundResults.map((result) => (
                   <div
                     key={result.round_number}
-                    className="flex items-center justify-between p-4 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors border border-border"
+                    className="flex items-center justify-between p-4 rounded-xl bg-[#14141D] hover:bg-[#1A1A24] transition-colors border border-white/10"
                   >
                     <div>
                       <p className="font-display font-bold text-foreground">
@@ -828,8 +828,8 @@ export default function League() {
           )}
 
           {leagueStarted && (
-            <div className="glass-card rounded-3xl overflow-hidden animate-slide-up" style={{ animationDelay: "100ms" }}>
-              <div className="p-6 pb-2 border-b border-border">
+            <div className="glass-card rounded-3xl overflow-hidden animate-slide-up border-white/10" style={{ animationDelay: "100ms" }}>
+              <div className="p-6 pb-2 border-b border-white/10">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
                     {isSystemLeague ? <Globe className="w-5 h-5 text-blue-400" /> : <Trophy className="w-5 h-5 text-blue-400" />}
@@ -857,7 +857,7 @@ export default function League() {
                       key={entry.user_id}
                       className={`grid grid-cols-12 gap-2 items-center px-3 py-4 rounded-xl transition-all ${entry.user_id === user?.id
                         ? "bg-primary/10 border border-primary/30"
-                        : "hover:bg-secondary/50 border border-transparent"
+                        : "hover:bg-[#1A1A24] border border-transparent"
                         }`}
                     >
                       <div className={`col-span-1 font-display font-bold text-lg ${getMedalColor(index)}`}>
@@ -882,7 +882,7 @@ export default function League() {
                                   : t("league.today"),
                               });
                             }}
-                            className="p-1 rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+                            className="p-1 rounded-full hover:bg-white/8 text-muted-foreground hover:text-foreground transition-colors"
                           >
                             <Video className={`w-3.5 h-3.5 ${entry.today_video_url ? "text-primary" : "opacity-30"}`} />
                           </button>

@@ -1,4 +1,8 @@
 {
+  "auth": {
+    "continueWithGoogle": "Fortsett med Google",
+    "googleLogin": "Logg inn med Google"
+  },
   "common": {
     "language": "Språk"
   },

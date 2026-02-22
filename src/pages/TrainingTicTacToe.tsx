@@ -480,18 +480,18 @@ export default function TrainingTicTacToe() {
     <AppLayout hideNav={isFullscreen}>
       <header
         className={cn(
-          "sticky top-0 z-40 bg-card/95 md:bg-card/80 md:backdrop-blur-md border-b border-border",
+          "sticky top-0 z-40 px-3 pb-3 pt-3",
           isFullscreen && "md:hidden",
         )}
       >
-        <div className="container mx-auto px-4 py-4 md:py-3 space-y-4 md:space-y-3">
+        <div className="app-surface container mx-auto rounded-2xl px-4 py-4 md:py-3 space-y-4 md:space-y-3">
           <div className="flex items-center justify-between gap-4">
             <h1 className="text-xl font-display font-bold">{t("trainingTicTacToe.title")}</h1>
           </div>
 
           <div className="grid gap-2 md:grid-cols-[1fr_auto_auto_auto]">
             <Select value={difficulty} onValueChange={handleDifficultyChange}>
-              <SelectTrigger className="bg-black/20 border-border">
+              <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -503,21 +503,21 @@ export default function TrainingTicTacToe() {
               </SelectContent>
             </Select>
 
-            <Button variant="outline" onClick={handleNewBoard} className="border-white/15">
+            <Button variant="outline" onClick={handleNewBoard}>
               {t("trainingTicTacToe.actions.newBoard")}
             </Button>
-            <Button variant="outline" onClick={handleResetMatch} className="border-white/15">
+            <Button variant="outline" onClick={handleResetMatch}>
               {t("trainingTicTacToe.actions.resetMatch")}
             </Button>
             {isTeamsReady && (
-              <Button variant="outline" onClick={handleChangeTeams} className="border-white/15">
+              <Button variant="outline" onClick={handleChangeTeams}>
                 {t("trainingTicTacToe.actions.changeTeams")}
               </Button>
             )}
             <Button
               variant="outline"
               onClick={() => void toggleFullscreen()}
-              className="hidden md:inline-flex border-white/15"
+              className="hidden md:inline-flex"
             >
               {isFullscreen ? <Minimize className="w-4 h-4 mr-2" /> : <Maximize className="w-4 h-4 mr-2" />}
               {isFullscreen
@@ -532,14 +532,14 @@ export default function TrainingTicTacToe() {
                   {t("trainingTicTacToe.help.button")}
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-3xl bg-card/95 border-border">
+              <DialogContent className="max-w-3xl bg-[#12121A]/96 border-white/12">
                 <DialogHeader>
                   <DialogTitle>{t("trainingTicTacToe.help.title")}</DialogTitle>
                   <DialogDescription>{t("trainingTicTacToe.help.subtitle")}</DialogDescription>
                 </DialogHeader>
 
                 <div className="grid gap-4 md:grid-cols-2">
-                  <section className="rounded-xl border border-border bg-black/20 p-4">
+                  <section className="rounded-xl border border-white/10 bg-[#15151D] p-4">
                     <h3 className="text-sm uppercase tracking-wider text-muted-foreground mb-2">
                       {t("trainingTicTacToe.rules.title")}
                     </h3>
@@ -551,7 +551,7 @@ export default function TrainingTicTacToe() {
                     </ul>
                   </section>
 
-                  <section className="rounded-xl border border-border bg-black/20 p-4">
+                  <section className="rounded-xl border border-white/10 bg-[#15151D] p-4">
                     <h3 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">
                       {t("trainingTicTacToe.levels.title")}
                     </h3>
@@ -559,7 +559,7 @@ export default function TrainingTicTacToe() {
                       {difficultyOptions.map((option) => (
                         <div
                           key={option.key}
-                          className={`rounded-lg p-2.5 border ${option.key === difficulty ? "border-primary/40 bg-primary/10" : "border-border bg-black/30"}`}
+                          className={`rounded-lg p-2.5 border ${option.key === difficulty ? "border-primary/40 bg-primary/10" : "border-white/10 bg-[#101017]"}`}
                         >
                           <p className="text-sm font-semibold text-foreground">{option.label}</p>
                           <p className="text-xs text-muted-foreground">{option.description}</p>
@@ -585,13 +585,13 @@ export default function TrainingTicTacToe() {
         )}
       >
         {!isTeamsReady && (
-          <section className="glass-card rounded-2xl border border-border p-5 md:p-6 mb-6">
+          <section className="glass-card rounded-2xl border border-white/10 p-5 md:p-6 mb-6">
             <h2 className="text-xl font-display font-bold mb-2">{t("trainingTicTacToe.setup.title")}</h2>
             <p className="text-sm text-muted-foreground mb-5">{t("trainingTicTacToe.setup.subtitle")}</p>
 
             <div className="grid gap-4 md:grid-cols-2">
               {(["A", "B"] as const).map((player) => (
-                <div key={player} className="rounded-xl border border-border bg-black/20 p-4 space-y-3">
+                <div key={player} className="rounded-xl border border-white/10 bg-[#15151D] p-4 space-y-3">
                   <p className="text-xs uppercase tracking-wider text-muted-foreground">
                     {player === "A" ? t("trainingTicTacToe.setup.teamA") : t("trainingTicTacToe.setup.teamB")}
                   </p>
@@ -599,7 +599,7 @@ export default function TrainingTicTacToe() {
                     value={teamSetup[player].name}
                     onChange={(event) => handleTeamNameChange(player, event.target.value)}
                     placeholder={player === "A" ? t("trainingTicTacToe.players.playerA") : t("trainingTicTacToe.players.playerB")}
-                    className="bg-black/20 border-border"
+                    className="bg-[#11111A] border-white/12"
                   />
                   <div className="flex flex-wrap gap-2">
                     {teamColorOptions.map((color) => {
@@ -621,7 +621,7 @@ export default function TrainingTicTacToe() {
                   </div>
                 </div>
               ))}
-              <div className="rounded-xl border border-border bg-black/20 p-4 md:col-span-2">
+              <div className="rounded-xl border border-white/10 bg-[#15151D] p-4 md:col-span-2">
                 <div className="flex items-center gap-2 mb-4">
                   <Trophy className="w-4 h-4 text-primary" />
                   <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
@@ -637,7 +637,7 @@ export default function TrainingTicTacToe() {
                       "relative flex flex-col items-center justify-center gap-2 p-4 rounded-xl border transition-all duration-300 overflow-hidden",
                       targetLegs === 0
                         ? "border-primary bg-primary/10 text-primary shadow-[0_0_20px_-5px_rgba(59,130,246,0.3)]"
-                        : "border-border bg-black/20 hover:bg-secondary/50 text-muted-foreground hover:text-foreground",
+                        : "border-white/10 bg-[#101017] hover:bg-secondary/40 text-muted-foreground hover:text-foreground",
                     )}
                   >
                     <InfinityIcon className="w-6 h-6" />
@@ -659,7 +659,7 @@ export default function TrainingTicTacToe() {
                       "relative flex flex-col items-center justify-center gap-2 p-4 rounded-xl border transition-all duration-300 overflow-hidden",
                       targetLegs > 0
                         ? "border-primary bg-primary/10 text-primary shadow-[0_0_20px_-5px_rgba(59,130,246,0.3)]"
-                        : "border-border bg-black/20 hover:bg-secondary/50 text-muted-foreground hover:text-foreground",
+                        : "border-white/10 bg-[#101017] hover:bg-secondary/40 text-muted-foreground hover:text-foreground",
                     )}
                   >
                     <TargetIcon className="w-6 h-6" />
@@ -688,7 +688,7 @@ export default function TrainingTicTacToe() {
                       className="overflow-hidden"
                     >
                       <div className="pt-4">
-                        <div className="flex items-center justify-center gap-6 bg-black/40 rounded-xl p-4 border border-border">
+                        <div className="flex items-center justify-center gap-6 bg-[#101017] rounded-xl p-4 border border-white/10">
                           <Button
                             variant="outline"
                             size="icon"
@@ -725,7 +725,7 @@ export default function TrainingTicTacToe() {
                                 "px-3 py-1.5 rounded-full text-xs font-medium border transition-all",
                                 targetLegs === val
                                   ? "bg-primary text-foreground border-primary shadow-lg shadow-primary/25 scale-105"
-                                  : "bg-transparent text-muted-foreground border-border hover:border-white/30 hover:bg-secondary/50",
+                                  : "bg-transparent text-muted-foreground border-white/15 hover:border-white/30 hover:bg-secondary/40",
                               )}
                             >
                               {t("trainingTicTacToe.setup.firstTo")} {val}
@@ -759,7 +759,7 @@ export default function TrainingTicTacToe() {
             )}
           >
             <div className="space-y-6 md:space-y-4">
-              <section className="glass-card rounded-2xl border border-border p-4 sm:p-5">
+              <section className="glass-card rounded-2xl border border-white/10 p-4 sm:p-5">
                 <div className="grid grid-cols-2 gap-4">
                   <div
                     className="rounded-xl border p-3"
@@ -838,7 +838,7 @@ export default function TrainingTicTacToe() {
         )}
 
         <div className="space-y-6 mt-6 md:hidden">
-          <section className="glass-card rounded-2xl border border-border p-4 sm:p-5">
+          <section className="glass-card rounded-2xl border border-white/10 p-4 sm:p-5">
             <h2 className="text-sm uppercase tracking-wider text-muted-foreground mb-2">
               {t("trainingTicTacToe.rules.title")}
             </h2>
@@ -850,7 +850,7 @@ export default function TrainingTicTacToe() {
             </ul>
           </section>
 
-          <section className="glass-card rounded-2xl border border-border p-4 sm:p-5">
+          <section className="glass-card rounded-2xl border border-white/10 p-4 sm:p-5">
             <h2 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">
               {t("trainingTicTacToe.levels.title")}
             </h2>
@@ -858,7 +858,7 @@ export default function TrainingTicTacToe() {
               {difficultyOptions.map((option) => (
                 <div
                   key={option.key}
-                  className={`rounded-xl p-3 border ${option.key === difficulty ? "border-primary/40 bg-primary/10" : "border-border bg-black/20"}`}
+                  className={`rounded-xl p-3 border ${option.key === difficulty ? "border-primary/40 bg-primary/10" : "border-white/10 bg-[#11111A]"}`}
                 >
                   <p className="text-sm font-semibold text-foreground">{option.label}</p>
                   <p className="text-xs text-muted-foreground">{option.description}</p>
@@ -879,7 +879,7 @@ export default function TrainingTicTacToe() {
                 className="w-full max-w-sm"
               >
                 {matchWinner ? (
-                  <div className="relative glass-card border border-primary/20 bg-gradient-to-b from-black/80 to-black/95 rounded-3xl p-8 text-center shadow-2xl overflow-hidden">
+                  <div className="relative glass-card border border-primary/20 bg-gradient-to-b from-[#111118] to-[#0A0A10] rounded-3xl p-8 text-center shadow-2xl overflow-hidden">
                     <div className="absolute inset-0 bg-primary/5 blur-3xl rounded-full pointer-events-none" />
 
                     <motion.div
@@ -898,7 +898,7 @@ export default function TrainingTicTacToe() {
                       {teamSetup[matchWinner].name}
                     </p>
 
-                    <div className="flex items-center justify-center gap-6 mb-8 relative z-10 bg-secondary/50 rounded-2xl p-4 border border-border">
+                    <div className="flex items-center justify-center gap-6 mb-8 relative z-10 bg-[#14141C] rounded-2xl p-4 border border-white/10">
                       <div className="text-center">
                         <span className="text-3xl font-bold block text-foreground">{roundsWon.A}</span>
                         <span className="text-[10px] bg-secondary px-2 py-0.5 rounded text-muted-foreground uppercase tracking-wider font-bold">
@@ -923,7 +923,7 @@ export default function TrainingTicTacToe() {
                     </Button>
                   </div>
                 ) : (
-                  <div className="glass-card rounded-2xl border border-border p-6 text-center space-y-4 shadow-xl">
+                  <div className="glass-card rounded-2xl border border-white/10 p-6 text-center space-y-4 shadow-xl">
                     <h2 className="text-2xl font-display font-bold">
                       {roundResult?.isDraw
                         ? t("trainingTicTacToe.result.draw")

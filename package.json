@@ -7,7 +7,9 @@
     "dev": "vite --host",
     "build": "vite build",
     "build:dev": "vite build --mode development",
-    "lint": "eslint .",
+    "i18n:baseline": "node scripts/check-i18n.mjs --update-baseline",
+    "i18n:check": "node scripts/check-i18n.mjs",
+    "lint": "eslint . && npm run i18n:check",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -89,7 +89,7 @@ export default function TicTacToeTurnPanel({
   return (
     <section
       className={cn(
-        "h-full space-y-4 md:space-y-4 glass-card rounded-2xl p-4 sm:p-5 md:p-5 border border-border",
+        "h-full space-y-4 md:space-y-4 glass-card rounded-2xl p-4 sm:p-5 md:p-5 border border-white/10",
         className,
       )}
     >
@@ -111,7 +111,7 @@ export default function TicTacToeTurnPanel({
           return (
             <div
               key={index}
-              className="rounded-xl border border-border bg-black/20 h-16 md:h-16 flex flex-col items-center justify-center"
+              className="rounded-xl border border-white/10 bg-[#101017] h-16 md:h-16 flex flex-col items-center justify-center"
             >
               <span className="text-[11px] uppercase tracking-wide text-muted-foreground">
                 {strings.throwLabel} {index + 1}
@@ -193,7 +193,7 @@ export default function TicTacToeTurnPanel({
           variant="outline"
           onClick={addMiss}
           disabled={!canThrow}
-          className="border-white/15"
+          className="border-white/20"
         >
           {strings.miss}
         </Button>
@@ -202,7 +202,7 @@ export default function TicTacToeTurnPanel({
           variant="outline"
           onClick={addOuterBull}
           disabled={!canThrow}
-          className="border-white/15"
+          className="border-white/20"
         >
           {strings.quick25}
         </Button>
@@ -211,7 +211,7 @@ export default function TicTacToeTurnPanel({
           variant="outline"
           onClick={addBull}
           disabled={!canThrow}
-          className="border-white/15"
+          className="border-white/20"
         >
           BULL
         </Button>
@@ -220,7 +220,7 @@ export default function TicTacToeTurnPanel({
           variant="outline"
           onClick={onUndoThrow}
           disabled={disabled || throwsThisTurn.length === 0}
-          className="border-white/15"
+          className="border-white/20"
         >
           <Delete className="w-4 h-4 mr-1.5" />
           {strings.undo}

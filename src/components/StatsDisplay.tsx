@@ -16,7 +16,7 @@ export function StatsDisplay({ userId }: StatsDisplayProps) {
       <div className="space-y-4 p-4">
         <div className="grid grid-cols-2 gap-3">
           {[1, 2, 3, 4].map((i) => (
-            <Card key={i} className="animate-pulse border-none bg-secondary/50">
+            <Card key={i} className="animate-pulse border-white/10 bg-[#191923]">
               <CardContent className="pt-6 h-24" />
             </Card>
           ))}
@@ -34,7 +34,7 @@ export function StatsDisplay({ userId }: StatsDisplayProps) {
       {/* Main Stats Grid */}
       <div className="grid grid-cols-2 gap-3">
         {/* 3-Dart Average */}
-        <Card className="border-none bg-secondary/50 hover:bg-secondary transition-colors">
+        <Card className="border-white/10 bg-[#191923] hover:border-primary/35 transition-colors">
           <CardContent className="pt-5 pb-4 text-center">
             <Target className="w-7 h-7 mx-auto text-primary mb-2" />
             <p className="text-2xl font-display font-bold text-foreground">
@@ -45,7 +45,7 @@ export function StatsDisplay({ userId }: StatsDisplayProps) {
         </Card>
 
         {/* Best Day Score */}
-        <Card className="border-none bg-secondary/50 hover:bg-secondary transition-colors">
+        <Card className="border-white/10 bg-[#191923] hover:border-primary/35 transition-colors">
           <CardContent className="pt-5 pb-4 text-center">
             <Trophy className="w-7 h-7 mx-auto text-dart-gold mb-2" />
             <p className="text-2xl font-display font-bold text-foreground">
@@ -56,7 +56,7 @@ export function StatsDisplay({ userId }: StatsDisplayProps) {
         </Card>
 
         {/* Total Points */}
-        <Card className="border-none bg-secondary/50 hover:bg-secondary transition-colors">
+        <Card className="border-white/10 bg-[#191923] hover:border-primary/35 transition-colors">
           <CardContent className="pt-5 pb-4 text-center">
             <TrendingUp className="w-7 h-7 mx-auto text-primary mb-2" />
             <p className="text-2xl font-display font-bold text-foreground">
@@ -67,7 +67,7 @@ export function StatsDisplay({ userId }: StatsDisplayProps) {
         </Card>
 
         {/* Days Played */}
-        <Card className="border-none bg-secondary/50 hover:bg-secondary transition-colors">
+        <Card className="border-white/10 bg-[#191923] hover:border-primary/35 transition-colors">
           <CardContent className="pt-5 pb-4 text-center">
             <Calendar className="w-7 h-7 mx-auto text-primary mb-2" />
             <p className="text-2xl font-display font-bold text-foreground">
@@ -79,7 +79,7 @@ export function StatsDisplay({ userId }: StatsDisplayProps) {
       </div>
 
       {/* Additional Stats */}
-      <Card className="border-none bg-secondary/50">
+      <Card className="border-white/10 bg-[#191923]">
         <CardContent className="pt-4 pb-3 space-y-0">
           {/* Best 3-Dart Average (single day) */}
           <div className="flex justify-between items-center py-3 border-b border-border">

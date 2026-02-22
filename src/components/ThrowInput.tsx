@@ -247,7 +247,7 @@ export default function ThrowInput({
   const timerBadge = (
     <div className={`absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-full text-xs font-mono ${timeLeft < 60
       ? "bg-destructive/90 text-destructive-foreground animate-pulse"
-      : "bg-background/80 text-foreground"
+      : "bg-[#0D0D12]/85 text-foreground"
       }`}>
       <Timer className="w-3 h-3" />
       {formatTime(timeLeft)}
@@ -263,7 +263,7 @@ export default function ThrowInput({
           size="sm"
           onClick={() => setMultiplier(m)}
           disabled={throws.length >= 9}
-          className="w-16"
+          className="w-20"
         >
           {m === 1 ? "Single" : m === 2 ? "Double" : "Triple"}
         </Button>
@@ -287,7 +287,7 @@ export default function ThrowInput({
           size="sm"
           onClick={() => handleNumberClick(num)}
           disabled={throws.length >= 9}
-          className={`font-bold font-mono shadow-sm active:scale-95 transition-transform ${isLandscape ? 'h-10 text-sm' : 'h-14 text-lg'}`}
+          className={`font-bold font-mono active:scale-95 transition-transform ${isLandscape ? 'h-10 text-sm' : 'h-14 text-lg'}`}
         >
           {num}
         </Button>
@@ -311,7 +311,7 @@ export default function ThrowInput({
         size="sm"
         onClick={() => { setThrows((prev) => [...prev, 25]); setMultiplier(1); }}
         disabled={throws.length >= 9}
-        className={`flex-1 font-bold text-emerald-600 dark:text-emerald-400 border-2 border-emerald-500/20 ${isLandscape ? 'h-10' : 'h-14'}`}
+        className={`flex-1 font-bold text-emerald-300 border border-emerald-400/35 ${isLandscape ? 'h-10' : 'h-14'}`}
       >
         25
       </Button>
@@ -320,7 +320,7 @@ export default function ThrowInput({
         size="sm"
         onClick={() => { setThrows((prev) => [...prev, 50]); setMultiplier(1); }}
         disabled={throws.length >= 9}
-        className={`flex-1 font-black shadow-lg shadow-destructive/20 ${isLandscape ? 'h-10' : 'h-14'}`}
+        className={`flex-1 font-black ${isLandscape ? 'h-10' : 'h-14'}`}
       >
         BULL
       </Button>
@@ -420,7 +420,7 @@ export default function ThrowInput({
 
   if (isExpired) {
     return (
-      <div className="fixed inset-0 z-50 bg-background flex flex-col items-center justify-center p-6">
+      <div className="fixed inset-0 z-50 bg-[#0D0D12] flex flex-col items-center justify-center p-6">
         <div className="text-center space-y-4">
           <Timer className="w-16 h-16 text-destructive mx-auto" />
           <h2 className="text-2xl font-display font-bold text-destructive">
@@ -441,7 +441,7 @@ export default function ThrowInput({
 
   if (isLandscape) {
     return (
-      <div className="fixed inset-0 z-50 bg-background flex flex-row" style={{ height: '100dvh' }}>
+      <div className="fixed inset-0 z-50 bg-[#0D0D12] flex flex-row" style={{ height: '100dvh' }}>
         {/* Left column: Camera preview + Score summary */}
         <div className="flex flex-col flex-shrink-0 items-center" style={{ width: '28%', maxWidth: '200px' }}>
           {/* Camera - always square */}
@@ -452,7 +452,7 @@ export default function ThrowInput({
             </div>
           </div>
           {/* Score section */}
-          <div className="bg-card border-t border-r border-border p-2">
+          <div className="bg-[#15151D] border-t border-r border-white/10 p-2">
             <div className="flex flex-col items-center gap-1">
               <div className="flex gap-1">
                 {[1, 2, 3].map((round) => {
@@ -522,7 +522,7 @@ export default function ThrowInput({
   // ── PORTRAIT LAYOUT (original) ──
 
   return (
-    <div className="fixed inset-0 z-50 bg-background flex flex-col" style={{ height: '100dvh' }}>
+      <div className="fixed inset-0 z-50 bg-[#0D0D12] flex flex-col" style={{ height: '100dvh' }}>
       {/* Camera preview - Square, centered */}
       <div className="relative bg-black flex-shrink-0 flex items-center justify-center" style={{ height: '25dvh' }}>
         <div className="relative aspect-square h-full max-w-full">
@@ -534,7 +534,7 @@ export default function ThrowInput({
       {/* Numpad section */}
       <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
         {/* Number pad - matching MatchThrowInput layout */}
-        <div className="flex-1 bg-background p-3 flex flex-col justify-center overflow-y-auto space-y-3">
+        <div className="flex-1 bg-[#0D0D12] p-3 flex flex-col justify-center overflow-y-auto space-y-3">
           {multiplierButtons}
           {numberGrid}
           {specialButtons}
@@ -542,7 +542,7 @@ export default function ThrowInput({
         </div>
 
         {/* Score section at bottom - with safe area for iOS Safari */}
-        <div className="bg-card border-t border-border py-2 px-3" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
+        <div className="bg-[#15151D] border-t border-white/10 py-2 px-3" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
           {scoreSection}
         </div>
       </div>

@@ -1,4 +1,8 @@
 {
+  "auth": {
+    "continueWithGoogle": "Doorgaan met Google",
+    "googleLogin": "Inloggen met Google"
+  },
   "common": {
     "language": "Taal"
   },

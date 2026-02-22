@@ -83,8 +83,8 @@ export default function CreateLeague() {
 
     return (
         <AppLayout>
-            <header className="sticky top-0 z-40 bg-card/95 md:bg-card/80 md:backdrop-blur-md border-b border-border">
-                <div className="container mx-auto px-4 py-4 flex items-center gap-3">
+            <header className="sticky top-0 z-40 px-3 pb-3 pt-3">
+                <div className="app-surface container mx-auto rounded-2xl px-4 py-3 flex items-center gap-3">
                     <Button
                         variant="ghost"
                         size="icon"
@@ -98,7 +98,7 @@ export default function CreateLeague() {
             </header>
 
             <main className="container mx-auto px-4 py-6 pb-24">
-                <div className="max-w-lg mx-auto space-y-6">
+                <div className="max-w-lg mx-auto space-y-6 glass-card border-white/10 rounded-2xl p-5">
                     <p className="text-muted-foreground">{t("dashboard.createLeagueDesc")}</p>
 
                     <div className="space-y-2">
@@ -108,7 +108,7 @@ export default function CreateLeague() {
                             placeholder=""
                             value={newLeagueName}
                             onChange={(e) => setNewLeagueName(e.target.value)}
-                            className="bg-black/20 border-border text-foreground placeholder:text-gray-600 focus:border-accent/50"
+                            className="bg-[#12121A] border-white/12 text-foreground placeholder:text-muted-foreground"
                         />
                     </div>
 
@@ -121,7 +121,7 @@ export default function CreateLeague() {
                             max={52}
                             value={totalRounds}
                             onChange={(e) => setTotalRounds(parseInt(e.target.value) || 4)}
-                            className="bg-black/20 border-border text-foreground placeholder:text-gray-600 focus:border-accent/50"
+                            className="bg-[#12121A] border-white/12 text-foreground placeholder:text-muted-foreground"
                         />
                     </div>
 
@@ -133,14 +133,14 @@ export default function CreateLeague() {
                             value={startDate}
                             onChange={(e) => setStartDate(e.target.value)}
                             min={format(new Date(), "yyyy-MM-dd")}
-                            className="bg-black/20 border-border text-foreground placeholder:text-gray-600 focus:border-accent/50"
+                            className="bg-[#12121A] border-white/12 text-foreground placeholder:text-muted-foreground"
                         />
                         <p className="text-xs text-muted-foreground">
                             {t("dashboard.leagueCanStartNow")}
                         </p>
                     </div>
 
-                    <div className="flex items-center justify-between rounded-xl border border-border bg-black/20 p-4">
+                    <div className="flex items-center justify-between rounded-xl border border-white/10 bg-[#12121A] p-4">
                         <div className="space-y-1">
                             <Label className="text-muted-foreground">{t("dashboard.cameraRequirement")}</Label>
                             <p className="text-xs text-muted-foreground">
