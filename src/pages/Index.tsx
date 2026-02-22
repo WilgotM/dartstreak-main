@@ -2,9 +2,17 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowRight, CheckCircle2, Flame, Target, TrendingUp, Trophy, Users } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  Flame,
+  Target,
+  TrendingUp,
+  Trophy,
+  Users,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { LanguageSwitch } from "@/components/LanguageSwitch";
+import { LandingLanguageSwitch } from "@/components/LandingLanguageSwitch";
 import { useAuth } from "@/hooks/useAuth";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -38,30 +46,52 @@ const NoiseOverlay = () => (
 // --- A. NAVBAR ---
 const Navbar = () => {
   const { t } = useTranslation();
-  const navRef = useRef<HTMLElement>(null);
   const { session } = useAuth();
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      ScrollTrigger.create({
-        start: "top -50",
-        end: 99999,
-        toggleClass: { className: "nav-scrolled", targets: navRef.current },
-      });
-    });
-    return () => ctx.revert();
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <nav
-      ref={navRef}
-      className="fixed top-6 left-1/2 z-40 flex w-[90%] max-w-5xl -translate-x-1/2 items-center justify-between rounded-[2rem] px-8 py-4 transition-all duration-500 ease-in-out [&.nav-scrolled]:border [&.nav-scrolled]:border-[#2A2A35] [&.nav-scrolled]:bg-[#0D0D12]/60 [&.nav-scrolled]:backdrop-blur-xl"
+      data-landing-nav
+      style={{
+        top: isScrolled ? "16px" : "24px",
+        width: isScrolled ? "auto" : "90%",
+        maxWidth: isScrolled ? "360px" : "64rem",
+        padding: isScrolled ? "8px 24px" : "16px 32px",
+        borderRadius: isScrolled ? "9999px" : "2rem",
+        transition: "top 500ms cubic-bezier(0.4,0,0.2,1), width 500ms cubic-bezier(0.4,0,0.2,1), max-width 500ms cubic-bezier(0.4,0,0.2,1), padding 500ms cubic-bezier(0.4,0,0.2,1), border-radius 500ms cubic-bezier(0.4,0,0.2,1)",
+      }}
+      className="fixed inset-x-0 z-[100] mx-auto flex items-center justify-between border border-[#2A2A35] bg-[#0D0D12]/80 shadow-2xl backdrop-blur-xl"
     >
-      <div className="font-sans text-xl font-bold tracking-tight text-[#FAF8F5] flex items-center gap-2">
-        <img src="/logo.png" alt="Dartstreak Logo" className="w-6 h-6 object-contain" />
-        DartStreak
+      <div className="font-sans text-xl font-bold tracking-tight text-[#FAF8F5] flex items-center gap-2 shrink-0">
+        <img
+          src="/logo.png"
+          alt="Dartstreak Logo"
+          className={`object-contain transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${isScrolled ? "w-5 h-5" : "w-6 h-6"}`}
+        />
+        <span className={`transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${isScrolled ? "text-lg" : "text-xl"}`}>
+          DartStreak
+        </span>
       </div>
-      <div className="hidden gap-8 md:flex items-center">
+
+      {/* Always rendered — animated via opacity, max-width, and overflow */}
+      <div
+        className="hidden md:flex items-center gap-8 overflow-visible transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+        style={{
+          opacity: isScrolled ? 0 : 1,
+          maxWidth: isScrolled ? "0px" : "600px",
+          marginLeft: isScrolled ? "0px" : "auto",
+          marginRight: isScrolled ? "0px" : "auto",
+          pointerEvents: isScrolled ? "none" : "auto",
+        }}
+      >
         {[
           { id: "features", label: t("landing.navFeatures") },
           { id: "leagues", label: t("landing.navLeagues") },
@@ -70,30 +100,44 @@ const Navbar = () => {
           <a
             key={link.id}
             href={`#${link.id}`}
-            className="text-sm font-medium text-[#FAF8F5]/70 transition-all hover:-translate-y-[1px] hover:text-[#22C55E]"
+            className="text-sm font-medium text-[#FAF8F5]/70 transition-all hover:-translate-y-[1px] hover:text-[#22C55E] whitespace-nowrap"
           >
             {link.label}
           </a>
         ))}
-        <div className="border-l border-[#2A2A35] pl-8">
-            <LanguageSwitch />
-        </div>
+        <LandingLanguageSwitch />
       </div>
-      {session ? (
-        <Link to="/dashboard" className="group relative overflow-hidden rounded-full bg-[#FAF8F5] px-6 py-2.5 text-sm font-semibold text-[#0D0D12] transition-transform duration-300 hover:scale-[1.03] active:scale-[0.97]">
-          <span className="relative z-10 transition-colors group-hover:text-[#FAF8F5]">
-            {t("landing.dashboard")}
-          </span>
-          <span className="absolute inset-0 z-0 h-full w-full -translate-x-full bg-[#22C55E] transition-transform duration-500 cubic-bezier(0.25, 0.46, 0.45, 0.94) group-hover:translate-x-0" />
-        </Link>
-      ) : (
-        <Link to="/auth" className="group relative overflow-hidden rounded-full bg-[#FAF8F5] px-6 py-2.5 text-sm font-semibold text-[#0D0D12] transition-transform duration-300 hover:scale-[1.03] active:scale-[0.97]">
-          <span className="relative z-10 transition-colors group-hover:text-[#FAF8F5]">
-            {t("landing.login")}
-          </span>
-          <span className="absolute inset-0 z-0 h-full w-full -translate-x-full bg-[#22C55E] transition-transform duration-500 cubic-bezier(0.25, 0.46, 0.45, 0.94) group-hover:translate-x-0" />
-        </Link>
-      )}
+
+      <div
+        className="transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] shrink-0"
+        style={{ marginLeft: isScrolled ? "24px" : "0px" }}
+      >
+        {session ? (
+          <Link
+            to="/dashboard"
+            className={`group relative flex items-center justify-center overflow-hidden rounded-full bg-[#FAF8F5] font-semibold text-[#0D0D12] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] hover:scale-[1.03] active:scale-[0.97] ${
+              isScrolled ? "px-4 py-1.5 text-xs" : "px-6 py-2.5 text-sm"
+            }`}
+          >
+            <span className="relative z-10 transition-colors group-hover:text-[#FAF8F5]">
+              {t("landing.dashboard")}
+            </span>
+            <span className="absolute inset-0 z-0 h-full w-full -translate-x-[101%] bg-[#22C55E] transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:translate-x-0" />
+          </Link>
+        ) : (
+          <Link
+            to="/auth"
+            className={`group relative flex items-center justify-center overflow-hidden rounded-full bg-[#FAF8F5] font-semibold text-[#0D0D12] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] hover:scale-[1.03] active:scale-[0.97] ${
+              isScrolled ? "px-4 py-1.5 text-xs" : "px-6 py-2.5 text-sm"
+            }`}
+          >
+            <span className="relative z-10 transition-colors group-hover:text-[#FAF8F5]">
+              {t("landing.login")}
+            </span>
+            <span className="absolute inset-0 z-0 h-full w-full -translate-x-[101%] bg-[#22C55E] transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:translate-x-0" />
+          </Link>
+        )}
+      </div>
     </nav>
   );
 };
@@ -123,14 +167,18 @@ const Hero = () => {
       ref={containerRef}
       className="relative flex h-[100dvh] items-end pb-24 lg:pb-32"
     >
-      {/* Background image & gradient overlay */}
-      <div className="absolute inset-0 z-0 h-full w-full">
-        <img
-          src="https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?q=80&w=2938&auto=format&fit=crop"
-          alt="Dark architectural stadium texture"
-          className="h-full w-full object-cover opacity-60"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D12] via-[#0D0D12]/80 to-transparent" />
+      {/* Background video & gradient overlay */}
+      <div className="absolute inset-0 z-0 h-full w-full overflow-hidden">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="h-full w-full object-cover object-center scale-[1.01]"
+        >
+          <source src="/Startsidapexels.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D12] via-[#0D0D12]/70 to-[#0D0D12]/40" />
       </div>
 
       <div className="relative z-10 w-full px-6 md:px-16 lg:w-2/3 lg:px-24">
@@ -141,7 +189,9 @@ const Hero = () => {
           {t("landing.heroTitle")}
         </h1>
         <h1 className="hero-elem mb-10 font-serif text-6xl italic text-[#FAF8F5] sm:text-8xl lg:text-[10rem] lg:leading-[0.85]">
-          <span className="not-italic font-bold font-sans text-[#22C55E]">{t("landing.heroHighlight")}</span>
+          <span className="not-italic font-bold font-sans text-[#22C55E]">
+            {t("landing.heroHighlight")}
+          </span>
         </h1>
         <div className="hero-elem flex flex-wrap gap-4">
           {session ? (
@@ -214,7 +264,9 @@ const LiveScoringCard = () => {
       const video = videoRef.current;
       if (video) {
         const currentTime = video.currentTime;
-        const nextStep = manualEntryCueTimes.filter((cue) => currentTime >= cue).length;
+        const nextStep = manualEntryCueTimes.filter(
+          (cue) => currentTime >= cue,
+        ).length;
         setStep((prev) => (prev === nextStep ? prev : nextStep));
       }
       frameId = window.requestAnimationFrame(syncWithVideo);
@@ -293,7 +345,9 @@ const LiveScoringCard = () => {
         <div className="rounded-2xl border border-[#2A2A35] bg-[#0D0D12] p-4">
           <div className="mb-2 flex items-center justify-between text-xs font-medium text-[#FAF8F5]/60">
             <span>{t("landing.featureThrowsLoggedLabel")}</span>
-            <span className="manual-entry-total font-bold text-[#FAF8F5]">{step}/9</span>
+            <span className="manual-entry-total font-bold text-[#FAF8F5]">
+              {step}/9
+            </span>
           </div>
           <div className="mb-4 h-2 overflow-hidden rounded-full bg-[#2A2A35]">
             <div className="manual-entry-progress h-full rounded-full bg-gradient-to-r from-[#22C55E] to-[#7CF29E]" />
@@ -315,16 +369,16 @@ const LiveScoringCard = () => {
           </div>
           <div className="flex items-center justify-between text-xs font-medium text-[#FAF8F5]/60">
             <span>{t("landing.featureEntryTotalLabel")}</span>
-            <span className="manual-entry-total font-mono text-base font-bold text-[#22C55E]">{total}</span>
+            <span className="manual-entry-total font-mono text-base font-bold text-[#22C55E]">
+              {total}
+            </span>
           </div>
         </div>
       </div>
 
       <div className="sr-only">
         {enteredThrows.map((throwValue, idx) => (
-          <span key={`${throwValue}-${idx}`}>
-            {throwValue}
-          </span>
+          <span key={`${throwValue}-${idx}`}>{throwValue}</span>
         ))}
       </div>
     </div>
@@ -514,7 +568,10 @@ const StreakProgressCard = () => {
 
         <div className="mt-auto grid h-16 grid-cols-6 items-end gap-2">
           {[20, 28, 35, 42, 50, 58].map((height, index) => (
-            <div key={index} className="h-full overflow-hidden rounded-md bg-[#2A2A35]">
+            <div
+              key={index}
+              className="h-full overflow-hidden rounded-md bg-[#2A2A35]"
+            >
               <div
                 className="h-full rounded-md bg-gradient-to-t from-[#22C55E] to-[#7CF29E] transition-transform duration-700 ease-out"
                 style={{
@@ -594,7 +651,7 @@ const HowLeaguesWork = () => {
         stagger: 0.2,
         ease: "power3.out",
       });
-      
+
       gsap.from(".connector-line", {
         scrollTrigger: {
           trigger: containerRef.current,
@@ -611,7 +668,11 @@ const HowLeaguesWork = () => {
   }, []);
 
   return (
-    <section id="leagues" ref={containerRef} className="bg-[#16161C] px-6 py-20 md:px-16 lg:px-24 rounded-[3rem] mx-4 my-10 border border-[#2A2A35] relative overflow-hidden">
+    <section
+      id="leagues"
+      ref={containerRef}
+      className="bg-[#16161C] px-6 py-20 md:px-16 lg:px-24 rounded-[3rem] mx-4 my-10 border border-[#2A2A35] relative overflow-hidden"
+    >
       <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#0D0D12]/40 to-transparent" />
       <div className="relative z-10 max-w-5xl mx-auto">
         <div className="text-center mb-16">
@@ -627,9 +688,9 @@ const HowLeaguesWork = () => {
           </p>
         </div>
 
-        <div className="relative pt-6">
-          {/* Connector Line (Desktop) */}
-          <div className="connector-line hidden md:block absolute top-20 left-[16.6667%] right-[16.6667%] h-px border-t-2 border-dashed border-[#22C55E]/30 z-0" />
+        <div className="relative">
+          {/* Connector Line (Desktop) — top-10 = 40px = exactly half of h-20 circle */}
+          <div className="connector-line hidden md:block absolute top-10 left-[16.6667%] right-[16.6667%] h-px border-t-2 border-dashed border-[#22C55E]/30 z-0" />
 
           <div className="grid md:grid-cols-3 gap-10 relative z-10">
             <div className="step-card flex flex-col items-center text-center">
@@ -639,8 +700,12 @@ const HowLeaguesWork = () => {
                 </div>
                 <Users className="w-8 h-8" />
               </div>
-              <h3 className="font-sans font-bold text-xl mb-2 text-[#FAF8F5]">{t("landing.howLeaguesStep1")}</h3>
-              <p className="text-[#FAF8F5]/60 font-medium leading-relaxed">{t("landing.howLeaguesStep1Desc")}</p>
+              <h3 className="font-sans font-bold text-xl mb-2 text-[#FAF8F5]">
+                {t("landing.howLeaguesStep1")}
+              </h3>
+              <p className="text-[#FAF8F5]/60 font-medium leading-relaxed">
+                {t("landing.howLeaguesStep1Desc")}
+              </p>
             </div>
 
             <div className="step-card flex flex-col items-center text-center">
@@ -650,8 +715,12 @@ const HowLeaguesWork = () => {
                 </div>
                 <Target className="w-8 h-8" />
               </div>
-              <h3 className="font-sans font-bold text-xl mb-2 text-[#FAF8F5]">{t("landing.howLeaguesStep2")}</h3>
-              <p className="text-[#FAF8F5]/60 font-medium leading-relaxed">{t("landing.howLeaguesStep2Desc")}</p>
+              <h3 className="font-sans font-bold text-xl mb-2 text-[#FAF8F5]">
+                {t("landing.howLeaguesStep2")}
+              </h3>
+              <p className="text-[#FAF8F5]/60 font-medium leading-relaxed">
+                {t("landing.howLeaguesStep2Desc")}
+              </p>
             </div>
 
             <div className="step-card flex flex-col items-center text-center">
@@ -661,8 +730,12 @@ const HowLeaguesWork = () => {
                 </div>
                 <Trophy className="w-8 h-8" />
               </div>
-              <h3 className="font-sans font-bold text-xl mb-2 text-[#FAF8F5]">{t("landing.howLeaguesStep3")}</h3>
-              <p className="text-[#FAF8F5]/60 font-medium leading-relaxed">{t("landing.howLeaguesStep3Desc")}</p>
+              <h3 className="font-sans font-bold text-xl mb-2 text-[#FAF8F5]">
+                {t("landing.howLeaguesStep3")}
+              </h3>
+              <p className="text-[#FAF8F5]/60 font-medium leading-relaxed">
+                {t("landing.howLeaguesStep3Desc")}
+              </p>
             </div>
           </div>
         </div>
@@ -711,7 +784,9 @@ const Philosophy = () => {
           {t("landing.philosophyTitle")}
         </p>
         <p className="phil-elem font-serif text-5xl italic text-[#FAF8F5] md:text-[5.5rem] md:leading-tight">
-           <span className="whitespace-pre-wrap">{t("landing.philosophyHighlight")}</span>
+          <span className="whitespace-pre-wrap">
+            {t("landing.philosophyHighlight")}
+          </span>
         </p>
       </div>
     </section>
@@ -722,7 +797,7 @@ const Philosophy = () => {
 const CTA = () => {
   const { t } = useTranslation();
   const { session } = useAuth();
-  
+
   return (
     <section className="bg-[#0D0D12] px-6 py-32 md:px-16 text-center border-t border-[#2A2A35]">
       <h2 className="font-sans font-bold text-4xl md:text-5xl text-[#FAF8F5] mb-6">
@@ -737,7 +812,8 @@ const CTA = () => {
           className="inline-flex group relative overflow-hidden rounded-full bg-[#22C55E] px-10 py-5 text-lg font-bold text-[#0D0D12] shadow-[0_0_30px_rgba(34,197,94,0.2)] transition-all duration-300 hover:scale-[1.03]"
         >
           <span className="relative z-10 flex items-center gap-3">
-            {t("landing.dashboard")} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            {t("landing.dashboard")}{" "}
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </span>
           <span className="absolute inset-0 z-0 h-full w-full -translate-x-full bg-[#FAF8F5] transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:translate-x-0" />
         </Link>
@@ -747,7 +823,8 @@ const CTA = () => {
           className="inline-flex group relative overflow-hidden rounded-full bg-[#22C55E] px-10 py-5 text-lg font-bold text-[#0D0D12] shadow-[0_0_30px_rgba(34,197,94,0.2)] transition-all duration-300 hover:scale-[1.03]"
         >
           <span className="relative z-10 flex items-center gap-3">
-            {t("landing.createFreeAccount")} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            {t("landing.createFreeAccount")}{" "}
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </span>
           <span className="absolute inset-0 z-0 h-full w-full -translate-x-full bg-[#FAF8F5] transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:translate-x-0" />
         </Link>
@@ -764,7 +841,11 @@ const Footer = () => {
       <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
         <div className="col-span-1 md:col-span-2">
           <div className="font-sans text-2xl font-bold text-[#FAF8F5] mb-4 flex items-center gap-2">
-            <img src="/logo.png" alt="Dartstreak Logo" className="w-6 h-6 object-contain" />
+            <img
+              src="/logo.png"
+              alt="Dartstreak Logo"
+              className="w-6 h-6 object-contain"
+            />
             Dartstreak.
           </div>
           <p className="text-[#FAF8F5]/60 max-w-xs mb-8">
@@ -781,12 +862,26 @@ const Footer = () => {
         </div>
 
         <div>
-           <h4 className="font-sans text-sm font-bold text-[#22C55E] mb-6 uppercase tracking-widest">
+          <h4 className="font-sans text-sm font-bold text-[#22C55E] mb-6 uppercase tracking-widest">
             {t("landing.footerHome")}
           </h4>
           <ul className="space-y-4 text-sm font-medium text-[#FAF8F5]/70">
-            <li><Link to="/leagues" className="hover:text-[#FAF8F5] transition-colors">{t("landing.footerLeagues")}</Link></li>
-            <li><Link to="/training" className="hover:text-[#FAF8F5] transition-colors">{t("landing.footerTraining")}</Link></li>
+            <li>
+              <Link
+                to="/leagues"
+                className="hover:text-[#FAF8F5] transition-colors"
+              >
+                {t("landing.footerLeagues")}
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/training"
+                className="hover:text-[#FAF8F5] transition-colors"
+              >
+                {t("landing.footerTraining")}
+              </Link>
+            </li>
           </ul>
         </div>
 
@@ -795,9 +890,30 @@ const Footer = () => {
             {t("landing.footerLegal")}
           </h4>
           <ul className="space-y-4 text-sm font-medium text-[#FAF8F5]/70">
-            <li><Link to="/privacy" className="hover:text-[#FAF8F5] transition-colors">{t("landing.footerPrivacyPolicy")}</Link></li>
-            <li><Link to="/terms" className="hover:text-[#FAF8F5] transition-colors">{t("landing.footerTermsOfService")}</Link></li>
-            <li><Link to="/contact" className="hover:text-[#FAF8F5] transition-colors">{t("landing.footerContact")}</Link></li>
+            <li>
+              <Link
+                to="/privacy"
+                className="hover:text-[#FAF8F5] transition-colors"
+              >
+                {t("landing.footerPrivacyPolicy")}
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/terms"
+                className="hover:text-[#FAF8F5] transition-colors"
+              >
+                {t("landing.footerTermsOfService")}
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/contact"
+                className="hover:text-[#FAF8F5] transition-colors"
+              >
+                {t("landing.footerContact")}
+              </Link>
+            </li>
           </ul>
         </div>
       </div>
@@ -825,13 +941,13 @@ export default function Index() {
         }}
       />
       <NoiseOverlay />
-      <Navbar />
       <Hero />
       <HowLeaguesWork />
       <Features />
       <Philosophy />
       <CTA />
       <Footer />
+      <Navbar />
     </div>
   );
 }
