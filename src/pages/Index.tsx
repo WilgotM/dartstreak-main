@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+22import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";

@@ -167,12 +167,15 @@ export default function Leagues() {
     <AppLayout>
       <header className="sticky top-0 z-40 bg-card/95 md:bg-card/80 md:backdrop-blur-md border-b border-border">
         <div className="container mx-auto px-4 py-4">
-          <h1 className="text-xl font-display font-bold">{t("nav.leagues")}</h1>
+          <div className="max-w-sm mx-auto">
+            <h1 className="text-xl font-display font-bold">{t("nav.leagues")}</h1>
+          </div>
         </div>
       </header>
 
       <main className="container mx-auto px-4 py-6 pb-24">
-        <div className="flex gap-4 mb-8">
+        <div className="max-w-sm mx-auto">
+          <div className="flex gap-4 mb-8">
           <Button
             variant="outline"
             className="flex-1 h-12 glass-panel border-border hover:bg-secondary hover:text-foreground transition-all text-base"
@@ -363,6 +366,7 @@ export default function Leagues() {
             })}
           </div>
         )}
+        </div>
       </main>
     </AppLayout>
   );
