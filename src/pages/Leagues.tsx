@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
 import {
   Plus,
   Users,
@@ -21,11 +20,11 @@ import {
   setYear,
 } from "date-fns";
 import { AppLayout } from "@/components/AppLayout";
-import { motion } from "framer-motion";
 import { useHaptics } from "@/hooks/useHaptics";
 import { addDays, isAfter, isBefore } from "date-fns";
 import { getCountryName } from "@/lib/countries";
 import { getDateFnsLocale } from "@/i18n/languages";
+import gsap from "gsap";
 
 interface League {
   id: string;
@@ -69,9 +68,14 @@ export default function Leagues() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-  const { light } = useHaptics();
+  const { light, medium } = useHaptics();
   const [leagues, setLeagues] = useState<League[]>([]);
   const [loadingLeagues, setLoadingLeagues] = useState(true);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
+  const actionsRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   const appLanguage = i18n.resolvedLanguage || i18n.language;
   const dateLocale = getDateFnsLocale(appLanguage);
@@ -137,6 +141,45 @@ export default function Leagues() {
     }
   }, [user, fetchLeagues]);
 
+  // GSAP Animations
+  useEffect(() => {
+    if (loading || !user) return;
+    
+    // Animate header and actions only once
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+      
+      gsap.set(headerRef.current, { y: -20, opacity: 0 });
+      gsap.set(actionsRef.current?.children || [], { y: 20, opacity: 0 });
+
+      tl.to(headerRef.current, { y: 0, opacity: 1, duration: 0.8 })
+        .to(actionsRef.current?.children || [], { y: 0, opacity: 1, duration: 0.6, stagger: 0.1 }, "-=0.6");
+    }, containerRef);
+    
+    return () => ctx.revert();
+  }, [loading, user]);
+
+  // Animate list items when loaded
+  useEffect(() => {
+    if (loadingLeagues || leagues.length === 0) return;
+    
+    const ctx = gsap.context(() => {
+      const validCards = cardsRef.current.filter(Boolean);
+      if (validCards.length > 0) {
+        gsap.set(validCards, { y: 30, opacity: 0 });
+        gsap.to(validCards, {
+          y: 0,
+          opacity: 1,
+          duration: 0.6,
+          stagger: 0.08,
+          ease: "back.out(1.2)"
+        });
+      }
+    }, containerRef);
+    
+    return () => ctx.revert();
+  }, [loadingLeagues, leagues.length]);
+
   const getLeagueStatus = (league: League) => {
     if (!league.started_at) return null;
     const leagueStartDate = new Date(league.started_at);
@@ -150,13 +193,9 @@ export default function Leagues() {
   if (loading || !user) {
     return (
       <AppLayout>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="animate-pulse-soft">
-            <img
-              src="/logo.png"
-              alt="DartStreak Logo"
-              className="w-16 h-16 object-contain"
-            />
+        <div className="min-h-screen flex items-center justify-center bg-[#0D0D12]">
+          <div className="animate-pulse">
+            <img src="/logo.png" alt="DartStreak Logo" className="w-16 h-16 object-contain drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]" />
           </div>
         </div>
       </AppLayout>
@@ -165,207 +204,223 @@ export default function Leagues() {
 
   return (
     <AppLayout>
-      <header className="sticky top-0 z-40 px-3 pb-3 pt-3">
-        <div className="app-surface mx-auto max-w-3xl rounded-2xl px-4 py-3">
-          <h1 className="text-xl font-display font-bold">{t("nav.leagues")}</h1>
-        </div>
-      </header>
+      <div ref={containerRef} className="min-h-full bg-[#0D0D12] overflow-x-hidden">
+        <header ref={headerRef} className="sticky top-0 z-40 px-4 pt-6 pb-4">
+          <div className="mx-auto max-w-3xl">
+            <h1 className="text-4xl md:text-5xl font-black tracking-tight text-[#FAF8F5] drop-shadow-[0_0_20px_rgba(250,248,245,0.15)]">
+              {t("nav.leagues")}
+            </h1>
+          </div>
+        </header>
 
-      <main className="container mx-auto px-4 py-6 pb-24">
-        <div className="max-w-3xl mx-auto">
-          <div className="flex gap-4 mb-8">
-          <Button
-            variant="outline"
-            className="flex-1 h-12 glass-panel border-white/10 hover:bg-[#1A1A24] hover:text-foreground transition-all text-base"
-            onClick={() => navigate("/leagues/join")}
-          >
-            <Users className="w-5 h-5 mr-2 text-primary" />
-            {t("dashboard.join")}
-          </Button>
-
-          <Button
-            variant="outline"
-            className="flex-1 h-12 glass-panel border-white/10 hover:bg-[#1A1A24] hover:text-foreground transition-all text-base"
-            onClick={() => navigate("/leagues/create")}
-          >
-            <Plus className="w-5 h-5 mr-2 text-accent" />
-            {t("dashboard.createLeague")}
-          </Button>
-        </div>
-
-        {loadingLeagues ? (
-          <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="glass-card p-6 rounded-2xl animate-pulse border-white/10">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-3 flex-1">
-                    <div className="h-6 w-1/2 bg-secondary rounded" />
-                    <div className="h-4 w-1/3 bg-secondary rounded" />
+        <main className="container mx-auto px-4 py-2 pb-24">
+          <div className="max-w-3xl mx-auto">
+            {/* Custom Action Buttons */}
+            <div ref={actionsRef} className="flex gap-4 mb-8">
+              <button
+                type="button"
+                className="group relative flex-1 overflow-hidden rounded-[1.5rem] border border-[#FAF8F5]/10 bg-[#16161C]/80 px-4 py-4 md:py-5 shadow-[0_10px_30px_rgba(0,0,0,0.5)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-[#22C55E]/40 hover:bg-[#1A1A24] dark-glass text-left"
+                onClick={() => {
+                  medium();
+                  navigate("/leagues/join");
+                }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-tr from-[#22C55E]/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <div className="relative z-10 flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#FAF8F5]/5 bg-[#0D0D12] shadow-inner transition-transform group-hover:scale-110">
+                    <Users className="w-5 h-5 text-[#22C55E]" />
                   </div>
-                  <div className="w-8 h-8 bg-secondary rounded-full" />
+                  <span className="text-base font-bold text-[#FAF8F5] tracking-wide">
+                    {t("dashboard.join")}
+                  </span>
                 </div>
-              </div>
-            ))}
-          </div>
-        ) : leagues.length === 0 ? (
-          <div className="glass-card rounded-2xl p-12 text-center border-white/10">
-            <Trophy className="w-20 h-20 mx-auto text-muted-foreground/30 mb-6" />
-            <h3 className="text-2xl font-display font-bold mb-3 text-foreground">
-              {t("dashboard.noLeaguesYet")}
-            </h3>
-            <p className="text-muted-foreground text-lg">
-              {t("dashboard.noLeaguesDesc")}
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {leagues.map((league, index) => {
-              const status = getLeagueStatus(league);
-              const isSystem = league.is_system;
-              const isGlobal = league.system_scope === "global";
-              const weekRange =
-                isSystem && league.season_key
-                  ? getWeekRange(league.season_key, dateLocale)
-                  : null;
-              const parsed =
-                isSystem && league.season_key
-                  ? parseSeasonKey(league.season_key)
-                  : null;
-              const weekNum = parsed?.week ?? null;
+              </button>
 
-              // Clean display name for system leagues
-              const countryName =
-                !isGlobal && league.country_code
-                  ? getCountryName(league.country_code, appLanguage)
-                  : null;
+              <button
+                type="button"
+                className="group relative flex-1 overflow-hidden rounded-[1.5rem] border border-[#FAF8F5]/10 bg-[#16161C]/80 px-4 py-4 md:py-5 shadow-[0_10px_30px_rgba(0,0,0,0.5)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-[#FACC15]/40 hover:bg-[#1A1A24] dark-glass text-left"
+                onClick={() => {
+                  medium();
+                  navigate("/leagues/create");
+                }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-tr from-[#FACC15]/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <div className="relative z-10 flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#FAF8F5]/5 bg-[#0D0D12] shadow-inner transition-transform group-hover:scale-110">
+                    <Plus className="w-5 h-5 text-[#FACC15]" />
+                  </div>
+                  <span className="text-base font-bold text-[#FAF8F5] tracking-wide">
+                    {t("dashboard.createLeague")}
+                  </span>
+                </div>
+              </button>
+            </div>
 
-              return (
-                <motion.div
-                  key={league.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    delay: index * 0.05,
-                    duration: 0.3,
-                    ease: [0.25, 0.46, 0.45, 0.94],
-                  }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <div
-                    className="group cursor-pointer glass-card rounded-2xl hover:shadow-md transition-all duration-300 relative overflow-hidden"
-                    onClick={() => {
-                      light();
-                      navigate(`/league/${league.id}`);
-                    }}
-                  >
-                    {/* Accent bar */}
-                    <div
-                      className={`absolute top-0 left-0 w-1 h-full ${isGlobal ? "bg-accent/60" : isSystem ? "bg-primary/60" : "bg-dart-gold/60"} opacity-60 group-hover:opacity-100 transition-opacity`}
-                    />
-
-                    <div className="p-5">
-                      {/* Top row: icon + title + arrow */}
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-start gap-3 flex-1 min-w-0">
-                          {/* Icon badge */}
-                          {isSystem ? (
-                            <div
-                              className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center ${isGlobal ? "bg-accent/10 text-accent" : "bg-primary/10 text-primary"}`}
-                            >
-                              {isGlobal ? (
-                                <Globe className="w-5 h-5" />
-                              ) : (
-                                <Flag className="w-5 h-5" />
-                              )}
-                            </div>
-                          ) : (
-                            <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-dart-gold/10 text-dart-gold flex items-center justify-center">
-                              <Trophy className="w-5 h-5" />
-                            </div>
-                          )}
-
-                          <div className="flex-1 min-w-0">
-                            {/* League type label */}
-                            {isSystem && (
-                              <p
-                                className={`text-[10px] font-semibold uppercase tracking-widest mb-0.5 ${isGlobal ? "text-accent" : "text-primary"}`}
-                              >
-                                {isGlobal
-                                  ? t("league.globalLeagueLabel")
-                                  : t("league.countryLeagueLabel", {
-                                      country: "",
-                                    }).replace(": ", "")}
-                              </p>
-                            )}
-
-                            {/* Main title */}
-                            <h3 className="font-display font-bold text-lg text-foreground group-hover:text-primary transition-colors leading-tight truncate">
-                              {isSystem
-                                ? isGlobal
-                                  ? t("league.globalLeagueTitle")
-                                  : (countryName ?? league.name)
-                                : league.name}
-                            </h3>
-
-                            {/* Round info */}
-                            <p className="text-xs text-muted-foreground mt-0.5">
-                              {t("dashboard.round")}{" "}
-                              <span className="text-foreground">
-                                {league.current_round}
-                              </span>{" "}
-                              {t("dashboard.of")} {league.total_rounds}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex-shrink-0 w-9 h-9 rounded-full bg-secondary flex items-center justify-center group-hover:bg-primary/10 transition-all mt-0.5">
-                          <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary" />
-                        </div>
+            {loadingLeagues ? (
+              <div className="space-y-5">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="relative overflow-hidden rounded-[2rem] border border-[#FAF8F5]/5 bg-[#16161C]/40 p-6 shadow-xl backdrop-blur-md">
+                    <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-[#FAF8F5]/5 to-transparent" />
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-4 flex-1">
+                        <div className="h-7 w-1/2 rounded-lg bg-[#FAF8F5]/10" />
+                        <div className="h-4 w-1/3 rounded bg-[#FAF8F5]/10" />
                       </div>
-
-                      {/* Bottom row: week info / invite code + status */}
-                      <div className="flex items-center justify-between mt-4 pt-3 border-t border-border">
-                        {isSystem && weekNum !== null ? (
-                          <div className="flex items-center gap-2">
-                            <div
-                              className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${isGlobal ? "bg-accent/10 text-accent border border-accent/20" : "bg-primary/10 text-primary border border-primary/20"}`}
-                            >
-                              <Calendar className="w-3 h-3" />
-                              <span>
-                                {t("league.weekLabel", { week: weekNum })}
-                              </span>
-                            </div>
-                            {weekRange && (
-                              <span className="text-xs text-muted-foreground">
-                                {weekRange}
-                              </span>
-                            )}
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <span className="px-3 py-1 bg-secondary rounded-full font-mono text-xs border border-border">
-                              {league.invite_code}
-                            </span>
-                            <span>{t("dashboard.inviteCode")}</span>
-                          </div>
-                        )}
-
-                        {status && (
-                          <div className="flex items-center gap-1.5 text-xs text-primary font-medium bg-primary/10 px-2 py-1 rounded-full border border-primary/20">
-                            <Calendar className="w-3 h-3" />
-                            <span>{status}</span>
-                          </div>
-                        )}
-                      </div>
+                      <div className="h-12 w-12 rounded-2xl bg-[#FAF8F5]/10" />
                     </div>
                   </div>
-                </motion.div>
-              );
-            })}
+                ))}
+              </div>
+            ) : leagues.length === 0 ? (
+              <div className="relative overflow-hidden rounded-[2.5rem] border border-[#FAF8F5]/10 bg-[#16161C]/60 p-12 text-center shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(34,197,94,0.1),transparent_50%)] pointer-events-none" />
+                <div className="relative z-10">
+                  <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-[2rem] border border-[#FAF8F5]/5 bg-[#0D0D12] shadow-inner">
+                    <Trophy className="w-12 h-12 text-[#FAF8F5]/20" />
+                  </div>
+                  <h3 className="mb-3 text-3xl font-black text-[#FAF8F5] tracking-tight">
+                    {t("dashboard.noLeaguesYet")}
+                  </h3>
+                  <p className="text-lg font-medium text-[#FAF8F5]/50">
+                    {t("dashboard.noLeaguesDesc")}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-5 relative">
+                {leagues.map((league, index) => {
+                  const status = getLeagueStatus(league);
+                  const isSystem = league.is_system;
+                  const isGlobal = league.system_scope === "global";
+                  const weekRange =
+                    isSystem && league.season_key
+                      ? getWeekRange(league.season_key, dateLocale)
+                      : null;
+                  const parsed =
+                    isSystem && league.season_key
+                      ? parseSeasonKey(league.season_key)
+                      : null;
+                  const weekNum = parsed?.week ?? null;
+
+                  const countryName =
+                    !isGlobal && league.country_code
+                      ? getCountryName(league.country_code, appLanguage)
+                      : null;
+
+                  // Determine colors based on type
+                  const colorConfig = isGlobal 
+                    ? { base: "text-amber-400", bg: "bg-amber-400", borderHover: "hover:border-amber-400/40", shadow: "shadow-[0_0_15px_rgba(251,191,36,0.3)]" }
+                    : isSystem 
+                      ? { base: "text-[#22C55E]", bg: "bg-[#22C55E]", borderHover: "hover:border-[#22C55E]/40", shadow: "shadow-[0_0_15px_rgba(34,197,94,0.3)]" }
+                      : { base: "text-[#FAF8F5]", bg: "bg-[#FAF8F5]", borderHover: "hover:border-[#FAF8F5]/40", shadow: "shadow-[0_0_15px_rgba(250,248,245,0.2)]" };
+
+                  return (
+                    <div
+                      key={league.id}
+                      ref={(el) => (cardsRef.current[index] = el)}
+                      className="opacity-0"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => {
+                          light();
+                          navigate(`/league/${league.id}`);
+                        }}
+                        className={`group relative w-full overflow-hidden rounded-[2rem] border border-[#FAF8F5]/10 bg-[#16161C]/70 p-6 text-left shadow-[0_15px_40px_rgba(0,0,0,0.5)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 ${colorConfig.borderHover} hover:bg-[#181824]`}
+                      >
+                        {/* Edge highlight line */}
+                        <div className={`absolute left-0 top-0 h-full w-[3px] ${colorConfig.bg} opacity-50 shadow-[0_0_10px_currentColor] transition-all duration-300 group-hover:w-[5px] group-hover:opacity-100`} />
+                        
+                        {/* Inner gradient glow on hover */}
+                        <div className={`pointer-events-none absolute inset-0 bg-gradient-to-r from-${colorConfig.bg.replace('bg-', '')}/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100`} />
+
+                        <div className="relative z-10">
+                          {/* Top Row */}
+                          <div className="flex items-start justify-between gap-4">
+                            <div className="flex min-w-0 flex-1 items-start gap-4">
+                              {/* Icon box */}
+                              <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-[1.25rem] border border-[#FAF8F5]/10 bg-[#0D0D12] shadow-inner transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}>
+                                {isSystem ? (
+                                  isGlobal ? (
+                                    <Globe className={`h-6 w-6 ${colorConfig.base} drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]`} />
+                                  ) : (
+                                    <Flag className={`h-6 w-6 ${colorConfig.base} drop-shadow-[0_0_8px_rgba(34,197,94,0.6)]`} />
+                                  )
+                                ) : (
+                                  <Trophy className="h-6 w-6 text-[#FAF8F5]/80 group-hover:text-[#FAF8F5] transition-colors" />
+                                )}
+                              </div>
+
+                              <div className="min-w-0 flex-1 pt-0.5">
+                                {/* Type Label */}
+                                {isSystem && (
+                                  <p className={`mb-1 text-[0.65rem] font-bold uppercase tracking-[0.2em] ${colorConfig.base}`}>
+                                    {isGlobal
+                                      ? t("league.globalLeagueLabel")
+                                      : t("league.countryLeagueLabel", { country: "" }).replace(": ", "")}
+                                  </p>
+                                )}
+
+                                {/* Main Title */}
+                                <h3 className="truncate text-xl font-black tracking-tight text-[#FAF8F5] transition-colors duration-300 md:text-2xl">
+                                  {isSystem
+                                    ? isGlobal
+                                      ? t("league.globalLeagueTitle")
+                                      : (countryName ?? league.name)
+                                    : league.name}
+                                </h3>
+
+                                {/* Round info */}
+                                <p className="mt-1 text-sm font-semibold text-[#FAF8F5]/50">
+                                  {t("dashboard.round")} <span className="text-[#FAF8F5]">{league.current_round}</span> {t("dashboard.of")} <span className="text-[#FAF8F5]">{league.total_rounds}</span>
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* Chevron container */}
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#FAF8F5]/5 bg-[#0D0D12] opacity-80 transition-all duration-300 group-hover:border-[#FAF8F5]/20 group-hover:opacity-100 group-hover:shadow-[0_4px_15px_rgba(0,0,0,0.5)] pt-0.5">
+                              <ArrowRight className={`h-5 w-5 text-[#FAF8F5]/50 transition-all duration-300 group-hover:translate-x-0.5 ${isSystem && !isGlobal ? 'group-hover:text-[#22C55E]' : isGlobal ? 'group-hover:text-amber-400' : 'group-hover:text-[#FAF8F5]'}`} />
+                            </div>
+                          </div>
+
+                          {/* Bottom Row / Status / Codes */}
+                          <div className="mt-6 flex items-center justify-between border-t border-[#FAF8F5]/10 pt-4">
+                            {isSystem && weekNum !== null ? (
+                              <div className="flex items-center gap-3">
+                                <div className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold ${isGlobal ? "border-amber-400/20 bg-amber-400/10 text-amber-400" : "border-[#22C55E]/20 bg-[#22C55E]/10 text-[#22C55E]"}`}>
+                                  <Calendar className="h-3.5 w-3.5" />
+                                  <span>{t("league.weekLabel", { week: weekNum })}</span>
+                                </div>
+                                {weekRange && (
+                                  <span className="text-xs font-medium text-[#FAF8F5]/40">{weekRange}</span>
+                                )}
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-3">
+                                <span className="rounded-full border border-[#FAF8F5]/10 bg-[#0D0D12] px-3.5 py-1.5 font-mono text-xs font-bold tracking-wider text-[#FAF8F5]/80 shadow-inner">
+                                  {league.invite_code}
+                                </span>
+                                <span className="text-xs font-semibold text-[#FAF8F5]/40">{t("dashboard.inviteCode")}</span>
+                              </div>
+                            )}
+
+                            {status && (
+                              <div className="inline-flex items-center gap-1.5 rounded-full border border-[#22C55E]/20 bg-[#22C55E]/10 px-3 py-1.5 text-xs font-bold text-[#22C55E]">
+                                <Calendar className="h-3.5 w-3.5" />
+                                <span>{status}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
-        )}
-        </div>
-      </main>
+        </main>
+      </div>
     </AppLayout>
   );
 }

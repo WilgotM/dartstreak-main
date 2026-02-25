@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
@@ -7,6 +7,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { useHaptics } from "@/hooks/useHaptics";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import PlayerNameWithCountry from "@/components/PlayerNameWithCountry";
+import gsap from "gsap";
 
 export default function Dashboard() {
   const { user, profile, loading } = useAuth();
@@ -14,18 +15,53 @@ export default function Dashboard() {
   const { t } = useTranslation();
   const { medium } = useHaptics();
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
+  const cardsRef = useRef<(HTMLButtonElement | null)[]>([]);
+
   useEffect(() => {
     if (!loading && !user) {
       navigate("/auth");
     }
   }, [user, loading, navigate]);
 
+  useEffect(() => {
+    if (loading || !user) return;
+
+    const ctx = gsap.context(() => {
+      // Set initial states
+      gsap.set(heroRef.current, { y: 30, opacity: 0 });
+      gsap.set(cardsRef.current, { y: 30, opacity: 0 });
+
+      // Animate in
+      const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+
+      tl.to(heroRef.current, {
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        delay: 0.1,
+      }).to(
+        cardsRef.current,
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.1,
+        },
+        "-=0.6"
+      );
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, [loading, user]);
+
   if (loading || !user) {
     return (
       <AppLayout>
-        <div className="min-h-screen flex items-center justify-center bg-background">
-          <div className="animate-pulse-soft">
-            <img src="/logo.png" alt="DartStreak Logo" className="w-16 h-16 object-contain" />
+        <div className="min-h-screen flex items-center justify-center bg-[#0D0D12]">
+          <div className="animate-pulse">
+            <img src="/logo.png" alt="DartStreak Logo" className="w-16 h-16 object-contain drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]" />
           </div>
         </div>
       </AppLayout>
@@ -40,8 +76,9 @@ export default function Dashboard() {
       description: t("dashboard.competeDaily"),
       icon: Trophy,
       to: "/leagues",
-      accent: "from-emerald-500/22 via-emerald-400/8 to-transparent",
+      accent: "from-[#22C55E]/15 via-[#22C55E]/5 to-transparent",
       iconStyle: "text-[#22C55E]",
+      borderHover: "hover:border-[#22C55E]/40",
     },
     {
       key: "profile",
@@ -49,8 +86,9 @@ export default function Dashboard() {
       description: t("dashboard.viewStats"),
       icon: User,
       to: "/profile",
-      accent: "from-cyan-400/20 via-blue-500/8 to-transparent",
-      iconStyle: "text-cyan-300",
+      accent: "from-cyan-400/15 via-blue-500/5 to-transparent",
+      iconStyle: "text-cyan-400",
+      borderHover: "hover:border-cyan-400/40",
     },
     {
       key: "training",
@@ -58,37 +96,50 @@ export default function Dashboard() {
       description: t("trainingHub.subtitle"),
       icon: Target,
       to: "/training",
-      accent: "from-amber-300/24 via-orange-400/12 to-transparent",
-      iconStyle: "text-amber-300",
+      accent: "from-amber-400/15 via-orange-400/5 to-transparent",
+      iconStyle: "text-amber-400",
+      borderHover: "hover:border-amber-400/40",
     },
   ];
 
   return (
     <AppLayout>
-      <div className="relative min-h-full overflow-x-hidden">
+      <div ref={containerRef} className="relative min-h-full overflow-x-hidden bg-[#0D0D12]">
         <main className="container mx-auto flex min-h-full max-w-5xl flex-col px-4 pb-[calc(8rem+env(safe-area-inset-bottom))] pt-6 md:px-6 md:pb-16">
-          <section className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#111119]/86 p-6 shadow-[0_20px_52px_rgba(0,0,0,0.45)] backdrop-blur-xl md:p-8">
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_8%_10%,rgba(34,197,94,0.26),transparent_34%),radial-gradient(circle_at_88%_10%,rgba(255,255,255,0.08),transparent_34%)]" />
-            <div className="relative z-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center gap-4">
-                <div className="rounded-full border border-white/15 bg-[#0D0D12]/90 p-1 shadow-[0_8px_26px_rgba(0,0,0,0.45)]">
-                  <Avatar className="h-16 w-16 md:h-20 md:w-20">
-                    <AvatarImage src={user?.user_metadata?.avatar_url} />
-                    <AvatarFallback className="bg-[#22C55E]/20 text-2xl font-bold text-[#22C55E]">
-                      {displayName[0]?.toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
+          <section 
+            ref={heroRef}
+            className="group relative overflow-hidden rounded-[2.5rem] border border-[#FAF8F5]/5 bg-[#16161C]/60 p-8 shadow-[0_20px_52px_rgba(0,0,0,0.6)] backdrop-blur-2xl md:p-10 transition-all duration-500 hover:border-[#FAF8F5]/10"
+          >
+            {/* Background Effects */}
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(34,197,94,0.15),transparent_40%),radial-gradient(circle_at_100%_100%,rgba(255,255,255,0.03),transparent_40%)]" />
+            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none"></div>
+            
+            <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-5 md:gap-6">
+                <div className="relative">
+                  <div className="absolute -inset-1 rounded-full bg-gradient-to-tr from-[#22C55E]/40 to-transparent blur-[10px] opacity-60 transition-opacity duration-300 group-hover:opacity-100" />
+                  <div className="relative rounded-full border border-[#FAF8F5]/15 bg-[#0D0D12] p-1 shadow-2xl">
+                    <Avatar className="h-20 w-20 md:h-24 md:w-24 border border-transparent">
+                      <AvatarImage src={user?.user_metadata?.avatar_url} />
+                      <AvatarFallback className="bg-[#16161C] text-3xl md:text-4xl font-black tracking-tight text-[#22C55E]">
+                        {displayName[0]?.toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
                 </div>
-                <div className="space-y-1">
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#22C55E]/90">
-                    DartStreak
-                  </p>
-                  <h1 className="text-2xl font-bold leading-tight text-[#FAF8F5] md:text-4xl">
+                <div className="space-y-1 md:space-y-2 flex flex-col justify-center">
+                  <div className="flex items-center gap-2">
+                    <p className="text-xs md:text-sm font-black uppercase tracking-[0.25em] text-[#22C55E]">
+                      DartStreak
+                    </p>
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E] animate-pulse drop-shadow-[0_0_8px_rgba(34,197,94,0.8)]" />
+                  </div>
+                  <h1 className="text-3xl sm:text-4xl font-black leading-tight tracking-tight text-[#FAF8F5] md:text-5xl drop-shadow-lg">
                     {t("dashboard.welcomeBack", { name: displayName })}
                   </h1>
                 </div>
               </div>
-              <div className="rounded-full border border-white/10 bg-[#16161C]/85 px-4 py-2 text-sm text-[#FAF8F5]/85">
+              <div className="rounded-full border border-[#FAF8F5]/15 bg-[#0D0D12]/80 px-5 py-2.5 text-sm font-semibold text-[#FAF8F5] shadow-[0_0_24px_rgba(10,10,14,0.6)] backdrop-blur-md transition-transform duration-300 hover:scale-[1.03] hover:border-[#22C55E]/40">
                 <PlayerNameWithCountry
                   displayName={displayName}
                   countryCode={profile?.country_code}
@@ -99,33 +150,34 @@ export default function Dashboard() {
             </div>
           </section>
 
-          <section className="mt-5 grid gap-4 md:mt-6 md:grid-cols-3">
-            {actionCards.map((card) => {
+          <section className="mt-6 grid gap-5 md:mt-8 md:grid-cols-3">
+            {actionCards.map((card, index) => {
               const Icon = card.icon;
               return (
                 <button
                   key={card.key}
+                  ref={(el) => (cardsRef.current[index] = el)}
                   type="button"
                   onClick={() => {
                     medium();
                     navigate(card.to);
                   }}
-                  className="group relative overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#13131C]/88 p-5 text-left shadow-[0_15px_40px_rgba(0,0,0,0.38)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#22C55E]/35"
+                  className={`group relative overflow-hidden rounded-[2rem] border border-[#FAF8F5]/10 bg-[#16161C]/50 p-6 text-left shadow-[0_15px_40px_rgba(0,0,0,0.4)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:bg-[#16161C]/80 hover:shadow-[0_25px_50px_rgba(0,0,0,0.6)] ${card.borderHover}`}
                 >
                   <div
-                    className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${card.accent}`}
+                    className={`pointer-events-none absolute inset-0 bg-gradient-to-br opacity-50 transition-opacity duration-300 group-hover:opacity-100 ${card.accent}`}
                   />
                   <div className="relative flex h-full flex-col">
-                    <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-[#0D0D12]/78">
-                      <Icon className={`h-5 w-5 ${card.iconStyle}`} />
+                    <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-[1.25rem] border border-[#FAF8F5]/15 bg-[#0D0D12]/70 shadow-[0_4px_20px_rgba(0,0,0,0.5)] transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-hover:bg-[#0D0D12] group-hover:border-[#FAF8F5]/30">
+                      <Icon className={`h-6 w-6 ${card.iconStyle}`} strokeWidth={2.5} />
                     </div>
-                    <h2 className="text-xl font-bold text-[#FAF8F5]">{card.title}</h2>
-                    <p className="mt-2 text-sm leading-relaxed text-[#FAF8F5]/70">
+                    <h2 className="text-2xl font-bold tracking-tight text-[#FAF8F5]">{card.title}</h2>
+                    <p className="mt-2.5 text-sm font-medium leading-relaxed text-[#FAF8F5]/60 transition-colors duration-300 group-hover:text-[#FAF8F5]/85">
                       {card.description}
                     </p>
-                    <div className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[#22C55E]">
-                      <span>{card.title}</span>
-                      <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                    <div className="mt-auto pt-6 inline-flex items-center gap-2 text-sm font-bold text-[#FAF8F5]/80 transition-colors duration-300 group-hover:text-[#FAF8F5]">
+                      <span className="transition-colors duration-300 group-hover:text-[#FAF8F5]">Execute</span>
+                      <ArrowRight className="h-4 w-4 transition-all duration-300 group-hover:translate-x-1.5 group-hover:text-[#22C55E]" />
                     </div>
                   </div>
                 </button>

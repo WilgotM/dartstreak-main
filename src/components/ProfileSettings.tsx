@@ -1,17 +1,14 @@
-import { useState } from "react";
+import { ChangeEvent, ComponentType, useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Settings, Clock } from "lucide-react";
+import { Settings, Clock, UserIcon, MailIcon, Globe2Icon, CheckCircle2, ChevronRight } from "lucide-react";
 import { differenceInDays } from "date-fns";
 import CountrySelect from "@/components/CountrySelect";
 import { getCountryTimezone } from "@/lib/countries";
+import gsap from "gsap";
 
 const TIMEZONES = [
   { value: "Europe/Stockholm", label: "Stockholm (CET)" },
@@ -37,6 +34,21 @@ interface ProfileSettingsProps {
   onUpdate: () => void;
 }
 
+interface CustomInputGroupProps {
+  id: string;
+  label: string;
+  icon: ComponentType<{ className?: string }>;
+  value: string;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onSave: () => void;
+  saving: boolean;
+  disabled: boolean;
+  hasChanged: boolean;
+  helperText?: string;
+  type?: "text" | "email";
+  idx: number;
+}
+
 export function ProfileSettings({
   currentDisplayName,
   currentEmail,
@@ -53,7 +65,10 @@ export function ProfileSettings({
   const [email, setEmail] = useState(currentEmail);
   const [timezone, setTimezone] = useState(currentTimezone || "Europe/Stockholm");
   const [countryCode, setCountryCode] = useState(currentCountryCode || "");
-  const [saving, setSaving] = useState(false);
+  const [savingField, setSavingField] = useState<string | null>(null);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const fieldsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   const canChangeDisplayName = !displayNameChangedAt || 
     differenceInDays(new Date(), new Date(displayNameChangedAt)) >= 7;
@@ -67,6 +82,24 @@ export function ProfileSettings({
     return Math.max(0, 7 - daysSince);
   };
 
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const validFields = fieldsRef.current.filter(Boolean);
+      if (validFields.length === 0) return;
+      
+      gsap.set(validFields, { opacity: 0, x: -20 });
+      gsap.to(validFields, {
+        opacity: 1,
+        x: 0,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: "power3.out",
+        delay: 0.2
+      });
+    }, containerRef);
+    return () => ctx.revert();
+  }, []);
+
   const handleSaveDisplayName = async () => {
     if (!user || !displayName.trim()) return;
     if (!canChangeDisplayName) {
@@ -74,7 +107,7 @@ export function ProfileSettings({
       return;
     }
 
-    setSaving(true);
+    setSavingField("displayName");
     
     // Check if username is taken
     const { data: existing } = await supabase
@@ -86,7 +119,7 @@ export function ProfileSettings({
 
     if (existing) {
       toast.error(t("auth.usernameTaken"));
-      setSaving(false);
+      setSavingField(null);
       return;
     }
 
@@ -98,7 +131,7 @@ export function ProfileSettings({
       })
       .eq("id", user.id);
 
-    setSaving(false);
+    setSavingField(null);
     
     if (error) {
       toast.error(t("profile.updateError"));
@@ -115,7 +148,7 @@ export function ProfileSettings({
       return;
     }
 
-    setSaving(true);
+    setSavingField("email");
     
     const { error } = await supabase.auth.updateUser({ email: email.trim() });
 
@@ -127,7 +160,7 @@ export function ProfileSettings({
         .eq("id", user.id);
     }
 
-    setSaving(false);
+    setSavingField(null);
     
     if (error) {
       toast.error(t("profile.updateError"));
@@ -140,14 +173,14 @@ export function ProfileSettings({
   const handleSaveTimezone = async () => {
     if (!user) return;
 
-    setSaving(true);
+    setSavingField("timezone");
     
     const { error } = await supabase
       .from("profiles")
       .update({ timezone })
       .eq("id", user.id);
 
-    setSaving(false);
+    setSavingField(null);
     
     if (error) {
       toast.error(t("profile.updateError"));
@@ -160,7 +193,7 @@ export function ProfileSettings({
   const handleSaveCountry = async () => {
     if (!user || !countryCode) return;
 
-    setSaving(true);
+    setSavingField("country");
     const countryTimezone = getCountryTimezone(countryCode);
 
     const { error } = await supabase
@@ -179,7 +212,7 @@ export function ProfileSettings({
       });
     }
 
-    setSaving(false);
+    setSavingField(null);
 
     if (error) {
       toast.error(t("profile.updateError"));
@@ -189,121 +222,183 @@ export function ProfileSettings({
     }
   };
 
-  return (
-    <Card className="border-white/10 bg-[#171720]">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-foreground">
-          <Settings className="w-5 h-5" />
-          {t("profile.settings")}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Username */}
-        <div className="space-y-2">
-          <Label htmlFor="displayName">{t("profile.username")}</Label>
-          <div className="flex gap-2">
-            <Input
-              id="displayName"
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              disabled={!canChangeDisplayName}
-              className="flex-1"
+  // Helper for rendering custom inputs
+  const CustomInputGroup = ({ 
+    id, 
+    label, 
+    icon: Icon, 
+    value, 
+    onChange, 
+    onSave, 
+    saving, 
+    disabled, 
+    hasChanged, 
+    helperText, 
+    type = "text",
+    idx
+  }: CustomInputGroupProps) => {
+    return (
+      <div ref={(el) => (fieldsRef.current[idx] = el)} className="group space-y-2">
+        <label htmlFor={id} className="flex items-center gap-2 text-sm font-bold tracking-wide text-[#FAF8F5]/80 pl-1">
+          <Icon className="h-4 w-4 text-[#22C55E]" />
+          {label}
+        </label>
+        <div className="relative flex items-center gap-3">
+          <div className="relative flex-1">
+            <input
+              id={id}
+              type={type}
+              value={value}
+              onChange={onChange}
+              disabled={disabled}
+              className="peer w-full rounded-2xl border border-[#FAF8F5]/10 bg-[#0D0D12] px-4 py-4 text-base font-semibold text-[#FAF8F5] shadow-inner transition-all duration-300 placeholder:text-[#FAF8F5]/30 focus:border-[#22C55E]/50 focus:bg-[#16161C] focus:outline-none focus:ring-1 focus:ring-[#22C55E]/50 disabled:cursor-not-allowed disabled:opacity-50"
             />
-            <Button 
-              onClick={handleSaveDisplayName} 
-              disabled={saving || !canChangeDisplayName || displayName === currentDisplayName}
-              className="min-w-20"
-            >
-              {t("common.save")}
-            </Button>
+            {/* Ambient glow behind input on focus */}
+            <div className="pointer-events-none absolute -inset-1 z-[-1] rounded-3xl bg-[#22C55E]/20 opacity-0 blur-lg transition-opacity duration-300 peer-focus:opacity-100" />
           </div>
-          {!canChangeDisplayName && (
-            <p className="text-xs text-muted-foreground">
-              {t("profile.canChangeIn", { days: getDaysUntilChange(displayNameChangedAt) })}
-            </p>
-          )}
+          <button
+            onClick={onSave}
+            disabled={saving || disabled || !hasChanged}
+            className={`flex h-[56px] w-[56px] shrink-0 items-center justify-center rounded-2xl border transition-all duration-300 ${
+              hasChanged && !disabled
+                ? "border-[#22C55E]/40 bg-[#22C55E]/10 text-[#22C55E] shadow-[0_0_15px_rgba(34,197,94,0.3)] hover:scale-105 hover:bg-[#22C55E]/20 hover:shadow-[0_0_20px_rgba(34,197,94,0.5)]"
+                : "border-[#FAF8F5]/5 bg-[#0D0D12] text-[#FAF8F5]/30 cursor-not-allowed"
+            }`}
+          >
+            {saving ? (
+              <span className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+            ) : (
+              <CheckCircle2 className={`h-6 w-6 ${hasChanged && !disabled ? "drop-shadow-[0_0_8px_rgba(34,197,94,0.8)]" : ""}`} />
+            )}
+          </button>
         </div>
+        {helperText && (
+          <p className="pl-1 text-xs font-medium text-[#FAF8F5]/40">{helperText}</p>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div ref={containerRef} className="overflow-hidden rounded-[2.5rem] border border-[#FAF8F5]/10 bg-[#16161C]/50 shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl">
+      <div className="border-b border-[#FAF8F5]/10 bg-[#0D0D12]/40 px-6 py-5 sm:px-8">
+        <h2 className="flex items-center gap-3 text-xl font-black tracking-tight text-[#FAF8F5]">
+          <span className="flex h-10 w-10 items-center justify-center rounded-[1rem] bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20">
+            <Settings className="h-5 w-5" />
+          </span>
+          {t("profile.settings")}
+        </h2>
+      </div>
+      <div className="space-y-8 p-6 sm:p-8">
+        {/* Username */}
+        <CustomInputGroup
+          idx={0}
+          id="displayName"
+          label={t("profile.username")}
+          icon={UserIcon}
+          value={displayName}
+          onChange={(e) => setDisplayName(e.target.value)}
+          onSave={handleSaveDisplayName}
+          saving={savingField === "displayName"}
+          disabled={!canChangeDisplayName}
+          hasChanged={displayName !== currentDisplayName}
+          helperText={!canChangeDisplayName ? t("profile.canChangeIn", { days: getDaysUntilChange(displayNameChangedAt) }) : undefined}
+        />
 
         {/* Email */}
-        <div className="space-y-2">
-          <Label htmlFor="email">{t("profile.email")}</Label>
-          <div className="flex gap-2">
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={!canChangeEmail}
-              className="flex-1"
-            />
-            <Button 
-              onClick={handleSaveEmail} 
-              disabled={saving || !canChangeEmail || email === currentEmail}
-              className="min-w-20"
-            >
-              {t("common.save")}
-            </Button>
-          </div>
-          {!canChangeEmail && (
-            <p className="text-xs text-muted-foreground">
-              {t("profile.canChangeIn", { days: getDaysUntilChange(emailChangedAt) })}
-            </p>
-          )}
-        </div>
+        <CustomInputGroup
+          idx={1}
+          id="email"
+          type="email"
+          label={t("profile.email")}
+          icon={MailIcon}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          onSave={handleSaveEmail}
+          saving={savingField === "email"}
+          disabled={!canChangeEmail}
+          hasChanged={email !== currentEmail}
+          helperText={!canChangeEmail ? t("profile.canChangeIn", { days: getDaysUntilChange(emailChangedAt) }) : undefined}
+        />
 
-        {/* Timezone */}
-        <div className="space-y-2">
-          <Label htmlFor="country">{t("profile.country")}</Label>
-          <div className="flex gap-2">
-            <CountrySelect
-              id="country"
-              value={countryCode}
-              onChange={setCountryCode}
-              disabled={saving}
-              className="flex-1"
-            />
-            <Button
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-[#FAF8F5]/10 to-transparent" />
+
+        {/* Country */}
+        <div ref={(el) => (fieldsRef.current[2] = el)} className="space-y-2">
+          <label htmlFor="country" className="flex items-center gap-2 text-sm font-bold tracking-wide text-[#FAF8F5]/80 pl-1">
+            <Globe2Icon className="h-4 w-4 text-[#38BDF8]" />
+            {t("profile.country")}
+          </label>
+          <div className="flex gap-3">
+            {/* Intentionally keeping CountrySelect mostly as-is, but wrapping in styles if possible, else relying on its classname */}
+            <div className="flex-1 rounded-2xl border border-[#FAF8F5]/10 bg-[#0D0D12] overflow-hidden shadow-inner focus-within:ring-1 focus-within:ring-[#38BDF8]/50 focus-within:border-[#38BDF8]/50 transition-all duration-300 [&>button]:h-[56px] [&>button]:bg-transparent [&>button]:border-none [&>button]:text-[#FAF8F5] [&>button]:font-semibold">
+              <CountrySelect
+                id="country"
+                value={countryCode}
+                onChange={setCountryCode}
+                disabled={savingField === "country"}
+                className="w-full h-full"
+              />
+            </div>
+            <button
               onClick={handleSaveCountry}
-              disabled={saving || !countryCode || countryCode === currentCountryCode}
-              className="min-w-20"
+              disabled={savingField === "country" || countryCode === currentCountryCode}
+              className={`flex h-[56px] w-[56px] shrink-0 items-center justify-center rounded-2xl border transition-all duration-300 ${
+                countryCode !== currentCountryCode
+                  ? "border-[#38BDF8]/40 bg-[#38BDF8]/10 text-[#38BDF8] shadow-[0_0_15px_rgba(56,189,248,0.3)] hover:scale-105 hover:bg-[#38BDF8]/20 hover:shadow-[0_0_20px_rgba(56,189,248,0.5)]"
+                  : "border-[#FAF8F5]/5 bg-[#0D0D12] text-[#FAF8F5]/30 cursor-not-allowed"
+              }`}
             >
-              {t("common.save")}
-            </Button>
+              {savingField === "country" ? (
+                <span className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+              ) : (
+                <CheckCircle2 className={`h-6 w-6 ${countryCode !== currentCountryCode ? "drop-shadow-[0_0_8px_rgba(56,189,248,0.8)]" : ""}`} />
+              )}
+            </button>
           </div>
         </div>
 
         {/* Timezone */}
-        <div className="space-y-2">
-          <Label className="flex items-center gap-2">
-            <Clock className="w-4 h-4" />
+        <div ref={(el) => (fieldsRef.current[3] = el)} className="space-y-2">
+          <label className="flex items-center gap-2 text-sm font-bold tracking-wide text-[#FAF8F5]/80 pl-1">
+            <Clock className="h-4 w-4 text-[#FACC15]" />
             {t("profile.timezone")}
-          </Label>
-          <div className="flex gap-2">
-            <Select value={timezone} onValueChange={setTimezone}>
-              <SelectTrigger className="flex-1">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {TIMEZONES.map((tz) => (
-                  <SelectItem key={tz.value} value={tz.value}>
-                    {tz.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button 
-              onClick={handleSaveTimezone} 
-              disabled={saving || timezone === currentTimezone}
-              className="min-w-20"
+          </label>
+          <div className="flex gap-3">
+            {/* Custom wrapper around the generic select to match our intense aesthetic */}
+            <div className="flex-1 rounded-2xl border border-[#FAF8F5]/10 bg-[#0D0D12] shadow-inner focus-within:ring-1 focus-within:ring-[#FACC15]/50 focus-within:border-[#FACC15]/50 transition-all duration-300">
+              <Select value={timezone} onValueChange={setTimezone}>
+                <SelectTrigger className="h-[56px] w-full border-none bg-transparent px-4 font-semibold text-[#FAF8F5] shadow-none focus:ring-0">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="border-[#FAF8F5]/10 bg-[#16161C] text-[#FAF8F5] backdrop-blur-xl">
+                  {TIMEZONES.map((tz) => (
+                    <SelectItem key={tz.value} value={tz.value} className="focus:bg-[#FAF8F5]/10 focus:text-[#FAF8F5]">
+                      {tz.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <button
+              onClick={handleSaveTimezone}
+              disabled={savingField === "timezone" || timezone === currentTimezone}
+              className={`flex h-[56px] w-[56px] shrink-0 items-center justify-center rounded-2xl border transition-all duration-300 ${
+                timezone !== currentTimezone
+                  ? "border-[#FACC15]/40 bg-[#FACC15]/10 text-[#FACC15] shadow-[0_0_15px_rgba(250,204,21,0.3)] hover:scale-105 hover:bg-[#FACC15]/20 hover:shadow-[0_0_20px_rgba(250,204,21,0.5)]"
+                  : "border-[#FAF8F5]/5 bg-[#0D0D12] text-[#FAF8F5]/30 cursor-not-allowed"
+              }`}
             >
-              {t("common.save")}
-            </Button>
+              {savingField === "timezone" ? (
+                <span className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+              ) : (
+                <CheckCircle2 className={`h-6 w-6 ${timezone !== currentTimezone ? "drop-shadow-[0_0_8px_rgba(250,204,21,0.8)]" : ""}`} />
+              )}
+            </button>
           </div>
-          <p className="text-xs text-muted-foreground">
-            {t("profile.timezoneDescription")}
-          </p>
+          <p className="pl-1 text-xs font-medium text-[#FAF8F5]/40">{t("profile.timezoneDescription")}</p>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

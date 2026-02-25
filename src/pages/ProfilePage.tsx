@@ -1,10 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,12 +14,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { FileText, LogOut, Mail, Shield, Trash2, User } from "lucide-react";
+import { FileText, LogOut, Mail, Shield, Trash2, User, ChevronRight } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { StatsDisplay } from "@/components/StatsDisplay";
 import { ProfileSettings } from "@/components/ProfileSettings";
 import { toast } from "sonner";
 import PlayerNameWithCountry from "@/components/PlayerNameWithCountry";
+import gsap from "gsap";
 
 interface ExtendedProfile {
   id: string;
@@ -39,6 +38,9 @@ export default function ProfilePage() {
   const { t } = useTranslation();
   const [extendedProfile, setExtendedProfile] = useState<ExtendedProfile | null>(null);
   const [deleting, setDeleting] = useState(false);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const elementsRef = useRef<(HTMLElement | null)[]>([]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -64,6 +66,27 @@ export default function ProfilePage() {
       void fetchExtendedProfile();
     }
   }, [user, fetchExtendedProfile]);
+
+  // GSAP animations
+  useEffect(() => {
+    if (loading || !user) return;
+
+    const ctx = gsap.context(() => {
+      const validElements = elementsRef.current.filter(Boolean);
+      if (validElements.length === 0) return;
+
+      gsap.set(validElements, { y: 40, opacity: 0 });
+      gsap.to(validElements, {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: "power3.out",
+      });
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, [loading, user]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -106,9 +129,9 @@ export default function ProfilePage() {
   if (loading || !user) {
     return (
       <AppLayout>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="animate-pulse-soft">
-            <img src="/logo.png" alt="DartStreak Logo" className="w-16 h-16 object-contain" />
+        <div className="min-h-screen flex items-center justify-center bg-[#0D0D12]">
+          <div className="animate-pulse">
+            <img src="/logo.png" alt="DartStreak Logo" className="w-16 h-16 object-contain drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]" />
           </div>
         </div>
       </AppLayout>
@@ -117,38 +140,53 @@ export default function ProfilePage() {
 
   return (
     <AppLayout>
-      <div className="min-h-screen">
-        <header className="sticky top-0 z-40 px-3 pb-3 pt-3">
-          <div className="app-surface container mx-auto rounded-2xl px-4 py-3 flex items-center justify-between">
-            <h1 className="text-xl font-display font-bold text-foreground">{t("nav.profile")}</h1>
+      <div ref={containerRef} className="min-h-screen bg-[#0D0D12] overflow-x-hidden">
+        <header className="sticky top-0 z-40 px-4 pb-4 pt-6">
+          <div className="mx-auto max-w-2xl px-2">
+            <h1 className="text-3xl md:text-4xl font-black text-[#FAF8F5] tracking-tight drop-shadow-[0_0_15px_rgba(250,248,245,0.1)]">{t("nav.profile")}</h1>
           </div>
         </header>
 
-        <main className="container mx-auto px-4 py-6 space-y-6 pb-24">
-          {/* Profile Card */}
-          <Card className="glass-card border-white/10">
-            <CardHeader className="pb-3">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center bg-primary/20 shadow-sm">
-                  <User className="w-8 h-8 text-primary" />
-                </div>
-                <div>
-                  <CardTitle className="font-display text-xl text-foreground">
-                    <PlayerNameWithCountry
-                      displayName={extendedProfile?.display_name || profile?.display_name || t("profile.unnamed")}
-                      countryCode={extendedProfile?.country_code || profile?.country_code}
-                      flagSize="md"
+        <main className="container mx-auto px-4 py-4 space-y-8 pb-32 max-w-2xl">
+          {/* Profile Hero section */}
+          <section
+            ref={(el) => (elementsRef.current[0] = el)}
+            className="group relative overflow-hidden rounded-[2.5rem] border border-[#FAF8F5]/10 bg-[#16161C]/60 p-8 shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-2xl transition-all duration-300 hover:border-[#FAF8F5]/20 hover:bg-[#1A1A24]/80"
+          >
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(34,197,94,0.1),transparent_50%),radial-gradient(circle_at_100%_100%,rgba(56,189,248,0.05),transparent_50%)]" />
+            <div className="relative z-10 flex flex-col items-center gap-6 sm:flex-row">
+              <div className="relative">
+                <div className="absolute -inset-1 rounded-full bg-gradient-to-tr from-[#22C55E]/40 to-[#38BDF8]/20 blur-md opacity-50 transition-opacity duration-300 group-hover:opacity-100" />
+                <div className="relative flex h-24 w-24 items-center justify-center rounded-full border-2 border-[#FAF8F5]/20 bg-[#0D0D12] shadow-2xl">
+                  {user?.user_metadata?.avatar_url ? (
+                    <img
+                      src={user.user_metadata.avatar_url}
+                      alt="Avatar"
+                      className="h-full w-full rounded-full object-cover"
                     />
-                  </CardTitle>
-                  <p className="text-sm text-muted-foreground">{user.email}</p>
+                  ) : (
+                    <User className="h-10 w-10 text-[#FAF8F5]/80" />
+                  )}
                 </div>
               </div>
-            </CardHeader>
-          </Card>
+              <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+                <h2 className="text-2xl sm:text-3xl font-black text-[#FAF8F5] tracking-tight">
+                  <PlayerNameWithCountry
+                    displayName={extendedProfile?.display_name || profile?.display_name || t("profile.unnamed")}
+                    countryCode={extendedProfile?.country_code || profile?.country_code}
+                    flagSize="lg"
+                  />
+                </h2>
+                <p className="mt-1.5 rounded-full border border-[#FAF8F5]/10 bg-[#0D0D12]/50 px-3 py-1 font-mono text-xs font-semibold tracking-wide text-[#FAF8F5]/60">
+                  {user.email}
+                </p>
+              </div>
+            </div>
+          </section>
 
-          {/* Settings */}
-          {extendedProfile && (
-            <div className="glass-panel rounded-xl p-1 border-white/10">
+          {/* Settings Section */}
+          <section ref={(el) => (elementsRef.current[1] = el)}>
+            {extendedProfile && (
               <ProfileSettings
                 currentDisplayName={extendedProfile.display_name}
                 currentEmail={user.email || ""}
@@ -159,87 +197,102 @@ export default function ProfilePage() {
                 emailChangedAt={extendedProfile.email_changed_at}
                 onUpdate={fetchExtendedProfile}
               />
-            </div>
-          )}
+            )}
+          </section>
 
-          {/* Statistics */}
-          <section>
-            <h2 className="text-lg font-display font-semibold mb-4 text-foreground">{t("stats.statistics")}</h2>
-            <div className="glass-card rounded-xl overflow-hidden border-white/10 text-foreground">
+          {/* Statistics Display */}
+          <section ref={(el) => (elementsRef.current[2] = el)} className="space-y-4">
+            <h2 className="text-xl font-bold tracking-tight text-[#FAF8F5] px-2">{t("stats.statistics")}</h2>
+            <div className="overflow-hidden rounded-[2rem] border border-[#FAF8F5]/10 bg-[#16161C]/50 shadow-[0_15px_40px_rgba(0,0,0,0.5)] backdrop-blur-xl">
               <StatsDisplay userId={user.id} />
             </div>
           </section>
 
           {/* Legal and Contact */}
-          <section className="glass-card rounded-xl border-white/10 p-4 space-y-3">
-            <Link to="/privacy" className="flex items-center justify-between rounded-lg px-3 py-2.5 bg-[#12121A] hover:bg-[#1A1A24] transition-colors">
-              <span className="flex items-center gap-2 text-foreground">
-                <Shield className="w-4 h-4 text-primary" />
-                {t("common.privacyPolicy")}
-              </span>
-            </Link>
-            <Link to="/terms" className="flex items-center justify-between rounded-lg px-3 py-2.5 bg-[#12121A] hover:bg-[#1A1A24] transition-colors">
-              <span className="flex items-center gap-2 text-foreground">
-                <FileText className="w-4 h-4 text-primary" />
-                {t("common.termsOfService")}
-              </span>
-            </Link>
-            <button
-              type="button"
-              onClick={handleOpenCookieSettings}
-              className="w-full flex items-center justify-between rounded-lg px-3 py-2.5 bg-[#12121A] hover:bg-[#1A1A24] transition-colors"
-            >
-              <span className="flex items-center gap-2 text-foreground">
-                <Shield className="w-4 h-4 text-primary" />
-                {t("cookie.settingsButton")}
-              </span>
-            </button>
-            <Link to="/contact" className="flex items-center justify-between rounded-lg px-3 py-2.5 bg-[#12121A] hover:bg-[#1A1A24] transition-colors">
-              <span className="flex items-center gap-2 text-foreground">
-                <Mail className="w-4 h-4 text-primary" />
-                {t("common.contact")}
-              </span>
-            </Link>
+          <section ref={(el) => (elementsRef.current[3] = el)} className="grid gap-3 rounded-[2rem] border border-[#FAF8F5]/10 bg-[#16161C]/50 p-6 shadow-xl backdrop-blur-xl">
+            {[
+              { to: "/privacy", icon: Shield, label: t("common.privacyPolicy") },
+              { to: "/terms", icon: FileText, label: t("common.termsOfService") },
+              { onClick: handleOpenCookieSettings, icon: Shield, label: t("cookie.settingsButton") },
+              { to: "/contact", icon: Mail, label: t("common.contact") },
+            ].map((item, idx) => {
+              const Icon = item.icon;
+              const isButton = "onClick" in item;
+              
+              const innerContent = (
+                <>
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0D0D12] text-[#22C55E] shadow-inner border border-[#FAF8F5]/5 group-hover:scale-110 transition-transform">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <span className="font-semibold text-[#FAF8F5]/90 transition-colors group-hover:text-[#FAF8F5]">{item.label}</span>
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-[#FAF8F5]/30 transition-all group-hover:text-[#FAF8F5]/80 group-hover:translate-x-1" />
+                </>
+              );
+
+              const className = "group flex w-full items-center justify-between rounded-[1.25rem] border border-transparent bg-[#0D0D12]/40 px-4 py-3 transition-all duration-300 hover:border-[#FAF8F5]/10 hover:bg-[#1A1A24]/60 hover:shadow-lg";
+
+              if (isButton) {
+                return (
+                 <button key={idx} type="button" onClick={item.onClick} className={className}>
+                   {innerContent}
+                 </button>
+                );
+              }
+
+              return (
+                <Link key={idx} to={item.to} className={className}>
+                  {innerContent}
+                </Link>
+              );
+            })}
           </section>
 
           {/* Danger Zone */}
-          <section className="space-y-3">
-            <Button variant="outline" onClick={handleSignOut} className="w-full border-border hover:bg-secondary">
-              <LogOut className="w-4 h-4 mr-2" />
-              {t("auth.logout")}
-            </Button>
+          <section ref={(el) => (elementsRef.current[4] = el)} className="space-y-4 pt-4">
+            <button 
+              onClick={handleSignOut} 
+              className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-[1.5rem] border border-[#FAF8F5]/10 bg-[#16161C]/80 px-4 py-5 font-bold text-[#FAF8F5]/90 shadow-lg backdrop-blur-xl transition-all duration-300 hover:border-[#FAF8F5]/30 hover:bg-[#2A2A35]"
+            >
+              <LogOut className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
+              <span>{t("auth.logout")}</span>
+            </button>
 
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="w-full border-red-500/30 text-red-400 hover:bg-red-500/10 hover:text-red-300"
+                <button
+                  className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-[1.5rem] border border-red-500/20 bg-red-950/20 px-4 py-5 font-bold text-red-400 shadow-[0_0_20px_rgba(248,113,113,0.05)] backdrop-blur-xl transition-all duration-300 hover:border-red-500/50 hover:bg-red-950/40 hover:text-red-300 hover:shadow-[0_0_25px_rgba(248,113,113,0.15)] disabled:opacity-50"
                   disabled={deleting}
                 >
-                  <Trash2 className="w-4 h-4 mr-2" />
-                  {deleting ? t("profile.deleting") : t("profile.deleteAccount")}
-                </Button>
+                  <div className="absolute inset-0 bg-gradient-to-r from-red-500/0 via-red-500/10 to-red-500/0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                  <Trash2 className="relative z-10 h-5 w-5" />
+                  <span className="relative z-10">{deleting ? t("profile.deleting") : t("profile.deleteAccount")}</span>
+                </button>
               </AlertDialogTrigger>
-              <AlertDialogContent className="glass-card border-white/10 text-white">
-                <AlertDialogHeader>
-                  <AlertDialogTitle className="text-white">
+              <AlertDialogContent className="rounded-[2.5rem] border border-red-500/20 bg-[#0D0D12]/95 p-8 text-white shadow-[0_25px_50px_rgba(220,38,38,0.2)] backdrop-blur-xl">
+                <AlertDialogHeader className="mb-4">
+                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10 text-red-500">
+                    <Trash2 className="h-8 w-8" />
+                  </div>
+                  <AlertDialogTitle className="text-center text-2xl font-black tracking-tight text-[#FAF8F5]">
                     {t("profile.deleteAccountConfirmTitle")}
                   </AlertDialogTitle>
-                  <AlertDialogDescription className="text-gray-400">
+                  <AlertDialogDescription className="text-center text-base font-medium text-[#FAF8F5]/60 mt-2">
                     {t("profile.deleteAccountConfirmDesc")}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-transparent border-white/10 text-white hover:bg-white/10">
-                    {t("common.cancel")}
-                  </AlertDialogCancel>
+                <AlertDialogFooter className="flex-col gap-3 sm:flex-col mt-6">
                   <AlertDialogAction
                     onClick={handleDeleteAccount}
-                    className="bg-red-600 hover:bg-red-700 text-white border-none"
+                    className="h-14 w-full rounded-[1.25rem] bg-red-500 hover:bg-red-600 text-[#FAF8F5] font-bold tracking-wide transition-all hover:scale-[1.02] shadow-[0_0_20px_rgba(239,68,68,0.4)]"
                     disabled={deleting}
                   >
                     {deleting ? t("profile.deleting") : t("profile.deleteAccount")}
                   </AlertDialogAction>
+                  <AlertDialogCancel className="h-14 w-full rounded-[1.25rem] border border-[#FAF8F5]/10 bg-transparent text-[#FAF8F5]/80 hover:bg-[#FAF8F5]/10 hover:text-[#FAF8F5] transition-colors font-semibold mt-0">
+                    {t("common.cancel")}
+                  </AlertDialogCancel>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
