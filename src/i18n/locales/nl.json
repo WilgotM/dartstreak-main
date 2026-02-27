@@ -252,7 +252,7 @@
       "li1": "Accountgegevens: We verzamelen uw e-mailadres en profielgegevens (zoals weergavenaam, land, landtijdzone en avatar-URL indien beschikbaar) om uw profiel aan te maken.",
       "li2": "Spelgegevens: We slaan uw worpgeschiedenis, statistieken en deelnamegegevens aan competities op om kernservicefuncties te bieden, waaronder automatische plaatsing in mondiale en landelijke competities.",
       "li3": "Videogegevens: Voor sommige competities is mogelijk een video-opname vereist ter verificatie. Als een competitie video vereist, worden clips opgeslagen zodat competitieleden deze tijdens het actieve seizoen kunnen bekijken. Voor voltooide systeemcompetities worden historische videoreferenties verwijderd.",
-      "li7": "Trainingsgegevens: Boter-kaas-en-eieren-training wordt in deze versie lokaal in uw browsersessie uitgevoerd en wordt niet naar onze backend verzonden.",
+      "li7": "Trainingsgegevens: Tic-Tac-Toe Darts, Red Zone Survival en Throw for the Bull draaien in deze versie lokaal in je browsersessie en worden niet naar onze backend verzonden.",
       "li8": "Gebruiksgegevens: We gebruiken Google Analytics om inzicht te krijgen in het app-gebruik, inclusief paginaweergaven, apparaat-/browserinformatie en geschatte locatie.",
       "li4": "Supabase: Wordt gebruikt voor onze database, authenticatie en veilige gegevensopslag.",
       "li5": "Google OAuth: optionele aanmeldingsprovider voor veilige authenticatie.",
@@ -413,6 +413,11 @@
         "badge": "Tactisch duel",
         "title": "Boter-kaas-en-eieren darten",
         "description": "Doelcontrole voor twee spelers, waarbij elke ronde wordt bepaald door bordbeheer en afrekenprecisie."
+      },
+      "redZone": {
+        "badge": "Elimination mode",
+        "title": "Red Zone Survival",
+        "description": "Multiplayer survival drill: one dart each, avoid the red sectors as danger expands around the board."
       }
     }
   },
@@ -525,6 +530,19 @@
       "throw": "Gooien",
       "triple": "Verdrievoudigen",
       "undo": "Ongedaan maken"
+    },
+    "bullDecider": {
+      "title": "Throw for the Bull",
+      "subtitle": "Voor de wedstrijd gooit elk team één dart. Wie het dichtst bij de bull zit, begint.",
+      "registered": "Geregistreerde worpen: {{count}} / {{total}}",
+      "left": "Resterende worpen: {{count}}",
+      "currentThrow": "{{player}} gooit nu",
+      "distance": "{{distance}} mm van de bull",
+      "tie": "Gelijkspel om plek 1 tussen {{players}}. Gooi opnieuw om de starter te bepalen.",
+      "winner": "{{player}} start de wedstrijd.",
+      "rethrow": "Opnieuw gooien",
+      "cancel": "Annuleren",
+      "start": "Start wedstrijd"
     }
   },
   "offline": {
@@ -785,5 +803,77 @@
     "thursday": "Donderdag",
     "tuesday": "Dinsdag",
     "wednesday": "Woensdag"
+  },
+  "trainingRedZone": {
+    "title": "Red Zone Survival",
+    "subtitle": "Multiplayer overlevingsmodus: Eén pijl per ronde. Kom je in een rode zone terecht, dan lig je eruit.",
+    "setup": {
+      "title": "Spelers instellen",
+      "subtitle": "Voeg iedereen toe, kies namen en begin het spel.",
+      "playerDefault": "Speler {{index}}",
+      "addPlayer": "Speler toevoegen",
+      "removePlayer": "Verwijderen",
+      "start": "Start spel",
+      "minPlayers": "Minimaal 2 spelers nodig.",
+      "namesRequired": "Iedereen heeft een naam nodig.",
+      "duplicateNames": "Namen moeten uniek zijn."
+    },
+    "rules": {
+      "title": "Hoe het werkt",
+      "r1": "Ronde 1 begint met alleen rood op de 20.",
+      "r2": "Iedere speler gooit één pijl per ronde.",
+      "r3": "Als je een rood veld raakt, lig je er direct uit.",
+      "r4": "Na elke ronde breiden de rode velden zich uit: 20 -> 5/1 -> 12/18 etc."
+    },
+    "actions": {
+      "newGame": "Nieuw spel",
+      "changePlayers": "Spelers wijzigen",
+      "undo": "Ongedaan maken"
+    },
+    "status": {
+      "round": "Ronde {{round}}",
+      "alivePlayers": "Spelers nog in het spel: {{count}}",
+      "dangerNumbers": "Rode vakjes",
+      "nextExpansion": "Volgende uitbreiding",
+      "currentThrow": "{{player}} gooit"
+    },
+    "throw": {
+      "prompt": "Registreer waar je gooide. MISS en BULL zijn veilig.",
+      "promptSimple": "Veilige zone of Rode Zone/Gemist?",
+      "safe": "Veilig",
+      "danger": "Rode Zone / Mis",
+      "miss": "MISS",
+      "bull": "BULL"
+    },
+    "players": {
+      "alive": "Nog erin",
+      "eliminated": "Uitgeschakeld",
+      "eliminatedRound": "Uit in ronde {{round}}"
+    },
+    "result": {
+      "winner": "{{player}} wint!",
+      "draw": "Allemaal uitgeschakeld in dezelfde ronde.",
+      "playAgain": "Opnieuw spelen"
+    },
+    "history": {
+      "title": "Ronde geschiedenis",
+      "none": "Nog geen ronde afgelopen.",
+      "round": "Ronde {{round}}",
+      "eliminated": "Uitvallers",
+      "allSafe": "Iedereen heeft het overleefd."
+    },
+    "bullDecider": {
+      "title": "Throw for the Bull",
+      "subtitle": "Voor de start gooit iedereen één dart. Wie het dichtst bij de bull zit, krijgt de eerste volgorde.",
+      "registered": "Geregistreerde worpen: {{count}} / {{total}}",
+      "left": "Resterende worpen: {{count}}",
+      "currentThrow": "{{player}} gooit nu",
+      "distance": "{{distance}} mm van de bull",
+      "tie": "Gelijkspel om plek 1 tussen {{players}}. Gooi opnieuw om de volgorde te bepalen.",
+      "winner": "{{player}} zit het dichtst bij de bull en begint.",
+      "rethrow": "Opnieuw gooien",
+      "cancel": "Annuleren",
+      "startGame": "Start spel"
+    }
   }
 }

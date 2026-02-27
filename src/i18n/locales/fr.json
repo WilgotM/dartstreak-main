@@ -252,7 +252,7 @@
       "li1": "Données de compte : nous collectons votre adresse e-mail et les détails de votre profil (tels que le nom d'affichage, le pays, le fuseau horaire du pays et l'URL de l'avatar lorsqu'elle est disponible) pour créer votre profil.",
       "li2": "Données de jeu : nous stockons votre historique de lancers, vos statistiques et vos données de participation à des ligues pour fournir des fonctionnalités de service de base, notamment le placement automatique dans les ligues mondiales et nationales.",
       "li3": "Données vidéo : Certaines ligues peuvent exiger un enregistrement vidéo pour vérification. Si une ligue nécessite une vidéo, les clips sont stockés afin que les membres de la ligue puissent les visionner pendant la saison active. Pour les ligues système terminées, les références vidéo historiques sont supprimées.",
-      "li7": "Données de formation : la formation Tic-Tac-Toe s'exécute localement dans votre session de navigateur dans cette version et n'est pas envoyée à notre backend.",
+      "li7": "Données d'entraînement : Tic-Tac-Toe Darts, Red Zone Survival et Throw for the Bull fonctionnent localement dans votre session de navigateur dans cette version et ne sont pas envoyés à notre backend.",
       "li8": "Données d'utilisation : nous utilisons Google Analytics pour comprendre l'utilisation de l'application, y compris les pages vues, les informations sur l'appareil/navigateur et la localisation approximative.",
       "li4": "Supabase : utilisé pour notre base de données, l'authentification et le stockage sécurisé des données.",
       "li5": "Google OAuth : fournisseur de connexion facultatif pour une authentification sécurisée.",
@@ -413,6 +413,11 @@
         "badge": "Duel tactique",
         "title": "Fléchettes Tic-Tac-Toe",
         "description": "Contrôle de cible à deux joueurs où chaque tour est décidé par la gestion du plateau et la précision du paiement."
+      },
+      "redZone": {
+        "badge": "Elimination mode",
+        "title": "Red Zone Survival",
+        "description": "Multiplayer survival drill: one dart each, avoid the red sectors as danger expands around the board."
       }
     }
   },
@@ -525,6 +530,19 @@
       "throw": "Lancer",
       "triple": "Tripler",
       "undo": "Défaire"
+    },
+    "bullDecider": {
+      "title": "Throw for the Bull",
+      "subtitle": "Avant le match, chaque équipe lance une fléchette. Le plus proche du bull commence.",
+      "registered": "Lancers enregistrés : {{count}} / {{total}}",
+      "left": "Lancers restants : {{count}}",
+      "currentThrow": "{{player}} lance maintenant",
+      "distance": "{{distance}} mm du bull",
+      "tie": "Égalité en tête entre {{players}}. Faites un lancer de barrage pour décider qui commence.",
+      "winner": "{{player}} commence le match.",
+      "rethrow": "Lancer de barrage",
+      "cancel": "Annuler",
+      "start": "Démarrer le match"
     }
   },
   "offline": {
@@ -785,5 +803,77 @@
     "thursday": "Jeudi",
     "tuesday": "Mardi",
     "wednesday": "Mercredi"
+  },
+  "trainingRedZone": {
+    "title": "Survie Zone Rouge",
+    "subtitle": "Mode survie multijoueur : une fléchette chacun par manche. Si vous tombez dans le rouge, c'est fini.",
+    "setup": {
+      "title": "Configurer les joueurs",
+      "subtitle": "Ajoutez tout le monde, choisissez les noms et commencez.",
+      "playerDefault": "Joueur {{index}}",
+      "addPlayer": "Ajouter un joueur",
+      "removePlayer": "Retirer",
+      "start": "Démarrer",
+      "minPlayers": "Au moins 2 joueurs requis.",
+      "namesRequired": "Tous les joueurs doivent avoir un nom.",
+      "duplicateNames": "Les noms doivent être uniques."
+    },
+    "rules": {
+      "title": "Comment ça marche",
+      "r1": "La manche 1 commence avec seulement le 20 en rouge.",
+      "r2": "Chaque joueur restant lance une fléchette par manche.",
+      "r3": "Si vous touchez un numéro rouge, vous êtes éliminé.",
+      "r4": "Après chaque manche, le rouge s'étend : 20 -> 5/1 -> 12/18 etc."
+    },
+    "actions": {
+      "newGame": "Nouveau jeu",
+      "changePlayers": "Changer de joueurs",
+      "undo": "Annuler"
+    },
+    "status": {
+      "round": "Manche {{round}}",
+      "alivePlayers": "Joueurs en lice : {{count}}",
+      "dangerNumbers": "Numéros rouges rouges",
+      "nextExpansion": "Prochaine extension",
+      "currentThrow": "Tour de {{player}}"
+    },
+    "throw": {
+      "prompt": "Enregistrez votre lancer. MISS et BULL sont sûrs.",
+      "promptSimple": "Zone sûre ou Zone Rouge/Manqué ?",
+      "safe": "Tir Sécurisé",
+      "danger": "Zone Rouge / Raté",
+      "miss": "MISS",
+      "bull": "BULL"
+    },
+    "players": {
+      "alive": "Encore en jeu",
+      "eliminated": "Éliminé",
+      "eliminatedRound": "Éliminé à la manche {{round}}"
+    },
+    "result": {
+      "winner": "{{player}} gagne !",
+      "draw": "Tout le monde a été éliminé dans la même manche.",
+      "playAgain": "Rejouer"
+    },
+    "history": {
+      "title": "Historique",
+      "none": "Aucune manche terminée.",
+      "round": "Manche {{round}}",
+      "eliminated": "Éliminés",
+      "allSafe": "Tout le monde a survécu."
+    },
+    "bullDecider": {
+      "title": "Throw for the Bull",
+      "subtitle": "Avant de lancer la partie, tous les joueurs lancent une fléchette. Le plus proche du bull prend le premier ordre.",
+      "registered": "Lancers enregistrés : {{count}} / {{total}}",
+      "left": "Lancers restants : {{count}}",
+      "currentThrow": "{{player}} lance maintenant",
+      "distance": "{{distance}} mm du bull",
+      "tie": "Égalité en tête entre {{players}}. Rejouez pour décider l'ordre.",
+      "winner": "{{player}} est le plus proche du bull et commence.",
+      "rethrow": "Rejouer",
+      "cancel": "Annuler",
+      "startGame": "Démarrer la partie"
+    }
   }
 }

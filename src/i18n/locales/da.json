@@ -252,7 +252,7 @@
       "li1": "Kontodata: Vi indsamler din e-mailadresse og profiloplysninger (såsom vist navn, land, lands tidszone og avatar-URL, når de er tilgængelige) for at oprette din profil.",
       "li2": "Spildata: Vi gemmer din kastehistorik, statistik og ligadeltagelsesdata for at levere kerneservicefunktioner, herunder automatisk placering i globale og landelige ligaer.",
       "li3": "Videodata: Nogle ligaer kan kræve videooptagelse til verifikation. Hvis en liga kræver video, gemmes klip, så ligamedlemmer kan se dem i den aktive sæson. For afsluttede systemligaer fjernes historiske videoreferencer.",
-      "li7": "Træningsdata: Tic-Tac-Toe træning kører lokalt i din browsersession i denne version og sendes ikke til vores backend.",
+      "li7": "Træningsdata: Tic-Tac-Toe Darts, Red Zone Survival og Throw for the Bull kører lokalt i din browsersession i denne version og sendes ikke til vores backend.",
       "li8": "Brugsdata: Vi bruger Google Analytics til at forstå appbrug, herunder sidevisninger, enheds-/browseroplysninger og omtrentlig placering.",
       "li4": "Supabase: Bruges til vores database, autentificering og sikker datalagring.",
       "li5": "Google OAuth: Valgfri login-udbyder til sikker godkendelse.",
@@ -413,6 +413,11 @@
         "badge": "Taktisk duel",
         "title": "Tic-Tac-Toe Dart",
         "description": "To-spiller målkontrol, hvor hver runde afgøres af bestyrelsens ledelse og kassepræcision."
+      },
+      "redZone": {
+        "badge": "Elimination mode",
+        "title": "Red Zone Survival",
+        "description": "Multiplayer survival drill: one dart each, avoid the red sectors as danger expands around the board."
       }
     }
   },
@@ -525,6 +530,19 @@
       "throw": "Kaste",
       "triple": "Tredobbelt",
       "undo": "Fortryd"
+    },
+    "bullDecider": {
+      "title": "Throw for the Bull",
+      "subtitle": "Før kampstart kaster begge hold én pil. Tættest på bull starter.",
+      "registered": "Registrerede kast: {{count}} / {{total}}",
+      "left": "Kast tilbage: {{count}}",
+      "currentThrow": "{{player}} kaster nu",
+      "distance": "{{distance}} mm fra bull",
+      "tie": "Lige om førstepladsen mellem {{players}}. Kast om for at afgøre starter.",
+      "winner": "{{player}} starter kampen.",
+      "rethrow": "Kast om",
+      "cancel": "Annuller",
+      "start": "Start kamp"
     }
   },
   "offline": {
@@ -785,5 +803,77 @@
     "thursday": "torsdag",
     "tuesday": "tirsdag",
     "wednesday": "onsdag"
+  },
+  "trainingRedZone": {
+    "title": "Red Zone Survival",
+    "subtitle": "Multiplayer overlevelsestilstand: én pil hver pr. runde, og du er ude, hvis din pil lander i de røde farezoner.",
+    "setup": {
+      "title": "Opsæt spillere",
+      "subtitle": "Tilføj alle, der skal spille, vælg navne og farver, og start derefter spillet.",
+      "playerDefault": "Spiller {{index}}",
+      "addPlayer": "Tilføj spiller",
+      "removePlayer": "Fjern",
+      "start": "Start spil",
+      "minPlayers": "Mindst 2 spillere er påkrævet.",
+      "namesRequired": "Alle spillere skal have et navn.",
+      "duplicateNames": "Spillernavne skal være unikke."
+    },
+    "rules": {
+      "title": "Sådan fungerer det",
+      "r1": "Runde 1 starter med kun 20 markeret rødt.",
+      "r2": "Hver tilbageværende spiller kaster én pil pr. runde og registrerer træfferen.",
+      "r3": "Rammer du et rødmarkeret nummer (single/double/triple) er du ude med det samme.",
+      "r4": "Efter hver runde udvides de røde felter: 20 -> 5/1 -> 12/18 osv."
+    },
+    "actions": {
+      "newGame": "Nyt spil",
+      "changePlayers": "Skift spillere",
+      "undo": "Fortryd"
+    },
+    "status": {
+      "round": "Runde {{round}}",
+      "alivePlayers": "Spillere tilbage: {{count}}",
+      "dangerNumbers": "Røde farenumre",
+      "nextExpansion": "Næste udvidelse",
+      "currentThrow": "{{player}} kaster nu"
+    },
+    "throw": {
+      "prompt": "Registrer, hvilken sektion der blev ramt. MISS og BULL er altid sikre.",
+      "promptSimple": "Registrer, om du ramte den sikre zone, eller om du ramte rød zone/missede.",
+      "safe": "Sikkert kast",
+      "danger": "Rød zone / Miss",
+      "miss": "MISS",
+      "bull": "BULL"
+    },
+    "players": {
+      "alive": "Fortsat med",
+      "eliminated": "Ude",
+      "eliminatedRound": "Ude i runde {{round}}"
+    },
+    "result": {
+      "winner": "{{player}} vinder!",
+      "draw": "Alle røg ud i samme runde.",
+      "playAgain": "Spil igen"
+    },
+    "history": {
+      "title": "Rundehistorik",
+      "none": "Ingen runder afsluttet endnu.",
+      "round": "Runde {{round}}",
+      "eliminated": "Ude",
+      "allSafe": "Alle overlevede rundan."
+    },
+    "bullDecider": {
+      "title": "Throw for the Bull",
+      "subtitle": "Før spilstart kaster alle én pil. Tættest på bull får første kastorden.",
+      "registered": "Registrerede kast: {{count}} / {{total}}",
+      "left": "Kast tilbage: {{count}}",
+      "currentThrow": "{{player}} kaster nu",
+      "distance": "{{distance}} mm fra bull",
+      "tie": "Lige om førstepladsen mellem {{players}}. Kast om for at afgøre rækkefølgen.",
+      "winner": "{{player}} er tættest på bull og starter.",
+      "rethrow": "Kast om",
+      "cancel": "Annuller",
+      "startGame": "Start spil"
+    }
   }
 }

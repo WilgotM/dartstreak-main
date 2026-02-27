@@ -252,7 +252,7 @@
       "li1": "Kontodaten: Wir erfassen Ihre E-Mail-Adresse und Profildetails (z. B. Anzeigename, Land, Zeitzone des Landes und Avatar-URL, sofern verfügbar), um Ihr Profil zu erstellen.",
       "li2": "Spieldaten: Wir speichern Ihre Wurfhistorie, Statistiken und Ligateilnahmedaten, um zentrale Servicefunktionen bereitzustellen, einschließlich der automatischen Platzierung in globalen und Länderligen.",
       "li3": "Videodaten: Einige Ligen erfordern möglicherweise eine Videoaufzeichnung zur Überprüfung. Wenn eine Liga Videos benötigt, werden Clips gespeichert, damit Ligamitglieder sie während der aktiven Saison ansehen können. Für abgeschlossene Systemligen werden historische Videoreferenzen entfernt.",
-      "li7": "Trainingsdaten: Das Tic-Tac-Toe-Training läuft in dieser Version lokal in Ihrer Browsersitzung und wird nicht an unser Backend gesendet.",
+      "li7": "Trainingsdaten: Tic-Tac-Toe Darts, Red Zone Survival und Throw for the Bull laufen in dieser Version lokal in Ihrer Browsersitzung und werden nicht an unser Backend gesendet.",
       "li8": "Nutzungsdaten: Wir verwenden Google Analytics, um die App-Nutzung zu verstehen, einschließlich Seitenaufrufen, Geräte-/Browserinformationen und ungefährem Standort.",
       "li4": "Supabase: Wird für unsere Datenbank, Authentifizierung und sichere Datenspeicherung verwendet.",
       "li5": "Google OAuth: Optionaler Anmeldeanbieter für sichere Authentifizierung.",
@@ -413,6 +413,11 @@
         "badge": "Taktisches Duell",
         "title": "Tic-Tac-Toe-Darts",
         "description": "Zielkontrolle für zwei Spieler, wobei jede Runde durch Brettmanagement und Checkout-Präzision entschieden wird."
+      },
+      "redZone": {
+        "badge": "Elimination mode",
+        "title": "Red Zone Survival",
+        "description": "Multiplayer survival drill: one dart each, avoid the red sectors as danger expands around the board."
       }
     }
   },
@@ -525,6 +530,19 @@
       "throw": "Werfen",
       "triple": "Verdreifachen",
       "undo": "Rückgängig machen"
+    },
+    "bullDecider": {
+      "title": "Throw for the Bull",
+      "subtitle": "Vor Matchstart wirft jedes Team einen Dart. Wer dem Bull am nächsten ist, beginnt.",
+      "registered": "Erfasste Würfe: {{count}} / {{total}}",
+      "left": "Verbleibende Würfe: {{count}}",
+      "currentThrow": "{{player}} wirft jetzt",
+      "distance": "{{distance}} mm vom Bull",
+      "tie": "Gleichstand auf Platz 1 zwischen {{players}}. Mit Stechen den Starter bestimmen.",
+      "winner": "{{player}} startet das Match.",
+      "rethrow": "Stechen",
+      "cancel": "Abbrechen",
+      "start": "Match starten"
     }
   },
   "offline": {
@@ -785,5 +803,77 @@
     "thursday": "Donnerstag",
     "tuesday": "Dienstag",
     "wednesday": "Mittwoch"
+  },
+  "trainingRedZone": {
+    "title": "Red Zone Survival",
+    "subtitle": "Multiplayer-Überlebensmodus: Ein Pfeil pro Runde. Wer ein rotes Feld trifft, scheidet aus.",
+    "setup": {
+      "title": "Spieler einrichten",
+      "subtitle": "Füge alle Spieler hinzu, wähle Farben und Namen, und starte das Spiel.",
+      "playerDefault": "Spieler {{index}}",
+      "addPlayer": "Spieler hinzufügen",
+      "removePlayer": "Entfernen",
+      "start": "Spiel starten",
+      "minPlayers": "Mindestens 2 Spieler erforderlich.",
+      "namesRequired": "Alle Spieler brauchen einen Namen.",
+      "duplicateNames": "Namen müssen eindeutig sein."
+    },
+    "rules": {
+      "title": "So funktioniert's",
+      "r1": "Runde 1 beginnt nur mit der roten 20.",
+      "r2": "Jeder Spieler wirft einen Pfeil pro Runde.",
+      "r3": "Triffst du ein rotes Feld, bist du sofort raus.",
+      "r4": "Nach jeder Runde breitet sich das Rote Feld aus: 20 -> 5/1 -> 12/18 usw."
+    },
+    "actions": {
+      "newGame": "Neues Spiel",
+      "changePlayers": "Spieler wechseln",
+      "undo": "Rückgängig"
+    },
+    "status": {
+      "round": "Runde {{round}}",
+      "alivePlayers": "Verbleibende Spieler: {{count}}",
+      "dangerNumbers": "Rote Felder",
+      "nextExpansion": "Nächste Erweiterung",
+      "currentThrow": "{{player}} wirft"
+    },
+    "throw": {
+      "prompt": "Registriere das getroffene Feld. MISS und BULL sind sicher.",
+      "promptSimple": "Sichere Zone oder rote Zone/Fehlwurf?",
+      "safe": "Sicherer Treffer",
+      "danger": "Rote Zone / Vorbei",
+      "miss": "MISS",
+      "bull": "BULL"
+    },
+    "players": {
+      "alive": "Noch im Spiel",
+      "eliminated": "Ausgeschieden",
+      "eliminatedRound": "Raus in Runde {{round}}"
+    },
+    "result": {
+      "winner": "{{player}} gewinnt!",
+      "draw": "Alle Spieler sind gleichzeitig ausgeschieden.",
+      "playAgain": "Nochmal spielen"
+    },
+    "history": {
+      "title": "Rundenverlauf",
+      "none": "Noch keine Runde beendet.",
+      "round": "Runde {{round}}",
+      "eliminated": "Ausgeschiedene",
+      "allSafe": "Alle haben überlebt."
+    },
+    "bullDecider": {
+      "title": "Throw for the Bull",
+      "subtitle": "Vor Spielstart wirft jeder einen Dart. Wer dem Bull am nächsten ist, startet in der Reihenfolge vorne.",
+      "registered": "Erfasste Würfe: {{count}} / {{total}}",
+      "left": "Verbleibende Würfe: {{count}}",
+      "currentThrow": "{{player}} wirft jetzt",
+      "distance": "{{distance}} mm vom Bull",
+      "tie": "Gleichstand auf Platz 1 zwischen {{players}}. Mit Stechen die Reihenfolge bestimmen.",
+      "winner": "{{player}} ist am nächsten am Bull und beginnt.",
+      "rethrow": "Stechen",
+      "cancel": "Abbrechen",
+      "startGame": "Spiel starten"
+    }
   }
 }

@@ -20,6 +20,7 @@ import NotFound from "./pages/NotFound";
 import Legal from "./pages/Legal";
 import TrainingTicTacToe from "./pages/TrainingTicTacToe";
 import TrainingHub from "./pages/TrainingHub";
+import TrainingRedZone from "./pages/TrainingRedZone";
 import * as Sentry from "@sentry/react";
 import { trackPageView } from "@/lib/analytics";
 import CookieConsent from "@/components/CookieConsent";
@@ -65,6 +66,7 @@ const App = () => {
                       <Route path="/profile/:id" element={<ProfilePage />} />
                       <Route path="/training" element={<TrainingHub />} />
                       <Route path="/training/tic-tac-toe" element={<TrainingTicTacToe />} />
+                      <Route path="/training/red-zone" element={<TrainingRedZone />} />
                       <Route path="/privacy" element={<Legal />} />
                       <Route path="/terms" element={<Legal />} />
                       <Route path="/contact" element={<Legal />} />

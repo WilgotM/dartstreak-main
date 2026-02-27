@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowRight, Grid3X3 } from "lucide-react";
+import { ArrowRight, Flame, Grid3X3 } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,12 @@ const trainingCards = [
     to: "/training/tic-tac-toe",
     icon: Grid3X3,
     accent: "from-cyan-400/30 via-blue-500/10 to-transparent",
+  },
+  {
+    key: "redZone",
+    to: "/training/red-zone",
+    icon: Flame,
+    accent: "from-red-500/35 via-orange-400/15 to-transparent",
   },
 ] as const;
 
@@ -57,7 +63,7 @@ export default function TrainingHub() {
           </div>
         </header>
 
-        <section className="grid gap-4 md:grid-cols-1">
+        <section className="grid gap-4 md:grid-cols-2">
           {trainingCards.map((card) => {
             const Icon = card.icon;
             return (

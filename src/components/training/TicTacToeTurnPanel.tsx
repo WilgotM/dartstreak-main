@@ -89,7 +89,7 @@ export default function TicTacToeTurnPanel({
   return (
     <section
       className={cn(
-        "h-full space-y-4 md:space-y-4 glass-card rounded-2xl p-4 sm:p-5 md:p-5 border border-white/10",
+        "h-full glass-card rounded-2xl p-4 sm:p-5 border border-white/10 bg-[#12121A]/90 flex flex-col gap-4",
         className,
       )}
     >
@@ -105,13 +105,13 @@ export default function TicTacToeTurnPanel({
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-2 md:gap-2">
+      <div className="grid grid-cols-3 gap-2">
         {[0, 1, 2].map((index) => {
           const throwValue = throwsThisTurn[index];
           return (
             <div
               key={index}
-              className="rounded-xl border border-white/10 bg-[#101017] h-16 md:h-16 flex flex-col items-center justify-center"
+              className="rounded-xl border border-white/10 bg-[#101017] h-16 flex flex-col items-center justify-center"
             >
               <span className="text-[11px] uppercase tracking-wide text-muted-foreground">
                 {strings.throwLabel} {index + 1}
@@ -140,91 +140,93 @@ export default function TicTacToeTurnPanel({
         </p>
       )}
 
-      <p className="text-sm text-muted-foreground">{strings.selectHint}</p>
+      <div className="flex-1 overflow-y-auto pr-1 space-y-3">
+        <p className="text-sm text-muted-foreground">{strings.selectHint}</p>
 
-      <div className="flex gap-2 md:gap-2">
-        <Button
-          type="button"
-          variant={multiplier === 1 ? "default" : "outline"}
-          onClick={() => setMultiplier(1)}
-          disabled={!canThrow}
-          className="flex-1"
-        >
-          {strings.single}
-        </Button>
-        <Button
-          type="button"
-          variant={multiplier === 2 ? "default" : "outline"}
-          onClick={() => setMultiplier(2)}
-          disabled={!canThrow}
-          className="flex-1"
-        >
-          {strings.double}
-        </Button>
-        <Button
-          type="button"
-          variant={multiplier === 3 ? "default" : "outline"}
-          onClick={() => setMultiplier(3)}
-          disabled={!canThrow}
-          className="flex-1"
-        >
-          {strings.triple}
-        </Button>
-      </div>
-
-      <div className="grid grid-cols-5 gap-2 md:gap-2">
-        {Array.from({ length: 20 }, (_, index) => index + 1).map((segment) => (
+        <div className="flex gap-2">
           <Button
-            key={segment}
             type="button"
-            variant="secondary"
-            onClick={() => addSegmentThrow(segment)}
+            variant={multiplier === 1 ? "default" : "outline"}
+            onClick={() => setMultiplier(1)}
             disabled={!canThrow}
-            className="h-11 md:h-11 text-base md:text-base font-semibold"
+            className="flex-1"
           >
-            {segment}
+            {strings.single}
           </Button>
-        ))}
-      </div>
+          <Button
+            type="button"
+            variant={multiplier === 2 ? "default" : "outline"}
+            onClick={() => setMultiplier(2)}
+            disabled={!canThrow}
+            className="flex-1"
+          >
+            {strings.double}
+          </Button>
+          <Button
+            type="button"
+            variant={multiplier === 3 ? "default" : "outline"}
+            onClick={() => setMultiplier(3)}
+            disabled={!canThrow}
+            className="flex-1"
+          >
+            {strings.triple}
+          </Button>
+        </div>
 
-      <div className="grid grid-cols-4 gap-2 md:gap-2">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={addMiss}
-          disabled={!canThrow}
-          className="border-white/20"
-        >
-          {strings.miss}
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={addOuterBull}
-          disabled={!canThrow}
-          className="border-white/20"
-        >
-          {strings.quick25}
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={addBull}
-          disabled={!canThrow}
-          className="border-white/20"
-        >
-          BULL
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onUndoThrow}
-          disabled={disabled || throwsThisTurn.length === 0}
-          className="border-white/20"
-        >
-          <Delete className="w-4 h-4 mr-1.5" />
-          {strings.undo}
-        </Button>
+        <div className="grid grid-cols-5 gap-2">
+          {Array.from({ length: 20 }, (_, index) => index + 1).map((segment) => (
+            <Button
+              key={segment}
+              type="button"
+              variant="secondary"
+              onClick={() => addSegmentThrow(segment)}
+              disabled={!canThrow}
+              className="h-10 text-sm font-semibold bg-[#15151D] hover:bg-[#1A1A25]"
+            >
+              {segment}
+            </Button>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-4 gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={addMiss}
+            disabled={!canThrow}
+            className="border-white/20"
+          >
+            {strings.miss}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={addOuterBull}
+            disabled={!canThrow}
+            className="border-white/20"
+          >
+            {strings.quick25}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={addBull}
+            disabled={!canThrow}
+            className="border-white/20"
+          >
+            BULL
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onUndoThrow}
+            disabled={disabled || throwsThisTurn.length === 0}
+            className="border-white/20"
+          >
+            <Delete className="w-4 h-4 mr-1.5" />
+            {strings.undo}
+          </Button>
+        </div>
       </div>
 
       <p className="text-sm text-muted-foreground">

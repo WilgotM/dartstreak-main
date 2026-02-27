@@ -12,7 +12,7 @@ import {
   Users,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { LandingLanguageSwitch } from "@/components/LandingLanguageSwitch";
+import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
@@ -115,7 +115,7 @@ const Navbar = () => {
             {link.label}
           </a>
         ))}
-        <LandingLanguageSwitch />
+        <LanguageSwitch />
       </div>
 
       <div

@@ -41,7 +41,7 @@ export default function TicTacToeBoard({
   strings,
 }: TicTacToeBoardProps) {
   return (
-    <div className="grid grid-cols-3 gap-3 md:gap-3.5">
+    <div className="grid grid-cols-3 gap-2.5 md:gap-3">
       {board.map((cell) => {
         const isWinningCell = winningLine.includes(cell.id);
         const isPending = pendingCellId === cell.id && !cell.owner;
@@ -59,12 +59,13 @@ export default function TicTacToeBoard({
               borderColor: ownerBorder,
             }}
             className={cn(
-              "relative rounded-2xl border p-3 md:p-3.5 min-h-40 sm:min-h-44 md:min-h-[11rem] flex flex-col justify-between transition-all",
+              "relative rounded-2xl border p-3 md:p-3.5 min-h-36 sm:min-h-40 md:min-h-[10.25rem] flex flex-col justify-between transition-all overflow-hidden",
               !owner && "bg-[#15151D] border-white/10",
-              isPending && "border-emerald-400/70 shadow-[0_0_0_1px_rgba(52,211,153,0.5)]",
-              isWinningCell && "border-amber-400/80 shadow-[0_0_0_1px_rgba(251,191,36,0.55)]",
+              isPending && "border-emerald-400/70 shadow-[0_0_0_1px_rgba(52,211,153,0.5)] bg-emerald-500/5",
+              isWinningCell && "border-amber-400/80 shadow-[0_0_0_1px_rgba(251,191,36,0.55)] bg-amber-500/10",
             )}
           >
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_10%,rgba(255,255,255,0.08),transparent_40%)] pointer-events-none" />
             <p className="text-xs md:text-xs uppercase tracking-widest text-muted-foreground">{strings.target}</p>
             <p className="text-3xl md:text-3xl font-display font-bold text-foreground">{cell.target}</p>
 

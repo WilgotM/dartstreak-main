@@ -45,6 +45,7 @@
     "close": "Close",
     "contact": "Contact",
     "delete": "Delete",
+    "language": "Language",
     "loading": "Loading...",
     "or": "or",
     "privacyPolicy": "Privacy Policy",
@@ -52,8 +53,7 @@
     "save": "Save",
     "signInToPlay": "Sign in to play",
     "termsOfService": "Terms of Service",
-    "unknown": "Unknown",
-    "language": "Language"
+    "unknown": "Unknown"
   },
   "cookie": {
     "acceptButton": "Accept analytics",
@@ -104,10 +104,31 @@
     "yourLeagues": "Your leagues"
   },
   "landing": {
+    "calculating": "Calculating",
+    "coreMechanicsTitle": "Core Mechanics",
     "createAccount": "Create Account",
     "createAccountCta": "Create an account in seconds and start playing.",
     "createFreeAccount": "Create free account",
+    "dashboard": "Dashboard",
+    "featureCurrentStreakLabel": "Current streak",
+    "featureEntryTotalLabel": "Entered total",
+    "featureLeagueRaceDesc": "Follow weekly position changes as points update throughout the week.",
+    "featureLeagueRaceTitle": "Leaderboard Moves Live",
+    "featureLiveScoreDesc": "Record your throw, then enter the score manually, e.g. 20, 14, 5.",
+    "featureLiveScoreTitle": "Video + Manual Input",
+    "featureStreakDesc": "Log your daily 9 darts and keep your streak alive every day.",
+    "featureStreakTitle": "Build Your Daily Streak",
+    "featureThrowsLoggedLabel": "Entered throws",
+    "featureVideoInputBadge": "Video + Input",
     "footer": "© 2025 DartStreak. Compete. Have fun. Be the best.",
+    "footerContact": "Contact",
+    "footerDesc": "Precision mechanics for your daily darts. A digital instrument for the modern competitor.",
+    "footerHome": "Home",
+    "footerLeagues": "Leagues",
+    "footerLegal": "Legal",
+    "footerPrivacyPolicy": "Privacy Policy",
+    "footerTermsOfService": "Terms of Service",
+    "footerTraining": "Training",
     "googleLogin": "Log in with Google",
     "heroDescription": "Join daily leagues with friends. No complication, just play.",
     "heroHighlight": "Precision.",
@@ -120,12 +141,24 @@
     "howLeaguesStep3": "Weekly Winner",
     "howLeaguesStep3Desc": "Scores are tracked automatically. Who tops the table at the end of the week?",
     "howLeaguesWorkTitle": "How Leagues Work",
+    "inProgress": "In Progress",
+    "leaderboard": "Leaderboard",
+    "leagueDetails": "League Details",
     "leaguesSubtitle": "It's never been easier",
     "leaguesTeaser": "Want to compete daily with friends? See how leagues work ↓",
     "leaguesTitle": "Running a League?",
+    "liveMatches": "Live Matches",
+    "login": "Log in",
+    "navFeatures": "Features",
+    "navLeagues": "Leagues",
+    "navPhilosophy": "Philosophy",
+    "philosophyHighlight": "We focus on: community & progression.",
+    "philosophyTitle": "Most apps focus on generic statistics.",
     "playOnline": "Play Online Match",
     "playTournament": "Join Tournament",
     "readyToCompete": "Ready to compete?",
+    "save": "Save",
+    "systemOperational": "SYSTEM OPERATIONAL",
     "tagline": "The easiest way to play darts online",
     "whyUs1Desc": "Record your daily throws with your camera. Simple, secure, and fair.",
     "whyUs1Title": "Video Verified",
@@ -133,40 +166,7 @@
     "whyUs2Title": "Beginner Friendly",
     "whyUs3Desc": "Create private leagues, track standings, and see who climbs the leaderboard.",
     "whyUs3Title": "Compete with Friends",
-    "whyUsTitle": "Why DartStreak?",
-    "coreMechanicsTitle": "Core Mechanics",
-    "featureLiveScoreTitle": "Video + Manual Input",
-    "featureLiveScoreDesc": "Record your throw, then enter the score manually, e.g. 20, 14, 5.",
-    "featureLeagueRaceTitle": "Leaderboard Moves Live",
-    "featureLeagueRaceDesc": "Follow weekly position changes as points update throughout the week.",
-    "featureStreakTitle": "Build Your Daily Streak",
-    "featureStreakDesc": "Log your daily 9 darts and keep your streak alive every day.",
-    "featureCurrentStreakLabel": "Current streak",
-    "featureThrowsLoggedLabel": "Entered throws",
-    "featureVideoInputBadge": "Video + Input",
-    "featureEntryTotalLabel": "Entered total",
-    "philosophyTitle": "Most apps focus on generic statistics.",
-    "philosophyHighlight": "We focus on: community & progression.",
-    "footerDesc": "Precision mechanics for your daily darts. A digital instrument for the modern competitor.",
-    "navFeatures": "Features",
-    "navLeagues": "Leagues",
-    "navPhilosophy": "Philosophy",
-    "dashboard": "Dashboard",
-    "login": "Log in",
-    "leagueDetails": "League Details",
-    "leaderboard": "Leaderboard",
-    "liveMatches": "Live Matches",
-    "inProgress": "In Progress",
-    "calculating": "Calculating",
-    "save": "Save",
-    "systemOperational": "SYSTEM OPERATIONAL",
-    "footerHome": "Home",
-    "footerLeagues": "Leagues",
-    "footerTraining": "Training",
-    "footerLegal": "Legal",
-    "footerPrivacyPolicy": "Privacy Policy",
-    "footerTermsOfService": "Terms of Service",
-    "footerContact": "Contact"
+    "whyUsTitle": "Why DartStreak?"
   },
   "league": {
     "alreadyRegisteredToday": "You have already registered today's throws",
@@ -181,15 +181,22 @@
     "couldNotDelete": "Could not delete the league",
     "couldNotFindLeague": "Could not find the league",
     "couldNotLeave": "Could not leave the league",
+    "countryLeagueLabel": "Country league: {{country}}",
+    "countryLeagueTitle": "{{country}} League",
     "deleteConfirmDesc": "Are you sure you want to delete \"{{name}}\"? This cannot be undone and all data will be removed.",
     "deleteConfirmTitle": "Delete league",
     "deleteLeague": "Delete league",
     "deleting": "Deleting...",
+    "endsAtLeagueTimezone": "Ends in league timezone",
+    "endsAtYourTimezone": "Ends in your local time",
     "endsOn": "End",
     "finalScore": "Final Score",
     "finished": "League Finished",
     "firstRoundStarts": "First round starts",
     "fiveMinuteWarning": "You have 5 minutes to complete once you start",
+    "globalLeagueLabel": "Global league",
+    "globalLeagueTitle": "Global League",
+    "historyView": "History",
     "invalidRounds": "Enter between 1 and 52 rounds",
     "invalidStartDate": "Choose a valid start date",
     "inviteCodeCopied": "Invite code copied!",
@@ -201,11 +208,13 @@
     "leaveConfirmTitle": "Leave league?",
     "leaving": "Leaving...",
     "newRoundEvery": "New round every",
+    "newerWeek": "Newer week",
     "nextDay": "Next day in",
     "noThrows": "No throws",
     "noThrowsYet": "No one has thrown yet this round",
     "notRegisteredToday": "You haven't registered today's throws yet",
     "of": "of",
+    "olderWeek": "Older week",
     "player": "Player",
     "previousRounds": "Previous rounds",
     "restart": "Restart",
@@ -223,18 +232,9 @@
     "todaysScore": "Today's score: {{score}} 🎯",
     "total": "Total",
     "week": "Week",
-    "winner": "Winner",
-    "you": "you",
-    "globalLeagueLabel": "Global league",
-    "globalLeagueTitle": "Global League",
-    "countryLeagueLabel": "Country league: {{country}}",
-    "countryLeagueTitle": "{{country}} League",
     "weekLabel": "Week {{week}}",
-    "endsAtLeagueTimezone": "Ends in league timezone",
-    "endsAtYourTimezone": "Ends in your local time",
-    "olderWeek": "Older week",
-    "newerWeek": "Newer week",
-    "historyView": "History"
+    "winner": "Winner",
+    "you": "you"
   },
   "legal": {
     "contact": {
@@ -249,13 +249,14 @@
     },
     "privacyPolicy": {
       "li1": "Account Data: We collect your email address and profile details (such as display name, country, country timezone, and avatar URL when available) to create your profile.",
+      "li10": "Language Preference Data: We store your selected app language in your browser local storage so the app can remember your choice across visits.",
       "li2": "Game Data: We store your throw history, statistics, and league participation data to provide core service features, including automatic placement in global and country leagues.",
       "li3": "Video Data: Some leagues may require video recording for verification. If a league requires video, clips are stored so league members can view them during the active season. For completed system leagues, historical video references are removed.",
-      "li7": "Training Data: Tic-Tac-Toe training runs locally in your browser session in this version and is not sent to our backend.",
-      "li8": "Usage Data: We use Google Analytics to understand app usage, including page views, device/browser information, and approximate location.",
       "li4": "Supabase: Used for our database, authentication, and secure data storage.",
       "li5": "Google OAuth: Optional sign-in provider for secure authentication.",
       "li6": "Supabase Storage: Used for storing throw verification videos securely.",
+      "li7": "Training Data: Tic-Tac-Toe Darts, Red Zone Survival, and Throw for the Bull run locally in your browser session in this version and are not sent to our backend.",
+      "li8": "Usage Data: We use Google Analytics to understand app usage, including page views, device/browser information, and approximate location.",
       "li9": "Google Analytics: Used for traffic and behavior analytics. We have enabled IP anonymization where supported.",
       "p1": "Last updated: February 21, 2026",
       "s1Text": "Welcome to DartStreak (\"we,\" \"our,\" or \"us\"). We respect your privacy and are committed to protecting your personal data. This privacy policy explains how we look after your personal data when you visit our application and tells you about your privacy rights.",
@@ -267,10 +268,9 @@
       "s4Title": "4. Data Deletion",
       "s5Text": "Analytics cookies are only used after you give consent in our cookie banner. You can change your choice at any time from Cookie Settings in the app.",
       "s5Title": "5. Cookies and Consent",
-      "title": "Privacy Policy",
-      "s6Title": "6. System Leagues and Country Data",
       "s6Text": "When you set your country, we may automatically place you in a global league and a country league. System leagues use fixed league timezones for weekly seasons.",
-      "li10": "Language Preference Data: We store your selected app language in your browser local storage so the app can remember your choice across visits."
+      "s6Title": "6. System Leagues and Country Data",
+      "title": "Privacy Policy"
     },
     "terms": {
       "li1": "Cheat, manipulate scores, or use automated bots.",
@@ -399,132 +399,8 @@
     "matches": "Matches",
     "offline": "Offline",
     "profile": "Profile",
-    "training": "Training",
-    "tournaments": "Tournaments"
-  },
-  "trainingHub": {
-    "kicker": "Pick your training mode",
-    "title": "Training",
-    "subtitle": "Choose a mode based on what you want to practice right now.",
-    "open": "Open mode",
-    "cards": {
-      "ticTacToe": {
-        "badge": "Tactical duel",
-        "title": "Tic-Tac-Toe Darts",
-        "description": "Two-player target control where each round is decided by board management and checkout precision."
-      }
-    }
-  },
-  "trainingTicTacToe": {
-    "actions": {
-      "changeTeams": "Change teams",
-      "enterFullscreen": "Fullscreen",
-      "exitFullscreen": "Exit fullscreen",
-      "newBoard": "New board",
-      "nextRound": "Start next round",
-      "resetMatch": "Reset match"
-    },
-    "board": {
-      "easiest": "Easiest",
-      "fastest": "Fastest",
-      "guideTitle": "Checkout guide",
-      "lockNow": "On target now - lock this square.",
-      "noFinish": "No finish possible this turn.",
-      "open": "Open",
-      "pending": "Pending",
-      "playerPrefix": "P",
-      "target": "Target"
-    },
-    "difficulty": {
-      "advanced_scores": {
-        "description": "Random scores between 61-120.",
-        "label": "Scores (Advanced 61-120)"
-      },
-      "beginner_numbers": {
-        "description": "Random numbers 1-20.",
-        "label": "Numbers (Beginner 1-20)"
-      },
-      "easy_scores": {
-        "description": "Random scores between 21-60.",
-        "label": "Scores (Easy 21-60)"
-      },
-      "expert_checkouts": {
-        "description": "Random checkouts between 41-80. Finish on a double.",
-        "label": "Checkouts (Expert 41-80)"
-      },
-      "intermediate_doubles": {
-        "description": "Random doubles 1-20 and BULL.",
-        "label": "Doubles (Intermediate 1-20)"
-      },
-      "pro_checkouts": {
-        "description": "Random checkouts between 81-120. Finish on a double.",
-        "label": "Checkouts (Pro 81-120)"
-      },
-      "pro_trebles": {
-        "description": "Random trebles 1-20.",
-        "label": "Trebles (Pro 1-20)"
-      }
-    },
-    "help": {
-      "button": "New here? Learn the game",
-      "subtitle": "Quick rules and difficulty overview.",
-      "title": "How Tic-Tac-Toe Darts works"
-    },
-    "levels": {
-      "title": "The different difficult levels"
-    },
-    "players": {
-      "playerA": "Player A",
-      "playerB": "Player B"
-    },
-    "setup": {
-      "colorsMustDiffer": "Teams must use different colors.",
-      "firstTo": "First to",
-      "legsToWin": "Legs to win",
-      "matchDesc": "Competitive match",
-      "namesRequired": "Both team names are required.",
-      "practiceDesc": "Play for fun",
-      "start": "Start game",
-      "subtitle": "Choose names and colors for both teams before starting.",
-      "teamA": "Team A",
-      "teamB": "Team B",
-      "title": "Set up teams",
-      "unlimited": "Unlimited"
-    },
-    "result": {
-      "draw": "Round ended in a draw",
-      "matchWinner": "Match Winner!",
-      "matchWinnerSubtitle": "{{player}} wins the match {{score}}!",
-      "playAgain": "Play Again",
-      "subtitle": "Tap below to continue with a new board.",
-      "winner": "Player {{player}} wins the round!"
-    },
-    "rules": {
-      "r1": "Each turn has 3 darts.",
-      "r2": "Register each dart with Single/Double/Triple and board numbers 1-20.",
-      "r3": "If your running total no longer matches an open square, the queued claim is lost.",
-      "r4": "Lock the queued square at any time, or it auto-locks after throw 3 if still valid.",
-      "title": "How it works"
-    },
-    "status": {
-      "currentTurn": "Current turn: {{player}}",
-      "firstTo": "First to {{legs}}"
-    },
-    "title": "Tic-Tac-Toe Darts",
-    "turn": {
-      "activePlayer": "Active player",
-      "double": "Double",
-      "quick25": "25",
-      "selectHint": "Register each dart below. Use MISS if you don't score.",
-      "lockSquare": "Lock square",
-      "miss": "MISS",
-      "noPossibleSquares": "No possible squares left - turn passes",
-      "single": "Single",
-      "total": "Turn total",
-      "throw": "Throw",
-      "triple": "Triple",
-      "undo": "Undo"
-    }
+    "tournaments": "Tournaments",
+    "training": "Training"
   },
   "offline": {
     "activeMatches": "Active Offline Matches",
@@ -559,6 +435,11 @@
     "bestDay": "Best day",
     "canChangeIn": "You can change this in {{days}} days",
     "cannotChangeYet": "Cannot change for another {{days}} days",
+    "completeProfileDesc": "Choose which country you live in to join global and country leagues.",
+    "completeProfileTitle": "Complete your profile",
+    "country": "Country",
+    "countryRequired": "You must select a country",
+    "countryUpdated": "Country updated!",
     "daysPlayed": "Days played",
     "deleteAccount": "Delete Account",
     "deleteAccountConfirmDesc": "This action is permanent and cannot be undone. All your data including leagues, throws, statistics, and videos will be permanently deleted.",
@@ -572,6 +453,7 @@
     "lifetimePoints": "Lifetime points",
     "memberSince": "Member since",
     "notFound": "Profile not found",
+    "selectCountry": "Select country",
     "settings": "Settings",
     "summary": "Summary",
     "timezone": "Timezone",
@@ -582,13 +464,7 @@
     "unnamed": "Unnamed",
     "updateError": "Could not update",
     "username": "Username",
-    "usernameUpdated": "Username updated!",
-    "country": "Country",
-    "selectCountry": "Select country",
-    "countryRequired": "You must select a country",
-    "countryUpdated": "Country updated!",
-    "completeProfileTitle": "Complete your profile",
-    "completeProfileDesc": "Choose which country you live in to join global and country leagues."
+    "usernameUpdated": "Username updated!"
   },
   "pwa": {
     "alreadyInstalled": "Already installed?",
@@ -764,6 +640,220 @@
     "walkoverWin": "You won by walkover",
     "youDidntShow": "You didn't join in time",
     "yourMatch": "Your match"
+  },
+  "trainingHub": {
+    "cards": {
+      "redZone": {
+        "badge": "Elimination mode",
+        "description": "Multiplayer survival drill: one dart each, avoid the red sectors as danger expands around the board.",
+        "title": "Red Zone Survival"
+      },
+      "ticTacToe": {
+        "badge": "Tactical duel",
+        "description": "Two-player target control where each round is decided by board management and checkout precision.",
+        "title": "Tic-Tac-Toe Darts"
+      }
+    },
+    "kicker": "Pick your training mode",
+    "open": "Open mode",
+    "subtitle": "Choose a mode based on what you want to practice right now.",
+    "title": "Training"
+  },
+  "trainingRedZone": {
+    "actions": {
+      "changePlayers": "Change players",
+      "newGame": "New game",
+      "undo": "Undo"
+    },
+    "history": {
+      "allSafe": "Everyone survived this round.",
+      "eliminated": "Eliminated",
+      "none": "No rounds completed yet.",
+      "round": "Round {{round}}",
+      "title": "Round history"
+    },
+    "players": {
+      "alive": "Still in",
+      "eliminated": "Eliminated",
+      "eliminatedRound": "Out in round {{round}}"
+    },
+    "result": {
+      "draw": "All players were eliminated in the same round.",
+      "playAgain": "Play again",
+      "winner": "{{player}} wins!"
+    },
+    "rules": {
+      "r1": "Round 1 starts with only 20 marked red.",
+      "r2": "Each remaining player throws one dart per round and registers where it landed.",
+      "r3": "If you hit a red-marked number (single/double/triple), you are eliminated immediately.",
+      "r4": "After each full round, red expands one step on both sides: 20 -> 5/1 -> 12/18 -> and so on.",
+      "title": "How it works"
+    },
+    "setup": {
+      "addPlayer": "Add player",
+      "duplicateNames": "Player names must be unique.",
+      "minPlayers": "At least 2 players are required.",
+      "namesRequired": "All players need a name.",
+      "playerDefault": "Player {{index}}",
+      "removePlayer": "Remove",
+      "start": "Start game",
+      "subtitle": "Add everyone who will play, choose names and colors, then start the game.",
+      "title": "Set up players"
+    },
+    "status": {
+      "alivePlayers": "Players still alive: {{count}}",
+      "currentThrow": "{{player}} throws now",
+      "dangerNumbers": "Red danger numbers",
+      "nextExpansion": "Next expansion",
+      "round": "Round {{round}}"
+    },
+    "subtitle": "Multiplayer survival mode: one dart each per round, and you are out if your dart lands in the red danger sectors.",
+    "throw": {
+      "bull": "BULL",
+      "danger": "Red Zone / Miss",
+      "miss": "MISS",
+      "prompt": "Register the section that was hit. MISS and BULL are always safe.",
+      "promptSimple": "Register if you hit a safe zone or if you hit the red zone/missed.",
+      "safe": "Safe Hit"
+    },
+    "title": "Red Zone Survival",
+    "bullDecider": {
+      "title": "Throw for the Bull",
+      "subtitle": "Before game start, all players throw one dart. Closest to bull gets first throw order.",
+      "registered": "Registered throws: {{count}} / {{total}}",
+      "left": "Throws left: {{count}}",
+      "currentThrow": "{{player}} throws now",
+      "distance": "{{distance}} mm from bull",
+      "tie": "Tie for first between {{players}}. Re-throw to decide order.",
+      "winner": "{{player}} is closest to bull and starts.",
+      "rethrow": "Re-throw",
+      "cancel": "Cancel",
+      "startGame": "Start game"
+    }
+  },
+  "trainingTicTacToe": {
+    "actions": {
+      "changeTeams": "Change teams",
+      "enterFullscreen": "Fullscreen",
+      "exitFullscreen": "Exit fullscreen",
+      "newBoard": "New board",
+      "nextRound": "Start next round",
+      "resetMatch": "Reset match"
+    },
+    "board": {
+      "easiest": "Easiest",
+      "fastest": "Fastest",
+      "guideTitle": "Checkout guide",
+      "lockNow": "On target now - lock this square.",
+      "noFinish": "No finish possible this turn.",
+      "open": "Open",
+      "pending": "Pending",
+      "playerPrefix": "P",
+      "target": "Target"
+    },
+    "difficulty": {
+      "advanced_scores": {
+        "description": "Random scores between 61-120.",
+        "label": "Scores (Advanced 61-120)"
+      },
+      "beginner_numbers": {
+        "description": "Random numbers 1-20.",
+        "label": "Numbers (Beginner 1-20)"
+      },
+      "easy_scores": {
+        "description": "Random scores between 21-60.",
+        "label": "Scores (Easy 21-60)"
+      },
+      "expert_checkouts": {
+        "description": "Random checkouts between 41-80. Finish on a double.",
+        "label": "Checkouts (Expert 41-80)"
+      },
+      "intermediate_doubles": {
+        "description": "Random doubles 1-20 and BULL.",
+        "label": "Doubles (Intermediate 1-20)"
+      },
+      "pro_checkouts": {
+        "description": "Random checkouts between 81-120. Finish on a double.",
+        "label": "Checkouts (Pro 81-120)"
+      },
+      "pro_trebles": {
+        "description": "Random trebles 1-20.",
+        "label": "Trebles (Pro 1-20)"
+      }
+    },
+    "help": {
+      "button": "New here? Learn the game",
+      "subtitle": "Quick rules and difficulty overview.",
+      "title": "How Tic-Tac-Toe Darts works"
+    },
+    "levels": {
+      "title": "The different difficult levels"
+    },
+    "players": {
+      "playerA": "Player A",
+      "playerB": "Player B"
+    },
+    "result": {
+      "draw": "Round ended in a draw",
+      "matchWinner": "Match Winner!",
+      "matchWinnerSubtitle": "{{player}} wins the match {{score}}!",
+      "playAgain": "Play Again",
+      "subtitle": "Tap below to continue with a new board.",
+      "winner": "Player {{player}} wins the round!"
+    },
+    "rules": {
+      "r1": "Each turn has 3 darts.",
+      "r2": "Register each dart with Single/Double/Triple and board numbers 1-20.",
+      "r3": "If your running total no longer matches an open square, the queued claim is lost.",
+      "r4": "Lock the queued square at any time, or it auto-locks after throw 3 if still valid.",
+      "title": "How it works"
+    },
+    "setup": {
+      "colorsMustDiffer": "Teams must use different colors.",
+      "firstTo": "First to",
+      "legsToWin": "Legs to win",
+      "matchDesc": "Competitive match",
+      "namesRequired": "Both team names are required.",
+      "practiceDesc": "Play for fun",
+      "start": "Start game",
+      "subtitle": "Choose names and colors for both teams before starting.",
+      "teamA": "Team A",
+      "teamB": "Team B",
+      "title": "Set up teams",
+      "unlimited": "Unlimited"
+    },
+    "status": {
+      "currentTurn": "Current turn: {{player}}",
+      "firstTo": "First to {{legs}}"
+    },
+    "title": "Tic-Tac-Toe Darts",
+    "turn": {
+      "activePlayer": "Active player",
+      "double": "Double",
+      "lockSquare": "Lock square",
+      "miss": "MISS",
+      "noPossibleSquares": "No possible squares left - turn passes",
+      "quick25": "25",
+      "selectHint": "Register each dart below. Use MISS if you don't score.",
+      "single": "Single",
+      "throw": "Throw",
+      "total": "Turn total",
+      "triple": "Triple",
+      "undo": "Undo"
+    },
+    "bullDecider": {
+      "title": "Throw for the Bull",
+      "subtitle": "Before match start, each team throws one dart. Closest to bull starts.",
+      "registered": "Registered throws: {{count}} / {{total}}",
+      "left": "Throws left: {{count}}",
+      "currentThrow": "{{player}} throws now",
+      "distance": "{{distance}} mm from bull",
+      "tie": "Tie for first between {{players}}. Re-throw to decide starter.",
+      "winner": "{{player}} starts the match.",
+      "rethrow": "Re-throw",
+      "cancel": "Cancel",
+      "start": "Start match"
+    }
   },
   "videoDialog": {
     "couldNotLoadVideo": "Could not load the video. It may have been deleted.",

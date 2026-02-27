@@ -45,6 +45,7 @@
     "close": "Stäng",
     "contact": "Kontakt",
     "delete": "Radera",
+    "language": "Språk",
     "loading": "Laddar...",
     "or": "eller",
     "privacyPolicy": "Integritetspolicy",
@@ -52,8 +53,7 @@
     "save": "Spara",
     "signInToPlay": "Logga in för att spela",
     "termsOfService": "Användarvillkor",
-    "unknown": "Okänd",
-    "language": "Språk"
+    "unknown": "Okänd"
   },
   "cookie": {
     "acceptButton": "Acceptera analys",
@@ -104,10 +104,31 @@
     "yourLeagues": "Dina ligor"
   },
   "landing": {
+    "calculating": "Beräknar",
+    "coreMechanicsTitle": "Grundfunktioner",
     "createAccount": "Skapa konto",
     "createAccountCta": "Skapa ett konto på sekunder och börja spela.",
     "createFreeAccount": "Skapa gratis konto",
+    "dashboard": "Dashboard",
+    "featureCurrentStreakLabel": "Nuvarande streak",
+    "featureEntryTotalLabel": "Inmatad summa",
+    "featureLeagueRaceDesc": "Följ hur placeringar ändras när veckans poäng uppdateras.",
+    "featureLeagueRaceTitle": "Topplistan rör sig live",
+    "featureLiveScoreDesc": "Filma kastet och mata sedan in poängen, t.ex. 20, 14, 5.",
+    "featureLiveScoreTitle": "Video + manuell inmatning",
+    "featureStreakDesc": "Registrera dina dagliga 9 pilar och håll streaken levande.",
+    "featureStreakTitle": "Bygg streak dag för dag",
+    "featureThrowsLoggedLabel": "Inmatade kast",
+    "featureVideoInputBadge": "Video + Input",
     "footer": "© 2025 DartStreak. Tävla. Ha kul. Bli bäst.",
+    "footerContact": "Kontakt",
+    "footerDesc": "Precisionsmekanik för dina dagliga kast. Ett digitalt instrument för den moderna tävlaren.",
+    "footerHome": "Hem",
+    "footerLeagues": "Ligor",
+    "footerLegal": "Juridik",
+    "footerPrivacyPolicy": "Integritetspolicy",
+    "footerTermsOfService": "Användarvillkor",
+    "footerTraining": "Träning",
     "googleLogin": "Logga in med Google",
     "heroDescription": "Gå med i dagliga ligor med vänner. Inget krångel, bara spela.",
     "heroHighlight": "Precision.",
@@ -120,12 +141,24 @@
     "howLeaguesStep3": "Veckovinnare",
     "howLeaguesStep3Desc": "Poäng räknas automatiskt. Vem toppar tabellen i slutet av veckan?",
     "howLeaguesWorkTitle": "Så funkar ligor",
+    "inProgress": "Pågår",
+    "leaderboard": "Topplista",
+    "leagueDetails": "Ligadetaljer",
     "leaguesSubtitle": "Det har aldrig varit enklare",
     "leaguesTeaser": "Vill du tävla dagligen med vänner? Se hur ligor funkar ↓",
     "leaguesTitle": "Sugen på liga?",
+    "liveMatches": "Livermatcher",
+    "login": "Logga in",
+    "navFeatures": "Funktioner",
+    "navLeagues": "Ligor",
+    "navPhilosophy": "Filosofi",
+    "philosophyHighlight": "Vi fokuserar på: community & progression.",
+    "philosophyTitle": "Andra appar fokuserar på ytlig statistik.",
     "playOnline": "Spela onlinematch",
     "playTournament": "Gå med i turnering",
     "readyToCompete": "Redo att tävla?",
+    "save": "Spara",
+    "systemOperational": "SYSTEM AKTIVT",
     "tagline": "Det enklaste sättet att spela dart online",
     "whyUs1Desc": "Spela in dina dagliga kast med kameran. Enkelt, säkert och rättvist.",
     "whyUs1Title": "Videoverifiering",
@@ -133,40 +166,7 @@
     "whyUs2Title": "För nybörjare",
     "whyUs3Desc": "Skapa privata ligor, följ tabellen och se vem som klättrar på topplistan.",
     "whyUs3Title": "Tävla med vänner",
-    "whyUsTitle": "Varför DartStreak?",
-    "coreMechanicsTitle": "Grundfunktioner",
-    "featureLiveScoreTitle": "Video + manuell inmatning",
-    "featureLiveScoreDesc": "Filma kastet och mata sedan in poängen, t.ex. 20, 14, 5.",
-    "featureLeagueRaceTitle": "Topplistan rör sig live",
-    "featureLeagueRaceDesc": "Följ hur placeringar ändras när veckans poäng uppdateras.",
-    "featureStreakTitle": "Bygg streak dag för dag",
-    "featureStreakDesc": "Registrera dina dagliga 9 pilar och håll streaken levande.",
-    "featureCurrentStreakLabel": "Nuvarande streak",
-    "featureThrowsLoggedLabel": "Inmatade kast",
-    "featureVideoInputBadge": "Video + Input",
-    "featureEntryTotalLabel": "Inmatad summa",
-    "philosophyTitle": "Andra appar fokuserar på ytlig statistik.",
-    "philosophyHighlight": "Vi fokuserar på: community & progression.",
-    "footerDesc": "Precisionsmekanik för dina dagliga kast. Ett digitalt instrument för den moderna tävlaren.",
-    "navFeatures": "Funktioner",
-    "navLeagues": "Ligor",
-    "navPhilosophy": "Filosofi",
-    "dashboard": "Dashboard",
-    "login": "Logga in",
-    "leagueDetails": "Ligadetaljer",
-    "leaderboard": "Topplista",
-    "liveMatches": "Livermatcher",
-    "inProgress": "Pågår",
-    "calculating": "Beräknar",
-    "save": "Spara",
-    "systemOperational": "SYSTEM AKTIVT",
-    "footerHome": "Hem",
-    "footerLeagues": "Ligor",
-    "footerTraining": "Träning",
-    "footerLegal": "Juridik",
-    "footerPrivacyPolicy": "Integritetspolicy",
-    "footerTermsOfService": "Användarvillkor",
-    "footerContact": "Kontakt"
+    "whyUsTitle": "Varför DartStreak?"
   },
   "league": {
     "alreadyRegisteredToday": "Du har redan registrerat dagens kast",
@@ -181,15 +181,22 @@
     "couldNotDelete": "Kunde inte radera ligan",
     "couldNotFindLeague": "Kunde inte hitta ligan",
     "couldNotLeave": "Kunde inte lämna ligan",
+    "countryLeagueLabel": "Landsliga: {{country}}",
+    "countryLeagueTitle": "{{country}}ligan",
     "deleteConfirmDesc": "Är du säker på att du vill radera \"{{name}}\"? Detta går inte att ångra och all data kommer tas bort.",
     "deleteConfirmTitle": "Radera liga",
     "deleteLeague": "Radera liga",
     "deleting": "Raderar...",
+    "endsAtLeagueTimezone": "Slutar i ligans tidszon",
+    "endsAtYourTimezone": "Slutar i din lokala tid",
     "endsOn": "Slut",
     "finalScore": "Slutpoäng",
     "finished": "Ligan är avslutad",
     "firstRoundStarts": "Första omgången börjar",
     "fiveMinuteWarning": "Du har 5 minuter på dig att slutföra när du startar",
+    "globalLeagueLabel": "Världsliga",
+    "globalLeagueTitle": "Världsligan",
+    "historyView": "Historik",
     "invalidRounds": "Ange mellan 1 och 52 omgångar",
     "invalidStartDate": "Välj ett giltigt startdatum",
     "inviteCodeCopied": "Inbjudningskod kopierad!",
@@ -201,11 +208,13 @@
     "leaveConfirmTitle": "Lämna liga?",
     "leaving": "Lämnar...",
     "newRoundEvery": "Ny omgång varje",
+    "newerWeek": "Nyare vecka",
     "nextDay": "Nästa dag om",
     "noThrows": "Inga kast",
     "noThrowsYet": "Ingen har kastat ännu denna omgång",
     "notRegisteredToday": "Du har inte registrerat dagens kast ännu",
     "of": "av",
+    "olderWeek": "Äldre vecka",
     "player": "Spelare",
     "previousRounds": "Tidigare omgångar",
     "restart": "Starta om",
@@ -223,18 +232,9 @@
     "todaysScore": "Dagens poäng: {{score}} 🎯",
     "total": "Totalt",
     "week": "Omgång",
-    "winner": "Vinnare",
-    "you": "du",
-    "globalLeagueLabel": "Världsliga",
-    "globalLeagueTitle": "Världsligan",
-    "countryLeagueLabel": "Landsliga: {{country}}",
-    "countryLeagueTitle": "{{country}}ligan",
     "weekLabel": "Vecka {{week}}",
-    "endsAtLeagueTimezone": "Slutar i ligans tidszon",
-    "endsAtYourTimezone": "Slutar i din lokala tid",
-    "olderWeek": "Äldre vecka",
-    "newerWeek": "Nyare vecka",
-    "historyView": "Historik"
+    "winner": "Vinnare",
+    "you": "du"
   },
   "legal": {
     "contact": {
@@ -249,13 +249,14 @@
     },
     "privacyPolicy": {
       "li1": "Kontodata: Vi samlar in din e-postadress och profiluppgifter (som användarnamn, land, landets tidszon och avatar-URL när den finns) för att skapa din profil.",
+      "li10": "Språkpreferensdata: Vi sparar ditt valda appspråk i webbläsarens lokala lagring så att appen kan komma ihåg ditt val mellan besök.",
       "li2": "Speldata: Vi lagrar din kasthistorik, statistik och ligadeltagande för att leverera tjänstens kärnfunktioner, inklusive automatisk placering i global liga och landsliga.",
       "li3": "Videodata: Vissa ligor kräver videoinspelning för verifiering. Om en liga kräver video lagras klippen så att ligamedlemmar kan se dem under aktiv säsong. För avslutade systemligor tas videoreferenser bort från historiken.",
-      "li7": "Träningsdata: Tic-Tac-Toe-träningen körs lokalt i din webbläsarsession i denna version och skickas inte till vår backend.",
-      "li8": "Användningsdata: Vi använder Google Analytics för att förstå hur appen används, inklusive sidvisningar, enhets-/webbläsarinformation och ungefärlig plats.",
       "li4": "Supabase: Används för vår databas, inloggning och säker datalagring.",
       "li5": "Google OAuth: Valfri inloggningsmetod för säker autentisering.",
       "li6": "Supabase Storage: Används för att lagra videoverifieringar säkert.",
+      "li7": "Träningsdata: Tic-Tac-Toe Darts, Red Zone Survival och Throw for the Bull körs lokalt i din webbläsarsession i denna version och skickas inte till vår backend.",
+      "li8": "Användningsdata: Vi använder Google Analytics för att förstå hur appen används, inklusive sidvisningar, enhets-/webbläsarinformation och ungefärlig plats.",
       "li9": "Google Analytics: Används för trafik- och beteendeanalys. Vi har aktiverat IP-anonymisering där det stöds.",
       "p1": "Senast uppdaterad: 21 februari 2026",
       "s1Text": "Välkommen till DartStreak (\"vi\", \"vår\" eller \"oss\"). Vi värnar om din integritet och är engagerade i att skydda dina personuppgifter. Denna integritetspolicy förklarar hur vi behandlar dina personuppgifter när du besöker vår applikation och informerar dig om dina rättigheter.",
@@ -267,10 +268,9 @@
       "s4Title": "4. Radering av data",
       "s5Text": "Analyscookies används bara efter att du gett samtycke i vår cookiebanner. Du kan ändra ditt val när som helst via Cookieinställningar i appen.",
       "s5Title": "5. Cookies och samtycke",
-      "title": "Integritetspolicy",
-      "s6Title": "6. Systemligor och landdata",
       "s6Text": "När du väljer land kan vi automatiskt placera dig i en global liga och en liga för ditt land. Systemligor använder fasta tidszoner per liga för veckosäsonger.",
-      "li10": "Språkpreferensdata: Vi sparar ditt valda appspråk i webbläsarens lokala lagring så att appen kan komma ihåg ditt val mellan besök."
+      "s6Title": "6. Systemligor och landdata",
+      "title": "Integritetspolicy"
     },
     "terms": {
       "li1": "Fuska, manipulera poäng eller använda automatiserade bottar.",
@@ -399,132 +399,8 @@
     "matches": "Matcher",
     "offline": "Offline",
     "profile": "Profil",
-    "training": "Träning",
-    "tournaments": "Turneringar"
-  },
-  "trainingHub": {
-    "kicker": "Välj träningsläge",
-    "title": "Träning",
-    "subtitle": "Välj det läge som passar passet ni vill köra just nu.",
-    "open": "Öppna läge",
-    "cards": {
-      "ticTacToe": {
-        "badge": "Taktisk duell",
-        "title": "Tic-Tac-Toe Darts",
-        "description": "Tvåspelarläge där ni låser rutor med smart boardkontroll och exakt checkout-spel."
-      }
-    }
-  },
-  "trainingTicTacToe": {
-    "actions": {
-      "changeTeams": "Byt lag",
-      "enterFullscreen": "Helskärm",
-      "exitFullscreen": "Avsluta helskärm",
-      "newBoard": "Nytt bräde",
-      "nextRound": "Starta nästa runda",
-      "resetMatch": "Återställ match"
-    },
-    "board": {
-      "easiest": "Enklast",
-      "fastest": "Snabbast",
-      "guideTitle": "Checkout-guide",
-      "lockNow": "Rätt totalsumma nu - säkra rutan.",
-      "noFinish": "Ingen möjlig finish denna tur.",
-      "open": "Ledig",
-      "pending": "Väntar",
-      "playerPrefix": "S",
-      "target": "Mål"
-    },
-    "difficulty": {
-      "advanced_scores": {
-        "description": "Slumpade poäng mellan 61-120.",
-        "label": "Poäng (Avancerad 61-120)"
-      },
-      "beginner_numbers": {
-        "description": "Slumpade nummer 1-20.",
-        "label": "Nummer (Nybörjare 1-20)"
-      },
-      "easy_scores": {
-        "description": "Slumpade poäng mellan 21-60.",
-        "label": "Poäng (Enkel 21-60)"
-      },
-      "expert_checkouts": {
-        "description": "Slumpade checkouts mellan 41-80. Avsluta på dubbel.",
-        "label": "Checkouts (Expert 41-80)"
-      },
-      "intermediate_doubles": {
-        "description": "Slumpade dubblar 1-20 och BULL.",
-        "label": "Dubblar (Medel 1-20)"
-      },
-      "pro_checkouts": {
-        "description": "Slumpade checkouts mellan 81-120. Avsluta på dubbel.",
-        "label": "Checkouts (Pro 81-120)"
-      },
-      "pro_trebles": {
-        "description": "Slumpade tripplar 1-20.",
-        "label": "Tripplar (Pro 1-20)"
-      }
-    },
-    "help": {
-      "button": "Ny här? Lär dig spelet",
-      "subtitle": "Snabba regler och översikt av svårighetsgrader.",
-      "title": "Så fungerar Tic-Tac-Toe Darts"
-    },
-    "levels": {
-      "title": "De olika svårighetsnivåerna"
-    },
-    "players": {
-      "playerA": "Spelare A",
-      "playerB": "Spelare B"
-    },
-    "setup": {
-      "colorsMustDiffer": "Lagen måste ha olika färger.",
-      "firstTo": "Först till",
-      "legsToWin": "Legs för att vinna",
-      "matchDesc": "Tävlingsmatch",
-      "namesRequired": "Båda lagens namn måste fyllas i.",
-      "practiceDesc": "Spela för skoj",
-      "start": "Starta spel",
-      "subtitle": "Välj namn och färg för båda lagen innan ni börjar.",
-      "teamA": "Lag A",
-      "teamB": "Lag B",
-      "title": "Ställ in lag",
-      "unlimited": "Obegränsat"
-    },
-    "result": {
-      "draw": "Rundan slutade oavgjort",
-      "matchWinner": "Matchvinnare!",
-      "matchWinnerSubtitle": "{{player}} vinner matchen {{score}}!",
-      "playAgain": "Spela Igen",
-      "subtitle": "Tryck nedan för att fortsätta med ett nytt bräde.",
-      "winner": "Spelare {{player}} vann rundan!"
-    },
-    "rules": {
-      "r1": "Varje tur består av 3 pilar.",
-      "r2": "Registrera varje kast med Single/Double/Triple och siffrorna 1-20.",
-      "r3": "Om din löpande totalsumma inte längre matchar en ledig ruta förloras den väntande rutan.",
-      "r4": "Lås rutan när som helst, annars låses den automatiskt efter pil 3 om den fortfarande är giltig.",
-      "title": "Så fungerar det"
-    },
-    "status": {
-      "currentTurn": "Aktiv tur: {{player}}",
-      "firstTo": "Först till {{legs}}"
-    },
-    "title": "Tic-Tac-Toe Darts",
-    "turn": {
-      "activePlayer": "Aktiv spelare",
-      "double": "Dubbel",
-      "quick25": "25",
-      "selectHint": "Registrera varje kast nedan. Använd MISS om du bommar.",
-      "lockSquare": "Säkra ruta",
-      "miss": "MISS",
-      "noPossibleSquares": "Inga möjliga rutor kvar - turen går över",
-      "single": "Single",
-      "total": "Turens total",
-      "throw": "Pil",
-      "triple": "Trippel",
-      "undo": "Ångra"
-    }
+    "tournaments": "Turneringar",
+    "training": "Träning"
   },
   "offline": {
     "activeMatches": "Aktiva Offline-matcher",
@@ -559,6 +435,11 @@
     "bestDay": "Bästa dag",
     "canChangeIn": "Du kan ändra detta om {{days}} dagar",
     "cannotChangeYet": "Kan inte ändras på {{days}} dagar till",
+    "completeProfileDesc": "Välj vilket land du bor i för att kunna spela i globala och nationella ligor.",
+    "completeProfileTitle": "Komplettera din profil",
+    "country": "Land",
+    "countryRequired": "Du måste välja land",
+    "countryUpdated": "Land uppdaterat!",
     "daysPlayed": "Dagar spelade",
     "deleteAccount": "Radera konto",
     "deleteAccountConfirmDesc": "Denna åtgärd är permanent och kan inte ångras. All din data inklusive ligor, kast, statistik och videor kommer att raderas permanent.",
@@ -572,6 +453,7 @@
     "lifetimePoints": "Livstidspoäng",
     "memberSince": "Medlem sedan",
     "notFound": "Profilen hittades inte",
+    "selectCountry": "Välj land",
     "settings": "Inställningar",
     "summary": "Sammanfattning",
     "timezone": "Tidszon",
@@ -582,13 +464,7 @@
     "unnamed": "Namnlös",
     "updateError": "Kunde inte uppdatera",
     "username": "Användarnamn",
-    "usernameUpdated": "Användarnamn uppdaterat!",
-    "country": "Land",
-    "selectCountry": "Välj land",
-    "countryRequired": "Du måste välja land",
-    "countryUpdated": "Land uppdaterat!",
-    "completeProfileTitle": "Komplettera din profil",
-    "completeProfileDesc": "Välj vilket land du bor i för att kunna spela i globala och nationella ligor."
+    "usernameUpdated": "Användarnamn uppdaterat!"
   },
   "pwa": {
     "alreadyInstalled": "Redan installerad?",
@@ -764,6 +640,220 @@
     "walkoverWin": "Du vann på walkover",
     "youDidntShow": "Du gick inte med i tid",
     "yourMatch": "Din match"
+  },
+  "trainingHub": {
+    "cards": {
+      "redZone": {
+        "badge": "Eliminering",
+        "description": "Flerspelarövning där ni kastar en pil var och överlever genom att undvika de rödmarkerade sektorerna som expanderar runt tavlan.",
+        "title": "Red Zone Survival"
+      },
+      "ticTacToe": {
+        "badge": "Taktisk duell",
+        "description": "Tvåspelarläge där ni låser rutor med smart boardkontroll och exakt checkout-spel.",
+        "title": "Tic-Tac-Toe Darts"
+      }
+    },
+    "kicker": "Välj träningsläge",
+    "open": "Öppna läge",
+    "subtitle": "Välj det läge som passar passet ni vill köra just nu.",
+    "title": "Träning"
+  },
+  "trainingRedZone": {
+    "actions": {
+      "changePlayers": "Byt spelare",
+      "newGame": "Nytt spel",
+      "undo": "Ångra"
+    },
+    "history": {
+      "allSafe": "Alla överlevde rundan.",
+      "eliminated": "Utslagna",
+      "none": "Inga rundor avslutade ännu.",
+      "round": "Runda {{round}}",
+      "title": "Rundhistorik"
+    },
+    "players": {
+      "alive": "Kvar i spelet",
+      "eliminated": "Utslagen",
+      "eliminatedRound": "Ute i runda {{round}}"
+    },
+    "result": {
+      "draw": "Alla spelare slogs ut i samma runda.",
+      "playAgain": "Spela igen",
+      "winner": "{{player}} vinner!"
+    },
+    "rules": {
+      "r1": "Runda 1 börjar med att bara 20 är rödmarkerad.",
+      "r2": "Varje kvarvarande spelare kastar en pil per runda och registrerar träffen.",
+      "r3": "Träffar du ett rödmarkerat nummer (single/double/triple) åker du ut direkt.",
+      "r4": "Efter varje full runda expanderar rött ett steg åt båda håll: 20 -> 5/1 -> 12/18 -> och så vidare.",
+      "title": "Så fungerar det"
+    },
+    "setup": {
+      "addPlayer": "Lägg till spelare",
+      "duplicateNames": "Spelarnamn måste vara unika.",
+      "minPlayers": "Minst 2 spelare krävs.",
+      "namesRequired": "Alla spelare måste ha ett namn.",
+      "playerDefault": "Spelare {{index}}",
+      "removePlayer": "Ta bort",
+      "start": "Starta spel",
+      "subtitle": "Lägg till alla som ska spela, välj namn och färger, och starta sedan spelet.",
+      "title": "Ställ in spelare"
+    },
+    "status": {
+      "alivePlayers": "Spelare kvar: {{count}}",
+      "currentThrow": "{{player}} kastar nu",
+      "dangerNumbers": "Röda risknummer",
+      "nextExpansion": "Nästa expansion",
+      "round": "Runda {{round}}"
+    },
+    "subtitle": "Flerspelarläge där alla kastar en pil per runda, och du åker ut om pilen landar i en röd risksektor.",
+    "throw": {
+      "bull": "BULL",
+      "danger": "Röd Zon / Miss",
+      "miss": "MISS",
+      "prompt": "Registrera vilket fält som träffades. MISS och BULL är alltid säkra.",
+      "promptSimple": "Registrera om du träffade den säkra zonen eller missade/träffade rött.",
+      "safe": "Säker Träff"
+    },
+    "title": "Red Zone Survival",
+    "bullDecider": {
+      "title": "Throw for the Bull",
+      "subtitle": "Innan spelstart kastar alla en pil. Närmast bull får första kastordningen.",
+      "registered": "Registrerade kast: {{count}} / {{total}}",
+      "left": "Kast kvar: {{count}}",
+      "currentThrow": "{{player}} kastar nu",
+      "distance": "{{distance}} mm från bull",
+      "tie": "Lika om förstaplatsen mellan {{players}}. Kasta om för att avgöra ordning.",
+      "winner": "{{player}} är närmast bull och börjar.",
+      "rethrow": "Kasta om",
+      "cancel": "Avbryt",
+      "startGame": "Starta spel"
+    }
+  },
+  "trainingTicTacToe": {
+    "actions": {
+      "changeTeams": "Byt lag",
+      "enterFullscreen": "Helskärm",
+      "exitFullscreen": "Avsluta helskärm",
+      "newBoard": "Nytt bräde",
+      "nextRound": "Starta nästa runda",
+      "resetMatch": "Återställ match"
+    },
+    "board": {
+      "easiest": "Enklast",
+      "fastest": "Snabbast",
+      "guideTitle": "Checkout-guide",
+      "lockNow": "Rätt totalsumma nu - säkra rutan.",
+      "noFinish": "Ingen möjlig finish denna tur.",
+      "open": "Ledig",
+      "pending": "Väntar",
+      "playerPrefix": "S",
+      "target": "Mål"
+    },
+    "difficulty": {
+      "advanced_scores": {
+        "description": "Slumpade poäng mellan 61-120.",
+        "label": "Poäng (Avancerad 61-120)"
+      },
+      "beginner_numbers": {
+        "description": "Slumpade nummer 1-20.",
+        "label": "Nummer (Nybörjare 1-20)"
+      },
+      "easy_scores": {
+        "description": "Slumpade poäng mellan 21-60.",
+        "label": "Poäng (Enkel 21-60)"
+      },
+      "expert_checkouts": {
+        "description": "Slumpade checkouts mellan 41-80. Avsluta på dubbel.",
+        "label": "Checkouts (Expert 41-80)"
+      },
+      "intermediate_doubles": {
+        "description": "Slumpade dubblar 1-20 och BULL.",
+        "label": "Dubblar (Medel 1-20)"
+      },
+      "pro_checkouts": {
+        "description": "Slumpade checkouts mellan 81-120. Avsluta på dubbel.",
+        "label": "Checkouts (Pro 81-120)"
+      },
+      "pro_trebles": {
+        "description": "Slumpade tripplar 1-20.",
+        "label": "Tripplar (Pro 1-20)"
+      }
+    },
+    "help": {
+      "button": "Ny här? Lär dig spelet",
+      "subtitle": "Snabba regler och översikt av svårighetsgrader.",
+      "title": "Så fungerar Tic-Tac-Toe Darts"
+    },
+    "levels": {
+      "title": "De olika svårighetsnivåerna"
+    },
+    "players": {
+      "playerA": "Spelare A",
+      "playerB": "Spelare B"
+    },
+    "result": {
+      "draw": "Rundan slutade oavgjort",
+      "matchWinner": "Matchvinnare!",
+      "matchWinnerSubtitle": "{{player}} vinner matchen {{score}}!",
+      "playAgain": "Spela Igen",
+      "subtitle": "Tryck nedan för att fortsätta med ett nytt bräde.",
+      "winner": "Spelare {{player}} vann rundan!"
+    },
+    "rules": {
+      "r1": "Varje tur består av 3 pilar.",
+      "r2": "Registrera varje kast med Single/Double/Triple och siffrorna 1-20.",
+      "r3": "Om din löpande totalsumma inte längre matchar en ledig ruta förloras den väntande rutan.",
+      "r4": "Lås rutan när som helst, annars låses den automatiskt efter pil 3 om den fortfarande är giltig.",
+      "title": "Så fungerar det"
+    },
+    "setup": {
+      "colorsMustDiffer": "Lagen måste ha olika färger.",
+      "firstTo": "Först till",
+      "legsToWin": "Legs för att vinna",
+      "matchDesc": "Tävlingsmatch",
+      "namesRequired": "Båda lagens namn måste fyllas i.",
+      "practiceDesc": "Spela för skoj",
+      "start": "Starta spel",
+      "subtitle": "Välj namn och färg för båda lagen innan ni börjar.",
+      "teamA": "Lag A",
+      "teamB": "Lag B",
+      "title": "Ställ in lag",
+      "unlimited": "Obegränsat"
+    },
+    "status": {
+      "currentTurn": "Aktiv tur: {{player}}",
+      "firstTo": "Först till {{legs}}"
+    },
+    "title": "Tic-Tac-Toe Darts",
+    "turn": {
+      "activePlayer": "Aktiv spelare",
+      "double": "Dubbel",
+      "lockSquare": "Säkra ruta",
+      "miss": "MISS",
+      "noPossibleSquares": "Inga möjliga rutor kvar - turen går över",
+      "quick25": "25",
+      "selectHint": "Registrera varje kast nedan. Använd MISS om du bommar.",
+      "single": "Single",
+      "throw": "Pil",
+      "total": "Turens total",
+      "triple": "Trippel",
+      "undo": "Ångra"
+    },
+    "bullDecider": {
+      "title": "Throw for the Bull",
+      "subtitle": "Innan matchstart kastar båda lagen en pil. Närmast bull börjar.",
+      "registered": "Registrerade kast: {{count}} / {{total}}",
+      "left": "Kast kvar: {{count}}",
+      "currentThrow": "{{player}} kastar nu",
+      "distance": "{{distance}} mm från bull",
+      "tie": "Lika om förstaplatsen mellan {{players}}. Kasta om för att avgöra startspelare.",
+      "winner": "{{player}} börjar matchen.",
+      "rethrow": "Kasta om",
+      "cancel": "Avbryt",
+      "start": "Starta match"
+    }
   },
   "videoDialog": {
     "couldNotLoadVideo": "Kunde inte ladda videon. Den kan ha raderats.",

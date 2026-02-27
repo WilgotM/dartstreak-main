@@ -1,0 +1,863 @@
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { AlertTriangle, Plus, RotateCcw, Skull, Users } from "lucide-react";
+import { AppLayout } from "@/components/AppLayout";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { DartboardSvg, type DartboardClickPoint, type DartboardMarker } from "@/components/training/DartboardSvg";
+
+interface SetupPlayer {
+  id: string;
+  name: string;
+  color: string;
+}
+
+interface GamePlayer extends SetupPlayer {
+  isEliminated: boolean;
+  eliminatedRound: number | null;
+}
+
+interface ThrowEntry {
+  playerId: string;
+  hitDanger: boolean;
+}
+
+interface RoundLog {
+  round: number;
+  dangerNumbers: number[];
+  entries: ThrowEntry[];
+  eliminatedIds: string[];
+}
+
+interface BullThrow {
+  playerId: string;
+  x: number;
+  y: number;
+  distance: number;
+}
+
+const BOARD_RING = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
+const START_TARGET = 20;
+const MAX_PLAYERS = 8;
+const TOP_TIE_THRESHOLD = 1.0;
+
+const PLAYER_COLORS = [
+  "#3B82F6",
+  "#F43F5E",
+  "#10B981",
+  "#F59E0B",
+  "#A855F7",
+  "#06B6D4",
+  "#EF4444",
+  "#22C55E",
+];
+
+const START_INDEX = BOARD_RING.indexOf(START_TARGET);
+
+const getExpansionStepNumbers = (step: number): number[] => {
+  if (step <= 0) return [START_TARGET];
+
+  const left = BOARD_RING[(START_INDEX - step + BOARD_RING.length) % BOARD_RING.length];
+  const right = BOARD_RING[(START_INDEX + step) % BOARD_RING.length];
+
+  return left === right ? [left] : [left, right];
+};
+
+const getDangerNumbers = (radius: number): number[] => {
+  const dangerSet = new Set<number>();
+
+  for (let step = 0; step <= radius; step += 1) {
+    const left = BOARD_RING[(START_INDEX - step + BOARD_RING.length) % BOARD_RING.length];
+    const right = BOARD_RING[(START_INDEX + step) % BOARD_RING.length];
+    dangerSet.add(left);
+    dangerSet.add(right);
+  }
+
+  return BOARD_RING.filter((number) => dangerSet.has(number));
+};
+
+export default function TrainingRedZone() {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const [setupPlayers, setSetupPlayers] = useState<SetupPlayer[]>(() => [
+    { id: "setup-1", name: "Player 1", color: PLAYER_COLORS[0] },
+    { id: "setup-2", name: "Player 2", color: PLAYER_COLORS[1] },
+  ]);
+  const [playerCounter, setPlayerCounter] = useState(2);
+  const [isGameStarted, setIsGameStarted] = useState(false);
+  const [players, setPlayers] = useState<GamePlayer[]>([]);
+  const [round, setRound] = useState(1);
+  const [dangerRadius, setDangerRadius] = useState(0);
+  const [roundOrder, setRoundOrder] = useState<string[]>([]);
+  const [roundEntries, setRoundEntries] = useState<ThrowEntry[]>([]);
+  const [history, setHistory] = useState<RoundLog[]>([]);
+  const [result, setResult] = useState<{ winners: string[]; isDraw: boolean } | null>(null);
+  const [isBullDeciderActive, setIsBullDeciderActive] = useState(false);
+  const [bullPlayers, setBullPlayers] = useState<SetupPlayer[]>([]);
+  const [bullThrows, setBullThrows] = useState<BullThrow[]>([]);
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/auth");
+    }
+  }, [loading, navigate, user]);
+
+  useEffect(() => {
+    if (!isGameStarted) {
+      setSetupPlayers((previous) =>
+        previous.map((player, index) => ({
+          ...player,
+          name: player.name.startsWith("Player ")
+            ? t("trainingRedZone.setup.playerDefault", { index: index + 1 })
+            : player.name,
+        })),
+      );
+    }
+  }, [isGameStarted, t]);
+
+  const setupError = useMemo(() => {
+    if (setupPlayers.length < 2) return t("trainingRedZone.setup.minPlayers");
+
+    const trimmedNames = setupPlayers.map((player) => player.name.trim());
+    if (trimmedNames.some((name) => !name)) return t("trainingRedZone.setup.namesRequired");
+
+    const normalized = trimmedNames.map((name) => name.toLowerCase());
+    if (new Set(normalized).size !== normalized.length) {
+      return t("trainingRedZone.setup.duplicateNames");
+    }
+
+    return null;
+  }, [setupPlayers, t]);
+
+  const dangerNumbers = useMemo(() => getDangerNumbers(dangerRadius), [dangerRadius]);
+  const dangerNumberSet = useMemo(() => new Set(dangerNumbers), [dangerNumbers]);
+  const newlyAddedSet = useMemo(
+    () => new Set(getExpansionStepNumbers(dangerRadius)),
+    [dangerRadius],
+  );
+  const nextExpansionNumbers = useMemo(
+    () => dangerRadius >= 10 ? [] : getExpansionStepNumbers(dangerRadius + 1),
+    [dangerRadius],
+  );
+
+  const playerNameById = useMemo(
+    () => new Map(players.map((player) => [player.id, player.name])),
+    [players],
+  );
+
+  const alivePlayers = useMemo(
+    () => players.filter((player) => !player.isEliminated),
+    [players],
+  );
+
+  const currentPlayerId = roundOrder[roundEntries.length] ?? null;
+  const currentPlayer = useMemo(
+    () => players.find((player) => player.id === currentPlayerId) ?? null,
+    [currentPlayerId, players],
+  );
+  const bullCurrentPlayer = bullPlayers[bullThrows.length] ?? null;
+  const isBullRoundComplete = bullPlayers.length > 0 && bullThrows.length === bullPlayers.length;
+  const bullPlayerById = useMemo(
+    () => new Map(bullPlayers.map((player) => [player.id, player])),
+    [bullPlayers],
+  );
+  const bullRanking = useMemo(
+    () => [...bullThrows].sort((a, b) => a.distance - b.distance),
+    [bullThrows],
+  );
+  const bullTopPlayers = useMemo(() => {
+    if (!isBullRoundComplete || bullRanking.length === 0) return [];
+    const bestDistance = bullRanking[0].distance;
+    return bullRanking.filter((entry) => Math.abs(entry.distance - bestDistance) <= TOP_TIE_THRESHOLD);
+  }, [bullRanking, isBullRoundComplete]);
+  const bullTieNames = useMemo(
+    () =>
+      bullTopPlayers
+        .map((entry) => bullPlayerById.get(entry.playerId)?.name ?? entry.playerId)
+        .join(", "),
+    [bullPlayerById, bullTopPlayers],
+  );
+  const bullMarkers = useMemo<DartboardMarker[]>(
+    () =>
+      bullThrows.map((entry, index) => ({
+        x: entry.x,
+        y: entry.y,
+        color: bullPlayerById.get(entry.playerId)?.color ?? "#94A3B8",
+        label: String(index + 1),
+      })),
+    [bullPlayerById, bullThrows],
+  );
+
+  const resolvePlayerName = useCallback(
+    (id: string): string => playerNameById.get(id) ?? id,
+    [playerNameById],
+  );
+
+  const handleSetupNameChange = useCallback((id: string, value: string) => {
+    setSetupPlayers((previous) =>
+      previous.map((player) => (player.id === id ? { ...player, name: value } : player)),
+    );
+  }, []);
+
+  const handleSetupColorChange = useCallback((id: string, color: string) => {
+    setSetupPlayers((previous) =>
+      previous.map((player) => (player.id === id ? { ...player, color } : player)),
+    );
+  }, []);
+
+  const handleAddPlayer = useCallback(() => {
+    if (setupPlayers.length >= MAX_PLAYERS) return;
+
+    const nextIndex = playerCounter + 1;
+    setSetupPlayers((previous) => [
+      ...previous,
+      {
+        id: `setup-${nextIndex}`,
+        name: t("trainingRedZone.setup.playerDefault", { index: nextIndex }),
+        color: PLAYER_COLORS[previous.length % PLAYER_COLORS.length],
+      },
+    ]);
+    setPlayerCounter(nextIndex);
+  }, [playerCounter, setupPlayers.length, t]);
+
+  const handleRemovePlayer = useCallback((id: string) => {
+    setSetupPlayers((previous) => {
+      if (previous.length <= 2) return previous;
+      return previous.filter((player) => player.id !== id);
+    });
+  }, []);
+
+  const startGameFromPlayers = useCallback((basePlayers: SetupPlayer[]) => {
+    const gamePlayers: GamePlayer[] = basePlayers.map((player) => ({
+      ...player,
+      name: player.name.trim(),
+      isEliminated: false,
+      eliminatedRound: null,
+    }));
+
+    setPlayers(gamePlayers);
+    setRound(1);
+    setDangerRadius(0);
+    setRoundOrder(gamePlayers.map((player) => player.id));
+    setRoundEntries([]);
+    setHistory([]);
+    setResult(null);
+    setIsGameStarted(true);
+  }, []);
+
+  const handleStartGame = useCallback(() => {
+    if (setupError) return;
+    const normalizedPlayers = setupPlayers.map((player) => ({
+      ...player,
+      name: player.name.trim(),
+    }));
+    setBullPlayers(normalizedPlayers);
+    setBullThrows([]);
+    setIsBullDeciderActive(true);
+  }, [setupError, setupPlayers]);
+
+  const handleRegisterBullThrow = useCallback(
+    (point: DartboardClickPoint) => {
+      if (!bullCurrentPlayer || isBullRoundComplete) return;
+
+      setBullThrows((previous) => [
+        ...previous,
+        {
+          playerId: bullCurrentPlayer.id,
+          x: point.x,
+          y: point.y,
+          distance: point.distance,
+        },
+      ]);
+    },
+    [bullCurrentPlayer, isBullRoundComplete],
+  );
+
+  const handleUndoBullThrow = useCallback(() => {
+    if (bullThrows.length === 0) return;
+    setBullThrows((previous) => previous.slice(0, -1));
+  }, [bullThrows.length]);
+
+  const handleRestartBullRound = useCallback(() => {
+    setBullThrows([]);
+  }, []);
+
+  const handleCancelBullDecider = useCallback(() => {
+    setIsBullDeciderActive(false);
+    setBullPlayers([]);
+    setBullThrows([]);
+  }, []);
+
+  const handleStartFromBullResult = useCallback(() => {
+    if (!isBullRoundComplete || bullRanking.length === 0) return;
+    if (bullTopPlayers.length > 1) return;
+
+    const orderedPlayers = bullRanking
+      .map((entry) => bullPlayers.find((player) => player.id === entry.playerId))
+      .filter((player): player is SetupPlayer => Boolean(player));
+
+    startGameFromPlayers(orderedPlayers);
+    setIsBullDeciderActive(false);
+    setBullPlayers([]);
+    setBullThrows([]);
+  }, [bullPlayers, bullRanking, bullTopPlayers.length, isBullRoundComplete, startGameFromPlayers]);
+
+  const handleRegisterThrow = useCallback(
+    (hitDanger: boolean) => {
+      if (!currentPlayerId || result) return;
+
+      const nextEntry: ThrowEntry = {
+        playerId: currentPlayerId,
+        hitDanger,
+      };
+
+      const nextEntries = [...roundEntries, nextEntry];
+      const nextPlayers = hitDanger
+        ? players.map((player) =>
+          player.id === currentPlayerId
+            ? { ...player, isEliminated: true, eliminatedRound: round }
+            : player,
+        )
+        : players;
+
+      setPlayers(nextPlayers);
+      setRoundEntries(nextEntries);
+
+      if (nextEntries.length < roundOrder.length) return;
+
+      const eliminatedIds = nextEntries
+        .filter((entry) => entry.hitDanger)
+        .map((entry) => entry.playerId);
+
+      setHistory((previous) => [
+        {
+          round,
+          dangerNumbers: [...dangerNumbers],
+          entries: nextEntries,
+          eliminatedIds,
+        },
+        ...previous,
+      ]);
+
+      const survivors = nextPlayers.filter((player) => !player.isEliminated);
+      if (survivors.length <= 1) {
+        setResult({
+          winners: survivors.map((player) => player.id),
+          isDraw: survivors.length === 0,
+        });
+        return;
+      }
+
+      setRound((previous) => previous + 1);
+      setDangerRadius((previous) => Math.min(previous + 1, 10));
+      setRoundOrder(survivors.map((player) => player.id));
+      setRoundEntries([]);
+    },
+    [currentPlayerId, dangerNumbers, players, result, round, roundEntries, roundOrder.length],
+  );
+
+  const handleUndoThrow = useCallback(() => {
+    if (result || roundEntries.length === 0) return;
+
+    const lastEntry = roundEntries[roundEntries.length - 1];
+    setRoundEntries((previous) => previous.slice(0, -1));
+
+    if (lastEntry.hitDanger) {
+      setPlayers((previous) =>
+        previous.map((player) =>
+          player.id === lastEntry.playerId
+            ? { ...player, isEliminated: false, eliminatedRound: null }
+            : player,
+        ),
+      );
+    }
+  }, [result, roundEntries]);
+
+  const handleRestart = useCallback(() => {
+    if (players.length === 0) return;
+
+    const restartPlayers = players.map((player) => ({
+      ...player,
+      isEliminated: false,
+      eliminatedRound: null,
+    }));
+    startGameFromPlayers(restartPlayers);
+  }, [players, startGameFromPlayers]);
+
+  const handleChangePlayers = useCallback(() => {
+    if (players.length > 0) {
+      setSetupPlayers(players.map(({ id, name, color }) => ({ id, name, color })));
+      setPlayerCounter(players.length);
+    }
+    setIsGameStarted(false);
+    setIsBullDeciderActive(false);
+    setBullPlayers([]);
+    setBullThrows([]);
+    setResult(null);
+  }, [players]);
+
+  if (loading || !user) {
+    return (
+      <AppLayout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-pulse-soft">
+            <img src="/logo.png" alt="DartStreak Logo" className="w-16 h-16 object-contain" />
+          </div>
+        </div>
+      </AppLayout>
+    );
+  }
+
+  return (
+    <AppLayout>
+      <div className="container mx-auto px-4 py-8 md:py-10 pb-24 md:pb-10 space-y-6">
+        <header className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#12121A]/88 p-6 md:p-8 shadow-[0_20px_50px_-26px_rgba(0,0,0,0.75)]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_15%,rgba(239,68,68,0.25),transparent_38%),radial-gradient(circle_at_30%_90%,rgba(34,197,94,0.2),transparent_45%)]" />
+          <div className="relative space-y-2">
+            <p className="text-xs uppercase tracking-[0.22em] text-red-300/90">
+              {t("trainingHub.title")}
+            </p>
+            <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground">
+              {t("trainingRedZone.title")}
+            </h1>
+            <p className="max-w-3xl text-muted-foreground">
+              {t("trainingRedZone.subtitle")}
+            </p>
+          </div>
+        </header>
+
+        {!isGameStarted && !isBullDeciderActive && (
+          <section className="glass-card rounded-2xl border border-white/10 p-5 md:p-6 space-y-5">
+            <div>
+              <h2 className="text-xl font-display font-bold">{t("trainingRedZone.setup.title")}</h2>
+              <p className="text-sm text-muted-foreground mt-1">{t("trainingRedZone.setup.subtitle")}</p>
+            </div>
+
+            <div className="space-y-3">
+              {setupPlayers.map((player, index) => (
+                <div key={player.id} className="rounded-xl border border-white/10 bg-[#15151D] p-4 space-y-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground">
+                      {t("trainingRedZone.setup.playerDefault", { index: index + 1 })}
+                    </p>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      disabled={setupPlayers.length <= 2}
+                      onClick={() => handleRemovePlayer(player.id)}
+                      className="text-xs"
+                    >
+                      {t("trainingRedZone.setup.removePlayer")}
+                    </Button>
+                  </div>
+                  <Input
+                    value={player.name}
+                    onChange={(event) => handleSetupNameChange(player.id, event.target.value)}
+                    placeholder={t("trainingRedZone.setup.playerDefault", { index: index + 1 })}
+                    className="bg-[#11111A] border-white/12"
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    {PLAYER_COLORS.map((color) => {
+                      const isSelected = player.color === color;
+                      return (
+                        <button
+                          key={`${player.id}-${color}`}
+                          type="button"
+                          onClick={() => handleSetupColorChange(player.id, color)}
+                          className={cn(
+                            "w-8 h-8 rounded-full border-2 transition-all",
+                            isSelected ? "border-white scale-110" : "border-transparent",
+                          )}
+                          style={{ backgroundColor: color }}
+                          aria-label={`${player.name} color ${color}`}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <Button
+                variant="outline"
+                onClick={handleAddPlayer}
+                disabled={setupPlayers.length >= MAX_PLAYERS || isBullDeciderActive}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                {t("trainingRedZone.setup.addPlayer")}
+              </Button>
+              <Button onClick={handleStartGame} disabled={Boolean(setupError) || isBullDeciderActive}>
+                <Users className="w-4 h-4 mr-2" />
+                {t("trainingRedZone.setup.start")}
+              </Button>
+            </div>
+
+            {setupError && (
+              <p className="text-sm text-amber-300 flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4" />
+                {setupError}
+              </p>
+            )}
+
+            <section className="rounded-xl border border-white/10 bg-[#15151D] p-4">
+              <h3 className="text-sm uppercase tracking-wider text-muted-foreground mb-2">
+                {t("trainingRedZone.rules.title")}
+              </h3>
+              <ul className="space-y-2 text-sm text-foreground/90">
+                <li>{t("trainingRedZone.rules.r1")}</li>
+                <li>{t("trainingRedZone.rules.r2")}</li>
+                <li>{t("trainingRedZone.rules.r3")}</li>
+                <li>{t("trainingRedZone.rules.r4")}</li>
+              </ul>
+            </section>
+
+          </section>
+        )}
+
+        {isBullDeciderActive && !isGameStarted && (
+          <section className="glass-card rounded-2xl border border-white/10 p-6 md:p-10 flex flex-col items-center justify-center space-y-8 min-h-[60vh] relative overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(239,68,68,0.15),transparent_50%)] pointer-events-none" />
+            
+            <div className="text-center space-y-2 relative z-10 animate-in fade-in slide-in-from-top-4 duration-500">
+              <h2 className="text-3xl md:text-5xl font-display font-bold text-white drop-shadow-md">
+                {t("trainingRedZone.bullDecider.title")}
+              </h2>
+              <p className="text-muted-foreground text-lg">{t("trainingRedZone.bullDecider.subtitle")}</p>
+            </div>
+
+            <div className="flex flex-col items-center gap-3 relative z-10 w-full animate-in fade-in zoom-in-95 duration-500 delay-150 fill-mode-both">
+              {bullCurrentPlayer && !isBullRoundComplete ? (
+                <div className="bg-red-500/10 border border-red-500/20 px-8 py-3 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(239,68,68,0.15)]">
+                  <p className="text-2xl md:text-3xl font-bold text-white tracking-widest uppercase">
+                    {t("trainingRedZone.bullDecider.currentThrow", { player: bullCurrentPlayer.name })}
+                  </p>
+                </div>
+              ) : (
+                <div className="h-[60px]" /> /* Spacer when done to prevent jumping */
+              )}
+              
+              <div className="flex gap-4 opacity-70">
+                <p className="text-sm font-medium bg-black/40 px-4 py-1.5 rounded-full border border-white/5">
+                  {t("trainingRedZone.bullDecider.registered", { count: bullThrows.length, total: bullPlayers.length })}
+                </p>
+                <p className="text-sm font-medium bg-black/40 px-4 py-1.5 rounded-full border border-white/5">
+                  {t("trainingRedZone.bullDecider.left", { count: Math.max(bullPlayers.length - bullThrows.length, 0) })}
+                </p>
+              </div>
+            </div>
+
+            <div className="py-4 relative z-10 animate-in fade-in zoom-in duration-500 delay-300 fill-mode-both">
+              <DartboardSvg
+                dangerNumbers={new Set<number>()}
+                markers={bullMarkers}
+                onBoardClick={bullCurrentPlayer && !isBullRoundComplete ? handleRegisterBullThrow : undefined}
+                className={cn(
+                  "max-w-[320px] md:max-w-[420px] drop-shadow-[0_0_25px_rgba(239,68,68,0.25)] transition-all duration-300",
+                  bullCurrentPlayer && !isBullRoundComplete ? "cursor-crosshair hover:scale-[1.02]" : "opacity-90"
+                )}
+              />
+            </div>
+
+            <div className="flex flex-wrap justify-center gap-3 relative z-10 animate-in fade-in duration-500 delay-500 fill-mode-both">
+              <Button variant="outline" size="lg" className="px-6 border-white/10 hover:bg-white/5" onClick={handleUndoBullThrow} disabled={bullThrows.length === 0}>
+                {t("trainingRedZone.actions.undo")}
+              </Button>
+              <Button variant="outline" size="lg" className="px-6 border-white/10 hover:bg-white/5" onClick={handleRestartBullRound}>
+                {t("trainingRedZone.bullDecider.rethrow")}
+              </Button>
+              <Button variant="ghost" size="lg" className="px-6" onClick={handleCancelBullDecider}>
+                {t("trainingRedZone.bullDecider.cancel")}
+              </Button>
+            </div>
+
+            {bullRanking.length > 0 && (
+              <div className="w-full max-w-lg space-y-2 bg-black/40 p-5 rounded-xl border border-white/5 relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                {bullRanking.map((entry, index) => {
+                  const player = bullPlayerById.get(entry.playerId);
+                  if (!player) return null;
+                  return (
+                    <div
+                      key={`bull-rank-${entry.playerId}`}
+                      className={cn(
+                        "rounded-xl border p-3.5 flex items-center justify-between transition-all duration-300",
+                        index === 0 
+                          ? "border-amber-400/40 bg-gradient-to-r from-amber-500/20 to-amber-500/5 shadow-[0_0_15px_rgba(245,158,11,0.1)] scale-[1.02]" 
+                          : "border-white/5 bg-[#12121A] opacity-80"
+                      )}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className={cn(
+                          "flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold", 
+                          index === 0 ? "bg-amber-400 text-black" : "bg-white/10 text-white"
+                        )}>
+                          {index + 1}
+                        </span>
+                        <span className={cn("text-base font-medium", index === 0 ? "text-white" : "text-foreground")}>
+                          {player.name}
+                        </span>
+                      </div>
+                      <span className="text-cyan-400 font-mono text-base font-medium tracking-tight">
+                        {t("trainingRedZone.bullDecider.distance", { distance: entry.distance.toFixed(1) })}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {isBullRoundComplete && (
+              <div className="relative z-10 w-full max-w-lg animate-in zoom-in duration-500 fill-mode-both">
+                <div className="rounded-2xl border border-emerald-500/30 bg-gradient-to-b from-emerald-500/20 to-emerald-900/10 p-6 text-center shadow-[0_0_30px_rgba(16,185,129,0.2)] mb-6 backdrop-blur-sm">
+                  {bullTopPlayers.length > 1 ? (
+                    <p className="text-xl font-bold text-amber-300 animate-pulse">
+                      {t("trainingRedZone.bullDecider.tie", { players: bullTieNames })}
+                    </p>
+                  ) : (
+                    <p className="text-2xl font-bold text-emerald-400 drop-shadow-sm">
+                      {t("trainingRedZone.bullDecider.winner", { player: bullPlayerById.get(bullRanking[0].playerId)?.name ?? "-" })}
+                    </p>
+                  )}
+                </div>
+                <Button
+                  size="lg"
+                  className={cn(
+                    "w-full text-lg h-16 rounded-xl shadow-[0_0_20px_rgba(239,68,68,0.25)] transition-all hover:scale-[1.02]",
+                    bullTopPlayers.length > 1 ? "bg-amber-600 hover:bg-amber-500" : "bg-red-600 hover:bg-red-500"
+                  )}
+                  onClick={handleStartFromBullResult}
+                  disabled={!isBullRoundComplete || bullTopPlayers.length > 1}
+                >
+                  {t("trainingRedZone.bullDecider.startGame")}
+                </Button>
+              </div>
+            )}
+          </section>
+        )}
+
+        {isGameStarted && (
+          <div className="space-y-6">
+            <section className="glass-card rounded-2xl border border-white/10 p-4 md:p-5 space-y-4">
+              <div className="flex flex-wrap items-center gap-3">
+                <Button variant="outline" onClick={handleRestart}>
+                  <RotateCcw className="w-4 h-4 mr-2" />
+                  {t("trainingRedZone.actions.newGame")}
+                </Button>
+                <Button variant="outline" onClick={handleChangePlayers}>
+                  {t("trainingRedZone.actions.changePlayers")}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleUndoThrow}
+                  disabled={roundEntries.length === 0 || Boolean(result)}
+                >
+                  {t("trainingRedZone.actions.undo")}
+                </Button>
+              </div>
+
+              <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+                <div className="rounded-xl border border-white/10 bg-[#15151D] px-3 py-2 text-sm">
+                  <span className="text-muted-foreground">{t("trainingRedZone.status.round", { round })}</span>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-[#15151D] px-3 py-2 text-sm">
+                  <span className="text-muted-foreground">
+                    {t("trainingRedZone.status.alivePlayers", { count: alivePlayers.length })}
+                  </span>
+                </div>
+                <div className="rounded-xl border border-red-400/35 bg-red-500/10 px-3 py-2 text-sm">
+                  <span className="text-muted-foreground">
+                    {t("trainingRedZone.status.dangerNumbers")}:{" "}
+                    <span className="text-red-200 font-medium">{dangerNumbers.join(", ")}</span>
+                  </span>
+                </div>
+                <div className="rounded-xl border border-amber-300/35 bg-amber-500/10 px-3 py-2 text-sm">
+                  <span className="text-muted-foreground">
+                    {t("trainingRedZone.status.nextExpansion")}:{" "}
+                    <span className="text-amber-100 font-medium">
+                      {nextExpansionNumbers.length > 0 ? nextExpansionNumbers.join(", ") : t("trainingRedZone.throw.bull")}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </section>
+
+            <section className="grid gap-4 xl:grid-cols-12 xl:items-start">
+              <aside className="glass-card rounded-2xl border border-white/10 p-4 space-y-4 xl:col-span-3 xl:sticky xl:top-24">
+                <div>
+                  <h3 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">
+                    {t("trainingRedZone.status.alivePlayers", { count: alivePlayers.length })}
+                  </h3>
+                  <div className="space-y-2">
+                    {players.map((player) => (
+                      <div
+                        key={player.id}
+                        className={cn(
+                          "rounded-xl border p-3",
+                          player.isEliminated ? "border-red-400/45 bg-red-500/10" : "border-white/10 bg-[#15151D]",
+                        )}
+                      >
+                        <p className="text-xs uppercase tracking-wider text-muted-foreground">{player.name}</p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <span className="w-3 h-3 rounded-full" style={{ backgroundColor: player.color }} />
+                          {player.isEliminated ? (
+                            <p className="text-sm text-red-200 font-medium flex items-center gap-1">
+                              <Skull className="w-3.5 h-3.5" />
+                              {t("trainingRedZone.players.eliminated")}
+                            </p>
+                          ) : (
+                            <p className="text-sm text-emerald-300 font-medium">
+                              {t("trainingRedZone.players.alive")}
+                            </p>
+                          )}
+                        </div>
+                        {player.eliminatedRound && (
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {t("trainingRedZone.players.eliminatedRound", { round: player.eliminatedRound })}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">
+                    {t("trainingRedZone.history.title")}
+                  </h3>
+                  {history.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">{t("trainingRedZone.history.none")}</p>
+                  ) : (
+                    <div className="space-y-2 xl:max-h-[280px] xl:overflow-y-auto pr-1">
+                      {history.map((log) => (
+                        <div key={`history-${log.round}`} className="rounded-xl border border-white/10 bg-[#15151D] p-3 text-sm">
+                          <p className="font-medium text-foreground">
+                            {t("trainingRedZone.history.round", { round: log.round })} - {log.dangerNumbers.join(", ")}
+                          </p>
+                          {log.eliminatedIds.length > 0 ? (
+                            <p className="text-red-200 mt-1">
+                              {t("trainingRedZone.history.eliminated")}:{" "}
+                              {log.eliminatedIds.map((id) => resolvePlayerName(id)).join(", ")}
+                            </p>
+                          ) : (
+                            <p className="text-emerald-300 mt-1">{t("trainingRedZone.history.allSafe")}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </aside>
+
+              <div className="glass-card rounded-2xl border border-white/10 p-4 md:p-5 xl:col-span-5 xl:min-h-[620px] xl:sticky xl:top-24">
+                <div className="h-full flex flex-col">
+                  <div className="flex-1 py-4 md:py-6 flex items-center justify-center">
+                    <DartboardSvg
+                      dangerNumbers={dangerNumberSet}
+                      className="w-full max-w-[300px] md:max-w-[360px] xl:max-w-[430px] drop-shadow-[0_0_18px_rgba(239,68,68,0.16)]"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
+                    {BOARD_RING.map((number) => {
+                      const isDanger = dangerNumberSet.has(number);
+                      const isNew = newlyAddedSet.has(number);
+                      return (
+                        <div
+                          key={`danger-${number}`}
+                          className={cn(
+                            "rounded-lg py-2 text-center text-sm font-bold border",
+                            isDanger
+                              ? "border-red-400/70 bg-red-500/20 text-red-100"
+                              : "border-white/10 bg-[#101017] text-muted-foreground",
+                            isDanger && isNew && "ring-2 ring-amber-300/70",
+                          )}
+                        >
+                          {number}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              <aside className="space-y-4 xl:col-span-4 xl:sticky xl:top-24">
+                {!result && currentPlayer && (
+                  <section className="glass-card rounded-2xl border border-white/10 p-4 md:p-5 space-y-4">
+                    <p className="text-sm text-foreground font-medium">
+                      {t("trainingRedZone.status.currentThrow", { player: currentPlayer.name })}
+                    </p>
+                    <p className="text-sm text-muted-foreground">{t("trainingRedZone.throw.promptSimple")}</p>
+
+                    <div className="grid grid-cols-2 gap-3 mt-2">
+                      <Button
+                        variant="outline"
+                        className="h-16 text-lg border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/50"
+                        onClick={() => handleRegisterThrow(false)}
+                      >
+                        {t("trainingRedZone.throw.safe")}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="h-16 text-lg border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500/50"
+                        onClick={() => handleRegisterThrow(true)}
+                      >
+                        {t("trainingRedZone.throw.danger")}
+                      </Button>
+                    </div>
+                  </section>
+                )}
+
+                {result && (
+                  <section className="glass-card rounded-2xl border border-white/10 p-6 text-center space-y-4">
+                    <h2 className="text-2xl font-display font-bold">
+                      {result.isDraw
+                        ? t("trainingRedZone.result.draw")
+                        : t("trainingRedZone.result.winner", {
+                          player: resolvePlayerName(result.winners[0]),
+                        })}
+                    </h2>
+                    <Button onClick={handleRestart} className="w-full">
+                      {t("trainingRedZone.result.playAgain")}
+                    </Button>
+                  </section>
+                )}
+
+                <section className="glass-card rounded-2xl border border-white/10 p-4 md:p-5">
+                  <h3 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">
+                    {t("trainingRedZone.status.currentThrow", { player: currentPlayer?.name ?? "-" })}
+                  </h3>
+                  {roundEntries.length > 0 ? (
+                    <div className="rounded-xl border border-white/10 bg-[#15151D] p-3 space-y-2 xl:max-h-[320px] xl:overflow-y-auto">
+                      {roundEntries.map((entry, idx) => (
+                        <div key={`entry-${entry.playerId}-${idx}`} className="text-sm flex items-center justify-between gap-2">
+                          <span>{resolvePlayerName(entry.playerId)}</span>
+                          <span className={entry.hitDanger ? "text-red-400 font-medium flex items-center gap-1" : "text-emerald-400 font-medium"}>
+                            {entry.hitDanger ? (
+                              <>
+                                <Skull className="w-3.5 h-3.5" />
+                                {t("trainingRedZone.throw.danger")} - {t("trainingRedZone.players.eliminated")}
+                              </>
+                            ) : (
+                              t("trainingRedZone.throw.safe")
+                            )}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">{t("trainingRedZone.history.none")}</p>
+                  )}
+                </section>
+              </aside>
+            </section>
+          </div>
+        )}
+      </div>
+    </AppLayout>
+  );
+}

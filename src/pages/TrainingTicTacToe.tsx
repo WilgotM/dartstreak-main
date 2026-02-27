@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import TicTacToeBoard from "@/components/training/TicTacToeBoard";
 import TicTacToeTurnPanel from "@/components/training/TicTacToeTurnPanel";
+import { DartboardSvg, type DartboardClickPoint, type DartboardMarker } from "@/components/training/DartboardSvg";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { Infinity as InfinityIcon, Minus, Plus, Target as TargetIcon, Trophy } from "lucide-react";
@@ -68,6 +69,13 @@ interface TeamConfig {
   color: string;
 }
 
+interface BullThrow {
+  player: Player;
+  x: number;
+  y: number;
+  distance: number;
+}
+
 const WIN_LINES = [
   [0, 1, 2],
   [3, 4, 5],
@@ -109,6 +117,7 @@ const teamColorOptions = [
   "#EF4444",
   "#22C55E",
 ];
+const TOP_TIE_THRESHOLD = 1.0;
 
 const randomUniqueFromPool = (pool: number[], count: number): number[] => {
   const shuffled = [...pool];
@@ -186,6 +195,8 @@ export default function TrainingTicTacToe() {
   const [targetLegs, setTargetLegs] = useState<number>(0);
   const [matchWinner, setMatchWinner] = useState<Player | null>(null);
   const [isWaitingForTurnSwitch, setIsWaitingForTurnSwitch] = useState(false);
+  const [isBullDeciderActive, setIsBullDeciderActive] = useState(false);
+  const [bullThrows, setBullThrows] = useState<BullThrow[]>([]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -269,6 +280,28 @@ export default function TrainingTicTacToe() {
   }, [board, finishOnDouble, remainingDarts, throwsThisTurn, turnTotal]);
 
   const noPossibleSquares = isWaitingForTurnSwitch;
+  const bullCurrentPlayer: Player | null = bullThrows.length === 0 ? "A" : bullThrows.length === 1 ? "B" : null;
+  const isBullRoundComplete = bullThrows.length === 2;
+  const bullRanking = useMemo(() => [...bullThrows].sort((a, b) => a.distance - b.distance), [bullThrows]);
+  const bullTopPlayers = useMemo(() => {
+    if (!isBullRoundComplete || bullRanking.length === 0) return [];
+    const bestDistance = bullRanking[0].distance;
+    return bullRanking.filter((entry) => Math.abs(entry.distance - bestDistance) <= TOP_TIE_THRESHOLD);
+  }, [bullRanking, isBullRoundComplete]);
+  const bullTieNames = useMemo(
+    () => bullTopPlayers.map((entry) => teamSetup[entry.player].name).join(", "),
+    [bullTopPlayers, teamSetup],
+  );
+  const bullMarkers = useMemo<DartboardMarker[]>(
+    () =>
+      bullThrows.map((entry, index) => ({
+        x: entry.x,
+        y: entry.y,
+        color: teamSetup[entry.player].color,
+        label: String(index + 1),
+      })),
+    [bullThrows, teamSetup],
+  );
 
   const endTurnWithoutClaim = useCallback(() => {
     setThrowsThisTurn([]);
@@ -396,6 +429,8 @@ export default function TrainingTicTacToe() {
 
   const handleChangeTeams = useCallback(() => {
     setIsTeamsReady(false);
+    setIsBullDeciderActive(false);
+    setBullThrows([]);
     setRoundsWon({ A: 0, B: 0 });
     setStartingPlayer("A");
     setCurrentPlayer("A");
@@ -431,12 +466,63 @@ export default function TrainingTicTacToe() {
 
   const handleStartWithTeams = () => {
     if (setupValidationError) return;
-    setIsTeamsReady(true);
+    setBullThrows([]);
+    setIsBullDeciderActive(true);
   };
+
+  const handleRegisterBullThrow = useCallback((point: DartboardClickPoint) => {
+    setBullThrows((previous) => {
+      const nextPlayer: Player | null = previous.length === 0 ? "A" : previous.length === 1 ? "B" : null;
+      if (!nextPlayer) return previous;
+      return [
+        ...previous,
+        {
+          player: nextPlayer,
+          x: point.x,
+          y: point.y,
+          distance: point.distance,
+        },
+      ];
+    });
+  }, []);
+
+  const handleUndoBullThrow = useCallback(() => {
+    if (bullThrows.length === 0) return;
+    setBullThrows((previous) => previous.slice(0, -1));
+  }, [bullThrows.length]);
+
+  const handleRestartBullRound = useCallback(() => {
+    setBullThrows([]);
+  }, []);
+
+  const handleCancelBullDecider = useCallback(() => {
+    setBullThrows([]);
+    setIsBullDeciderActive(false);
+  }, []);
+
+  const handleConfirmBullStarter = useCallback(() => {
+    if (!isBullRoundComplete || bullRanking.length === 0) return;
+    if (bullTopPlayers.length > 1) return;
+
+    const starter = bullRanking[0].player;
+    setStartingPlayer(starter);
+    setCurrentPlayer(starter);
+    setBoard(buildBoard(difficulty));
+    setThrowsThisTurn([]);
+    setPendingCellId(null);
+    setRoundResult(null);
+    setMatchWinner(null);
+    setRoundsWon({ A: 0, B: 0 });
+    setBullThrows([]);
+    setIsBullDeciderActive(false);
+    setIsTeamsReady(true);
+  }, [bullRanking, bullTopPlayers.length, difficulty, isBullRoundComplete]);
 
   const handleDifficultyChange = useCallback((nextValue: string) => {
     const nextDifficulty = nextValue as Difficulty;
     setDifficulty(nextDifficulty);
+    setIsBullDeciderActive(false);
+    setBullThrows([]);
     setRoundsWon({ A: 0, B: 0 });
     setStartingPlayer("A");
     setBoard(buildBoard(nextDifficulty));
@@ -480,16 +566,21 @@ export default function TrainingTicTacToe() {
     <AppLayout hideNav={isFullscreen}>
       <header
         className={cn(
-          "sticky top-0 z-40 px-3 pb-3 pt-3",
+          "px-3 pb-3 pt-3",
           isFullscreen && "md:hidden",
         )}
       >
-        <div className="app-surface container mx-auto rounded-2xl px-4 py-4 md:py-3 space-y-4 md:space-y-3">
-          <div className="flex items-center justify-between gap-4">
-            <h1 className="text-xl font-display font-bold">{t("trainingTicTacToe.title")}</h1>
+        <div className="container mx-auto rounded-3xl border border-white/10 bg-[#12121A]/88 px-4 py-5 md:px-6 md:py-6 space-y-4 shadow-[0_20px_50px_-26px_rgba(0,0,0,0.75)] relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_15%,rgba(59,130,246,0.2),transparent_38%),radial-gradient(circle_at_20%_95%,rgba(16,185,129,0.15),transparent_45%)]" />
+          <div className="relative space-y-1">
+            <p className="text-xs uppercase tracking-[0.22em] text-cyan-300/90">{t("trainingHub.title")}</p>
+            <h1 className="text-2xl md:text-3xl font-display font-bold">{t("trainingTicTacToe.title")}</h1>
+            <p className="text-sm text-muted-foreground">
+              {t(`trainingTicTacToe.difficulty.${difficulty}.description`)}
+            </p>
           </div>
 
-          <div className="grid gap-2 md:grid-cols-[1fr_auto_auto_auto]">
+          <div className="relative grid gap-2 lg:grid-cols-[minmax(240px,1fr)_auto_auto_auto_auto]">
             <Select value={difficulty} onValueChange={handleDifficultyChange}>
               <SelectTrigger>
                 <SelectValue />
@@ -527,7 +618,7 @@ export default function TrainingTicTacToe() {
 
             <Dialog>
               <DialogTrigger asChild>
-                <Button className="font-semibold">
+                <Button variant="outline" className="font-semibold">
                   <CircleHelp className="w-4 h-4 mr-2" />
                   {t("trainingTicTacToe.help.button")}
                 </Button>
@@ -571,10 +662,6 @@ export default function TrainingTicTacToe() {
               </DialogContent>
             </Dialog>
           </div>
-
-          <p className="text-sm text-muted-foreground">
-            {t(`trainingTicTacToe.difficulty.${difficulty}.description`)}
-          </p>
         </div>
       </header>
 
@@ -584,7 +671,7 @@ export default function TrainingTicTacToe() {
           isFullscreen && "md:py-6 md:pb-6",
         )}
       >
-        {!isTeamsReady && (
+        {!isTeamsReady && !isBullDeciderActive && (
           <section className="glass-card rounded-2xl border border-white/10 p-5 md:p-6 mb-6">
             <h2 className="text-xl font-display font-bold mb-2">{t("trainingTicTacToe.setup.title")}</h2>
             <p className="text-sm text-muted-foreground mb-5">{t("trainingTicTacToe.setup.subtitle")}</p>
@@ -751,15 +838,128 @@ export default function TrainingTicTacToe() {
           </section>
         )}
 
+        {isBullDeciderActive && !isTeamsReady && (
+          <section className="glass-card rounded-2xl border border-white/10 p-6 md:p-10 flex flex-col items-center justify-center space-y-8 min-h-[60vh] relative overflow-hidden mb-6">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.16),transparent_50%)] pointer-events-none" />
+
+            <div className="text-center space-y-2 relative z-10 animate-in fade-in slide-in-from-top-4 duration-500">
+              <h2 className="text-3xl md:text-5xl font-display font-bold text-white drop-shadow-md">
+                {t("trainingTicTacToe.bullDecider.title")}
+              </h2>
+              <p className="text-muted-foreground text-lg">{t("trainingTicTacToe.bullDecider.subtitle")}</p>
+            </div>
+
+            <div className="flex flex-col items-center gap-3 relative z-10 w-full animate-in fade-in zoom-in-95 duration-500 delay-150 fill-mode-both">
+              {bullCurrentPlayer && !isBullRoundComplete ? (
+                <div className="bg-cyan-500/10 border border-cyan-500/25 px-8 py-3 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.18)]">
+                  <p className="text-2xl md:text-3xl font-bold text-white tracking-widest uppercase">
+                    {t("trainingTicTacToe.bullDecider.currentThrow", { player: teamSetup[bullCurrentPlayer].name })}
+                  </p>
+                </div>
+              ) : (
+                <div className="h-[60px]" />
+              )}
+
+              <div className="flex gap-4 opacity-70">
+                <p className="text-sm font-medium bg-black/40 px-4 py-1.5 rounded-full border border-white/5">
+                  {t("trainingTicTacToe.bullDecider.registered", { count: bullThrows.length, total: 2 })}
+                </p>
+                <p className="text-sm font-medium bg-black/40 px-4 py-1.5 rounded-full border border-white/5">
+                  {t("trainingTicTacToe.bullDecider.left", { count: Math.max(2 - bullThrows.length, 0) })}
+                </p>
+              </div>
+            </div>
+
+            <div className="py-4 relative z-10 animate-in fade-in zoom-in duration-500 delay-300 fill-mode-both">
+              <DartboardSvg
+                dangerNumbers={new Set<number>()}
+                markers={bullMarkers}
+                onBoardClick={bullCurrentPlayer && !isBullRoundComplete ? handleRegisterBullThrow : undefined}
+                className={cn(
+                  "max-w-[320px] md:max-w-[420px] drop-shadow-[0_0_25px_rgba(6,182,212,0.25)] transition-all duration-300",
+                  bullCurrentPlayer && !isBullRoundComplete ? "cursor-crosshair hover:scale-[1.02]" : "opacity-90",
+                )}
+              />
+            </div>
+
+            <div className="flex flex-wrap justify-center gap-3 relative z-10 animate-in fade-in duration-500 delay-500 fill-mode-both">
+              <Button variant="outline" size="lg" className="px-6 border-white/10 hover:bg-white/5" onClick={handleUndoBullThrow} disabled={bullThrows.length === 0}>
+                {t("trainingTicTacToe.turn.undo")}
+              </Button>
+              <Button variant="outline" size="lg" className="px-6 border-white/10 hover:bg-white/5" onClick={handleRestartBullRound}>
+                {t("trainingTicTacToe.bullDecider.rethrow")}
+              </Button>
+              <Button variant="ghost" size="lg" className="px-6" onClick={handleCancelBullDecider}>
+                {t("trainingTicTacToe.bullDecider.cancel")}
+              </Button>
+            </div>
+
+            {bullRanking.length > 0 && (
+              <div className="w-full max-w-lg space-y-2 bg-black/40 p-5 rounded-xl border border-white/5 relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                {bullRanking.map((entry, index) => (
+                  <div
+                    key={`ttt-bull-${entry.player}`}
+                    className={cn(
+                      "rounded-xl border p-3.5 flex items-center justify-between transition-all duration-300",
+                      index === 0
+                        ? "border-amber-400/40 bg-gradient-to-r from-amber-500/20 to-amber-500/5 shadow-[0_0_15px_rgba(245,158,11,0.1)] scale-[1.02]"
+                        : "border-white/5 bg-[#12121A] opacity-80",
+                    )}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className={cn("flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold", index === 0 ? "bg-amber-400 text-black" : "bg-white/10 text-white")}>
+                        {index + 1}
+                      </span>
+                      <span className={cn("text-base font-medium", index === 0 ? "text-white" : "text-foreground")}>
+                        {teamSetup[entry.player].name}
+                      </span>
+                    </div>
+                    <span className="text-cyan-400 font-mono text-base font-medium tracking-tight">
+                      {t("trainingTicTacToe.bullDecider.distance", { distance: entry.distance.toFixed(1) })}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {isBullRoundComplete && (
+              <div className="relative z-10 w-full max-w-lg animate-in zoom-in duration-500 fill-mode-both">
+                <div className="rounded-2xl border border-emerald-500/30 bg-gradient-to-b from-emerald-500/20 to-emerald-900/10 p-6 text-center shadow-[0_0_30px_rgba(16,185,129,0.2)] mb-6 backdrop-blur-sm">
+                  {bullTopPlayers.length > 1 ? (
+                    <p className="text-xl font-bold text-amber-300 animate-pulse">
+                      {t("trainingTicTacToe.bullDecider.tie", { players: bullTieNames })}
+                    </p>
+                  ) : (
+                    <p className="text-2xl font-bold text-emerald-400 drop-shadow-sm">
+                      {t("trainingTicTacToe.bullDecider.winner", { player: teamSetup[bullRanking[0].player].name })}
+                    </p>
+                  )}
+                </div>
+                <Button
+                  size="lg"
+                  className={cn(
+                    "w-full text-lg h-16 rounded-xl shadow-[0_0_20px_rgba(6,182,212,0.25)] transition-all hover:scale-[1.02]",
+                    bullTopPlayers.length > 1 ? "bg-amber-600 hover:bg-amber-500" : "bg-cyan-600 hover:bg-cyan-500",
+                  )}
+                  onClick={handleConfirmBullStarter}
+                  disabled={!isBullRoundComplete || bullTopPlayers.length > 1}
+                >
+                  {t("trainingTicTacToe.bullDecider.start")}
+                </Button>
+              </div>
+            )}
+          </section>
+        )}
+
         {isTeamsReady && (
           <div
             className={cn(
-              "grid gap-6 md:gap-5 md:grid-cols-[minmax(0,1fr)_520px] md:items-stretch",
-              isFullscreen && "md:grid-cols-[minmax(0,1fr)_600px]",
+              "grid gap-4 xl:grid-cols-12 xl:items-start",
+              isFullscreen && "xl:min-h-[calc(100vh-10rem)]",
             )}
           >
-            <div className="space-y-6 md:space-y-4">
-              <section className="glass-card rounded-2xl border border-white/10 p-4 sm:p-5">
+            <aside className="space-y-4 xl:col-span-3">
+              <section className="glass-card rounded-2xl border border-white/10 p-4 sm:p-5 space-y-3">
                 <div className="grid grid-cols-2 gap-4">
                   <div
                     className="rounded-xl border p-3"
@@ -786,6 +986,20 @@ export default function TrainingTicTacToe() {
                 </p>
               </section>
 
+              <section className="glass-card rounded-2xl border border-white/10 p-4 sm:p-5">
+                <h2 className="text-sm uppercase tracking-wider text-muted-foreground mb-2">
+                  {t("trainingTicTacToe.rules.title")}
+                </h2>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li>{t("trainingTicTacToe.rules.r1")}</li>
+                  <li>{t("trainingTicTacToe.rules.r2")}</li>
+                  <li>{t("trainingTicTacToe.rules.r3")}</li>
+                  <li>{t("trainingTicTacToe.rules.r4")}</li>
+                </ul>
+              </section>
+            </aside>
+
+            <section className="glass-card rounded-2xl border border-white/10 p-4 sm:p-5 xl:col-span-5">
               <TicTacToeBoard
                 board={board}
                 pendingCellId={pendingCellId}
@@ -803,9 +1017,9 @@ export default function TrainingTicTacToe() {
                   lockNow: t("trainingTicTacToe.board.lockNow"),
                 }}
               />
-            </div>
+            </section>
 
-            <div className="space-y-6 md:space-y-4 h-full">
+            <aside className="space-y-4 h-full xl:col-span-4">
               <TicTacToeTurnPanel
                 currentPlayer={currentPlayer}
                 currentPlayerName={teamSetup[currentPlayer].name}
@@ -814,7 +1028,6 @@ export default function TrainingTicTacToe() {
                 pendingTarget={pendingTarget}
                 noPossibleSquares={noPossibleSquares}
                 disabled={Boolean(roundResult) || isWaitingForTurnSwitch}
-                className="h-full"
                 strings={{
                   selectHint: t("trainingTicTacToe.turn.selectHint"),
                   miss: t("trainingTicTacToe.turn.miss"),
@@ -832,8 +1045,12 @@ export default function TrainingTicTacToe() {
                 onAddThrow={handleAddThrow}
                 onUndoThrow={handleUndoThrow}
                 onLockSquare={handleLockSquare}
+                className={cn(
+                  "xl:max-h-[calc(100vh-10rem)]",
+                  isFullscreen && "xl:max-h-[calc(100vh-7rem)]",
+                )}
               />
-            </div>
+            </aside>
           </div>
         )}
 
