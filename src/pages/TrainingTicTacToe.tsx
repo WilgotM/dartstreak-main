@@ -671,285 +671,439 @@ export default function TrainingTicTacToe() {
           isFullscreen && "md:py-6 md:pb-6",
         )}
       >
-        {!isTeamsReady && !isBullDeciderActive && (
-          <section className="glass-card rounded-2xl border border-white/10 p-5 md:p-6 mb-6">
-            <h2 className="text-xl font-display font-bold mb-2">{t("trainingTicTacToe.setup.title")}</h2>
-            <p className="text-sm text-muted-foreground mb-5">{t("trainingTicTacToe.setup.subtitle")}</p>
+        <AnimatePresence mode="wait">
+          {!isTeamsReady && !isBullDeciderActive && (
+            <motion.section
+              key="setup"
+              initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, scale: 0.95, filter: "blur(10px)", transition: { duration: 0.3 } }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              className="glass-card rounded-2xl border border-white/10 p-5 md:p-6 mb-6 overflow-hidden relative"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
+              
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1, duration: 0.5, ease: "easeOut" }}
+              >
+                <h2 className="text-2xl font-display font-bold mb-1 tracking-tight">{t("trainingTicTacToe.setup.title")}</h2>
+                <p className="text-sm text-muted-foreground mb-6 font-light">{t("trainingTicTacToe.setup.subtitle")}</p>
+              </motion.div>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              {(["A", "B"] as const).map((player) => (
-                <div key={player} className="rounded-xl border border-white/10 bg-[#15151D] p-4 space-y-3">
-                  <p className="text-xs uppercase tracking-wider text-muted-foreground">
-                    {player === "A" ? t("trainingTicTacToe.setup.teamA") : t("trainingTicTacToe.setup.teamB")}
-                  </p>
-                  <Input
-                    value={teamSetup[player].name}
-                    onChange={(event) => handleTeamNameChange(player, event.target.value)}
-                    placeholder={player === "A" ? t("trainingTicTacToe.players.playerA") : t("trainingTicTacToe.players.playerB")}
-                    className="bg-[#11111A] border-white/12"
-                  />
-                  <div className="flex flex-wrap gap-2">
-                    {teamColorOptions.map((color) => {
-                      const selected = teamSetup[player].color === color;
-                      return (
-                        <button
-                          key={`${player}-${color}`}
-                          type="button"
-                          onClick={() => handleTeamColorChange(player, color)}
-                          className={cn(
-                            "w-8 h-8 rounded-full border-2 transition-all",
-                            selected ? "border-white scale-110" : "border-transparent",
-                          )}
-                          style={{ backgroundColor: color }}
-                          aria-label={`${player} color ${color}`}
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-              <div className="rounded-xl border border-white/10 bg-[#15151D] p-4 md:col-span-2">
-                <div className="flex items-center gap-2 mb-4">
-                  <Trophy className="w-4 h-4 text-primary" />
-                  <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                    {t("trainingTicTacToe.setup.legsToWin")}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setTargetLegs(0)}
-                    className={cn(
-                      "relative flex flex-col items-center justify-center gap-2 p-4 rounded-xl border transition-all duration-300 overflow-hidden",
-                      targetLegs === 0
-                        ? "border-primary bg-primary/10 text-primary shadow-[0_0_20px_-5px_rgba(59,130,246,0.3)]"
-                        : "border-white/10 bg-[#101017] hover:bg-secondary/40 text-muted-foreground hover:text-foreground",
-                    )}
+              <div className="grid gap-4 md:grid-cols-2">
+                {(["A", "B"] as const).map((player, index) => (
+                  <motion.div
+                    key={player}
+                    initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ delay: 0.2 + index * 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    className="rounded-xl border border-white/10 bg-[#15151D] p-5 space-y-4 shadow-lg relative overflow-hidden group"
                   >
-                    <InfinityIcon className="w-6 h-6" />
-                    <span className="text-sm font-semibold">{t("trainingTicTacToe.setup.unlimited")}</span>
-                    <span className="text-xs opacity-70">{t("trainingTicTacToe.setup.practiceDesc")}</span>
-                    {targetLegs === 0 && (
-                      <motion.div
-                        layoutId="active-mode"
-                        className="absolute inset-0 border-2 border-primary rounded-xl"
-                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                      />
-                    )}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setTargetLegs((prev) => (prev === 0 ? 3 : prev))}
-                    className={cn(
-                      "relative flex flex-col items-center justify-center gap-2 p-4 rounded-xl border transition-all duration-300 overflow-hidden",
-                      targetLegs > 0
-                        ? "border-primary bg-primary/10 text-primary shadow-[0_0_20px_-5px_rgba(59,130,246,0.3)]"
-                        : "border-white/10 bg-[#101017] hover:bg-secondary/40 text-muted-foreground hover:text-foreground",
-                    )}
-                  >
-                    <TargetIcon className="w-6 h-6" />
-                    <span className="text-sm font-semibold">{t("trainingTicTacToe.setup.matchDesc")}</span>
-                    <span className="text-xs opacity-70">
-                      {targetLegs > 0
-                        ? t("trainingTicTacToe.setup.firstTo") + ` ${targetLegs}`
-                        : t("trainingTicTacToe.setup.matchDesc")}
+                    <div
+                      className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-10 transition-opacity duration-500 pointer-events-none"
+                      style={{ backgroundImage: `linear-gradient(to bottom right, ${teamSetup[player].color}, transparent)` }}
+                    />
+                    <div className="flex items-center gap-2 mb-1">
+                      <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80">
+                        {player === "A" ? t("trainingTicTacToe.setup.teamA") : t("trainingTicTacToe.setup.teamB")}
+                      </p>
+                      <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
+                    </div>
+                    
+                    <Input
+                      value={teamSetup[player].name}
+                      onChange={(event) => handleTeamNameChange(player, event.target.value)}
+                      placeholder={player === "A" ? t("trainingTicTacToe.players.playerA") : t("trainingTicTacToe.players.playerB")}
+                      className="bg-[#11111A] border-white/12 h-11 transition-all focus-visible:ring-1 focus-visible:ring-white/30"
+                    />
+                    
+                    <div className="flex flex-wrap gap-2.5 pt-1">
+                      {teamColorOptions.map((color) => {
+                        const selected = teamSetup[player].color === color;
+                        return (
+                          <motion.button
+                            whileHover={{ scale: 1.15 }}
+                            whileTap={{ scale: 0.9 }}
+                            key={`${player}-${color}`}
+                            type="button"
+                            onClick={() => handleTeamColorChange(player, color)}
+                            className={cn(
+                              "relative w-8 h-8 rounded-full border-2 transition-all shadow-md outline-none",
+                              selected ? "scale-110 shadow-lg z-10" : "border-transparent opacity-80 hover:opacity-100",
+                            )}
+                            style={{ 
+                              backgroundColor: color, 
+                              borderColor: selected ? '#ffffff' : 'transparent',
+                              boxShadow: selected ? `0 0 15px ${color}80` : undefined
+                            }}
+                            aria-label={`${player} color ${color}`}
+                          >
+                            {selected && (
+                              <motion.div 
+                                layoutId={`selected-color-${player}`}
+                                className="absolute inset-[-4px] rounded-full border border-white/40 pointer-events-none"
+                                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                              />
+                            )}
+                          </motion.button>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                ))}
+                
+                <motion.div
+                  initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ delay: 0.4, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  className="rounded-xl border border-white/10 bg-[#15151D] p-5 md:col-span-2 shadow-lg"
+                >
+                  <div className="flex items-center gap-2 mb-5">
+                    <Trophy className="w-4 h-4 text-primary" />
+                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80">
+                      {t("trainingTicTacToe.setup.legsToWin")}
                     </span>
+                    <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setTargetLegs(0)}
+                      className={cn(
+                        "relative flex flex-col items-center justify-center gap-2 p-4 rounded-xl border transition-all duration-300 overflow-hidden",
+                        targetLegs === 0
+                          ? "border-primary bg-primary/10 text-primary shadow-[0_0_20px_-5px_rgba(59,130,246,0.3)]"
+                          : "border-white/10 bg-[#101017] hover:border-white/20 hover:bg-secondary/40 text-muted-foreground hover:text-foreground",
+                      )}
+                    >
+                      <InfinityIcon className={cn("w-6 h-6 transition-transform duration-500", targetLegs === 0 ? "scale-110" : "")} />
+                      <span className="text-sm font-semibold tracking-tight">{t("trainingTicTacToe.setup.unlimited")}</span>
+                      <span className="text-xs opacity-70 font-light">{t("trainingTicTacToe.setup.practiceDesc")}</span>
+                      {targetLegs === 0 && (
+                        <motion.div
+                          layoutId="active-match-mode"
+                          className="absolute inset-0 border-2 border-primary rounded-xl pointer-events-none"
+                          transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                        />
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setTargetLegs((prev) => (prev === 0 ? 3 : prev))}
+                      className={cn(
+                        "relative flex flex-col items-center justify-center gap-2 p-4 rounded-xl border transition-all duration-300 overflow-hidden",
+                        targetLegs > 0
+                          ? "border-primary bg-primary/10 text-primary shadow-[0_0_20px_-5px_rgba(59,130,246,0.3)]"
+                          : "border-white/10 bg-[#101017] hover:border-white/20 hover:bg-secondary/40 text-muted-foreground hover:text-foreground",
+                      )}
+                    >
+                      <TargetIcon className={cn("w-6 h-6 transition-transform duration-500", targetLegs > 0 ? "scale-110" : "")} />
+                      <span className="text-sm font-semibold tracking-tight">{t("trainingTicTacToe.setup.matchDesc")}</span>
+                      <span className="text-xs opacity-70 font-light">
+                        {targetLegs > 0
+                          ? t("trainingTicTacToe.setup.firstTo") + ` ${targetLegs}`
+                          : t("trainingTicTacToe.setup.matchDesc")}
+                      </span>
+                      {targetLegs > 0 && (
+                        <motion.div
+                          layoutId="active-match-mode"
+                          className="absolute inset-0 border-2 border-primary rounded-xl pointer-events-none"
+                          transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                        />
+                      )}
+                    </button>
+                  </div>
+
+                  <AnimatePresence>
                     {targetLegs > 0 && (
                       <motion.div
-                        layoutId="active-mode"
-                        className="absolute inset-0 border-2 border-primary rounded-xl"
-                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                      />
-                    )}
-                  </button>
-                </div>
-
-                <AnimatePresence>
-                  {targetLegs > 0 && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="pt-4">
-                        <div className="flex items-center justify-center gap-6 bg-[#101017] rounded-xl p-4 border border-white/10">
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-12 w-12 rounded-full border-border hover:bg-secondary hover:border-white/20"
-                            onClick={() => setTargetLegs((prev) => Math.max(1, prev - 1))}
-                          >
-                            <Minus className="w-5 h-5" />
-                          </Button>
-                          <div className="text-center min-w-[80px]">
-                            <span className="block text-4xl font-display font-bold tabular-nums text-foreground leading-none mb-1">
-                              {targetLegs}
-                            </span>
-                            <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">
-                              {t("trainingTicTacToe.setup.legsToWin")}
-                            </span>
-                          </div>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-12 w-12 rounded-full border-border hover:bg-secondary hover:border-white/20"
-                            onClick={() => setTargetLegs((prev) => Math.min(20, prev + 1))}
-                          >
-                            <Plus className="w-5 h-5" />
-                          </Button>
-                        </div>
-
-                        <div className="flex justify-center gap-2 mt-3 overflow-x-auto pb-1 no-scrollbar mask-gradient-x">
-                          {[1, 3, 5, 7, 10, 15].map((val) => (
-                            <button
-                              key={val}
-                              type="button"
-                              onClick={() => setTargetLegs(val)}
-                              className={cn(
-                                "px-3 py-1.5 rounded-full text-xs font-medium border transition-all",
-                                targetLegs === val
-                                  ? "bg-primary text-foreground border-primary shadow-lg shadow-primary/25 scale-105"
-                                  : "bg-transparent text-muted-foreground border-white/15 hover:border-white/30 hover:bg-secondary/40",
-                              )}
+                        initial={{ opacity: 0, height: 0, y: -10 }}
+                        animate={{ opacity: 1, height: "auto", y: 0 }}
+                        exit={{ opacity: 0, height: 0, y: -10 }}
+                        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pt-5">
+                          <div className="flex items-center justify-center gap-6 bg-[#101017] rounded-xl p-5 border border-white/10 shadow-inner">
+                            <motion.button
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.95 }}
+                              className="h-12 w-12 rounded-full border border-white/10 hover:bg-secondary flex items-center justify-center bg-[#15151D] text-muted-foreground hover:text-foreground transition-colors outline-none"
+                              onClick={() => setTargetLegs((prev) => Math.max(1, prev - 1))}
                             >
-                              {t("trainingTicTacToe.setup.firstTo")} {val}
-                            </button>
-                          ))}
+                              <Minus className="w-5 h-5" />
+                            </motion.button>
+                            <div className="text-center min-w-[80px]">
+                              <motion.span
+                                key={targetLegs}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="block text-4xl font-display font-bold tabular-nums text-foreground leading-none mb-1"
+                              >
+                                {targetLegs}
+                              </motion.span>
+                              <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">
+                                {t("trainingTicTacToe.setup.legsToWin")}
+                              </span>
+                            </div>
+                            <motion.button
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.95 }}
+                              className="h-12 w-12 rounded-full border border-white/10 hover:bg-secondary flex items-center justify-center bg-[#15151D] text-muted-foreground hover:text-foreground transition-colors outline-none"
+                              onClick={() => setTargetLegs((prev) => Math.min(20, prev + 1))}
+                            >
+                              <Plus className="w-5 h-5" />
+                            </motion.button>
+                          </div>
+
+                          <div className="flex justify-center gap-2 mt-4 overflow-x-auto pb-1 no-scrollbar mask-gradient-x px-2">
+                            {[1, 3, 5, 7, 10, 15].map((val) => (
+                              <button
+                                key={val}
+                                type="button"
+                                onClick={() => setTargetLegs(val)}
+                                className={cn(
+                                  "px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all duration-300",
+                                  targetLegs === val
+                                    ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/25 scale-105"
+                                    : "bg-[#101017] text-muted-foreground border-white/10 hover:border-white/30 hover:bg-secondary/40 hover:text-foreground",
+                                )}
+                              >
+                                {t("trainingTicTacToe.setup.firstTo")} {val}
+                              </button>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </div>
-
-            {setupValidationError && (
-              <p className="text-sm text-amber-300 mt-4">{setupValidationError}</p>
-            )}
-
-            <div className="mt-5">
-              <Button onClick={handleStartWithTeams} disabled={Boolean(setupValidationError)}>
-                {t("trainingTicTacToe.setup.start")}
-              </Button>
-            </div>
-          </section>
-        )}
-
-        {isBullDeciderActive && !isTeamsReady && (
-          <section className="glass-card rounded-2xl border border-white/10 p-6 md:p-10 flex flex-col items-center justify-center space-y-8 min-h-[60vh] relative overflow-hidden mb-6">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.16),transparent_50%)] pointer-events-none" />
-
-            <div className="text-center space-y-2 relative z-10 animate-in fade-in slide-in-from-top-4 duration-500">
-              <h2 className="text-3xl md:text-5xl font-display font-bold text-white drop-shadow-md">
-                {t("trainingTicTacToe.bullDecider.title")}
-              </h2>
-              <p className="text-muted-foreground text-lg">{t("trainingTicTacToe.bullDecider.subtitle")}</p>
-            </div>
-
-            <div className="flex flex-col items-center gap-3 relative z-10 w-full animate-in fade-in zoom-in-95 duration-500 delay-150 fill-mode-both">
-              {bullCurrentPlayer && !isBullRoundComplete ? (
-                <div className="bg-cyan-500/10 border border-cyan-500/25 px-8 py-3 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.18)]">
-                  <p className="text-2xl md:text-3xl font-bold text-white tracking-widest uppercase">
-                    {t("trainingTicTacToe.bullDecider.currentThrow", { player: teamSetup[bullCurrentPlayer].name })}
-                  </p>
-                </div>
-              ) : (
-                <div className="h-[60px]" />
-              )}
-
-              <div className="flex gap-4 opacity-70">
-                <p className="text-sm font-medium bg-black/40 px-4 py-1.5 rounded-full border border-white/5">
-                  {t("trainingTicTacToe.bullDecider.registered", { count: bullThrows.length, total: 2 })}
-                </p>
-                <p className="text-sm font-medium bg-black/40 px-4 py-1.5 rounded-full border border-white/5">
-                  {t("trainingTicTacToe.bullDecider.left", { count: Math.max(2 - bullThrows.length, 0) })}
-                </p>
-              </div>
-            </div>
-
-            <div className="py-4 relative z-10 animate-in fade-in zoom-in duration-500 delay-300 fill-mode-both">
-              <DartboardSvg
-                dangerNumbers={new Set<number>()}
-                markers={bullMarkers}
-                onBoardClick={bullCurrentPlayer && !isBullRoundComplete ? handleRegisterBullThrow : undefined}
-                className={cn(
-                  "max-w-[320px] md:max-w-[420px] drop-shadow-[0_0_25px_rgba(6,182,212,0.25)] transition-all duration-300",
-                  bullCurrentPlayer && !isBullRoundComplete ? "cursor-crosshair hover:scale-[1.02]" : "opacity-90",
-                )}
-              />
-            </div>
-
-            <div className="flex flex-wrap justify-center gap-3 relative z-10 animate-in fade-in duration-500 delay-500 fill-mode-both">
-              <Button variant="outline" size="lg" className="px-6 border-white/10 hover:bg-white/5" onClick={handleUndoBullThrow} disabled={bullThrows.length === 0}>
-                {t("trainingTicTacToe.turn.undo")}
-              </Button>
-              <Button variant="outline" size="lg" className="px-6 border-white/10 hover:bg-white/5" onClick={handleRestartBullRound}>
-                {t("trainingTicTacToe.bullDecider.rethrow")}
-              </Button>
-              <Button variant="ghost" size="lg" className="px-6" onClick={handleCancelBullDecider}>
-                {t("trainingTicTacToe.bullDecider.cancel")}
-              </Button>
-            </div>
-
-            {bullRanking.length > 0 && (
-              <div className="w-full max-w-lg space-y-2 bg-black/40 p-5 rounded-xl border border-white/5 relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                {bullRanking.map((entry, index) => (
-                  <div
-                    key={`ttt-bull-${entry.player}`}
-                    className={cn(
-                      "rounded-xl border p-3.5 flex items-center justify-between transition-all duration-300",
-                      index === 0
-                        ? "border-amber-400/40 bg-gradient-to-r from-amber-500/20 to-amber-500/5 shadow-[0_0_15px_rgba(245,158,11,0.1)] scale-[1.02]"
-                        : "border-white/5 bg-[#12121A] opacity-80",
+                      </motion.div>
                     )}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className={cn("flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold", index === 0 ? "bg-amber-400 text-black" : "bg-white/10 text-white")}>
-                        {index + 1}
-                      </span>
-                      <span className={cn("text-base font-medium", index === 0 ? "text-white" : "text-foreground")}>
-                        {teamSetup[entry.player].name}
-                      </span>
-                    </div>
-                    <span className="text-cyan-400 font-mono text-base font-medium tracking-tight">
-                      {t("trainingTicTacToe.bullDecider.distance", { distance: entry.distance.toFixed(1) })}
-                    </span>
-                  </div>
-                ))}
+                  </AnimatePresence>
+                </motion.div>
               </div>
-            )}
 
-            {isBullRoundComplete && (
-              <div className="relative z-10 w-full max-w-lg animate-in zoom-in duration-500 fill-mode-both">
-                <div className="rounded-2xl border border-emerald-500/30 bg-gradient-to-b from-emerald-500/20 to-emerald-900/10 p-6 text-center shadow-[0_0_30px_rgba(16,185,129,0.2)] mb-6 backdrop-blur-sm">
-                  {bullTopPlayers.length > 1 ? (
-                    <p className="text-xl font-bold text-amber-300 animate-pulse">
-                      {t("trainingTicTacToe.bullDecider.tie", { players: bullTieNames })}
-                    </p>
-                  ) : (
-                    <p className="text-2xl font-bold text-emerald-400 drop-shadow-sm">
-                      {t("trainingTicTacToe.bullDecider.winner", { player: teamSetup[bullRanking[0].player].name })}
-                    </p>
-                  )}
-                </div>
-                <Button
+              <AnimatePresence>
+                {setupValidationError && (
+                  <motion.p
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="text-sm text-amber-300 mt-4 overflow-hidden"
+                  >
+                    {setupValidationError}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+                className="mt-6 flex justify-end"
+              >
+                <Button 
                   size="lg"
-                  className={cn(
-                    "w-full text-lg h-16 rounded-xl shadow-[0_0_20px_rgba(6,182,212,0.25)] transition-all hover:scale-[1.02]",
-                    bullTopPlayers.length > 1 ? "bg-amber-600 hover:bg-amber-500" : "bg-cyan-600 hover:bg-cyan-500",
-                  )}
-                  onClick={handleConfirmBullStarter}
-                  disabled={!isBullRoundComplete || bullTopPlayers.length > 1}
+                  onClick={handleStartWithTeams} 
+                  disabled={Boolean(setupValidationError)}
+                  className="px-8 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-shadow rounded-xl font-semibold"
                 >
-                  {t("trainingTicTacToe.bullDecider.start")}
+                  {t("trainingTicTacToe.setup.start")}
                 </Button>
+              </motion.div>
+            </motion.section>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence mode="wait">
+          {isBullDeciderActive && !isTeamsReady && (
+            <motion.section
+              key="bull-decider"
+              initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+              exit={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              className={cn(
+                "glass-card rounded-2xl border border-white/10 p-4 md:p-6 flex flex-col items-center justify-center relative overflow-hidden mb-6 shadow-2xl",
+                isBullRoundComplete ? "space-y-2 md:space-y-3" : "space-y-4 md:space-y-6 min-h-[50vh]"
+              )}
+            >
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.16),transparent_50%)] pointer-events-none" />
+
+              <AnimatePresence>
+                {!isBullRoundComplete && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, height: 0, marginBottom: 0, transition: { duration: 0.3 } }}
+                    transition={{ delay: 0.1, duration: 0.5 }}
+                    className="text-center space-y-1 md:space-y-2 relative z-10"
+                  >
+                    <h2 className="text-2xl md:text-4xl font-display font-bold text-white drop-shadow-md tracking-tight">
+                      {t("trainingTicTacToe.bullDecider.title")}
+                    </h2>
+                    <p className="text-muted-foreground text-sm md:text-base font-light">{t("trainingTicTacToe.bullDecider.subtitle")}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <div className="flex flex-col items-center gap-2 md:gap-3 relative z-10 w-full">
+                <AnimatePresence mode="popLayout">
+                  {bullCurrentPlayer && !isBullRoundComplete ? (
+                    <motion.div
+                      key="current-throw"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8, filter: "blur(5px)" }}
+                      transition={{ type: "spring", bounce: 0.4, duration: 0.6, delay: 0.2 }}
+                      className="bg-cyan-500/10 border border-cyan-500/25 px-8 py-2.5 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(6,182,212,0.2)]"
+                    >
+                      <p className="text-xl md:text-2xl font-bold text-white tracking-widest uppercase" style={{ color: teamSetup[bullCurrentPlayer].color, textShadow: `0 0 10px ${teamSetup[bullCurrentPlayer].color}80` }}>
+                        {t("trainingTicTacToe.bullDecider.currentThrow", { player: teamSetup[bullCurrentPlayer].name })}
+                      </p>
+                    </motion.div>
+                  ) : !isBullRoundComplete ? (
+                    <motion.div key="spacer" className="h-[40px] md:h-[50px] opacity-0" />
+                  ) : null}
+                </AnimatePresence>
+
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                  className="flex gap-4 opacity-70"
+                >
+                  <p className="text-xs md:text-sm font-medium bg-black/40 px-4 py-1.5 rounded-full border border-white/5">
+                    {t("trainingTicTacToe.bullDecider.registered", { count: bullThrows.length, total: 2 })}
+                  </p>
+                  <p className="text-xs md:text-sm font-medium bg-black/40 px-4 py-1.5 rounded-full border border-white/5">
+                    {t("trainingTicTacToe.bullDecider.left", { count: Math.max(2 - bullThrows.length, 0) })}
+                  </p>
+                </motion.div>
               </div>
-            )}
-          </section>
-        )}
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3, duration: 0.8, type: "spring", bounce: 0.3 }}
+                className={cn("relative z-10 w-full flex justify-center", isBullRoundComplete ? "py-0" : "py-2")}
+              >
+                <DartboardSvg
+                  dangerNumbers={new Set<number>()}
+                  markers={bullMarkers}
+                  onBoardClick={bullCurrentPlayer && !isBullRoundComplete ? handleRegisterBullThrow : undefined}
+                  className={cn(
+                    "drop-shadow-[0_0_35px_rgba(6,182,212,0.15)] transition-all duration-700 ease-in-out block",
+                    !isBullRoundComplete 
+                      ? "w-full max-w-[320px] sm:max-w-[420px] md:max-w-[55vh] lg:max-w-[60vh] xl:max-w-[650px]" 
+                      : "w-full max-w-[140px] md:max-w-[180px]",
+                    bullCurrentPlayer && !isBullRoundComplete ? "cursor-crosshair hover:scale-[1.02]" : "opacity-90 grayscale-0",
+                  )}
+                />
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+                className="flex flex-wrap justify-center gap-2 md:gap-3 relative z-10"
+              >
+                <Button variant="outline" className="px-5 border-white/10 hover:bg-white/5 rounded-full" onClick={handleUndoBullThrow} disabled={bullThrows.length === 0}>
+                  {t("trainingTicTacToe.turn.undo")}
+                </Button>
+                <Button variant="outline" className="px-5 border-white/10 hover:bg-white/5 rounded-full" onClick={handleRestartBullRound}>
+                  {t("trainingTicTacToe.bullDecider.rethrow")}
+                </Button>
+                <Button variant="ghost" className="px-5 rounded-full hover:bg-white/5" onClick={handleCancelBullDecider}>
+                  {t("trainingTicTacToe.bullDecider.cancel")}
+                </Button>
+              </motion.div>
+
+              <AnimatePresence>
+                {bullRanking.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20, height: 0 }}
+                    animate={{ opacity: 1, y: 0, height: "auto" }}
+                    exit={{ opacity: 0, y: -20, height: 0 }}
+                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    className="w-full max-w-sm md:max-w-base space-y-1.5 md:space-y-2 bg-black/40 p-2.5 md:p-4 rounded-2xl border border-white/5 relative z-10"
+                  >
+                    {bullRanking.map((entry, index) => (
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1 + index * 0.1, duration: 0.4 }}
+                        key={`ttt-bull-${entry.player}`}
+                        className={cn(
+                          "rounded-xl border p-3 flex items-center justify-between transition-all duration-300",
+                          index === 0
+                            ? "border-amber-400/40 bg-gradient-to-r from-amber-500/20 to-amber-500/5 shadow-[0_0_20px_rgba(245,158,11,0.15)] scale-[1.02]"
+                            : "border-white/5 bg-[#12121A] opacity-80",
+                        )}
+                      >
+                        <div className="flex items-center gap-3 md:gap-4">
+                          <span className={cn("flex items-center justify-center w-6 h-6 md:w-7 md:h-7 rounded-full text-xs md:text-sm font-bold shadow-inner", index === 0 ? "bg-amber-400 text-black" : "bg-white/10 text-white")}>
+                            {index + 1}
+                          </span>
+                          <span className={cn("text-base md:text-lg font-semibold tracking-tight", index === 0 ? "text-white" : "text-foreground")}>
+                            {teamSetup[entry.player].name}
+                          </span>
+                        </div>
+                        <span className="text-cyan-400 font-mono text-sm md:text-base font-semibold tracking-tighter bg-cyan-950/40 px-3 py-1 rounded-lg">
+                          {t("trainingTicTacToe.bullDecider.distance", { distance: entry.distance.toFixed(1) })}
+                        </span>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <AnimatePresence>
+                {isBullRoundComplete && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ type: "spring", bounce: 0.4, duration: 0.6, delay: 0.2 }}
+                    className="relative z-10 w-full max-w-sm md:max-w-lg mt-2 text-center"
+                  >
+                    <div className="rounded-2xl border border-emerald-500/30 bg-[radial-gradient(ellipse_at_top,rgba(16,185,129,0.2),transparent_70%)] bg-black/40 p-3 md:p-5 text-center shadow-[0_0_40px_rgba(16,185,129,0.15)] mb-3 md:mb-4 backdrop-blur-md">
+                      {bullTopPlayers.length > 1 ? (
+                        <motion.p
+                          animate={{ opacity: [0.5, 1, 0.5] }}
+                          transition={{ repeat: Infinity, duration: 2 }}
+                          className="text-lg md:text-xl font-bold text-amber-300"
+                        >
+                          {t("trainingTicTacToe.bullDecider.tie", { players: bullTieNames })}
+                        </motion.p>
+                      ) : (
+                        <motion.p
+                          initial={{ scale: 0.9 }}
+                          animate={{ scale: 1 }}
+                          transition={{ type: "spring", bounce: 0.6 }}
+                          className="text-2xl md:text-3xl font-display font-bold text-emerald-400 drop-shadow-sm tracking-tight"
+                        >
+                          {t("trainingTicTacToe.bullDecider.winner", { player: teamSetup[bullRanking[0].player].name })}
+                        </motion.p>
+                      )}
+                    </div>
+                    <Button
+                      size="lg"
+                      className={cn(
+                        "w-full text-base md:text-lg h-12 md:h-14 rounded-xl shadow-[0_0_30px_rgba(6,182,212,0.3)] transition-all hover:scale-[1.03] font-bold tracking-wide",
+                        bullTopPlayers.length > 1 ? "bg-amber-600 hover:bg-amber-500" : "bg-cyan-600 hover:bg-cyan-500 text-white",
+                      )}
+                      onClick={handleConfirmBullStarter}
+                      disabled={!isBullRoundComplete || bullTopPlayers.length > 1}
+                    >
+                      {t("trainingTicTacToe.bullDecider.start")}
+                    </Button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.section>
+          )}
+        </AnimatePresence>
 
         {isTeamsReady && (
           <div
