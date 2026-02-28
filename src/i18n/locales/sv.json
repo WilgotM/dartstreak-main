@@ -448,6 +448,8 @@
     "deleteAccountError": "Kunde inte radera kontot. Försök igen eller kontakta support.",
     "deleteAccountSuccess": "Ditt konto har raderats. Hej då!",
     "deleting": "Raderar...",
+    "dartCursor": "Dartmuspekare",
+    "dartCursorDesc": "Byt ut din muspekare mot en dartpil",
     "email": "E-post",
     "emailUpdated": "E-postuppdatering påbörjad. Kolla din inkorg.",
     "leaguesParticipated": "Ligor deltagit i",
@@ -687,8 +689,8 @@
     },
     "rules": {
       "r1": "Runda 1 börjar med att bara 20 är rödmarkerad.",
-      "r2": "Varje kvarvarande spelare kastar en pil per runda och registrerar träffen.",
-      "r3": "Träffar du ett rödmarkerat nummer (single/double/triple) åker du ut direkt.",
+      "r2": "Varje kvarvarande spelare kastar upp till 3 pilar per runda och registrerar om rött träffades på pil 1, 2, 3 eller inte alls.",
+      "r3": "Om alla åker ut i samma runda vinner den som överlevde längst i rundan (senaste pilen). Samma pil = oavgjort.",
       "r4": "Efter varje full runda expanderar rött ett steg åt båda håll: 20 -> 5/1 -> 12/18 -> och så vidare.",
       "title": "Så fungerar det"
     },
@@ -710,13 +712,13 @@
       "nextExpansion": "Nästa expansion",
       "round": "Runda {{round}}"
     },
-    "subtitle": "Flerspelarläge där alla kastar en pil per runda, och du åker ut om pilen landar i en röd risksektor.",
+    "subtitle": "Flerspelarläge med upp till 3 pilar per spelare och runda. Du åker ut när din första pil träffar en röd risksektor.",
     "throw": {
       "bull": "BULL",
       "danger": "Röd Zon / Miss",
       "miss": "MISS",
       "prompt": "Registrera vilket fält som träffades. MISS och BULL är alltid säkra.",
-      "promptSimple": "Registrera om du träffade den säkra zonen eller missade/träffade rött.",
+      "promptSimple": "Välj SÄKER om alla 3 pilar var säkra, eller RÖD 1/2/3 för pilen där du först träffade rött.",
       "safe": "Säker Träff"
     },
     "title": "Red Zone Survival",

@@ -586,6 +586,8 @@
     "deleteAccountError": "Impossible de supprimer le compte. Veuillez réessayer ou contacter l'assistance.",
     "deleteAccountSuccess": "Votre compte a été supprimé. Au revoir!",
     "deleting": "Suppression...",
+    "dartCursor": "Curseur fléchette",
+    "dartCursorDesc": "Remplacez le pointeur de la souris par une fléchette",
     "email": "E-mail",
     "emailUpdated": "Mise à jour par e-mail lancée. Vérifiez votre boîte de réception.",
     "leaguesParticipated": "Ligues participées",
@@ -809,7 +811,7 @@
   },
   "trainingRedZone": {
     "title": "Survie Zone Rouge",
-    "subtitle": "Mode survie multijoueur : une fléchette chacun par manche. Si vous tombez dans le rouge, c'est fini.",
+    "subtitle": "Mode survie multijoueur : jusqu'à 3 fléchettes par joueur et par manche. Vous êtes éliminé dès que votre première fléchette touche le rouge.",
     "setup": {
       "title": "Configurer les joueurs",
       "subtitle": "Ajoutez tout le monde, choisissez les noms et commencez.",
@@ -824,8 +826,8 @@
     "rules": {
       "title": "Comment ça marche",
       "r1": "La manche 1 commence avec seulement le 20 en rouge.",
-      "r2": "Chaque joueur restant lance une fléchette par manche.",
-      "r3": "Si vous touchez un numéro rouge, vous êtes éliminé.",
+      "r2": "Chaque joueur restant lance jusqu'à 3 fléchettes par manche et indique si le rouge a été touché à la fléchette 1, 2, 3 ou pas du tout.",
+      "r3": "Si tout le monde est éliminé dans la même manche, gagne celui qui a survécu jusqu'à la fléchette la plus tardive. Même fléchette = égalité.",
       "r4": "Après chaque manche, le rouge s'étend : 20 -> 5/1 -> 12/18 etc."
     },
     "actions": {
@@ -842,7 +844,7 @@
     },
     "throw": {
       "prompt": "Enregistrez votre lancer. MISS et BULL sont sûrs.",
-      "promptSimple": "Zone sûre ou Zone Rouge/Manqué ?",
+      "promptSimple": "Choisissez SÛR si les 3 fléchettes étaient sûres, ou ROUGE 1/2/3 pour la fléchette qui a touché le rouge en premier.",
       "safe": "Tir Sécurisé",
       "danger": "Zone Rouge / Raté",
       "miss": "MISS",

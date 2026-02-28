@@ -448,6 +448,8 @@
     "deleteAccountError": "Could not delete the account. Please try again or contact support.",
     "deleteAccountSuccess": "Your account has been deleted. Goodbye!",
     "deleting": "Deleting...",
+    "dartCursor": "Dart cursor",
+    "dartCursorDesc": "Replace your mouse pointer with a dart",
     "email": "Email",
     "emailUpdated": "Email update initiated. Check your inbox.",
     "leaguesParticipated": "Leagues participated",
@@ -687,8 +689,8 @@
     },
     "rules": {
       "r1": "Round 1 starts with only 20 marked red.",
-      "r2": "Each remaining player throws one dart per round and registers where it landed.",
-      "r3": "If you hit a red-marked number (single/double/triple), you are eliminated immediately.",
+      "r2": "Each remaining player throws up to 3 darts per round and registers if red was hit on dart 1, 2, 3, or not at all.",
+      "r3": "If everyone is eliminated in the same round, the player who lasted to the latest dart wins that round. Same dart = draw.",
       "r4": "After each full round, red expands one step on both sides: 20 -> 5/1 -> 12/18 -> and so on.",
       "title": "How it works"
     },
@@ -710,13 +712,13 @@
       "nextExpansion": "Next expansion",
       "round": "Round {{round}}"
     },
-    "subtitle": "Multiplayer survival mode: one dart each per round, and you are out if your dart lands in the red danger sectors.",
+    "subtitle": "Multiplayer survival mode: up to 3 darts each per round, and you are out when your first dart lands in the red danger sectors.",
     "throw": {
       "bull": "BULL",
       "danger": "Red Zone / Miss",
       "miss": "MISS",
       "prompt": "Register the section that was hit. MISS and BULL are always safe.",
-      "promptSimple": "Register if you hit a safe zone or if you hit the red zone/missed.",
+      "promptSimple": "Register SAFE if all 3 darts were safe, or RED 1/2/3 for the dart where red was first hit.",
       "safe": "Safe Hit"
     },
     "title": "Red Zone Survival",

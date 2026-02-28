@@ -586,6 +586,8 @@
     "deleteAccountError": "Kontoen kunne ikke slettes. Prøv venligst igen eller kontakt support.",
     "deleteAccountSuccess": "Din konto er blevet slettet. Farvel!",
     "deleting": "Sletter...",
+    "dartCursor": "Dartmarkør",
+    "dartCursorDesc": "Erstat musemarkøren med en dartpil",
     "email": "E-mail",
     "emailUpdated": "E-mail-opdatering påbegyndt. Tjek din indbakke.",
     "leaguesParticipated": "Ligaer deltog",
@@ -809,7 +811,7 @@
   },
   "trainingRedZone": {
     "title": "Red Zone Survival",
-    "subtitle": "Multiplayer overlevelsestilstand: én pil hver pr. runde, og du er ude, hvis din pil lander i de røde farezoner.",
+    "subtitle": "Multiplayer-overlevelsestilstand: op til 3 pile pr. spiller per runde. Du er ude, når din første pil rammer en rød farezone.",
     "setup": {
       "title": "Opsæt spillere",
       "subtitle": "Tilføj alle, der skal spille, vælg navne og farver, og start derefter spillet.",
@@ -824,8 +826,8 @@
     "rules": {
       "title": "Sådan fungerer det",
       "r1": "Runde 1 starter med kun 20 markeret rødt.",
-      "r2": "Hver tilbageværende spiller kaster én pil pr. runde og registrerer træfferen.",
-      "r3": "Rammer du et rødmarkeret nummer (single/double/triple) er du ude med det samme.",
+      "r2": "Hver tilbageværende spiller kaster op til 3 pile pr. runde og registrerer, om rød blev ramt på pil 1, 2, 3 eller slet ikke.",
+      "r3": "Hvis alle ryger ud i samme runde, vinder spilleren som holdt længst i runden (seneste pil). Samme pil = uafgjort.",
       "r4": "Efter hver runde udvides de røde felter: 20 -> 5/1 -> 12/18 osv."
     },
     "actions": {
@@ -842,7 +844,7 @@
     },
     "throw": {
       "prompt": "Registrer, hvilken sektion der blev ramt. MISS og BULL er altid sikre.",
-      "promptSimple": "Registrer, om du ramte den sikre zone, eller om du ramte rød zone/missede.",
+      "promptSimple": "Vælg SIKKER hvis alle 3 pile var sikre, eller RØD 1/2/3 for pilen hvor rød først blev ramt.",
       "safe": "Sikkert kast",
       "danger": "Rød zone / Miss",
       "miss": "MISS",

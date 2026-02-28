@@ -586,6 +586,8 @@
     "deleteAccountError": "Kunne ikke slette kontoen. Vennligst prøv igjen eller kontakt kundestøtte.",
     "deleteAccountSuccess": "Kontoen din er slettet. Adjø!",
     "deleting": "Sletter ...",
+    "dartCursor": "Dartmarkør",
+    "dartCursorDesc": "Bytt ut musepekeren med en dartpil",
     "email": "E-post",
     "emailUpdated": "E-postoppdatering startet. Sjekk innboksen din.",
     "leaguesParticipated": "Ligaer deltok",
@@ -809,7 +811,7 @@
   },
   "trainingRedZone": {
     "title": "Red Zone Survival",
-    "subtitle": "Flerspiller overlevelsesmodus: én pil hver per runde, og du er ute hvis pilen din lander i en rød faresone.",
+    "subtitle": "Flerspiller overlevelsesmodus: opptil 3 piler per spiller per runde. Du er ute når den første pilen din treffer en rød faresone.",
     "setup": {
       "title": "Sett opp spillere",
       "subtitle": "Legg til alle som skal spille, velg farger og navn, og start spillet.",
@@ -824,8 +826,8 @@
     "rules": {
       "title": "Slik fungerer det",
       "r1": "Runde 1 starter med at bare 20 er markert rødt.",
-      "r2": "Hver gjenværende spiller kaster én pil per runde og registrerer sitt treff.",
-      "r3": "Hvis du treffer et rødmerket tall, er du ute med én gang.",
+      "r2": "Hver gjenværende spiller kaster opptil 3 piler per runde og registrerer om rødt ble truffet på pil 1, 2, 3 eller ikke i det hele tatt.",
+      "r3": "Hvis alle ryker ut i samme runde, vinner spilleren som overlevde til den seneste pilen. Samme pil = uavgjort.",
       "r4": "Etter hver runde utvides rød med ett trinn på begge sider: 20 -> 5/1 -> 12/18 osv."
     },
     "actions": {
@@ -842,7 +844,7 @@
     },
     "throw": {
       "prompt": "Registrer seksjonen som ble truffet. MISS og BULL er alltid sikre.",
-      "promptSimple": "Registrer om du traff den sikre sonen eller om du bommet/traff rødt.",
+      "promptSimple": "Velg SIKKER hvis alle 3 piler var sikre, eller RØD 1/2/3 for pilen der du først traff rødt.",
       "safe": "Sikkert treff",
       "danger": "Rød Sone / Bom",
       "miss": "MISS",

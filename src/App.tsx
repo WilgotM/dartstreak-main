@@ -39,6 +39,12 @@ const AnalyticsRouteTracker = () => {
 };
 
 const App = () => {
+  useEffect(() => {
+    if (localStorage.getItem("dartCursor") === "true") {
+      document.body.classList.add("dart-cursor");
+    }
+  }, []);
+
   return (
     <div className="animate-app-enter">
       <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark" disableTransitionOnChange>

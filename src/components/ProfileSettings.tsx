@@ -3,8 +3,9 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Settings, Clock, UserIcon, MailIcon, Globe2Icon, CheckCircle2, ChevronRight } from "lucide-react";
+import { Settings, Clock, UserIcon, MailIcon, Globe2Icon, CheckCircle2, ChevronRight, MousePointerClick } from "lucide-react";
 import { differenceInDays } from "date-fns";
 import CountrySelect from "@/components/CountrySelect";
 import { getCountryTimezone } from "@/lib/countries";
@@ -64,6 +65,17 @@ export function ProfileSettings({
   const [timezone, setTimezone] = useState(currentTimezone || "Europe/Stockholm");
   const [countryCode, setCountryCode] = useState(currentCountryCode || "");
   const [savingField, setSavingField] = useState<string | null>(null);
+  const [dartCursorEnabled, setDartCursorEnabled] = useState(() => localStorage.getItem("dartCursor") === "true");
+
+  const handleToggleDartCursor = (enabled: boolean) => {
+    setDartCursorEnabled(enabled);
+    localStorage.setItem("dartCursor", String(enabled));
+    if (enabled) {
+      document.body.classList.add("dart-cursor");
+    } else {
+      document.body.classList.remove("dart-cursor");
+    }
+  };
 
   useEffect(() => {
     setDisplayName(currentDisplayName);
@@ -398,6 +410,27 @@ export function ProfileSettings({
             </button>
           </div>
           <p className="pl-1 text-xs font-medium text-[#FAF8F5]/40">{t("profile.timezoneDescription")}</p>
+        </div>
+
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-[#FAF8F5]/10 to-transparent" />
+
+        {/* Dart Cursor Preference */}
+        <div className="flex items-center justify-between gap-4 rounded-[1.25rem] border border-[#FAF8F5]/5 bg-[#0D0D12]/40 p-4 transition-all duration-300 hover:border-[#FAF8F5]/10 hover:bg-[#1A1A24]/60">
+          <div className="space-y-1">
+            <label htmlFor="dartCursor" className="flex items-center gap-2 text-sm font-bold tracking-wide text-[#FAF8F5]/90">
+              <MousePointerClick className="h-4 w-4 text-[#FDE047]" />
+              {t("profile.dartCursor")}
+            </label>
+            <p className="text-xs font-medium text-[#FAF8F5]/50 leading-relaxed">
+              {t("profile.dartCursorDesc")}
+            </p>
+          </div>
+          <Switch
+            id="dartCursor"
+            checked={dartCursorEnabled}
+            onCheckedChange={handleToggleDartCursor}
+            className="data-[state=checked]:bg-[#22C55E]"
+          />
         </div>
       </div>
     </div>

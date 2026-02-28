@@ -586,6 +586,8 @@
     "deleteAccountError": "Das Konto konnte nicht gelöscht werden. Bitte versuchen Sie es erneut oder wenden Sie sich an den Support.",
     "deleteAccountSuccess": "Ihr Konto wurde gelöscht. Auf Wiedersehen!",
     "deleting": "Löschen...",
+    "dartCursor": "Dart-Cursor",
+    "dartCursorDesc": "Ersetzen Sie Ihren Mauszeiger durch einen Dartpfeil",
     "email": "E-Mail",
     "emailUpdated": "E-Mail-Update eingeleitet. Überprüfen Sie Ihren Posteingang.",
     "leaguesParticipated": "Ligen nahmen teil",
@@ -809,7 +811,7 @@
   },
   "trainingRedZone": {
     "title": "Red Zone Survival",
-    "subtitle": "Multiplayer-Überlebensmodus: Ein Pfeil pro Runde. Wer ein rotes Feld trifft, scheidet aus.",
+    "subtitle": "Mehrspieler-Überlebensmodus: bis zu 3 Darts pro Spieler und Runde. Du scheidest aus, sobald dein erster Dart ein rotes Feld trifft.",
     "setup": {
       "title": "Spieler einrichten",
       "subtitle": "Füge alle Spieler hinzu, wähle Farben und Namen, und starte das Spiel.",
@@ -824,8 +826,8 @@
     "rules": {
       "title": "So funktioniert's",
       "r1": "Runde 1 beginnt nur mit der roten 20.",
-      "r2": "Jeder Spieler wirft einen Pfeil pro Runde.",
-      "r3": "Triffst du ein rotes Feld, bist du sofort raus.",
+      "r2": "Jeder verbleibende Spieler wirft bis zu 3 Darts pro Runde und erfasst, ob Rot bei Dart 1, 2, 3 oder gar nicht getroffen wurde.",
+      "r3": "Wenn alle in derselben Runde ausscheiden, gewinnt der Spieler, der bis zum spätesten Dart überlebt hat. Gleicher Dart = Unentschieden.",
       "r4": "Nach jeder Runde breitet sich das Rote Feld aus: 20 -> 5/1 -> 12/18 usw."
     },
     "actions": {
@@ -842,7 +844,7 @@
     },
     "throw": {
       "prompt": "Registriere das getroffene Feld. MISS und BULL sind sicher.",
-      "promptSimple": "Sichere Zone oder rote Zone/Fehlwurf?",
+      "promptSimple": "Wähle SICHER, wenn alle 3 Darts sicher waren, oder ROT 1/2/3 für den Dart, bei dem Rot zuerst getroffen wurde.",
       "safe": "Sicherer Treffer",
       "danger": "Rote Zone / Vorbei",
       "miss": "MISS",

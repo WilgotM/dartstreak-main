@@ -160,8 +160,16 @@ body {
   /* Prevent highlight on tap */
   -webkit-tap-highlight-color: transparent;
   background:
-    radial-gradient(circle at 15% -10%, rgba(34, 197, 94, 0.12), transparent 34%),
-    radial-gradient(circle at 88% 8%, rgba(250, 248, 245, 0.06), transparent 30%),
+    radial-gradient(
+      circle at 15% -10%,
+      rgba(34, 197, 94, 0.12),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 88% 8%,
+      rgba(250, 248, 245, 0.06),
+      transparent 30%
+    ),
     hsl(var(--background));
 }
 
@@ -312,9 +320,21 @@ a,
 
 .app-shell-bg {
   background:
-    radial-gradient(circle at 12% -14%, rgba(34, 197, 94, 0.2), transparent 34%),
-    radial-gradient(circle at 88% -8%, rgba(250, 248, 245, 0.09), transparent 31%),
-    radial-gradient(circle at 75% 115%, rgba(34, 197, 94, 0.12), transparent 42%),
+    radial-gradient(
+      circle at 12% -14%,
+      rgba(34, 197, 94, 0.2),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 88% -8%,
+      rgba(250, 248, 245, 0.09),
+      transparent 31%
+    ),
+    radial-gradient(
+      circle at 75% 115%,
+      rgba(34, 197, 94, 0.12),
+      transparent 42%
+    ),
     hsl(var(--background));
 }
 
@@ -436,4 +456,12 @@ a,
 
 .toaster[data-sonner-toaster] [data-sonner-toast][data-y-position="bottom"] {
   --y: translateY(8px);
+}
+
+/* Custom Dart Cursor */
+.dart-cursor,
+.dart-cursor * {
+  cursor:
+    url("/dart-cursor.svg") 1 1,
+    auto !important;
 }

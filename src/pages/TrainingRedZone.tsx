@@ -23,7 +23,7 @@ interface GamePlayer extends SetupPlayer {
 
 interface ThrowEntry {
   playerId: string;
-  hitDanger: boolean;
+  hitDangerDart: 1 | 2 | 3 | null;
 }
 
 interface RoundLog {
@@ -318,16 +318,16 @@ export default function TrainingRedZone() {
   }, [bullPlayers, bullRanking, bullTopPlayers.length, isBullRoundComplete, startGameFromPlayers]);
 
   const handleRegisterThrow = useCallback(
-    (hitDanger: boolean) => {
+    (hitDangerDart: 1 | 2 | 3 | null) => {
       if (!currentPlayerId || result) return;
 
       const nextEntry: ThrowEntry = {
         playerId: currentPlayerId,
-        hitDanger,
+        hitDangerDart,
       };
 
       const nextEntries = [...roundEntries, nextEntry];
-      const nextPlayers = hitDanger
+      const nextPlayers = hitDangerDart !== null
         ? players.map((player) =>
           player.id === currentPlayerId
             ? { ...player, isEliminated: true, eliminatedRound: round }
@@ -335,38 +335,57 @@ export default function TrainingRedZone() {
         )
         : players;
 
+      const finalizeRound = (entries: ThrowEntry[], updatedPlayers: GamePlayer[]) => {
+        const eliminatedIds = entries
+          .filter((entry) => entry.hitDangerDart !== null)
+          .map((entry) => entry.playerId);
+
+        setHistory((previous) => [
+          {
+            round,
+            dangerNumbers: [...dangerNumbers],
+            entries,
+            eliminatedIds,
+          },
+          ...previous,
+        ]);
+
+        const survivors = updatedPlayers.filter((player) => !player.isEliminated);
+        if (survivors.length === 1) {
+          setResult({
+            winners: survivors.map((player) => player.id),
+            isDraw: false,
+          });
+          return;
+        }
+        if (survivors.length === 0) {
+          const bestDart = entries.reduce<number>(
+            (best, entry) => Math.max(best, entry.hitDangerDart ?? 0),
+            0,
+          );
+          const winners = entries
+            .filter((entry) => (entry.hitDangerDart ?? 0) === bestDart)
+            .map((entry) => entry.playerId);
+
+          setResult({
+            winners,
+            isDraw: winners.length !== 1,
+          });
+          return;
+        }
+
+        setRound((previous) => previous + 1);
+        setDangerRadius((previous) => Math.min(previous + 1, 10));
+        setRoundOrder(survivors.map((player) => player.id));
+        setRoundEntries([]);
+      };
+
       setPlayers(nextPlayers);
       setRoundEntries(nextEntries);
 
       if (nextEntries.length < roundOrder.length) return;
 
-      const eliminatedIds = nextEntries
-        .filter((entry) => entry.hitDanger)
-        .map((entry) => entry.playerId);
-
-      setHistory((previous) => [
-        {
-          round,
-          dangerNumbers: [...dangerNumbers],
-          entries: nextEntries,
-          eliminatedIds,
-        },
-        ...previous,
-      ]);
-
-      const survivors = nextPlayers.filter((player) => !player.isEliminated);
-      if (survivors.length <= 1) {
-        setResult({
-          winners: survivors.map((player) => player.id),
-          isDraw: survivors.length === 0,
-        });
-        return;
-      }
-
-      setRound((previous) => previous + 1);
-      setDangerRadius((previous) => Math.min(previous + 1, 10));
-      setRoundOrder(survivors.map((player) => player.id));
-      setRoundEntries([]);
+      finalizeRound(nextEntries, nextPlayers);
     },
     [currentPlayerId, dangerNumbers, players, result, round, roundEntries, roundOrder.length],
   );
@@ -377,7 +396,7 @@ export default function TrainingRedZone() {
     const lastEntry = roundEntries[roundEntries.length - 1];
     setRoundEntries((previous) => previous.slice(0, -1));
 
-    if (lastEntry.hitDanger) {
+    if (lastEntry.hitDangerDart !== null) {
       setPlayers((previous) =>
         previous.map((player) =>
           player.id === lastEntry.playerId
@@ -987,16 +1006,30 @@ export default function TrainingRedZone() {
                       <Button
                         variant="outline"
                         className="h-16 text-lg border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/50"
-                        onClick={() => handleRegisterThrow(false)}
+                        onClick={() => handleRegisterThrow(null)}
                       >
                         {t("trainingRedZone.throw.safe")}
                       </Button>
                       <Button
                         variant="outline"
                         className="h-16 text-lg border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500/50"
-                        onClick={() => handleRegisterThrow(true)}
+                        onClick={() => handleRegisterThrow(1)}
                       >
-                        {t("trainingRedZone.throw.danger")}
+                        {t("trainingRedZone.throw.danger")} 1
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="h-16 text-lg border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500/50"
+                        onClick={() => handleRegisterThrow(2)}
+                      >
+                        {t("trainingRedZone.throw.danger")} 2
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="h-16 text-lg border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500/50"
+                        onClick={() => handleRegisterThrow(3)}
+                      >
+                        {t("trainingRedZone.throw.danger")} 3
                       </Button>
                     </div>
                   </section>
@@ -1026,11 +1059,11 @@ export default function TrainingRedZone() {
                       {roundEntries.map((entry, idx) => (
                         <div key={`entry-${entry.playerId}-${idx}`} className="text-sm flex items-center justify-between gap-2">
                           <span>{resolvePlayerName(entry.playerId)}</span>
-                          <span className={entry.hitDanger ? "text-red-400 font-medium flex items-center gap-1" : "text-emerald-400 font-medium"}>
-                            {entry.hitDanger ? (
+                          <span className={entry.hitDangerDart !== null ? "text-red-400 font-medium flex items-center gap-1" : "text-emerald-400 font-medium"}>
+                            {entry.hitDangerDart !== null ? (
                               <>
                                 <Skull className="w-3.5 h-3.5" />
-                                {t("trainingRedZone.throw.danger")} - {t("trainingRedZone.players.eliminated")}
+                                {t("trainingRedZone.throw.danger")} {entry.hitDangerDart} - {t("trainingRedZone.players.eliminated")}
                               </>
                             ) : (
                               t("trainingRedZone.throw.safe")

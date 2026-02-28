@@ -586,6 +586,8 @@
     "deleteAccountError": "No se pudo eliminar la cuenta. Inténtelo de nuevo o comuníquese con el soporte.",
     "deleteAccountSuccess": "Tu cuenta ha sido eliminada. ¡Adiós!",
     "deleting": "Eliminando...",
+    "dartCursor": "Cursor de dardo",
+    "dartCursorDesc": "Sustituye el puntero del ratón por un dardo",
     "email": "Correo electrónico",
     "emailUpdated": "Actualización por correo electrónico iniciada. Revisa tu bandeja de entrada.",
     "leaguesParticipated": "Ligas participaron",
@@ -809,7 +811,7 @@
   },
   "trainingRedZone": {
     "title": "Red Zone Survival",
-    "subtitle": "Modo supervivencia multijugador: un dardo por ronda. Estás eliminado si das en zona roja.",
+    "subtitle": "Modo supervivencia multijugador: hasta 3 dardos por jugador y ronda. Quedas eliminado cuando tu primer dardo cae en zona roja.",
     "setup": {
       "title": "Configurar jugadores",
       "subtitle": "Añade a los jugadores, elige nombres y colores, y empieza.",
@@ -824,8 +826,8 @@
     "rules": {
       "title": "Cómo funciona",
       "r1": "La ronda 1 empieza con el 20 en rojo.",
-      "r2": "Cada jugador lanza un dardo por ronda.",
-      "r3": "Si das en un número rojo, estás eliminado.",
+      "r2": "Cada jugador restante lanza hasta 3 dardos por ronda y registra si tocó rojo en dardo 1, 2, 3 o no tocó rojo.",
+      "r3": "Si todos quedan eliminados en la misma ronda, gana quien sobrevivió hasta el dardo más tardío. Mismo dardo = empate.",
       "r4": "Después de cada ronda, el color rojo se expande: 20 -> 5/1 -> 12/18 etc."
     },
     "actions": {
@@ -842,7 +844,7 @@
     },
     "throw": {
       "prompt": "Registra en qué sección diste. MISS y BULL son seguras.",
-      "promptSimple": "Registra si diste en zona segura o fallaste/diste en zona roja.",
+      "promptSimple": "Elige SEGURO si los 3 dardos fueron seguros, o ROJO 1/2/3 para el dardo en el que tocaste rojo por primera vez.",
       "safe": "Tiro a salvo",
       "danger": "Zona Roja / Fallo",
       "miss": "MISS",

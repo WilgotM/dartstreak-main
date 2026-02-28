@@ -586,6 +586,8 @@
     "deleteAccountError": "Kan het account niet verwijderen. Probeer het opnieuw of neem contact op met de ondersteuning.",
     "deleteAccountSuccess": "Uw account is verwijderd. Tot ziens!",
     "deleting": "Verwijderen...",
+    "dartCursor": "Dartcursor",
+    "dartCursorDesc": "Vervang je muisaanwijzer door een dartpijl",
     "email": "E-mail",
     "emailUpdated": "E-mailupdate gestart. Controleer je inbox.",
     "leaguesParticipated": "Er deden competities mee",
@@ -809,7 +811,7 @@
   },
   "trainingRedZone": {
     "title": "Red Zone Survival",
-    "subtitle": "Multiplayer overlevingsmodus: Eén pijl per ronde. Kom je in een rode zone terecht, dan lig je eruit.",
+    "subtitle": "Multiplayer overlevingsmodus: tot 3 darts per speler per ronde. Je ligt eruit zodra je eerste dart in een rode gevarenzone landt.",
     "setup": {
       "title": "Spelers instellen",
       "subtitle": "Voeg iedereen toe, kies namen en begin het spel.",
@@ -824,8 +826,8 @@
     "rules": {
       "title": "Hoe het werkt",
       "r1": "Ronde 1 begint met alleen rood op de 20.",
-      "r2": "Iedere speler gooit één pijl per ronde.",
-      "r3": "Als je een rood veld raakt, lig je er direct uit.",
+      "r2": "Iedere overblijvende speler gooit tot 3 darts per ronde en registreert of rood werd geraakt op dart 1, 2, 3 of helemaal niet.",
+      "r3": "Als iedereen in dezelfde ronde wordt uitgeschakeld, wint de speler die het langst overleefde in de ronde (laatste dart). Zelfde dart = gelijkspel.",
       "r4": "Na elke ronde breiden de rode velden zich uit: 20 -> 5/1 -> 12/18 etc."
     },
     "actions": {
@@ -842,7 +844,7 @@
     },
     "throw": {
       "prompt": "Registreer waar je gooide. MISS en BULL zijn veilig.",
-      "promptSimple": "Veilige zone of Rode Zone/Gemist?",
+      "promptSimple": "Kies VEILIG als alle 3 darts veilig waren, of ROOD 1/2/3 voor de dart waarop je voor het eerst rood raakte.",
       "safe": "Veilig",
       "danger": "Rode Zone / Mis",
       "miss": "MISS",
