@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
@@ -24,7 +24,6 @@ import { useHaptics } from "@/hooks/useHaptics";
 import { addDays, isAfter, isBefore } from "date-fns";
 import { getCountryName } from "@/lib/countries";
 import { getDateFnsLocale } from "@/i18n/languages";
-import gsap from "gsap";
 
 interface League {
   id: string;
@@ -41,6 +40,13 @@ interface League {
   country_code?: string | null;
   league_timezone?: string | null;
   season_key?: string | null;
+}
+
+const LEAGUES_CACHE_KEY = "dartstreak:leagues:list";
+
+interface CachedLeaguesPayload {
+  userId: string;
+  leagues: League[];
 }
 
 /** Parse "YYYY-WNN" → { year, week } */
@@ -72,11 +78,6 @@ export default function Leagues() {
   const [leagues, setLeagues] = useState<League[]>([]);
   const [loadingLeagues, setLoadingLeagues] = useState(true);
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLElement>(null);
-  const actionsRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
-
   const appLanguage = i18n.resolvedLanguage || i18n.language;
   const dateLocale = getDateFnsLocale(appLanguage);
 
@@ -97,6 +98,23 @@ export default function Leagues() {
     }
   }, [user, loading, navigate]);
 
+  useEffect(() => {
+    if (!user) return;
+
+    try {
+      const raw = window.sessionStorage.getItem(LEAGUES_CACHE_KEY);
+      if (!raw) return;
+
+      const cached = JSON.parse(raw) as CachedLeaguesPayload;
+      if (cached.userId !== user.id || !Array.isArray(cached.leagues)) return;
+
+      setLeagues(cached.leagues);
+      setLoadingLeagues(false);
+    } catch (error) {
+      console.error("Error reading leagues cache:", error);
+    }
+  }, [user]);
+
   const fetchLeagues = useCallback(async () => {
     if (!user) return;
     const { data: memberData, error: memberError } = await supabase
@@ -114,6 +132,10 @@ export default function Leagues() {
 
     if (leagueIds.length === 0) {
       setLeagues([]);
+      window.sessionStorage.setItem(
+        LEAGUES_CACHE_KEY,
+        JSON.stringify({ userId: user.id, leagues: [] } satisfies CachedLeaguesPayload),
+      );
       setLoadingLeagues(false);
       return;
     }
@@ -131,6 +153,10 @@ export default function Leagues() {
         (league) => !league.is_system || isActiveSystemLeague(league),
       );
       setLeagues(visibleLeagues);
+      window.sessionStorage.setItem(
+        LEAGUES_CACHE_KEY,
+        JSON.stringify({ userId: user.id, leagues: visibleLeagues } satisfies CachedLeaguesPayload),
+      );
     }
     setLoadingLeagues(false);
   }, [isActiveSystemLeague, user]);
@@ -140,45 +166,6 @@ export default function Leagues() {
       void fetchLeagues();
     }
   }, [user, fetchLeagues]);
-
-  // GSAP Animations
-  useEffect(() => {
-    if (loading || !user) return;
-    
-    // Animate header and actions only once
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
-      
-      gsap.set(headerRef.current, { y: -20, opacity: 0 });
-      gsap.set(actionsRef.current?.children || [], { y: 20, opacity: 0 });
-
-      tl.to(headerRef.current, { y: 0, opacity: 1, duration: 0.8 })
-        .to(actionsRef.current?.children || [], { y: 0, opacity: 1, duration: 0.6, stagger: 0.1 }, "-=0.6");
-    }, containerRef);
-    
-    return () => ctx.revert();
-  }, [loading, user]);
-
-  // Animate list items when loaded
-  useEffect(() => {
-    if (loadingLeagues || leagues.length === 0) return;
-    
-    const ctx = gsap.context(() => {
-      const validCards = cardsRef.current.filter(Boolean);
-      if (validCards.length > 0) {
-        gsap.set(validCards, { y: 30, opacity: 0 });
-        gsap.to(validCards, {
-          y: 0,
-          opacity: 1,
-          duration: 0.6,
-          stagger: 0.08,
-          ease: "back.out(1.2)"
-        });
-      }
-    }, containerRef);
-    
-    return () => ctx.revert();
-  }, [loadingLeagues, leagues.length]);
 
   const getLeagueStatus = (league: League) => {
     if (!league.started_at) return null;
@@ -204,8 +191,8 @@ export default function Leagues() {
 
   return (
     <AppLayout>
-      <div ref={containerRef} className="min-h-full bg-[#0D0D12] overflow-x-hidden">
-        <header ref={headerRef} className="sticky top-0 z-40 px-4 pt-6 pb-4">
+      <div className="min-h-full bg-[#0D0D12] overflow-x-hidden">
+        <header className="sticky top-0 z-40 px-4 pt-6 pb-4">
           <div className="mx-auto max-w-3xl">
             <h1 className="text-4xl md:text-5xl font-black tracking-tight text-[#FAF8F5] drop-shadow-[0_0_20px_rgba(250,248,245,0.15)]">
               {t("nav.leagues")}
@@ -216,7 +203,7 @@ export default function Leagues() {
         <main className="container mx-auto px-4 py-2 pb-24">
           <div className="max-w-3xl mx-auto">
             {/* Custom Action Buttons */}
-            <div ref={actionsRef} className="flex gap-4 mb-8">
+            <div className="flex gap-4 mb-8">
               <button
                 type="button"
                 className="group relative flex-1 overflow-hidden rounded-[1.5rem] border border-[#FAF8F5]/10 bg-[#16161C]/80 px-4 py-4 md:py-5 shadow-[0_10px_30px_rgba(0,0,0,0.5)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-[#22C55E]/40 hover:bg-[#1A1A24] dark-glass text-left"
@@ -288,7 +275,7 @@ export default function Leagues() {
               </div>
             ) : (
               <div className="space-y-5 relative">
-                {leagues.map((league, index) => {
+                {leagues.map((league) => {
                   const status = getLeagueStatus(league);
                   const isSystem = league.is_system;
                   const isGlobal = league.system_scope === "global";
@@ -317,8 +304,6 @@ export default function Leagues() {
                   return (
                     <div
                       key={league.id}
-                      ref={(el) => (cardsRef.current[index] = el)}
-                      className="opacity-0"
                     >
                       <button
                         type="button"

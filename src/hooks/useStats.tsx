@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -17,16 +17,59 @@ export interface UserStats {
   leagues: LeagueStats;
 }
 
+const getStatsCacheKey = (userId: string) => `dartstreak:stats:${userId}`;
+const getStatsInvalidateKey = (userId: string) => `dartstreak:stats:invalidate:${userId}`;
+
+interface CachedStatsPayload {
+  cachedAt: number;
+  stats: UserStats;
+}
+
 export function useStats(userId?: string) {
   const { user } = useAuth();
   const [stats, setStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const hasWarmDataRef = useRef(false);
 
   const targetUserId = userId || user?.id;
 
+  useEffect(() => {
+    if (!targetUserId) return;
+
+    hasWarmDataRef.current = false;
+
+    try {
+      const raw = window.sessionStorage.getItem(getStatsCacheKey(targetUserId));
+      if (!raw) {
+        setStats(null);
+        setLoading(true);
+        return;
+      }
+
+      const cached = JSON.parse(raw) as CachedStatsPayload;
+      const invalidatedAt = Number(window.sessionStorage.getItem(getStatsInvalidateKey(targetUserId)) || 0);
+
+      if (!cached?.stats?.leagues || !cached.cachedAt || cached.cachedAt < invalidatedAt) {
+        setStats(null);
+        setLoading(true);
+        return;
+      }
+
+      setStats(cached.stats);
+      setLoading(false);
+      hasWarmDataRef.current = true;
+    } catch (error) {
+      console.error("Error reading stats cache:", error);
+      setStats(null);
+      setLoading(true);
+    }
+  }, [targetUserId]);
+
   const fetchStats = useCallback(async () => {
     if (!targetUserId) return;
-    setLoading(true);
+    if (!hasWarmDataRef.current) {
+      setLoading(true);
+    }
 
     try {
       // Fetch league stats from daily_throws
@@ -143,9 +186,17 @@ export function useStats(userId?: string) {
         };
       }
 
-      setStats({
+      const nextStats = {
         leagues: leagueStats,
-      });
+      };
+
+      setStats(nextStats);
+      hasWarmDataRef.current = true;
+      const payload: CachedStatsPayload = {
+        cachedAt: Date.now(),
+        stats: nextStats,
+      };
+      window.sessionStorage.setItem(getStatsCacheKey(targetUserId), JSON.stringify(payload));
     } catch (error) {
       console.error("Error fetching stats:", error);
     } finally {

@@ -1,4 +1,4 @@
-import { ChangeEvent, ComponentType, useState, useRef, useEffect } from "react";
+import { ChangeEvent, ComponentType, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,7 +8,6 @@ import { Settings, Clock, UserIcon, MailIcon, Globe2Icon, CheckCircle2, ChevronR
 import { differenceInDays } from "date-fns";
 import CountrySelect from "@/components/CountrySelect";
 import { getCountryTimezone } from "@/lib/countries";
-import gsap from "gsap";
 
 const TIMEZONES = [
   { value: "Europe/Stockholm", label: "Stockholm (CET)" },
@@ -46,7 +45,6 @@ interface CustomInputGroupProps {
   hasChanged: boolean;
   helperText?: string;
   type?: "text" | "email";
-  idx: number;
 }
 
 export function ProfileSettings({
@@ -67,9 +65,6 @@ export function ProfileSettings({
   const [countryCode, setCountryCode] = useState(currentCountryCode || "");
   const [savingField, setSavingField] = useState<string | null>(null);
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const fieldsRef = useRef<(HTMLDivElement | null)[]>([]);
-
   const canChangeDisplayName = !displayNameChangedAt || 
     differenceInDays(new Date(), new Date(displayNameChangedAt)) >= 7;
   
@@ -81,24 +76,6 @@ export function ProfileSettings({
     const daysSince = differenceInDays(new Date(), new Date(changedAt));
     return Math.max(0, 7 - daysSince);
   };
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const validFields = fieldsRef.current.filter(Boolean);
-      if (validFields.length === 0) return;
-      
-      gsap.set(validFields, { opacity: 0, x: -20 });
-      gsap.to(validFields, {
-        opacity: 1,
-        x: 0,
-        duration: 0.6,
-        stagger: 0.1,
-        ease: "power3.out",
-        delay: 0.2
-      });
-    }, containerRef);
-    return () => ctx.revert();
-  }, []);
 
   const handleSaveDisplayName = async () => {
     if (!user || !displayName.trim()) return;
@@ -234,11 +211,10 @@ export function ProfileSettings({
     disabled, 
     hasChanged, 
     helperText, 
-    type = "text",
-    idx
+    type = "text"
   }: CustomInputGroupProps) => {
     return (
-      <div ref={(el) => (fieldsRef.current[idx] = el)} className="group space-y-2">
+      <div className="group space-y-2">
         <label htmlFor={id} className="flex items-center gap-2 text-sm font-bold tracking-wide text-[#FAF8F5]/80 pl-1">
           <Icon className="h-4 w-4 text-[#22C55E]" />
           {label}
@@ -280,7 +256,7 @@ export function ProfileSettings({
   };
 
   return (
-    <div ref={containerRef} className="overflow-hidden rounded-[2.5rem] border border-[#FAF8F5]/10 bg-[#16161C]/50 shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl">
+    <div className="overflow-hidden rounded-[2.5rem] border border-[#FAF8F5]/10 bg-[#16161C]/50 shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl">
       <div className="border-b border-[#FAF8F5]/10 bg-[#0D0D12]/40 px-6 py-5 sm:px-8">
         <h2 className="flex items-center gap-3 text-xl font-black tracking-tight text-[#FAF8F5]">
           <span className="flex h-10 w-10 items-center justify-center rounded-[1rem] bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20">
@@ -292,7 +268,6 @@ export function ProfileSettings({
       <div className="space-y-8 p-6 sm:p-8">
         {/* Username */}
         <CustomInputGroup
-          idx={0}
           id="displayName"
           label={t("profile.username")}
           icon={UserIcon}
@@ -307,7 +282,6 @@ export function ProfileSettings({
 
         {/* Email */}
         <CustomInputGroup
-          idx={1}
           id="email"
           type="email"
           label={t("profile.email")}
@@ -324,7 +298,7 @@ export function ProfileSettings({
         <div className="h-px w-full bg-gradient-to-r from-transparent via-[#FAF8F5]/10 to-transparent" />
 
         {/* Country */}
-        <div ref={(el) => (fieldsRef.current[2] = el)} className="space-y-2">
+        <div className="space-y-2">
           <label htmlFor="country" className="flex items-center gap-2 text-sm font-bold tracking-wide text-[#FAF8F5]/80 pl-1">
             <Globe2Icon className="h-4 w-4 text-[#38BDF8]" />
             {t("profile.country")}
@@ -359,7 +333,7 @@ export function ProfileSettings({
         </div>
 
         {/* Timezone */}
-        <div ref={(el) => (fieldsRef.current[3] = el)} className="space-y-2">
+        <div className="space-y-2">
           <label className="flex items-center gap-2 text-sm font-bold tracking-wide text-[#FAF8F5]/80 pl-1">
             <Clock className="h-4 w-4 text-[#FACC15]" />
             {t("profile.timezone")}

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
@@ -7,7 +7,6 @@ import { AppLayout } from "@/components/AppLayout";
 import { useHaptics } from "@/hooks/useHaptics";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import PlayerNameWithCountry from "@/components/PlayerNameWithCountry";
-import gsap from "gsap";
 
 export default function Dashboard() {
   const { user, profile, loading } = useAuth();
@@ -15,46 +14,11 @@ export default function Dashboard() {
   const { t } = useTranslation();
   const { medium } = useHaptics();
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const heroRef = useRef<HTMLElement>(null);
-  const cardsRef = useRef<(HTMLButtonElement | null)[]>([]);
-
   useEffect(() => {
     if (!loading && !user) {
       navigate("/auth");
     }
   }, [user, loading, navigate]);
-
-  useEffect(() => {
-    if (loading || !user) return;
-
-    const ctx = gsap.context(() => {
-      // Set initial states
-      gsap.set(heroRef.current, { y: 30, opacity: 0 });
-      gsap.set(cardsRef.current, { y: 30, opacity: 0 });
-
-      // Animate in
-      const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
-
-      tl.to(heroRef.current, {
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        delay: 0.1,
-      }).to(
-        cardsRef.current,
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          stagger: 0.1,
-        },
-        "-=0.6"
-      );
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, [loading, user]);
 
   if (loading || !user) {
     return (
@@ -104,10 +68,9 @@ export default function Dashboard() {
 
   return (
     <AppLayout>
-      <div ref={containerRef} className="relative min-h-full overflow-x-hidden bg-[#0D0D12]">
+      <div className="relative min-h-full overflow-x-hidden bg-[#0D0D12]">
         <main className="container mx-auto flex min-h-full max-w-5xl flex-col px-4 pb-[calc(8rem+env(safe-area-inset-bottom))] pt-6 md:px-6 md:pb-16">
-          <section 
-            ref={heroRef}
+          <section
             className="group relative overflow-hidden rounded-[2.5rem] border border-[#FAF8F5]/5 bg-[#16161C]/60 p-8 shadow-[0_20px_52px_rgba(0,0,0,0.6)] backdrop-blur-2xl md:p-10 transition-all duration-500 hover:border-[#FAF8F5]/10"
           >
             {/* Background Effects */}
@@ -156,7 +119,6 @@ export default function Dashboard() {
               return (
                 <button
                   key={card.key}
-                  ref={(el) => (cardsRef.current[index] = el)}
                   type="button"
                   onClick={() => {
                     medium();

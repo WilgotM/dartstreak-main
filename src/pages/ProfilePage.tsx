@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
@@ -20,7 +20,6 @@ import { StatsDisplay } from "@/components/StatsDisplay";
 import { ProfileSettings } from "@/components/ProfileSettings";
 import { toast } from "sonner";
 import PlayerNameWithCountry from "@/components/PlayerNameWithCountry";
-import gsap from "gsap";
 
 interface ExtendedProfile {
   id: string;
@@ -38,9 +37,6 @@ export default function ProfilePage() {
   const { t } = useTranslation();
   const [extendedProfile, setExtendedProfile] = useState<ExtendedProfile | null>(null);
   const [deleting, setDeleting] = useState(false);
-
-  const containerRef = useRef<HTMLDivElement>(null);
-  const elementsRef = useRef<(HTMLElement | null)[]>([]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -66,27 +62,6 @@ export default function ProfilePage() {
       void fetchExtendedProfile();
     }
   }, [user, fetchExtendedProfile]);
-
-  // GSAP animations
-  useEffect(() => {
-    if (loading || !user) return;
-
-    const ctx = gsap.context(() => {
-      const validElements = elementsRef.current.filter(Boolean);
-      if (validElements.length === 0) return;
-
-      gsap.set(validElements, { y: 40, opacity: 0 });
-      gsap.to(validElements, {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: "power3.out",
-      });
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, [loading, user]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -140,7 +115,7 @@ export default function ProfilePage() {
 
   return (
     <AppLayout>
-      <div ref={containerRef} className="min-h-screen bg-[#0D0D12] overflow-x-hidden">
+      <div className="min-h-screen bg-[#0D0D12] overflow-x-hidden">
         <header className="sticky top-0 z-40 px-4 pb-4 pt-6">
           <div className="mx-auto max-w-2xl px-2">
             <h1 className="text-3xl md:text-4xl font-black text-[#FAF8F5] tracking-tight drop-shadow-[0_0_15px_rgba(250,248,245,0.1)]">{t("nav.profile")}</h1>
@@ -149,10 +124,7 @@ export default function ProfilePage() {
 
         <main className="container mx-auto px-4 py-4 space-y-8 pb-32 max-w-2xl">
           {/* Profile Hero section */}
-          <section
-            ref={(el) => (elementsRef.current[0] = el)}
-            className="group relative overflow-hidden rounded-[2.5rem] border border-[#FAF8F5]/10 bg-[#16161C]/60 p-8 shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-2xl transition-all duration-300 hover:border-[#FAF8F5]/20 hover:bg-[#1A1A24]/80"
-          >
+          <section className="group relative overflow-hidden rounded-[2.5rem] border border-[#FAF8F5]/10 bg-[#16161C]/60 p-8 shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-2xl transition-all duration-300 hover:border-[#FAF8F5]/20 hover:bg-[#1A1A24]/80">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(34,197,94,0.1),transparent_50%),radial-gradient(circle_at_100%_100%,rgba(56,189,248,0.05),transparent_50%)]" />
             <div className="relative z-10 flex flex-col items-center gap-6 sm:flex-row">
               <div className="relative">
@@ -185,7 +157,7 @@ export default function ProfilePage() {
           </section>
 
           {/* Settings Section */}
-          <section ref={(el) => (elementsRef.current[1] = el)}>
+          <section>
             {extendedProfile && (
               <ProfileSettings
                 currentDisplayName={extendedProfile.display_name}
@@ -201,7 +173,7 @@ export default function ProfilePage() {
           </section>
 
           {/* Statistics Display */}
-          <section ref={(el) => (elementsRef.current[2] = el)} className="space-y-4">
+          <section className="space-y-4">
             <h2 className="text-xl font-bold tracking-tight text-[#FAF8F5] px-2">{t("stats.statistics")}</h2>
             <div className="overflow-hidden rounded-[2rem] border border-[#FAF8F5]/10 bg-[#16161C]/50 shadow-[0_15px_40px_rgba(0,0,0,0.5)] backdrop-blur-xl">
               <StatsDisplay userId={user.id} />
@@ -209,7 +181,7 @@ export default function ProfilePage() {
           </section>
 
           {/* Legal and Contact */}
-          <section ref={(el) => (elementsRef.current[3] = el)} className="grid gap-3 rounded-[2rem] border border-[#FAF8F5]/10 bg-[#16161C]/50 p-6 shadow-xl backdrop-blur-xl">
+          <section className="grid gap-3 rounded-[2rem] border border-[#FAF8F5]/10 bg-[#16161C]/50 p-6 shadow-xl backdrop-blur-xl">
             {[
               { to: "/privacy", icon: Shield, label: t("common.privacyPolicy") },
               { to: "/terms", icon: FileText, label: t("common.termsOfService") },
@@ -250,7 +222,7 @@ export default function ProfilePage() {
           </section>
 
           {/* Danger Zone */}
-          <section ref={(el) => (elementsRef.current[4] = el)} className="space-y-4 pt-4">
+          <section className="space-y-4 pt-4">
             <button 
               onClick={handleSignOut} 
               className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-[1.5rem] border border-[#FAF8F5]/10 bg-[#16161C]/80 px-4 py-5 font-bold text-[#FAF8F5]/90 shadow-lg backdrop-blur-xl transition-all duration-300 hover:border-[#FAF8F5]/30 hover:bg-[#2A2A35]"

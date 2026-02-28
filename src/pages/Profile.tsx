@@ -19,6 +19,13 @@ interface ProfileData {
   created_at: string;
 }
 
+const PROFILE_CACHE_KEY = "dartstreak:profile:view";
+
+interface CachedProfilePayload {
+  profileId: string;
+  profile: ProfileData;
+}
+
 export default function Profile() {
   const { id } = useParams<{ id: string }>();
   const { user, loading: authLoading } = useAuth();
@@ -35,6 +42,23 @@ export default function Profile() {
     }
   }, [user, authLoading, navigate]);
 
+  useEffect(() => {
+    if (!id) return;
+
+    try {
+      const raw = window.sessionStorage.getItem(PROFILE_CACHE_KEY);
+      if (!raw) return;
+
+      const cached = JSON.parse(raw) as CachedProfilePayload;
+      if (cached.profileId !== id || !cached.profile) return;
+
+      setProfile(cached.profile);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error reading profile cache:", error);
+    }
+  }, [id]);
+
   const fetchProfile = useCallback(async () => {
     const { data: profileData, error: profileError } = await supabase
       .from("profiles")
@@ -49,6 +73,10 @@ export default function Profile() {
     }
 
     setProfile(profileData);
+    window.sessionStorage.setItem(
+      PROFILE_CACHE_KEY,
+      JSON.stringify({ profileId: id, profile: profileData } satisfies CachedProfilePayload),
+    );
     setLoading(false);
   }, [id, navigate, t]);
 

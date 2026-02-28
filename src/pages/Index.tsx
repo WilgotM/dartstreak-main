@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -159,7 +159,7 @@ const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [googleLoading, setGoogleLoading] = useState(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       gsap.from(".hero-elem", {
         y: 40,
@@ -316,7 +316,7 @@ const LiveScoringCard = () => {
     return () => window.cancelAnimationFrame(frameId);
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         ".manual-entry-total",
@@ -453,7 +453,7 @@ const LeagueMomentumCard = () => {
     return () => window.clearInterval(interval);
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         ".league-row",
@@ -544,7 +544,7 @@ const StreakProgressCard = () => {
     return () => window.clearInterval(interval);
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         `.streak-day-${activeDay}`,
@@ -630,7 +630,7 @@ const Features = () => {
   const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       gsap.from(".feature-card", {
         scrollTrigger: {
@@ -678,7 +678,7 @@ const HowLeaguesWork = () => {
   const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       gsap.from(".step-card", {
         scrollTrigger: {
@@ -789,7 +789,7 @@ const Philosophy = () => {
   const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       gsap.from(".phil-elem", {
         scrollTrigger: {

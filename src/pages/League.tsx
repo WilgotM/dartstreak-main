@@ -370,6 +370,10 @@ export default function League() {
       setThrows(completedThrows);
       setHasThrown(true);
       setIsPlaying(false);
+      window.sessionStorage.setItem(
+        `dartstreak:stats:invalidate:${user!.id}`,
+        String(Date.now()),
+      );
       if (league) {
         await fetchLeaderboard(league, leagueTimezone);
       }

@@ -11,7 +11,7 @@ export function StatsDisplay({ userId }: StatsDisplayProps) {
   const { t } = useTranslation();
   const { stats, loading } = useStats(userId);
 
-  if (loading) {
+  if (loading && !stats) {
     return (
       <div className="space-y-4 p-4">
         <div className="grid grid-cols-2 gap-3">
