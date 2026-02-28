@@ -592,6 +592,8 @@
     "lifetimePoints": "Livstidspoint",
     "memberSince": "Medlem siden",
     "notFound": "Profil ikke fundet",
+    "noCountriesFound": "Ingen lande fundet",
+    "searchCountry": "Søg land...",
     "settings": "Indstillinger",
     "summary": "Oversigt",
     "timezone": "Tidszone",

@@ -592,6 +592,8 @@
     "lifetimePoints": "Levenslange punten",
     "memberSince": "Lid sinds",
     "notFound": "Profiel niet gevonden",
+    "noCountriesFound": "Geen landen gevonden",
+    "searchCountry": "Zoek land...",
     "settings": "Instellingen",
     "summary": "Samenvatting",
     "timezone": "Tijdzone",

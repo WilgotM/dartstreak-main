@@ -454,6 +454,8 @@
     "lifetimePoints": "Lifetime points",
     "memberSince": "Member since",
     "notFound": "Profile not found",
+    "noCountriesFound": "No countries found",
+    "searchCountry": "Search country...",
     "selectCountry": "Select country",
     "settings": "Settings",
     "summary": "Summary",

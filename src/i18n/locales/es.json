@@ -592,6 +592,8 @@
     "lifetimePoints": "Puntos de por vida",
     "memberSince": "Miembro desde",
     "notFound": "Perfil no encontrado",
+    "noCountriesFound": "No se encontraron países",
+    "searchCountry": "Buscar país...",
     "settings": "Ajustes",
     "summary": "Resumen",
     "timezone": "Zona horaria",

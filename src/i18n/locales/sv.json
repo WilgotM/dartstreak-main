@@ -454,6 +454,8 @@
     "lifetimePoints": "Livstidspoäng",
     "memberSince": "Medlem sedan",
     "notFound": "Profilen hittades inte",
+    "noCountriesFound": "Inga länder hittades",
+    "searchCountry": "Sök land...",
     "selectCountry": "Välj land",
     "settings": "Inställningar",
     "summary": "Sammanfattning",

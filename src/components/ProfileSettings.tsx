@@ -271,6 +271,15 @@ export function ProfileSettings({
     );
   };
 
+  const profileSelectShellClassName =
+    "group relative flex-1 rounded-2xl border border-[#FAF8F5]/10 bg-[#0D0D12] shadow-inner transition-all duration-300 focus-within:border-[#22C55E]/60";
+  const profileSelectGlowClassName =
+    "pointer-events-none absolute -inset-1 rounded-3xl bg-[#22C55E]/20 opacity-0 blur-lg transition-opacity duration-300 group-focus-within:opacity-100";
+  const profileSelectTriggerClassName =
+    "h-[56px] w-full rounded-2xl border-none bg-transparent px-4 font-semibold text-[#FAF8F5] shadow-none focus:border-none focus:ring-0 focus:ring-offset-0";
+  const profileSelectContentClassName = "border-[#FAF8F5]/10 bg-[#16161C] text-[#FAF8F5] backdrop-blur-xl";
+  const profileSelectItemClassName = "focus:bg-[#FAF8F5]/10 focus:text-[#FAF8F5]";
+
   return (
     <div className="overflow-hidden rounded-[2.5rem] border border-[#FAF8F5]/10 bg-[#16161C]/50 shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl">
       <div className="border-b border-[#FAF8F5]/10 bg-[#0D0D12]/40 px-6 py-5 sm:px-8">
@@ -320,14 +329,16 @@ export function ProfileSettings({
             {t("profile.country")}
           </label>
           <div className="flex gap-3">
-            {/* Intentionally keeping CountrySelect mostly as-is, but wrapping in styles if possible, else relying on its classname */}
-            <div className="flex-1 rounded-2xl border border-[#FAF8F5]/10 bg-[#0D0D12] overflow-hidden shadow-inner focus-within:ring-1 focus-within:ring-[#38BDF8]/50 focus-within:border-[#38BDF8]/50 transition-all duration-300 [&>button]:h-[56px] [&>button]:bg-transparent [&>button]:border-none [&>button]:text-[#FAF8F5] [&>button]:font-semibold">
+            <div className={profileSelectShellClassName}>
+              <div className={profileSelectGlowClassName} />
               <CountrySelect
                 id="country"
                 value={countryCode}
                 onChange={setCountryCode}
                 disabled={savingField === "country"}
-                className="w-full h-full"
+                className={profileSelectTriggerClassName}
+                contentClassName={profileSelectContentClassName}
+                itemClassName={profileSelectItemClassName}
               />
             </div>
             <button
@@ -355,15 +366,15 @@ export function ProfileSettings({
             {t("profile.timezone")}
           </label>
           <div className="flex gap-3">
-            {/* Custom wrapper around the generic select to match our intense aesthetic */}
-            <div className="flex-1 rounded-2xl border border-[#FAF8F5]/10 bg-[#0D0D12] shadow-inner focus-within:ring-1 focus-within:ring-[#FACC15]/50 focus-within:border-[#FACC15]/50 transition-all duration-300">
+            <div className={profileSelectShellClassName}>
+              <div className={profileSelectGlowClassName} />
               <Select value={timezone} onValueChange={setTimezone}>
-                <SelectTrigger className="h-[56px] w-full border-none bg-transparent px-4 font-semibold text-[#FAF8F5] shadow-none focus:ring-0">
+                <SelectTrigger className={profileSelectTriggerClassName}>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="border-[#FAF8F5]/10 bg-[#16161C] text-[#FAF8F5] backdrop-blur-xl">
+                <SelectContent className={profileSelectContentClassName}>
                   {TIMEZONES.map((tz) => (
-                    <SelectItem key={tz.value} value={tz.value} className="focus:bg-[#FAF8F5]/10 focus:text-[#FAF8F5]">
+                    <SelectItem key={tz.value} value={tz.value} className={profileSelectItemClassName}>
                       {tz.label}
                     </SelectItem>
                   ))}
