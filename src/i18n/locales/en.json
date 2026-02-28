@@ -101,7 +101,8 @@
     "welcomeBack": "Welcome back, {{name}}!",
     "welcomeTo": "Welcome to {{name}}! 🎯",
     "youHaveNotifications": "You have {{count}} notification(s)",
-    "yourLeagues": "Your leagues"
+    "yourLeagues": "Your leagues",
+    "openCard": "Open"
   },
   "landing": {
     "calculating": "Calculating",

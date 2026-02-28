@@ -167,7 +167,8 @@
     "welcomeBack": "Bon retour, {{name}} !",
     "welcomeTo": "Bienvenue à {{name}} ! 🎯",
     "youHaveNotifications": "Vous avez {{count}} notification(s)",
-    "yourLeagues": "Vos ligues"
+    "yourLeagues": "Vos ligues",
+    "openCard": "Ouvrir"
   },
   "league": {
     "alreadyRegisteredToday": "Vous avez déjà enregistré les lancers du jour",

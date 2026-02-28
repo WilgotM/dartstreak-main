@@ -167,7 +167,8 @@
     "welcomeBack": "Welkom terug, {{name}}!",
     "welcomeTo": "Welkom bij {{name}}! 🎯",
     "youHaveNotifications": "Je hebt {{count}} melding(en)",
-    "yourLeagues": "Jouw competities"
+    "yourLeagues": "Jouw competities",
+    "openCard": "Openen"
   },
   "league": {
     "alreadyRegisteredToday": "Je hebt de worpen van vandaag al geregistreerd",

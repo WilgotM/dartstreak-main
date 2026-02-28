@@ -102,7 +102,7 @@ export default function Dashboard() {
                   </h1>
                 </div>
               </div>
-              <div className="rounded-full border border-[#FAF8F5]/15 bg-[#0D0D12]/80 px-5 py-2.5 text-sm font-semibold text-[#FAF8F5] shadow-[0_0_24px_rgba(10,10,14,0.6)] backdrop-blur-md transition-transform duration-300 hover:scale-[1.03] hover:border-[#22C55E]/40">
+              <div className="inline-flex items-center justify-center rounded-full border border-[#FAF8F5]/15 bg-[#0D0D12]/80 px-5 py-2.5 text-sm font-semibold text-[#FAF8F5] shadow-[0_0_24px_rgba(10,10,14,0.6)] backdrop-blur-md transition-transform duration-300 hover:scale-[1.03] hover:border-[#22C55E]/40">
                 <PlayerNameWithCountry
                   displayName={displayName}
                   countryCode={profile?.country_code}
@@ -138,7 +138,7 @@ export default function Dashboard() {
                       {card.description}
                     </p>
                     <div className="mt-auto pt-6 inline-flex items-center gap-2 text-sm font-bold text-[#FAF8F5]/80 transition-colors duration-300 group-hover:text-[#FAF8F5]">
-                      <span className="transition-colors duration-300 group-hover:text-[#FAF8F5]">Execute</span>
+                      <span className="transition-colors duration-300 group-hover:text-[#FAF8F5]">{t("dashboard.openCard")}</span>
                       <ArrowRight className="h-4 w-4 transition-all duration-300 group-hover:translate-x-1.5 group-hover:text-[#22C55E]" />
                     </div>
                   </div>

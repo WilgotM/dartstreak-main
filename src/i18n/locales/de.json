@@ -167,7 +167,8 @@
     "welcomeBack": "Willkommen zurück, {{name}}!",
     "welcomeTo": "Willkommen bei {{name}}! 🎯",
     "youHaveNotifications": "Sie haben {{count}} Benachrichtigung(en)",
-    "yourLeagues": "Deine Ligen"
+    "yourLeagues": "Deine Ligen",
+    "openCard": "Öffnen"
   },
   "league": {
     "alreadyRegisteredToday": "Sie haben die heutigen Würfe bereits registriert",

@@ -101,7 +101,8 @@
     "welcomeBack": "Välkommen tillbaka, {{name}}!",
     "welcomeTo": "Välkommen till {{name}}! 🎯",
     "youHaveNotifications": "Du har {{count}} notis(er)",
-    "yourLeagues": "Dina ligor"
+    "yourLeagues": "Dina ligor",
+    "openCard": "Öppna"
   },
   "landing": {
     "calculating": "Beräknar",

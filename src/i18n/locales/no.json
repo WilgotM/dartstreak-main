@@ -167,7 +167,8 @@
     "welcomeBack": "Velkommen tilbake, {{name}}!",
     "welcomeTo": "Velkommen til {{name}}! 🎯",
     "youHaveNotifications": "Du har {{count}} varsling(er)",
-    "yourLeagues": "Dine ligaer"
+    "yourLeagues": "Dine ligaer",
+    "openCard": "Åpne"
   },
   "league": {
     "alreadyRegisteredToday": "Du har allerede registrert dagens kast",
