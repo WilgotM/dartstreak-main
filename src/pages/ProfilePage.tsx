@@ -158,18 +158,16 @@ export default function ProfilePage() {
 
           {/* Settings Section */}
           <section>
-            {extendedProfile && (
-              <ProfileSettings
-                currentDisplayName={extendedProfile.display_name}
-                currentEmail={user.email || ""}
-                currentTimezone={extendedProfile.timezone || "Europe/Stockholm"}
-                currentCountryCode={extendedProfile.country_code || ""}
-                currentCountryTimezone={extendedProfile.country_timezone || "UTC"}
-                displayNameChangedAt={extendedProfile.display_name_changed_at}
-                emailChangedAt={extendedProfile.email_changed_at}
-                onUpdate={fetchExtendedProfile}
-              />
-            )}
+            <ProfileSettings
+              currentDisplayName={extendedProfile?.display_name || profile?.display_name || t("profile.unnamed")}
+              currentEmail={user.email || ""}
+              currentTimezone={extendedProfile?.timezone || profile?.timezone || "Europe/Stockholm"}
+              currentCountryCode={extendedProfile?.country_code || profile?.country_code || ""}
+              currentCountryTimezone={extendedProfile?.country_timezone || profile?.country_timezone || "UTC"}
+              displayNameChangedAt={extendedProfile?.display_name_changed_at ?? null}
+              emailChangedAt={extendedProfile?.email_changed_at ?? null}
+              onUpdate={fetchExtendedProfile}
+            />
           </section>
 
           {/* Statistics Display */}

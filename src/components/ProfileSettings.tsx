@@ -1,4 +1,4 @@
-import { ChangeEvent, ComponentType, useState } from "react";
+import { ChangeEvent, ComponentType, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -64,6 +64,22 @@ export function ProfileSettings({
   const [timezone, setTimezone] = useState(currentTimezone || "Europe/Stockholm");
   const [countryCode, setCountryCode] = useState(currentCountryCode || "");
   const [savingField, setSavingField] = useState<string | null>(null);
+
+  useEffect(() => {
+    setDisplayName(currentDisplayName);
+  }, [currentDisplayName]);
+
+  useEffect(() => {
+    setEmail(currentEmail);
+  }, [currentEmail]);
+
+  useEffect(() => {
+    setTimezone(currentTimezone || "Europe/Stockholm");
+  }, [currentTimezone]);
+
+  useEffect(() => {
+    setCountryCode(currentCountryCode || "");
+  }, [currentCountryCode]);
 
   const canChangeDisplayName = !displayNameChangedAt || 
     differenceInDays(new Date(), new Date(displayNameChangedAt)) >= 7;
