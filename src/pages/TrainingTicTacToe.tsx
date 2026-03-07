@@ -20,7 +20,7 @@ import TicTacToeTurnPanel from "@/components/training/TicTacToeTurnPanel";
 import { DartboardSvg, type DartboardClickPoint, type DartboardMarker } from "@/components/training/DartboardSvg";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { Infinity as InfinityIcon, Minus, Plus, Target as TargetIcon, Trophy } from "lucide-react";
+import { Infinity as InfinityIcon, Minus, Plus, Target as TargetIcon, Trophy, User, Zap } from "lucide-react";
 import {
   findCheckoutRoutes,
   pickEasiestRoute,
@@ -706,6 +706,7 @@ export default function TrainingTicTacToe() {
                       style={{ backgroundImage: `linear-gradient(to bottom right, ${teamSetup[player].color}, transparent)` }}
                     />
                     <div className="flex items-center gap-2 mb-1">
+                      <User className="w-3.5 h-3.5 text-muted-foreground/80 mt-[-1px]" />
                       <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/80">
                         {player === "A" ? t("trainingTicTacToe.setup.teamA") : t("trainingTicTacToe.setup.teamB")}
                       </p>
@@ -754,6 +755,52 @@ export default function TrainingTicTacToe() {
                   </motion.div>
                 ))}
                 
+                <motion.div
+                  initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ delay: 0.35, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  className="rounded-xl border border-white/10 bg-[#15151D] p-5 md:col-span-2 shadow-lg"
+                >
+                  <div className="flex items-center gap-2 mb-4">
+                    <Zap className="w-4 h-4 text-amber-400" />
+                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80">
+                      {t("trainingTicTacToe.levels.title", "Svårighetsgrad")}
+                    </span>
+                    <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-2.5">
+                    {difficultyOptions.map((option) => {
+                      const isSelected = difficulty === option.key;
+                      return (
+                        <button
+                          key={option.key}
+                          type="button"
+                          onClick={() => handleDifficultyChange(option.key)}
+                          className={cn(
+                            "px-4 py-2 rounded-xl border transition-all duration-300 text-sm font-semibold relative overflow-hidden outline-none",
+                            isSelected 
+                              ? "border-amber-400/50 bg-amber-400/10 text-amber-300 shadow-[0_0_15px_-3px_rgba(251,191,36,0.3)]" 
+                              : "border-white/10 bg-[#101017] text-muted-foreground hover:border-white/20 hover:text-foreground hover:bg-[#1a1a24]"
+                          )}
+                        >
+                          <span className="relative z-10">{option.label}</span>
+                          {isSelected && (
+                            <motion.div
+                              layoutId="active-ttt-diff"
+                              className="absolute inset-0 bg-amber-400/5 pointer-events-none"
+                              transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                            />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <p className="mt-3 text-xs text-muted-foreground border-l-2 border-amber-500/30 pl-3">
+                    {t(`trainingTicTacToe.difficulty.${difficulty}.description`)}
+                  </p>
+                </motion.div>
+
                 <motion.div
                   initial={{ opacity: 0, y: 30, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}

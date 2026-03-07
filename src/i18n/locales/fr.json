@@ -1,11 +1,10 @@
 {
   "auth": {
-    "continueWithGoogle": "Continuer avec Google",
-    "googleLogin": "Se connecter avec Google",
     "accountCreated": "Compte créé ! Accueillir! 🎯",
     "byContinuing": "En continuant, vous acceptez notre",
     "chooseUsername": "Choisissez votre nom d'utilisateur",
     "chooseUsernameDesc": "Choisissez un nom unique pour commencer à concourir.",
+    "continueWithGoogle": "Continuer avec Google",
     "displayName": "Nom d'utilisateur",
     "email": "E-mail",
     "emailAlreadyRegistered": "L'e-mail est déjà enregistré",
@@ -13,6 +12,7 @@
     "enterNewPassword": "Entrez votre nouveau mot de passe ci-dessous.",
     "forgotPassword": "Mot de passe oublié ?",
     "forgotPasswordDesc": "Entrez votre e-mail pour recevoir un lien de réinitialisation.",
+    "googleLogin": "Se connecter avec Google",
     "hasAccount": "Vous avez déjà un compte ? Se connecter",
     "invalidEmail": "Adresse e-mail invalide",
     "joinCompetition": "Rejoignez le concours de fléchettes avec vos amis",
@@ -40,13 +40,13 @@
     "yourName": "Votre nom d'utilisateur"
   },
   "common": {
-    "language": "Langue",
     "and": "et",
     "back": "Dos",
     "cancel": "Annuler",
     "close": "Fermer",
     "contact": "Contact",
     "delete": "Supprimer",
+    "language": "Langue",
     "loading": "Chargement...",
     "or": "ou",
     "privacyPolicy": "politique de confidentialité",
@@ -55,71 +55,6 @@
     "signInToPlay": "Connectez-vous pour jouer",
     "termsOfService": "Conditions d'utilisation",
     "unknown": "Inconnu"
-  },
-  "landing": {
-    "createAccount": "Créer un compte",
-    "createAccountCta": "Créez un compte en quelques secondes et commencez à jouer.",
-    "createFreeAccount": "Créer un compte gratuit",
-    "footer": "© 2025 DartStreak. Compétez. Amusez-vous. Soyez le meilleur.",
-    "googleLogin": "Se connecter avec Google",
-    "heroDescription": "Rejoignez des ligues quotidiennes avec vos amis. Sans complication, juste jouer.",
-    "heroHighlight": "Précision.",
-    "heroHighlight2": "Entièrement gratuit",
-    "heroTitle": "Le statut mondial rencontre",
-    "howLeaguesStep1": "Créer une ligue",
-    "howLeaguesStep1Desc": "Créez une ligue en quelques secondes et invitez des amis avec un code.",
-    "howLeaguesStep2": "9 fléchettes par jour",
-    "howLeaguesStep2Desc": "Chacun lance 9 fléchettes (3x3) quand il veut dans la journée.",
-    "howLeaguesStep3": "Gagnant hebdomadaire",
-    "howLeaguesStep3Desc": "Les scores sont suivis automatiquement. Qui termine en tête en fin de semaine ?",
-    "howLeaguesWorkTitle": "Comment fonctionnent les ligues",
-    "leaguesSubtitle": "Ça n'a jamais été aussi simple",
-    "leaguesTeaser": "Envie de rivaliser chaque jour avec des amis ? Découvrez le fonctionnement des ligues ↓",
-    "leaguesTitle": "Créer une ligue ?",
-    "playOnline": "Jouer un match en ligne",
-    "playTournament": "Rejoindre un tournoi",
-    "readyToCompete": "Prêt à rivaliser ?",
-    "tagline": "La façon la plus simple de jouer aux fléchettes en ligne",
-    "whyUs1Desc": "Enregistrez vos lancers quotidiens avec votre caméra. Simple, sûr et équitable.",
-    "whyUs1Title": "Vérifié par vidéo",
-    "whyUs2Desc": "Pas d’inscriptions compliquées. Invitez vos amis et lancez.",
-    "whyUs2Title": "Adapté aux débutants",
-    "whyUs3Desc": "Créez des ligues privées, suivez le classement et voyez qui progresse.",
-    "whyUs3Title": "Rivalisez entre amis",
-    "whyUsTitle": "Pourquoi DartStreak ?",
-    "coreMechanicsTitle": "Mécaniques clés",
-    "philosophyTitle": "La plupart des apps se concentrent sur des statistiques génériques.",
-    "philosophyHighlight": "Nous nous concentrons sur : communauté et progression.",
-    "footerDesc": "Des mécaniques de précision pour vos fléchettes quotidiennes. Un instrument numérique pour le compétiteur moderne.",
-    "navFeatures": "Fonctionnalités",
-    "navLeagues": "Ligues",
-    "navPhilosophy": "Philosophie",
-    "dashboard": "Tableau de bord",
-    "login": "Se connecter",
-    "leagueDetails": "Détails de la ligue",
-    "leaderboard": "Classement",
-    "liveMatches": "Matchs en direct",
-    "inProgress": "En cours",
-    "calculating": "Calcul en cours",
-    "save": "Enregistrer",
-    "systemOperational": "SYSTÈME OPÉRATIONNEL",
-    "footerHome": "Accueil",
-    "footerLeagues": "Ligues",
-    "footerTraining": "Entraînement",
-    "footerLegal": "Mentions légales",
-    "footerPrivacyPolicy": "Politique de confidentialité",
-    "footerTermsOfService": "Conditions d'utilisation",
-    "footerContact": "Contact",
-    "featureLiveScoreTitle": "Vidéo + Entrée manuelle",
-    "featureLiveScoreDesc": "Enregistrez votre lancer, puis saisissez le score manuellement, par ex. 20, 14, 5.",
-    "featureLeagueRaceTitle": "Le classement se déplace en direct",
-    "featureLeagueRaceDesc": "Suivez les changements de position hebdomadaires à mesure que les points sont mis à jour tout au long de la semaine.",
-    "featureStreakTitle": "Construisez votre séquence quotidienne",
-    "featureStreakDesc": "Enregistrez vos 9 fléchettes quotidiennes et gardez votre séquence en vie chaque jour.",
-    "featureCurrentStreakLabel": "Série actuelle",
-    "featureThrowsLoggedLabel": "Lancements entrés",
-    "featureVideoInputBadge": "Vidéo + Entrée",
-    "featureEntryTotalLabel": "Total saisi"
   },
   "cookie": {
     "acceptButton": "Accepter les analyses",
@@ -159,6 +94,7 @@
     "noLeaguesYet": "Pas encore de ligues",
     "numberOfRounds": "Nombre de tours (semaines)",
     "of": "de",
+    "openCard": "Ouvrir",
     "playDarts": "Jouer aux fléchettes",
     "round": "Rond",
     "starts": "Commence",
@@ -167,8 +103,72 @@
     "welcomeBack": "Bon retour, {{name}} !",
     "welcomeTo": "Bienvenue à {{name}} ! 🎯",
     "youHaveNotifications": "Vous avez {{count}} notification(s)",
-    "yourLeagues": "Vos ligues",
-    "openCard": "Ouvrir"
+    "yourLeagues": "Vos ligues"
+  },
+  "landing": {
+    "calculating": "Calcul en cours",
+    "coreMechanicsTitle": "Mécaniques clés",
+    "createAccount": "Créer un compte",
+    "createAccountCta": "Créez un compte en quelques secondes et commencez à jouer.",
+    "createFreeAccount": "Créer un compte gratuit",
+    "dashboard": "Tableau de bord",
+    "featureCurrentStreakLabel": "Série actuelle",
+    "featureEntryTotalLabel": "Total saisi",
+    "featureLeagueRaceDesc": "Suivez les changements de position hebdomadaires à mesure que les points sont mis à jour tout au long de la semaine.",
+    "featureLeagueRaceTitle": "Le classement se déplace en direct",
+    "featureLiveScoreDesc": "Enregistrez votre lancer, puis saisissez le score manuellement, par ex. 20, 14, 5.",
+    "featureLiveScoreTitle": "Vidéo + Entrée manuelle",
+    "featureStreakDesc": "Enregistrez vos 9 fléchettes quotidiennes et gardez votre séquence en vie chaque jour.",
+    "featureStreakTitle": "Construisez votre séquence quotidienne",
+    "featureThrowsLoggedLabel": "Lancements entrés",
+    "featureVideoInputBadge": "Vidéo + Entrée",
+    "footer": "© 2025 DartStreak. Compétez. Amusez-vous. Soyez le meilleur.",
+    "footerContact": "Contact",
+    "footerDesc": "Des mécaniques de précision pour vos fléchettes quotidiennes. Un instrument numérique pour le compétiteur moderne.",
+    "footerHome": "Accueil",
+    "footerLeagues": "Ligues",
+    "footerLegal": "Mentions légales",
+    "footerPrivacyPolicy": "Politique de confidentialité",
+    "footerTermsOfService": "Conditions d'utilisation",
+    "footerTraining": "Entraînement",
+    "googleLogin": "Se connecter avec Google",
+    "heroDescription": "Rejoignez des ligues quotidiennes avec vos amis. Sans complication, juste jouer.",
+    "heroHighlight": "Précision.",
+    "heroHighlight2": "Entièrement gratuit",
+    "heroTitle": "Le statut mondial rencontre",
+    "howLeaguesStep1": "Créer une ligue",
+    "howLeaguesStep1Desc": "Créez une ligue en quelques secondes et invitez des amis avec un code.",
+    "howLeaguesStep2": "9 fléchettes par jour",
+    "howLeaguesStep2Desc": "Chacun lance 9 fléchettes (3x3) quand il veut dans la journée.",
+    "howLeaguesStep3": "Gagnant hebdomadaire",
+    "howLeaguesStep3Desc": "Les scores sont suivis automatiquement. Qui termine en tête en fin de semaine ?",
+    "howLeaguesWorkTitle": "Comment fonctionnent les ligues",
+    "inProgress": "En cours",
+    "leaderboard": "Classement",
+    "leagueDetails": "Détails de la ligue",
+    "leaguesSubtitle": "Ça n'a jamais été aussi simple",
+    "leaguesTeaser": "Envie de rivaliser chaque jour avec des amis ? Découvrez le fonctionnement des ligues ↓",
+    "leaguesTitle": "Créer une ligue ?",
+    "liveMatches": "Matchs en direct",
+    "login": "Se connecter",
+    "navFeatures": "Fonctionnalités",
+    "navLeagues": "Ligues",
+    "navPhilosophy": "Philosophie",
+    "philosophyHighlight": "Nous nous concentrons sur : communauté et progression.",
+    "philosophyTitle": "La plupart des apps se concentrent sur des statistiques génériques.",
+    "playOnline": "Jouer un match en ligne",
+    "playTournament": "Rejoindre un tournoi",
+    "readyToCompete": "Prêt à rivaliser ?",
+    "save": "Enregistrer",
+    "systemOperational": "SYSTÈME OPÉRATIONNEL",
+    "tagline": "La façon la plus simple de jouer aux fléchettes en ligne",
+    "whyUs1Desc": "Enregistrez vos lancers quotidiens avec votre caméra. Simple, sûr et équitable.",
+    "whyUs1Title": "Vérifié par vidéo",
+    "whyUs2Desc": "Pas d’inscriptions compliquées. Invitez vos amis et lancez.",
+    "whyUs2Title": "Adapté aux débutants",
+    "whyUs3Desc": "Créez des ligues privées, suivez le classement et voyez qui progresse.",
+    "whyUs3Title": "Rivalisez entre amis",
+    "whyUsTitle": "Pourquoi DartStreak ?"
   },
   "league": {
     "alreadyRegisteredToday": "Vous avez déjà enregistré les lancers du jour",
@@ -183,15 +183,22 @@
     "couldNotDelete": "Impossible de supprimer la ligue",
     "couldNotFindLeague": "Impossible de trouver la ligue",
     "couldNotLeave": "Je n'ai pas pu quitter la ligue",
+    "countryLeagueLabel": "Ligue nationale : {{country}}",
+    "countryLeagueTitle": "{{country}} Ligue",
     "deleteConfirmDesc": "Êtes-vous sûr de vouloir supprimer « {{name}} » ? Cela ne peut pas être annulé et toutes les données seront supprimées.",
     "deleteConfirmTitle": "Supprimer la ligue",
     "deleteLeague": "Supprimer la ligue",
     "deleting": "Suppression...",
+    "endsAtLeagueTimezone": "Se termine dans le fuseau horaire de la ligue",
+    "endsAtYourTimezone": "Se termine à votre heure locale",
     "endsOn": "Fin",
     "finalScore": "Score final",
     "finished": "Ligue terminée",
     "firstRoundStarts": "Le premier tour commence",
     "fiveMinuteWarning": "Vous avez 5 minutes pour terminer une fois que vous avez commencé",
+    "globalLeagueLabel": "Ligue mondiale",
+    "globalLeagueTitle": "Ligue mondiale",
+    "historyView": "Histoire",
     "invalidRounds": "Entrez entre 1 et 52 tours",
     "invalidStartDate": "Choisissez une date de début valide",
     "inviteCodeCopied": "Code d'invitation copié!",
@@ -203,11 +210,13 @@
     "leaveConfirmTitle": "Quitter la ligue ?",
     "leaving": "Sortie...",
     "newRoundEvery": "Nouveau tour chaque",
+    "newerWeek": "Semaine plus récente",
     "nextDay": "Le lendemain à",
     "noThrows": "Pas de lancer",
     "noThrowsYet": "Personne n'a encore lancé ce tour",
     "notRegisteredToday": "Vous n'avez pas encore enregistré les lancers d'aujourd'hui",
     "of": "de",
+    "olderWeek": "Semaine plus âgée",
     "player": "Joueur",
     "previousRounds": "Tours précédents",
     "restart": "Redémarrage",
@@ -225,18 +234,9 @@
     "todaysScore": "Score du jour : {{score}} 🎯",
     "total": "Total",
     "week": "Semaine",
-    "winner": "Gagnant",
-    "you": "toi",
-    "globalLeagueLabel": "Ligue mondiale",
-    "globalLeagueTitle": "Ligue mondiale",
-    "countryLeagueLabel": "Ligue nationale : {{country}}",
-    "countryLeagueTitle": "{{country}} Ligue",
     "weekLabel": "Semaine {{week}}",
-    "endsAtLeagueTimezone": "Se termine dans le fuseau horaire de la ligue",
-    "endsAtYourTimezone": "Se termine à votre heure locale",
-    "olderWeek": "Semaine plus âgée",
-    "newerWeek": "Semaine plus récente",
-    "historyView": "Histoire"
+    "winner": "Gagnant",
+    "you": "toi"
   },
   "legal": {
     "contact": {
@@ -251,13 +251,14 @@
     },
     "privacyPolicy": {
       "li1": "Données de compte : nous collectons votre adresse e-mail et les détails de votre profil (tels que le nom d'affichage, le pays, le fuseau horaire du pays et l'URL de l'avatar lorsqu'elle est disponible) pour créer votre profil.",
+      "li10": "Données de préférence linguistique : nous stockons la langue de votre application sélectionnée dans la mémoire locale de votre navigateur afin que l'application puisse mémoriser votre choix lors de vos visites.",
       "li2": "Données de jeu : nous stockons votre historique de lancers, vos statistiques et vos données de participation à des ligues pour fournir des fonctionnalités de service de base, notamment le placement automatique dans les ligues mondiales et nationales.",
       "li3": "Données vidéo : Certaines ligues peuvent exiger un enregistrement vidéo pour vérification. Si une ligue nécessite une vidéo, les clips sont stockés afin que les membres de la ligue puissent les visionner pendant la saison active. Pour les ligues système terminées, les références vidéo historiques sont supprimées.",
-      "li7": "Données d'entraînement : Tic-Tac-Toe Darts, Red Zone Survival et Throw for the Bull fonctionnent localement dans votre session de navigateur dans cette version et ne sont pas envoyés à notre backend.",
-      "li8": "Données d'utilisation : nous utilisons Google Analytics pour comprendre l'utilisation de l'application, y compris les pages vues, les informations sur l'appareil/navigateur et la localisation approximative.",
       "li4": "Supabase : utilisé pour notre base de données, l'authentification et le stockage sécurisé des données.",
       "li5": "Google OAuth : fournisseur de connexion facultatif pour une authentification sécurisée.",
       "li6": "Stockage Supabase : utilisé pour stocker en toute sécurité les vidéos de vérification de lancement.",
+      "li7": "Données d'entraînement : Tic-Tac-Toe Darts, Red Zone Survival et Throw for the Bull fonctionnent localement dans votre session de navigateur dans cette version et ne sont pas envoyés à notre backend.",
+      "li8": "Données d'utilisation : nous utilisons Google Analytics pour comprendre l'utilisation de l'application, y compris les pages vues, les informations sur l'appareil/navigateur et la localisation approximative.",
       "li9": "Google Analytics : utilisé pour l'analyse du trafic et du comportement. Nous avons activé l'anonymisation IP là où elle est prise en charge.",
       "p1": "Dernière mise à jour : 21 février 2026",
       "s1Text": "Bienvenue sur DartStreak (« nous », « notre » ou « notre »). Nous respectons votre vie privée et nous engageons à protéger vos données personnelles. Cette politique de confidentialité explique comment nous traitons vos données personnelles lorsque vous visitez notre application et vous informe de vos droits en matière de confidentialité.",
@@ -269,10 +270,9 @@
       "s4Title": "4. Suppression des données",
       "s5Text": "Les cookies d'analyse ne sont utilisés qu'après votre consentement dans notre bannière de cookies. Vous pouvez modifier votre choix à tout moment dans les paramètres des cookies de l'application.",
       "s5Title": "5. Cookies et consentement",
-      "title": "politique de confidentialité",
-      "s6Title": "6. Ligues système et données nationales",
       "s6Text": "Lorsque vous définissez votre pays, nous pouvons vous placer automatiquement dans une ligue mondiale et une ligue nationale. Les ligues système utilisent des fuseaux horaires fixes pour les saisons hebdomadaires.",
-      "li10": "Données de préférence linguistique : nous stockons la langue de votre application sélectionnée dans la mémoire locale de votre navigateur afin que l'application puisse mémoriser votre choix lors de vos visites."
+      "s6Title": "6. Ligues système et données nationales",
+      "title": "politique de confidentialité"
     },
     "terms": {
       "li1": "Trichez, manipulez les scores ou utilisez des robots automatisés.",
@@ -401,150 +401,8 @@
     "matches": "Matchs",
     "offline": "Hors ligne",
     "profile": "Profil",
-    "training": "Entraînement",
-    "tournaments": "Tournois"
-  },
-  "trainingHub": {
-    "kicker": "Choisissez votre mode d'entraînement",
-    "title": "Entraînement",
-    "subtitle": "Choisissez un mode en fonction de ce que vous souhaitez pratiquer actuellement.",
-    "open": "Mode ouvert",
-    "cards": {
-      "ticTacToe": {
-        "badge": "Duel tactique",
-        "title": "Fléchettes Tic-Tac-Toe",
-        "description": "Contrôle de cible à deux joueurs où chaque tour est décidé par la gestion du plateau et la précision du paiement."
-      },
-      "redZone": {
-        "badge": "Elimination mode",
-        "title": "Red Zone Survival",
-        "description": "Multiplayer survival drill: one dart each, avoid the red sectors as danger expands around the board."
-      }
-    }
-  },
-  "trainingTicTacToe": {
-    "actions": {
-      "changeTeams": "Changer d'équipe",
-      "enterFullscreen": "Plein écran",
-      "exitFullscreen": "Quitter le plein écran",
-      "newBoard": "Nouveau tableau",
-      "nextRound": "Commencer le prochain tour",
-      "resetMatch": "Réinitialiser la correspondance"
-    },
-    "board": {
-      "easiest": "Le plus simple",
-      "fastest": "Le plus rapide",
-      "guideTitle": "Guide de paiement",
-      "lockNow": "Sur la cible maintenant – verrouillez cette case.",
-      "noFinish": "Aucune fin possible ce tour-ci.",
-      "open": "Ouvrir",
-      "pending": "En attente",
-      "playerPrefix": "P.",
-      "target": "Cible"
-    },
-    "difficulty": {
-      "advanced_scores": {
-        "description": "Scores aléatoires entre 61 et 120.",
-        "label": "Scores (avancé 61-120)"
-      },
-      "beginner_numbers": {
-        "description": "Nombres aléatoires 1 à 20.",
-        "label": "Numéros (débutant 1-20)"
-      },
-      "easy_scores": {
-        "description": "Scores aléatoires entre 21 et 60.",
-        "label": "Partitions (Facile 21-60)"
-      },
-      "expert_checkouts": {
-        "description": "Caisses aléatoires entre 41 et 80. Terminez sur un double.",
-        "label": "Caisses (Expert 41-80)"
-      },
-      "intermediate_doubles": {
-        "description": "Aléatoire double 1-20 et BULL.",
-        "label": "Doubles (Intermédiaire 1-20)"
-      },
-      "pro_checkouts": {
-        "description": "Caisses aléatoires entre 81 et 120. Terminez sur un double.",
-        "label": "Caisses (Pro 81-120)"
-      },
-      "pro_trebles": {
-        "description": "Triples aléatoires 1-20.",
-        "label": "Triples (Pro 1-20)"
-      }
-    },
-    "help": {
-      "button": "Nouveau ici ? Apprendre le jeu",
-      "subtitle": "Règles rapides et aperçu des difficultés.",
-      "title": "Comment fonctionnent les fléchettes Tic-Tac-Toe"
-    },
-    "levels": {
-      "title": "Les différents niveaux difficiles"
-    },
-    "players": {
-      "playerA": "Joueur A",
-      "playerB": "Joueur B"
-    },
-    "setup": {
-      "colorsMustDiffer": "Les équipes doivent utiliser des couleurs différentes.",
-      "firstTo": "D'abord à",
-      "legsToWin": "Des jambes pour gagner",
-      "matchDesc": "Match compétitif",
-      "namesRequired": "Les deux noms d’équipe sont obligatoires.",
-      "practiceDesc": "Jouer pour le plaisir",
-      "start": "Commencer le jeu",
-      "subtitle": "Choisissez les noms et les couleurs des deux équipes avant de commencer.",
-      "teamA": "Équipe A",
-      "teamB": "Équipe B",
-      "title": "Mettre en place des équipes",
-      "unlimited": "Illimité"
-    },
-    "result": {
-      "draw": "Le tour s'est terminé par un match nul",
-      "matchWinner": "Gagnant du match !",
-      "matchWinnerSubtitle": "{{player}} remporte le match {{score}} !",
-      "playAgain": "Rejouer",
-      "subtitle": "Appuyez ci-dessous pour continuer avec un nouveau tableau.",
-      "winner": "Le joueur {{player}} remporte la manche !"
-    },
-    "rules": {
-      "r1": "Chaque tour comporte 3 fléchettes.",
-      "r2": "Enregistrez chaque fléchette avec les numéros simple/double/triple et de planche 1 à 20.",
-      "r3": "Si votre total cumulé ne correspond plus à un carré vide, la réclamation en file d'attente est perdue.",
-      "r4": "Verrouillez la case en file d'attente à tout moment, ou elle se verrouille automatiquement après le troisième lancer si elle est toujours valide.",
-      "title": "Comment ça marche"
-    },
-    "status": {
-      "currentTurn": "Tour actuel : {{player}}",
-      "firstTo": "D'abord à {{legs}}"
-    },
-    "title": "Fléchettes Tic-Tac-Toe",
-    "turn": {
-      "activePlayer": "Joueur actif",
-      "double": "Double",
-      "quick25": "25",
-      "selectHint": "Enregistrez chaque fléchette ci-dessous. Utilisez MISS si vous ne marquez pas.",
-      "lockSquare": "Carré de serrure",
-      "miss": "MANQUER",
-      "noPossibleSquares": "Il ne reste plus aucune case possible - les tours passent",
-      "single": "Célibataire",
-      "total": "Tour total",
-      "throw": "Lancer",
-      "triple": "Tripler",
-      "undo": "Défaire"
-    },
-    "bullDecider": {
-      "title": "Throw for the Bull",
-      "subtitle": "Avant le match, chaque équipe lance une fléchette. Le plus proche du bull commence.",
-      "registered": "Lancers enregistrés : {{count}} / {{total}}",
-      "left": "Lancers restants : {{count}}",
-      "currentThrow": "{{player}} lance maintenant",
-      "distance": "{{distance}} mm du bull",
-      "tie": "Égalité en tête entre {{players}}. Faites un lancer de barrage pour décider qui commence.",
-      "winner": "{{player}} commence le match.",
-      "rethrow": "Lancer de barrage",
-      "cancel": "Annuler",
-      "start": "Démarrer le match"
-    }
+    "tournaments": "Tournois",
+    "training": "Entraînement"
   },
   "offline": {
     "activeMatches": "Matchs hors ligne actifs",
@@ -579,6 +437,13 @@
     "bestDay": "Meilleur jour",
     "canChangeIn": "Vous pouvez modifier cela dans {{days}} jours",
     "cannotChangeYet": "Impossible de modifier avant {{days}} jours supplémentaires",
+    "completeProfileDesc": "Choisissez le pays dans lequel vous vivez pour rejoindre des ligues mondiales et nationales.",
+    "completeProfileTitle": "Complétez votre profil",
+    "country": "Pays",
+    "countryRequired": "Vous devez sélectionner un pays",
+    "countryUpdated": "Pays mis à jour !",
+    "dartCursor": "Curseur fléchette",
+    "dartCursorDesc": "Remplacez le pointeur de la souris par une fléchette",
     "daysPlayed": "Jours joués",
     "deleteAccount": "Supprimer le compte",
     "deleteAccountConfirmDesc": "Cette action est permanente et ne peut être annulée. Toutes vos données, y compris les ligues, les lancers, les statistiques et les vidéos, seront définitivement supprimées.",
@@ -586,16 +451,15 @@
     "deleteAccountError": "Impossible de supprimer le compte. Veuillez réessayer ou contacter l'assistance.",
     "deleteAccountSuccess": "Votre compte a été supprimé. Au revoir!",
     "deleting": "Suppression...",
-    "dartCursor": "Curseur fléchette",
-    "dartCursorDesc": "Remplacez le pointeur de la souris par une fléchette",
     "email": "E-mail",
     "emailUpdated": "Mise à jour par e-mail lancée. Vérifiez votre boîte de réception.",
     "leaguesParticipated": "Ligues participées",
     "lifetimePoints": "Points à vie",
     "memberSince": "Membre depuis",
-    "notFound": "Profil introuvable",
     "noCountriesFound": "Aucun pays trouvé",
+    "notFound": "Profil introuvable",
     "searchCountry": "Rechercher un pays...",
+    "selectCountry": "Sélectionnez un pays",
     "settings": "Paramètres",
     "summary": "Résumé",
     "timezone": "Fuseau horaire",
@@ -606,13 +470,7 @@
     "unnamed": "Anonyme",
     "updateError": "Impossible de mettre à jour",
     "username": "Nom d'utilisateur",
-    "usernameUpdated": "Nom d'utilisateur mis à jour !",
-    "country": "Pays",
-    "selectCountry": "Sélectionnez un pays",
-    "countryRequired": "Vous devez sélectionner un pays",
-    "countryUpdated": "Pays mis à jour !",
-    "completeProfileTitle": "Complétez votre profil",
-    "completeProfileDesc": "Choisissez le pays dans lequel vous vivez pour rejoindre des ligues mondiales et nationales."
+    "usernameUpdated": "Nom d'utilisateur mis à jour !"
   },
   "pwa": {
     "alreadyInstalled": "Déjà installé ?",
@@ -789,6 +647,250 @@
     "youDidntShow": "Vous n'êtes pas arrivé à temps",
     "yourMatch": "Votre match"
   },
+  "trainingHub": {
+    "cards": {
+      "redZone": {
+        "badge": "Elimination mode",
+        "description": "Multiplayer survival drill: one dart each, avoid the red sectors as danger expands around the board.",
+        "title": "Red Zone Survival"
+      },
+      "ticTacToe": {
+        "badge": "Duel tactique",
+        "description": "Contrôle de cible à deux joueurs où chaque tour est décidé par la gestion du plateau et la précision du paiement.",
+        "title": "Fléchettes Tic-Tac-Toe"
+      }
+    },
+    "kicker": "Choisissez votre mode d'entraînement",
+    "open": "Mode ouvert",
+    "subtitle": "Choisissez un mode en fonction de ce que vous souhaitez pratiquer actuellement.",
+    "title": "Entraînement"
+  },
+  "trainingRedZone": {
+    "actions": {
+      "changePlayers": "Changer de joueurs",
+      "newGame": "Nouveau jeu",
+      "undo": "Annuler"
+    },
+    "bullDecider": {
+      "cancel": "Annuler",
+      "currentThrow": "{{player}} lance maintenant",
+      "distance": "{{distance}} mm du bull",
+      "left": "Lancers restants : {{count}}",
+      "registered": "Lancers enregistrés : {{count}} / {{total}}",
+      "rethrow": "Rejouer",
+      "startGame": "Démarrer la partie",
+      "subtitle": "Avant de lancer la partie, tous les joueurs lancent une fléchette. Le plus proche du bull prend le premier ordre.",
+      "tie": "Égalité en tête entre {{players}}. Rejouez pour décider l'ordre.",
+      "title": "Throw for the Bull",
+      "winner": "{{player}} est le plus proche du bull et commence."
+    },
+    "history": {
+      "allSafe": "Tout le monde a survécu.",
+      "eliminated": "Éliminés",
+      "none": "Aucune manche terminée.",
+      "round": "Manche {{round}}",
+      "title": "Historique"
+    },
+    "players": {
+      "alive": "Encore en jeu",
+      "eliminated": "Éliminé",
+      "eliminatedRound": "Éliminé à la manche {{round}}"
+    },
+    "result": {
+      "draw": "Tout le monde a été éliminé dans la même manche.",
+      "playAgain": "Rejouer",
+      "winner": "{{player}} gagne !"
+    },
+    "rules": {
+      "expanding": {
+        "r1": "La manche 1 commence avec seulement le 20 en rouge.",
+        "r2": "Chaque joueur restant lance jusqu'à 3 fléchettes par manche et indique si le rouge a été touché à la fléchette 1, 2, 3 ou pas du tout.",
+        "r3": "Si tout le monde est éliminé dans la même manche, gagne celui qui a survécu jusqu'à la fléchette la plus tardive. Même fléchette = égalité.",
+        "r4": "Après chaque manche, le rouge s'étend : 20 -> 5/1 -> 12/18 etc."
+      },
+      "random": {
+        "r1": "La manche 1 commence avec un numéro aléatoire en rouge.",
+        "r2": "Chaque joueur restant lance jusqu'à 3 fléchettes par manche et indique si le rouge a été touché à la fléchette 1, 2, 3 ou pas du tout.",
+        "r3": "Si tout le monde est éliminé dans la même manche, gagne celui qui a survécu jusqu'à la fléchette la plus tardive. Même fléchette = égalité.",
+        "r4": "Après chaque manche, un nouveau numéro aléatoire s'ajoute aux zones rouges (les zones rouges précédentes restent)."
+      },
+      "title": "Comment ça marche"
+    },
+    "setup": {
+      "addPlayer": "Ajouter un joueur",
+      "duplicateNames": "Les noms doivent être uniques.",
+      "lives": {
+        "0": "Aucune (Mort subite)",
+        "1": "1 Vie",
+        "3": "3 Vies",
+        "5": "5 Vies"
+      },
+      "livesLabel": "Vies",
+      "livesSubtitle": "Chances supplémentaires avant l'élimination",
+      "minPlayers": "Au moins 2 joueurs requis.",
+      "mode": {
+        "expanding": {
+          "description": "Les secteurs rouges s'étendent depuis le 20 à chaque manche.",
+          "label": "Extension classique"
+        },
+        "random": {
+          "description": "Nouveaux secteurs rouges aléatoires à chaque manche.",
+          "label": "Secteurs aléatoires"
+        }
+      },
+      "modeLabel": "Mode de jeu",
+      "modeSubtitle": "Choisissez si les secteurs rouges s'étendent depuis le 20 ou sont aléatoires à chaque manche.",
+      "namesRequired": "Tous les joueurs doivent avoir un nom.",
+      "playerDefault": "Joueur {{index}}",
+      "removePlayer": "Retirer",
+      "start": "Démarrer",
+      "subtitle": "Ajoutez tout le monde, choisissez les noms et commencez.",
+      "title": "Configurer les joueurs"
+    },
+    "status": {
+      "alivePlayers": "Joueurs en lice : {{count}}",
+      "currentThrow": "Tour de {{player}}",
+      "dangerNumbers": "Numéros rouges rouges",
+      "mode": "Mode",
+      "nextExpansion": "Prochaine extension",
+      "nextRandomCount": "{{count}} secteurs aléatoires",
+      "round": "Manche {{round}}"
+    },
+    "subtitle": "Mode survie multijoueur : jusqu'à 3 fléchettes par joueur et par manche. Vous êtes éliminé dès que votre première fléchette touche le rouge.",
+    "throw": {
+      "bull": "BULL",
+      "danger": "Zone Rouge / Raté",
+      "miss": "MISS",
+      "prompt": "Enregistrez votre lancer. MISS et BULL sont sûrs.",
+      "promptSimple": "Choisissez SÛR si les 3 fléchettes étaient sûres, ou ROUGE 1/2/3 pour la fléchette qui a touché le rouge en premier.",
+      "safe": "Tir Sécurisé"
+    },
+    "title": "Survie Zone Rouge"
+  },
+  "trainingTicTacToe": {
+    "actions": {
+      "changeTeams": "Changer d'équipe",
+      "enterFullscreen": "Plein écran",
+      "exitFullscreen": "Quitter le plein écran",
+      "newBoard": "Nouveau tableau",
+      "nextRound": "Commencer le prochain tour",
+      "resetMatch": "Réinitialiser la correspondance"
+    },
+    "board": {
+      "easiest": "Le plus simple",
+      "fastest": "Le plus rapide",
+      "guideTitle": "Guide de paiement",
+      "lockNow": "Sur la cible maintenant – verrouillez cette case.",
+      "noFinish": "Aucune fin possible ce tour-ci.",
+      "open": "Ouvrir",
+      "pending": "En attente",
+      "playerPrefix": "P.",
+      "target": "Cible"
+    },
+    "bullDecider": {
+      "cancel": "Annuler",
+      "currentThrow": "{{player}} lance maintenant",
+      "distance": "{{distance}} mm du bull",
+      "left": "Lancers restants : {{count}}",
+      "registered": "Lancers enregistrés : {{count}} / {{total}}",
+      "rethrow": "Lancer de barrage",
+      "start": "Démarrer le match",
+      "subtitle": "Avant le match, chaque équipe lance une fléchette. Le plus proche du bull commence.",
+      "tie": "Égalité en tête entre {{players}}. Faites un lancer de barrage pour décider qui commence.",
+      "title": "Throw for the Bull",
+      "winner": "{{player}} commence le match."
+    },
+    "difficulty": {
+      "advanced_scores": {
+        "description": "Scores aléatoires entre 61 et 120.",
+        "label": "Scores (avancé 61-120)"
+      },
+      "beginner_numbers": {
+        "description": "Nombres aléatoires 1 à 20.",
+        "label": "Numéros (débutant 1-20)"
+      },
+      "easy_scores": {
+        "description": "Scores aléatoires entre 21 et 60.",
+        "label": "Partitions (Facile 21-60)"
+      },
+      "expert_checkouts": {
+        "description": "Caisses aléatoires entre 41 et 80. Terminez sur un double.",
+        "label": "Caisses (Expert 41-80)"
+      },
+      "intermediate_doubles": {
+        "description": "Aléatoire double 1-20 et BULL.",
+        "label": "Doubles (Intermédiaire 1-20)"
+      },
+      "pro_checkouts": {
+        "description": "Caisses aléatoires entre 81 et 120. Terminez sur un double.",
+        "label": "Caisses (Pro 81-120)"
+      },
+      "pro_trebles": {
+        "description": "Triples aléatoires 1-20.",
+        "label": "Triples (Pro 1-20)"
+      }
+    },
+    "help": {
+      "button": "Nouveau ici ? Apprendre le jeu",
+      "subtitle": "Règles rapides et aperçu des difficultés.",
+      "title": "Comment fonctionnent les fléchettes Tic-Tac-Toe"
+    },
+    "levels": {
+      "title": "Les différents niveaux difficiles"
+    },
+    "players": {
+      "playerA": "Joueur A",
+      "playerB": "Joueur B"
+    },
+    "result": {
+      "draw": "Le tour s'est terminé par un match nul",
+      "matchWinner": "Gagnant du match !",
+      "matchWinnerSubtitle": "{{player}} remporte le match {{score}} !",
+      "playAgain": "Rejouer",
+      "subtitle": "Appuyez ci-dessous pour continuer avec un nouveau tableau.",
+      "winner": "Le joueur {{player}} remporte la manche !"
+    },
+    "rules": {
+      "r1": "Chaque tour comporte 3 fléchettes.",
+      "r2": "Enregistrez chaque fléchette avec les numéros simple/double/triple et de planche 1 à 20.",
+      "r3": "Si votre total cumulé ne correspond plus à un carré vide, la réclamation en file d'attente est perdue.",
+      "r4": "Verrouillez la case en file d'attente à tout moment, ou elle se verrouille automatiquement après le troisième lancer si elle est toujours valide.",
+      "title": "Comment ça marche"
+    },
+    "setup": {
+      "colorsMustDiffer": "Les équipes doivent utiliser des couleurs différentes.",
+      "firstTo": "D'abord à",
+      "legsToWin": "Des jambes pour gagner",
+      "matchDesc": "Match compétitif",
+      "namesRequired": "Les deux noms d’équipe sont obligatoires.",
+      "practiceDesc": "Jouer pour le plaisir",
+      "start": "Commencer le jeu",
+      "subtitle": "Choisissez les noms et les couleurs des deux équipes avant de commencer.",
+      "teamA": "Équipe A",
+      "teamB": "Équipe B",
+      "title": "Mettre en place des équipes",
+      "unlimited": "Illimité"
+    },
+    "status": {
+      "currentTurn": "Tour actuel : {{player}}",
+      "firstTo": "D'abord à {{legs}}"
+    },
+    "title": "Fléchettes Tic-Tac-Toe",
+    "turn": {
+      "activePlayer": "Joueur actif",
+      "double": "Double",
+      "lockSquare": "Carré de serrure",
+      "miss": "MANQUER",
+      "noPossibleSquares": "Il ne reste plus aucune case possible - les tours passent",
+      "quick25": "25",
+      "selectHint": "Enregistrez chaque fléchette ci-dessous. Utilisez MISS si vous ne marquez pas.",
+      "single": "Célibataire",
+      "throw": "Lancer",
+      "total": "Tour total",
+      "triple": "Tripler",
+      "undo": "Défaire"
+    }
+  },
   "videoDialog": {
     "couldNotLoadVideo": "Impossible de charger la vidéo. Il a peut-être été supprimé.",
     "noVideoRecorded": "Aucune vidéo n'a été enregistrée pour ce lancer",
@@ -808,77 +910,5 @@
     "thursday": "Jeudi",
     "tuesday": "Mardi",
     "wednesday": "Mercredi"
-  },
-  "trainingRedZone": {
-    "title": "Survie Zone Rouge",
-    "subtitle": "Mode survie multijoueur : jusqu'à 3 fléchettes par joueur et par manche. Vous êtes éliminé dès que votre première fléchette touche le rouge.",
-    "setup": {
-      "title": "Configurer les joueurs",
-      "subtitle": "Ajoutez tout le monde, choisissez les noms et commencez.",
-      "playerDefault": "Joueur {{index}}",
-      "addPlayer": "Ajouter un joueur",
-      "removePlayer": "Retirer",
-      "start": "Démarrer",
-      "minPlayers": "Au moins 2 joueurs requis.",
-      "namesRequired": "Tous les joueurs doivent avoir un nom.",
-      "duplicateNames": "Les noms doivent être uniques."
-    },
-    "rules": {
-      "title": "Comment ça marche",
-      "r1": "La manche 1 commence avec seulement le 20 en rouge.",
-      "r2": "Chaque joueur restant lance jusqu'à 3 fléchettes par manche et indique si le rouge a été touché à la fléchette 1, 2, 3 ou pas du tout.",
-      "r3": "Si tout le monde est éliminé dans la même manche, gagne celui qui a survécu jusqu'à la fléchette la plus tardive. Même fléchette = égalité.",
-      "r4": "Après chaque manche, le rouge s'étend : 20 -> 5/1 -> 12/18 etc."
-    },
-    "actions": {
-      "newGame": "Nouveau jeu",
-      "changePlayers": "Changer de joueurs",
-      "undo": "Annuler"
-    },
-    "status": {
-      "round": "Manche {{round}}",
-      "alivePlayers": "Joueurs en lice : {{count}}",
-      "dangerNumbers": "Numéros rouges rouges",
-      "nextExpansion": "Prochaine extension",
-      "currentThrow": "Tour de {{player}}"
-    },
-    "throw": {
-      "prompt": "Enregistrez votre lancer. MISS et BULL sont sûrs.",
-      "promptSimple": "Choisissez SÛR si les 3 fléchettes étaient sûres, ou ROUGE 1/2/3 pour la fléchette qui a touché le rouge en premier.",
-      "safe": "Tir Sécurisé",
-      "danger": "Zone Rouge / Raté",
-      "miss": "MISS",
-      "bull": "BULL"
-    },
-    "players": {
-      "alive": "Encore en jeu",
-      "eliminated": "Éliminé",
-      "eliminatedRound": "Éliminé à la manche {{round}}"
-    },
-    "result": {
-      "winner": "{{player}} gagne !",
-      "draw": "Tout le monde a été éliminé dans la même manche.",
-      "playAgain": "Rejouer"
-    },
-    "history": {
-      "title": "Historique",
-      "none": "Aucune manche terminée.",
-      "round": "Manche {{round}}",
-      "eliminated": "Éliminés",
-      "allSafe": "Tout le monde a survécu."
-    },
-    "bullDecider": {
-      "title": "Throw for the Bull",
-      "subtitle": "Avant de lancer la partie, tous les joueurs lancent une fléchette. Le plus proche du bull prend le premier ordre.",
-      "registered": "Lancers enregistrés : {{count}} / {{total}}",
-      "left": "Lancers restants : {{count}}",
-      "currentThrow": "{{player}} lance maintenant",
-      "distance": "{{distance}} mm du bull",
-      "tie": "Égalité en tête entre {{players}}. Rejouez pour décider l'ordre.",
-      "winner": "{{player}} est le plus proche du bull et commence.",
-      "rethrow": "Rejouer",
-      "cancel": "Annuler",
-      "startGame": "Démarrer la partie"
-    }
   }
 }

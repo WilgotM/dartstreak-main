@@ -1,11 +1,10 @@
 {
   "auth": {
-    "continueWithGoogle": "Doorgaan met Google",
-    "googleLogin": "Inloggen met Google",
     "accountCreated": "Account aangemaakt! Welkom! 🎯",
     "byContinuing": "Als u doorgaat, gaat u akkoord met onze",
     "chooseUsername": "Kies uw gebruikersnaam",
     "chooseUsernameDesc": "Kies een unieke naam om te beginnen met concurreren.",
+    "continueWithGoogle": "Doorgaan met Google",
     "displayName": "Gebruikersnaam",
     "email": "E-mail",
     "emailAlreadyRegistered": "E-mailadres is al geregistreerd",
@@ -13,6 +12,7 @@
     "enterNewPassword": "Vul hieronder uw nieuwe wachtwoord in.",
     "forgotPassword": "Wachtwoord vergeten?",
     "forgotPasswordDesc": "Voer uw e-mailadres in om een ​​resetlink te ontvangen.",
+    "googleLogin": "Inloggen met Google",
     "hasAccount": "Heeft u al een account? Inloggen",
     "invalidEmail": "Ongeldig e-mailadres",
     "joinCompetition": "Doe mee aan de dartcompetitie met je vrienden",
@@ -40,13 +40,13 @@
     "yourName": "Uw gebruikersnaam"
   },
   "common": {
-    "language": "Taal",
     "and": "En",
     "back": "Rug",
     "cancel": "Annuleren",
     "close": "Dichtbij",
     "contact": "Contact",
     "delete": "Verwijderen",
+    "language": "Taal",
     "loading": "Laden...",
     "or": "of",
     "privacyPolicy": "Privacybeleid",
@@ -55,71 +55,6 @@
     "signInToPlay": "Log in om te spelen",
     "termsOfService": "Servicevoorwaarden",
     "unknown": "Onbekend"
-  },
-  "landing": {
-    "createAccount": "Account maken",
-    "createAccountCta": "Maak in seconden een account en begin met spelen.",
-    "createFreeAccount": "Gratis account maken",
-    "footer": "© 2025 DartStreak. Concurreer. Veel plezier. Word de beste.",
-    "googleLogin": "Inloggen met Google",
-    "heroDescription": "Doe mee aan dagelijkse leagues met vrienden. Geen gedoe, gewoon spelen.",
-    "heroHighlight": "Precisie.",
-    "heroHighlight2": "Helemaal gratis",
-    "heroTitle": "Wereldwijde status ontmoet",
-    "howLeaguesStep1": "League maken",
-    "howLeaguesStep1Desc": "Zet in seconden een league op en nodig vrienden uit met een code.",
-    "howLeaguesStep2": "Dagelijks 9 darts",
-    "howLeaguesStep2Desc": "Iedereen gooit 9 darts (3x3) wanneer het uitkomt.",
-    "howLeaguesStep3": "Wekelijkse winnaar",
-    "howLeaguesStep3Desc": "Scores worden automatisch bijgehouden. Wie staat bovenaan aan het einde van de week?",
-    "howLeaguesWorkTitle": "Hoe leagues werken",
-    "leaguesSubtitle": "Het was nog nooit zo makkelijk",
-    "leaguesTeaser": "Dagelijks met vrienden strijden? Bekijk hoe leagues werken ↓",
-    "leaguesTitle": "Een league starten?",
-    "playOnline": "Online wedstrijd spelen",
-    "playTournament": "Toernooi deelnemen",
-    "readyToCompete": "Klaar om te strijden?",
-    "tagline": "De makkelijkste manier om online darts te spelen",
-    "whyUs1Desc": "Leg je dagelijkse worpen vast met je camera. Simpel, veilig en eerlijk.",
-    "whyUs1Title": "Video geverifieerd",
-    "whyUs2Desc": "Geen ingewikkelde registratie. Nodig vrienden uit en begin met gooien.",
-    "whyUs2Title": "Beginner vriendelijk",
-    "whyUs3Desc": "Maak privéleagues, volg klassementen en zie wie stijgt.",
-    "whyUs3Title": "Strijd met vrienden",
-    "whyUsTitle": "Waarom DartStreak?",
-    "coreMechanicsTitle": "Kernmechanieken",
-    "philosophyTitle": "De meeste apps focussen op generieke statistieken.",
-    "philosophyHighlight": "Wij focussen op: community en progressie.",
-    "footerDesc": "Precisie-mechanieken voor je dagelijkse darts. Een digitaal instrument voor de moderne speler.",
-    "navFeatures": "Functies",
-    "navLeagues": "Leagues",
-    "navPhilosophy": "Filosofie",
-    "dashboard": "Dashboard",
-    "login": "Inloggen",
-    "leagueDetails": "League details",
-    "leaderboard": "Ranglijst",
-    "liveMatches": "Live wedstrijden",
-    "inProgress": "Bezig",
-    "calculating": "Berekenen",
-    "save": "Opslaan",
-    "systemOperational": "SYSTEEM OPERATIONEEL",
-    "footerHome": "Home",
-    "footerLeagues": "Leagues",
-    "footerTraining": "Training",
-    "footerLegal": "Juridisch",
-    "footerPrivacyPolicy": "Privacybeleid",
-    "footerTermsOfService": "Servicevoorwaarden",
-    "footerContact": "Contact",
-    "featureLiveScoreTitle": "Video + handmatige invoer",
-    "featureLiveScoreDesc": "Registreer uw worp en voer vervolgens de score handmatig in, b.v. 20, 14, 5.",
-    "featureLeagueRaceTitle": "Leaderboard-bewegingen live",
-    "featureLeagueRaceDesc": "Volg wekelijkse positiewijzigingen terwijl de punten gedurende de week worden bijgewerkt.",
-    "featureStreakTitle": "Bouw uw dagelijkse reeks op",
-    "featureStreakDesc": "Registreer uw dagelijkse 9 darts en houd uw streak elke dag levend.",
-    "featureCurrentStreakLabel": "Huidige reeks",
-    "featureThrowsLoggedLabel": "Ingevoerde worpen",
-    "featureVideoInputBadge": "Video + Ingang",
-    "featureEntryTotalLabel": "Totaal ingevoerd"
   },
   "cookie": {
     "acceptButton": "Accepteer analyses",
@@ -159,6 +94,7 @@
     "noLeaguesYet": "Nog geen competities",
     "numberOfRounds": "Aantal rondes (weken)",
     "of": "van",
+    "openCard": "Openen",
     "playDarts": "Darten spelen",
     "round": "Ronde",
     "starts": "Begint",
@@ -167,8 +103,72 @@
     "welcomeBack": "Welkom terug, {{name}}!",
     "welcomeTo": "Welkom bij {{name}}! 🎯",
     "youHaveNotifications": "Je hebt {{count}} melding(en)",
-    "yourLeagues": "Jouw competities",
-    "openCard": "Openen"
+    "yourLeagues": "Jouw competities"
+  },
+  "landing": {
+    "calculating": "Berekenen",
+    "coreMechanicsTitle": "Kernmechanieken",
+    "createAccount": "Account maken",
+    "createAccountCta": "Maak in seconden een account en begin met spelen.",
+    "createFreeAccount": "Gratis account maken",
+    "dashboard": "Dashboard",
+    "featureCurrentStreakLabel": "Huidige reeks",
+    "featureEntryTotalLabel": "Totaal ingevoerd",
+    "featureLeagueRaceDesc": "Volg wekelijkse positiewijzigingen terwijl de punten gedurende de week worden bijgewerkt.",
+    "featureLeagueRaceTitle": "Leaderboard-bewegingen live",
+    "featureLiveScoreDesc": "Registreer uw worp en voer vervolgens de score handmatig in, b.v. 20, 14, 5.",
+    "featureLiveScoreTitle": "Video + handmatige invoer",
+    "featureStreakDesc": "Registreer uw dagelijkse 9 darts en houd uw streak elke dag levend.",
+    "featureStreakTitle": "Bouw uw dagelijkse reeks op",
+    "featureThrowsLoggedLabel": "Ingevoerde worpen",
+    "featureVideoInputBadge": "Video + Ingang",
+    "footer": "© 2025 DartStreak. Concurreer. Veel plezier. Word de beste.",
+    "footerContact": "Contact",
+    "footerDesc": "Precisie-mechanieken voor je dagelijkse darts. Een digitaal instrument voor de moderne speler.",
+    "footerHome": "Home",
+    "footerLeagues": "Leagues",
+    "footerLegal": "Juridisch",
+    "footerPrivacyPolicy": "Privacybeleid",
+    "footerTermsOfService": "Servicevoorwaarden",
+    "footerTraining": "Training",
+    "googleLogin": "Inloggen met Google",
+    "heroDescription": "Doe mee aan dagelijkse leagues met vrienden. Geen gedoe, gewoon spelen.",
+    "heroHighlight": "Precisie.",
+    "heroHighlight2": "Helemaal gratis",
+    "heroTitle": "Wereldwijde status ontmoet",
+    "howLeaguesStep1": "League maken",
+    "howLeaguesStep1Desc": "Zet in seconden een league op en nodig vrienden uit met een code.",
+    "howLeaguesStep2": "Dagelijks 9 darts",
+    "howLeaguesStep2Desc": "Iedereen gooit 9 darts (3x3) wanneer het uitkomt.",
+    "howLeaguesStep3": "Wekelijkse winnaar",
+    "howLeaguesStep3Desc": "Scores worden automatisch bijgehouden. Wie staat bovenaan aan het einde van de week?",
+    "howLeaguesWorkTitle": "Hoe leagues werken",
+    "inProgress": "Bezig",
+    "leaderboard": "Ranglijst",
+    "leagueDetails": "League details",
+    "leaguesSubtitle": "Het was nog nooit zo makkelijk",
+    "leaguesTeaser": "Dagelijks met vrienden strijden? Bekijk hoe leagues werken ↓",
+    "leaguesTitle": "Een league starten?",
+    "liveMatches": "Live wedstrijden",
+    "login": "Inloggen",
+    "navFeatures": "Functies",
+    "navLeagues": "Leagues",
+    "navPhilosophy": "Filosofie",
+    "philosophyHighlight": "Wij focussen op: community en progressie.",
+    "philosophyTitle": "De meeste apps focussen op generieke statistieken.",
+    "playOnline": "Online wedstrijd spelen",
+    "playTournament": "Toernooi deelnemen",
+    "readyToCompete": "Klaar om te strijden?",
+    "save": "Opslaan",
+    "systemOperational": "SYSTEEM OPERATIONEEL",
+    "tagline": "De makkelijkste manier om online darts te spelen",
+    "whyUs1Desc": "Leg je dagelijkse worpen vast met je camera. Simpel, veilig en eerlijk.",
+    "whyUs1Title": "Video geverifieerd",
+    "whyUs2Desc": "Geen ingewikkelde registratie. Nodig vrienden uit en begin met gooien.",
+    "whyUs2Title": "Beginner vriendelijk",
+    "whyUs3Desc": "Maak privéleagues, volg klassementen en zie wie stijgt.",
+    "whyUs3Title": "Strijd met vrienden",
+    "whyUsTitle": "Waarom DartStreak?"
   },
   "league": {
     "alreadyRegisteredToday": "Je hebt de worpen van vandaag al geregistreerd",
@@ -183,15 +183,22 @@
     "couldNotDelete": "Kan de competitie niet verwijderen",
     "couldNotFindLeague": "Kon de competitie niet vinden",
     "couldNotLeave": "Kon de competitie niet verlaten",
+    "countryLeagueLabel": "Landencompetitie: {{country}}",
+    "countryLeagueTitle": "{{country}} Competitie",
     "deleteConfirmDesc": "Weet u zeker dat u \"{{name}}\" wilt verwijderen? Dit kan niet ongedaan worden gemaakt en alle gegevens worden verwijderd.",
     "deleteConfirmTitle": "Liga verwijderen",
     "deleteLeague": "Liga verwijderen",
     "deleting": "Verwijderen...",
+    "endsAtLeagueTimezone": "Eindigt in de tijdzone van de competitie",
+    "endsAtYourTimezone": "Eindigt in uw lokale tijd",
     "endsOn": "Einde",
     "finalScore": "Eindscore",
     "finished": "Liga voltooid",
     "firstRoundStarts": "De eerste ronde begint",
     "fiveMinuteWarning": "Zodra u begint, heeft u 5 minuten de tijd om het te voltooien",
+    "globalLeagueLabel": "Mondiale competitie",
+    "globalLeagueTitle": "Mondiale Liga",
+    "historyView": "Geschiedenis",
     "invalidRounds": "Voer tussen 1 en 52 ronden in",
     "invalidStartDate": "Kies een geldige startdatum",
     "inviteCodeCopied": "Uitnodigingscode gekopieerd!",
@@ -203,11 +210,13 @@
     "leaveConfirmTitle": "Liga verlaten?",
     "leaving": "Vertrekken...",
     "newRoundEvery": "Elke nieuwe ronde",
+    "newerWeek": "Nieuwere week",
     "nextDay": "Volgende dag binnen",
     "noThrows": "Geen worpen",
     "noThrowsYet": "Deze ronde heeft nog niemand gegooid",
     "notRegisteredToday": "Je hebt de worpen van vandaag nog niet geregistreerd",
     "of": "van",
+    "olderWeek": "Oudere week",
     "player": "Speler",
     "previousRounds": "Vorige rondes",
     "restart": "Opnieuw opstarten",
@@ -225,18 +234,9 @@
     "todaysScore": "Score van vandaag: {{score}} 🎯",
     "total": "Totaal",
     "week": "Week",
-    "winner": "Winnaar",
-    "you": "Jij",
-    "globalLeagueLabel": "Mondiale competitie",
-    "globalLeagueTitle": "Mondiale Liga",
-    "countryLeagueLabel": "Landencompetitie: {{country}}",
-    "countryLeagueTitle": "{{country}} Competitie",
     "weekLabel": "Week {{week}}",
-    "endsAtLeagueTimezone": "Eindigt in de tijdzone van de competitie",
-    "endsAtYourTimezone": "Eindigt in uw lokale tijd",
-    "olderWeek": "Oudere week",
-    "newerWeek": "Nieuwere week",
-    "historyView": "Geschiedenis"
+    "winner": "Winnaar",
+    "you": "Jij"
   },
   "legal": {
     "contact": {
@@ -251,13 +251,14 @@
     },
     "privacyPolicy": {
       "li1": "Accountgegevens: We verzamelen uw e-mailadres en profielgegevens (zoals weergavenaam, land, landtijdzone en avatar-URL indien beschikbaar) om uw profiel aan te maken.",
+      "li10": "Gegevens over taalvoorkeur: we slaan de door u geselecteerde app-taal op in de lokale opslag van uw browser, zodat de app uw keuze tijdens bezoeken kan onthouden.",
       "li2": "Spelgegevens: We slaan uw worpgeschiedenis, statistieken en deelnamegegevens aan competities op om kernservicefuncties te bieden, waaronder automatische plaatsing in mondiale en landelijke competities.",
       "li3": "Videogegevens: Voor sommige competities is mogelijk een video-opname vereist ter verificatie. Als een competitie video vereist, worden clips opgeslagen zodat competitieleden deze tijdens het actieve seizoen kunnen bekijken. Voor voltooide systeemcompetities worden historische videoreferenties verwijderd.",
-      "li7": "Trainingsgegevens: Tic-Tac-Toe Darts, Red Zone Survival en Throw for the Bull draaien in deze versie lokaal in je browsersessie en worden niet naar onze backend verzonden.",
-      "li8": "Gebruiksgegevens: We gebruiken Google Analytics om inzicht te krijgen in het app-gebruik, inclusief paginaweergaven, apparaat-/browserinformatie en geschatte locatie.",
       "li4": "Supabase: Wordt gebruikt voor onze database, authenticatie en veilige gegevensopslag.",
       "li5": "Google OAuth: optionele aanmeldingsprovider voor veilige authenticatie.",
       "li6": "Supabase-opslag: wordt gebruikt voor het veilig opslaan van throw-verificatievideo's.",
+      "li7": "Trainingsgegevens: Tic-Tac-Toe Darts, Red Zone Survival en Throw for the Bull draaien in deze versie lokaal in je browsersessie en worden niet naar onze backend verzonden.",
+      "li8": "Gebruiksgegevens: We gebruiken Google Analytics om inzicht te krijgen in het app-gebruik, inclusief paginaweergaven, apparaat-/browserinformatie en geschatte locatie.",
       "li9": "Google Analytics: Gebruikt voor verkeers- en gedragsanalyse. We hebben IP-anonimisering ingeschakeld waar dit wordt ondersteund.",
       "p1": "Laatst bijgewerkt: 21 februari 2026",
       "s1Text": "Welkom bij DartStreak (\"wij\", \"onze\" of \"ons\"). Wij respecteren uw privacy en doen er alles aan om uw persoonlijke gegevens te beschermen. Dit privacybeleid legt uit hoe wij met uw persoonlijke gegevens omgaan wanneer u onze applicatie bezoekt en informeert u over uw privacyrechten.",
@@ -269,10 +270,9 @@
       "s4Title": "4. Gegevensverwijdering",
       "s5Text": "Analytics-cookies worden alleen gebruikt nadat u toestemming heeft gegeven in onze cookiebanner. U kunt uw keuze op elk moment wijzigen via Cookie-instellingen in de app.",
       "s5Title": "5. Cookies en toestemming",
-      "title": "Privacybeleid",
-      "s6Title": "6. Systeemcompetities en landgegevens",
       "s6Text": "Wanneer u uw land instelt, kunnen we u automatisch in een mondiale competitie en een landencompetitie plaatsen. Systeemcompetities gebruiken vaste competitietijdzones voor wekelijkse seizoenen.",
-      "li10": "Gegevens over taalvoorkeur: we slaan de door u geselecteerde app-taal op in de lokale opslag van uw browser, zodat de app uw keuze tijdens bezoeken kan onthouden."
+      "s6Title": "6. Systeemcompetities en landgegevens",
+      "title": "Privacybeleid"
     },
     "terms": {
       "li1": "Speel vals, manipuleer scores of gebruik geautomatiseerde bots.",
@@ -401,150 +401,8 @@
     "matches": "Wedstrijden",
     "offline": "Offline",
     "profile": "Profiel",
-    "training": "Opleiding",
-    "tournaments": "Toernooien"
-  },
-  "trainingHub": {
-    "kicker": "Kies uw trainingsmodus",
-    "title": "Opleiding",
-    "subtitle": "Kies een modus op basis van wat je nu wilt oefenen.",
-    "open": "Open modus",
-    "cards": {
-      "ticTacToe": {
-        "badge": "Tactisch duel",
-        "title": "Boter-kaas-en-eieren darten",
-        "description": "Doelcontrole voor twee spelers, waarbij elke ronde wordt bepaald door bordbeheer en afrekenprecisie."
-      },
-      "redZone": {
-        "badge": "Elimination mode",
-        "title": "Red Zone Survival",
-        "description": "Multiplayer survival drill: one dart each, avoid the red sectors as danger expands around the board."
-      }
-    }
-  },
-  "trainingTicTacToe": {
-    "actions": {
-      "changeTeams": "Verander teams",
-      "enterFullscreen": "Volledig scherm",
-      "exitFullscreen": "Volledig scherm afsluiten",
-      "newBoard": "Nieuw bord",
-      "nextRound": "Begin volgende ronde",
-      "resetMatch": "Wedstrijd opnieuw instellen"
-    },
-    "board": {
-      "easiest": "Makkelijkst",
-      "fastest": "Snelste",
-      "guideTitle": "Afrekengids",
-      "lockNow": "Nu op doel: sluit dit vierkant.",
-      "noFinish": "Geen finish mogelijk deze beurt.",
-      "open": "Open",
-      "pending": "In behandeling",
-      "playerPrefix": "P",
-      "target": "Doel"
-    },
-    "difficulty": {
-      "advanced_scores": {
-        "description": "Willekeurige scores tussen 61-120.",
-        "label": "Scores (gevorderden 61-120)"
-      },
-      "beginner_numbers": {
-        "description": "Willekeurige cijfers 1-20.",
-        "label": "Cijfers (beginners 1-20)"
-      },
-      "easy_scores": {
-        "description": "Willekeurige scores tussen 21-60.",
-        "label": "Scores (makkelijk 21-60)"
-      },
-      "expert_checkouts": {
-        "description": "Willekeurige kassa's tussen 41-80. Eindig op een dubbel.",
-        "label": "Kassa's (Expert 41-80)"
-      },
-      "intermediate_doubles": {
-        "description": "Willekeurige dubbels 1-20 en BULL.",
-        "label": "Dubbelspel (tussen 1-20)"
-      },
-      "pro_checkouts": {
-        "description": "Willekeurige kassa's tussen 81-120. Eindig op een dubbel.",
-        "label": "Kassa's (Pro 81-120)"
-      },
-      "pro_trebles": {
-        "description": "Willekeurige hoge tonen 1-20.",
-        "label": "Hoge tonen (Pro 1-20)"
-      }
-    },
-    "help": {
-      "button": "Nieuw hier? Leer het spel",
-      "subtitle": "Snelle regels en moeilijkheidsoverzicht.",
-      "title": "Hoe Tic-Tac-Toe-darts werken"
-    },
-    "levels": {
-      "title": "De verschillende moeilijke niveaus"
-    },
-    "players": {
-      "playerA": "Speler A",
-      "playerB": "Speler B"
-    },
-    "setup": {
-      "colorsMustDiffer": "Teams moeten verschillende kleuren gebruiken.",
-      "firstTo": "Eerst naar",
-      "legsToWin": "Benen om te winnen",
-      "matchDesc": "Competitieve wedstrijd",
-      "namesRequired": "Beide teamnamen zijn vereist.",
-      "practiceDesc": "Speel voor de lol",
-      "start": "Spel starten",
-      "subtitle": "Kies namen en kleuren voor beide teams voordat je begint.",
-      "teamA": "Team A",
-      "teamB": "Team B",
-      "title": "Teams opzetten",
-      "unlimited": "Onbeperkt"
-    },
-    "result": {
-      "draw": "Ronde eindigde in een gelijkspel",
-      "matchWinner": "Wedstrijdwinnaar!",
-      "matchWinnerSubtitle": "{{player}} wint de wedstrijd {{score}}!",
-      "playAgain": "Speel opnieuw",
-      "subtitle": "Tik hieronder om door te gaan met een nieuw bord.",
-      "winner": "Speler {{player}} wint de ronde!"
-    },
-    "rules": {
-      "r1": "Elke beurt heeft 3 darts.",
-      "r2": "Registreer elke dart met Single/Double/Triple en bordnummers 1-20.",
-      "r3": "Als uw lopende totaal niet langer overeenkomt met een open vierkant, gaat de claim in de wachtrij verloren.",
-      "r4": "Vergrendel het vierkant in de wachtrij op elk moment, of het wordt automatisch vergrendeld na worp 3 als het nog geldig is.",
-      "title": "Hoe het werkt"
-    },
-    "status": {
-      "currentTurn": "Huidige beurt: {{player}}",
-      "firstTo": "Eerste naar {{legs}}"
-    },
-    "title": "Boter-kaas-en-eieren darten",
-    "turn": {
-      "activePlayer": "Actieve speler",
-      "double": "Dubbele",
-      "quick25": "25",
-      "selectHint": "Registreer elke dart hieronder. Gebruik MISS als je niet scoort.",
-      "lockSquare": "Vergrendel vierkant",
-      "miss": "MISSEN",
-      "noPossibleSquares": "Geen mogelijke vierkanten meer - beurtpassen",
-      "single": "Enkel",
-      "total": "Draai totaal",
-      "throw": "Gooien",
-      "triple": "Verdrievoudigen",
-      "undo": "Ongedaan maken"
-    },
-    "bullDecider": {
-      "title": "Throw for the Bull",
-      "subtitle": "Voor de wedstrijd gooit elk team één dart. Wie het dichtst bij de bull zit, begint.",
-      "registered": "Geregistreerde worpen: {{count}} / {{total}}",
-      "left": "Resterende worpen: {{count}}",
-      "currentThrow": "{{player}} gooit nu",
-      "distance": "{{distance}} mm van de bull",
-      "tie": "Gelijkspel om plek 1 tussen {{players}}. Gooi opnieuw om de starter te bepalen.",
-      "winner": "{{player}} start de wedstrijd.",
-      "rethrow": "Opnieuw gooien",
-      "cancel": "Annuleren",
-      "start": "Start wedstrijd"
-    }
+    "tournaments": "Toernooien",
+    "training": "Opleiding"
   },
   "offline": {
     "activeMatches": "Actieve offline wedstrijden",
@@ -579,6 +437,13 @@
     "bestDay": "Beste dag",
     "canChangeIn": "Je kunt dit over {{days}} dagen wijzigen",
     "cannotChangeYet": "Kan nog {{days}} dagen niet wijzigen",
+    "completeProfileDesc": "Kies in welk land je woont om deel te nemen aan mondiale en nationale competities.",
+    "completeProfileTitle": "Vul je profiel in",
+    "country": "Land",
+    "countryRequired": "U moet een land selecteren",
+    "countryUpdated": "Land bijgewerkt!",
+    "dartCursor": "Dartcursor",
+    "dartCursorDesc": "Vervang je muisaanwijzer door een dartpijl",
     "daysPlayed": "Dagen gespeeld",
     "deleteAccount": "Account verwijderen",
     "deleteAccountConfirmDesc": "Deze actie is permanent en kan niet ongedaan worden gemaakt. Al uw gegevens, inclusief competities, worpen, statistieken en video's, worden permanent verwijderd.",
@@ -586,16 +451,15 @@
     "deleteAccountError": "Kan het account niet verwijderen. Probeer het opnieuw of neem contact op met de ondersteuning.",
     "deleteAccountSuccess": "Uw account is verwijderd. Tot ziens!",
     "deleting": "Verwijderen...",
-    "dartCursor": "Dartcursor",
-    "dartCursorDesc": "Vervang je muisaanwijzer door een dartpijl",
     "email": "E-mail",
     "emailUpdated": "E-mailupdate gestart. Controleer je inbox.",
     "leaguesParticipated": "Er deden competities mee",
     "lifetimePoints": "Levenslange punten",
     "memberSince": "Lid sinds",
-    "notFound": "Profiel niet gevonden",
     "noCountriesFound": "Geen landen gevonden",
+    "notFound": "Profiel niet gevonden",
     "searchCountry": "Zoek land...",
+    "selectCountry": "Selecteer land",
     "settings": "Instellingen",
     "summary": "Samenvatting",
     "timezone": "Tijdzone",
@@ -606,13 +470,7 @@
     "unnamed": "Naamloos",
     "updateError": "Kan niet updaten",
     "username": "Gebruikersnaam",
-    "usernameUpdated": "Gebruikersnaam bijgewerkt!",
-    "country": "Land",
-    "selectCountry": "Selecteer land",
-    "countryRequired": "U moet een land selecteren",
-    "countryUpdated": "Land bijgewerkt!",
-    "completeProfileTitle": "Vul je profiel in",
-    "completeProfileDesc": "Kies in welk land je woont om deel te nemen aan mondiale en nationale competities."
+    "usernameUpdated": "Gebruikersnaam bijgewerkt!"
   },
   "pwa": {
     "alreadyInstalled": "Al geïnstalleerd?",
@@ -789,6 +647,250 @@
     "youDidntShow": "Je bent niet op tijd meegegaan",
     "yourMatch": "Jouw wedstrijd"
   },
+  "trainingHub": {
+    "cards": {
+      "redZone": {
+        "badge": "Elimination mode",
+        "description": "Multiplayer survival drill: one dart each, avoid the red sectors as danger expands around the board.",
+        "title": "Red Zone Survival"
+      },
+      "ticTacToe": {
+        "badge": "Tactisch duel",
+        "description": "Doelcontrole voor twee spelers, waarbij elke ronde wordt bepaald door bordbeheer en afrekenprecisie.",
+        "title": "Boter-kaas-en-eieren darten"
+      }
+    },
+    "kicker": "Kies uw trainingsmodus",
+    "open": "Open modus",
+    "subtitle": "Kies een modus op basis van wat je nu wilt oefenen.",
+    "title": "Opleiding"
+  },
+  "trainingRedZone": {
+    "actions": {
+      "changePlayers": "Spelers wijzigen",
+      "newGame": "Nieuw spel",
+      "undo": "Ongedaan maken"
+    },
+    "bullDecider": {
+      "cancel": "Annuleren",
+      "currentThrow": "{{player}} gooit nu",
+      "distance": "{{distance}} mm van de bull",
+      "left": "Resterende worpen: {{count}}",
+      "registered": "Geregistreerde worpen: {{count}} / {{total}}",
+      "rethrow": "Opnieuw gooien",
+      "startGame": "Start spel",
+      "subtitle": "Voor de start gooit iedereen één dart. Wie het dichtst bij de bull zit, krijgt de eerste volgorde.",
+      "tie": "Gelijkspel om plek 1 tussen {{players}}. Gooi opnieuw om de volgorde te bepalen.",
+      "title": "Throw for the Bull",
+      "winner": "{{player}} zit het dichtst bij de bull en begint."
+    },
+    "history": {
+      "allSafe": "Iedereen heeft het overleefd.",
+      "eliminated": "Uitvallers",
+      "none": "Nog geen ronde afgelopen.",
+      "round": "Ronde {{round}}",
+      "title": "Ronde geschiedenis"
+    },
+    "players": {
+      "alive": "Nog erin",
+      "eliminated": "Uitgeschakeld",
+      "eliminatedRound": "Uit in ronde {{round}}"
+    },
+    "result": {
+      "draw": "Allemaal uitgeschakeld in dezelfde ronde.",
+      "playAgain": "Opnieuw spelen",
+      "winner": "{{player}} wint!"
+    },
+    "rules": {
+      "expanding": {
+        "r1": "Ronde 1 begint met alleen rood op de 20.",
+        "r2": "Iedere overblijvende speler gooit tot 3 darts per ronde en registreert of rood werd geraakt op dart 1, 2, 3 of helemaal niet.",
+        "r3": "Als iedereen in dezelfde ronde wordt uitgeschakeld, wint de speler die het langst overleefde in de ronde (laatste dart). Zelfde dart = gelijkspel.",
+        "r4": "Na elke ronde breiden de rode velden zich uit: 20 -> 5/1 -> 12/18 etc."
+      },
+      "random": {
+        "r1": "Ronde 1 begint met een willekeurig getal in het rood.",
+        "r2": "Iedere overblijvende speler gooit tot 3 darts per ronde en registreert of rood werd geraakt op dart 1, 2, 3 of helemaal niet.",
+        "r3": "Als iedereen in dezelfde ronde wordt uitgeschakeld, wint de speler die het langst overleefde in de ronde (laatste dart). Zelfde dart = gelijkspel.",
+        "r4": "Na elke ronde wordt er één nieuw willekeurig getal toegevoegd aan de rode zones (de eerdere rode zones blijven)."
+      },
+      "title": "Hoe het werkt"
+    },
+    "setup": {
+      "addPlayer": "Speler toevoegen",
+      "duplicateNames": "Namen moeten uniek zijn.",
+      "lives": {
+        "0": "Geen (Sudden Death)",
+        "1": "1 Leven",
+        "3": "3 Levens",
+        "5": "5 Levens"
+      },
+      "livesLabel": "Levens",
+      "livesSubtitle": "Extra kansen voor uitschakeling",
+      "minPlayers": "Minimaal 2 spelers nodig.",
+      "mode": {
+        "expanding": {
+          "description": "Rode sectoren breiden elke ronde uit vanaf 20.",
+          "label": "Klassieke uitbreiding"
+        },
+        "random": {
+          "description": "Elke ronde nieuwe willekeurige rode sectoren.",
+          "label": "Willekeurige sectoren"
+        }
+      },
+      "modeLabel": "Spelmodus",
+      "modeSubtitle": "Kies of rode sectoren vanaf 20 uitbreiden of elke ronde willekeurig zijn.",
+      "namesRequired": "Iedereen heeft een naam nodig.",
+      "playerDefault": "Speler {{index}}",
+      "removePlayer": "Verwijderen",
+      "start": "Start spel",
+      "subtitle": "Voeg iedereen toe, kies namen en begin het spel.",
+      "title": "Spelers instellen"
+    },
+    "status": {
+      "alivePlayers": "Spelers nog in het spel: {{count}}",
+      "currentThrow": "{{player}} gooit",
+      "dangerNumbers": "Rode vakjes",
+      "mode": "Modus",
+      "nextExpansion": "Volgende uitbreiding",
+      "nextRandomCount": "{{count}} willekeurige sectoren",
+      "round": "Ronde {{round}}"
+    },
+    "subtitle": "Multiplayer overlevingsmodus: tot 3 darts per speler per ronde. Je ligt eruit zodra je eerste dart in een rode gevarenzone landt.",
+    "throw": {
+      "bull": "BULL",
+      "danger": "Rode Zone / Mis",
+      "miss": "MISS",
+      "prompt": "Registreer waar je gooide. MISS en BULL zijn veilig.",
+      "promptSimple": "Kies VEILIG als alle 3 darts veilig waren, of ROOD 1/2/3 voor de dart waarop je voor het eerst rood raakte.",
+      "safe": "Veilig"
+    },
+    "title": "Red Zone Survival"
+  },
+  "trainingTicTacToe": {
+    "actions": {
+      "changeTeams": "Verander teams",
+      "enterFullscreen": "Volledig scherm",
+      "exitFullscreen": "Volledig scherm afsluiten",
+      "newBoard": "Nieuw bord",
+      "nextRound": "Begin volgende ronde",
+      "resetMatch": "Wedstrijd opnieuw instellen"
+    },
+    "board": {
+      "easiest": "Makkelijkst",
+      "fastest": "Snelste",
+      "guideTitle": "Afrekengids",
+      "lockNow": "Nu op doel: sluit dit vierkant.",
+      "noFinish": "Geen finish mogelijk deze beurt.",
+      "open": "Open",
+      "pending": "In behandeling",
+      "playerPrefix": "P",
+      "target": "Doel"
+    },
+    "bullDecider": {
+      "cancel": "Annuleren",
+      "currentThrow": "{{player}} gooit nu",
+      "distance": "{{distance}} mm van de bull",
+      "left": "Resterende worpen: {{count}}",
+      "registered": "Geregistreerde worpen: {{count}} / {{total}}",
+      "rethrow": "Opnieuw gooien",
+      "start": "Start wedstrijd",
+      "subtitle": "Voor de wedstrijd gooit elk team één dart. Wie het dichtst bij de bull zit, begint.",
+      "tie": "Gelijkspel om plek 1 tussen {{players}}. Gooi opnieuw om de starter te bepalen.",
+      "title": "Throw for the Bull",
+      "winner": "{{player}} start de wedstrijd."
+    },
+    "difficulty": {
+      "advanced_scores": {
+        "description": "Willekeurige scores tussen 61-120.",
+        "label": "Scores (gevorderden 61-120)"
+      },
+      "beginner_numbers": {
+        "description": "Willekeurige cijfers 1-20.",
+        "label": "Cijfers (beginners 1-20)"
+      },
+      "easy_scores": {
+        "description": "Willekeurige scores tussen 21-60.",
+        "label": "Scores (makkelijk 21-60)"
+      },
+      "expert_checkouts": {
+        "description": "Willekeurige kassa's tussen 41-80. Eindig op een dubbel.",
+        "label": "Kassa's (Expert 41-80)"
+      },
+      "intermediate_doubles": {
+        "description": "Willekeurige dubbels 1-20 en BULL.",
+        "label": "Dubbelspel (tussen 1-20)"
+      },
+      "pro_checkouts": {
+        "description": "Willekeurige kassa's tussen 81-120. Eindig op een dubbel.",
+        "label": "Kassa's (Pro 81-120)"
+      },
+      "pro_trebles": {
+        "description": "Willekeurige hoge tonen 1-20.",
+        "label": "Hoge tonen (Pro 1-20)"
+      }
+    },
+    "help": {
+      "button": "Nieuw hier? Leer het spel",
+      "subtitle": "Snelle regels en moeilijkheidsoverzicht.",
+      "title": "Hoe Tic-Tac-Toe-darts werken"
+    },
+    "levels": {
+      "title": "De verschillende moeilijke niveaus"
+    },
+    "players": {
+      "playerA": "Speler A",
+      "playerB": "Speler B"
+    },
+    "result": {
+      "draw": "Ronde eindigde in een gelijkspel",
+      "matchWinner": "Wedstrijdwinnaar!",
+      "matchWinnerSubtitle": "{{player}} wint de wedstrijd {{score}}!",
+      "playAgain": "Speel opnieuw",
+      "subtitle": "Tik hieronder om door te gaan met een nieuw bord.",
+      "winner": "Speler {{player}} wint de ronde!"
+    },
+    "rules": {
+      "r1": "Elke beurt heeft 3 darts.",
+      "r2": "Registreer elke dart met Single/Double/Triple en bordnummers 1-20.",
+      "r3": "Als uw lopende totaal niet langer overeenkomt met een open vierkant, gaat de claim in de wachtrij verloren.",
+      "r4": "Vergrendel het vierkant in de wachtrij op elk moment, of het wordt automatisch vergrendeld na worp 3 als het nog geldig is.",
+      "title": "Hoe het werkt"
+    },
+    "setup": {
+      "colorsMustDiffer": "Teams moeten verschillende kleuren gebruiken.",
+      "firstTo": "Eerst naar",
+      "legsToWin": "Benen om te winnen",
+      "matchDesc": "Competitieve wedstrijd",
+      "namesRequired": "Beide teamnamen zijn vereist.",
+      "practiceDesc": "Speel voor de lol",
+      "start": "Spel starten",
+      "subtitle": "Kies namen en kleuren voor beide teams voordat je begint.",
+      "teamA": "Team A",
+      "teamB": "Team B",
+      "title": "Teams opzetten",
+      "unlimited": "Onbeperkt"
+    },
+    "status": {
+      "currentTurn": "Huidige beurt: {{player}}",
+      "firstTo": "Eerste naar {{legs}}"
+    },
+    "title": "Boter-kaas-en-eieren darten",
+    "turn": {
+      "activePlayer": "Actieve speler",
+      "double": "Dubbele",
+      "lockSquare": "Vergrendel vierkant",
+      "miss": "MISSEN",
+      "noPossibleSquares": "Geen mogelijke vierkanten meer - beurtpassen",
+      "quick25": "25",
+      "selectHint": "Registreer elke dart hieronder. Gebruik MISS als je niet scoort.",
+      "single": "Enkel",
+      "throw": "Gooien",
+      "total": "Draai totaal",
+      "triple": "Verdrievoudigen",
+      "undo": "Ongedaan maken"
+    }
+  },
   "videoDialog": {
     "couldNotLoadVideo": "Kan de video niet laden. Mogelijk is deze verwijderd.",
     "noVideoRecorded": "Er is geen video opgenomen voor deze worp",
@@ -808,77 +910,5 @@
     "thursday": "Donderdag",
     "tuesday": "Dinsdag",
     "wednesday": "Woensdag"
-  },
-  "trainingRedZone": {
-    "title": "Red Zone Survival",
-    "subtitle": "Multiplayer overlevingsmodus: tot 3 darts per speler per ronde. Je ligt eruit zodra je eerste dart in een rode gevarenzone landt.",
-    "setup": {
-      "title": "Spelers instellen",
-      "subtitle": "Voeg iedereen toe, kies namen en begin het spel.",
-      "playerDefault": "Speler {{index}}",
-      "addPlayer": "Speler toevoegen",
-      "removePlayer": "Verwijderen",
-      "start": "Start spel",
-      "minPlayers": "Minimaal 2 spelers nodig.",
-      "namesRequired": "Iedereen heeft een naam nodig.",
-      "duplicateNames": "Namen moeten uniek zijn."
-    },
-    "rules": {
-      "title": "Hoe het werkt",
-      "r1": "Ronde 1 begint met alleen rood op de 20.",
-      "r2": "Iedere overblijvende speler gooit tot 3 darts per ronde en registreert of rood werd geraakt op dart 1, 2, 3 of helemaal niet.",
-      "r3": "Als iedereen in dezelfde ronde wordt uitgeschakeld, wint de speler die het langst overleefde in de ronde (laatste dart). Zelfde dart = gelijkspel.",
-      "r4": "Na elke ronde breiden de rode velden zich uit: 20 -> 5/1 -> 12/18 etc."
-    },
-    "actions": {
-      "newGame": "Nieuw spel",
-      "changePlayers": "Spelers wijzigen",
-      "undo": "Ongedaan maken"
-    },
-    "status": {
-      "round": "Ronde {{round}}",
-      "alivePlayers": "Spelers nog in het spel: {{count}}",
-      "dangerNumbers": "Rode vakjes",
-      "nextExpansion": "Volgende uitbreiding",
-      "currentThrow": "{{player}} gooit"
-    },
-    "throw": {
-      "prompt": "Registreer waar je gooide. MISS en BULL zijn veilig.",
-      "promptSimple": "Kies VEILIG als alle 3 darts veilig waren, of ROOD 1/2/3 voor de dart waarop je voor het eerst rood raakte.",
-      "safe": "Veilig",
-      "danger": "Rode Zone / Mis",
-      "miss": "MISS",
-      "bull": "BULL"
-    },
-    "players": {
-      "alive": "Nog erin",
-      "eliminated": "Uitgeschakeld",
-      "eliminatedRound": "Uit in ronde {{round}}"
-    },
-    "result": {
-      "winner": "{{player}} wint!",
-      "draw": "Allemaal uitgeschakeld in dezelfde ronde.",
-      "playAgain": "Opnieuw spelen"
-    },
-    "history": {
-      "title": "Ronde geschiedenis",
-      "none": "Nog geen ronde afgelopen.",
-      "round": "Ronde {{round}}",
-      "eliminated": "Uitvallers",
-      "allSafe": "Iedereen heeft het overleefd."
-    },
-    "bullDecider": {
-      "title": "Throw for the Bull",
-      "subtitle": "Voor de start gooit iedereen één dart. Wie het dichtst bij de bull zit, krijgt de eerste volgorde.",
-      "registered": "Geregistreerde worpen: {{count}} / {{total}}",
-      "left": "Resterende worpen: {{count}}",
-      "currentThrow": "{{player}} gooit nu",
-      "distance": "{{distance}} mm van de bull",
-      "tie": "Gelijkspel om plek 1 tussen {{players}}. Gooi opnieuw om de volgorde te bepalen.",
-      "winner": "{{player}} zit het dichtst bij de bull en begint.",
-      "rethrow": "Opnieuw gooien",
-      "cancel": "Annuleren",
-      "startGame": "Start spel"
-    }
   }
 }

@@ -1,11 +1,10 @@
 {
   "auth": {
-    "continueWithGoogle": "Fortsett med Google",
-    "googleLogin": "Logg inn med Google",
     "accountCreated": "Konto opprettet! Velkomst! 🎯",
     "byContinuing": "Ved å fortsette godtar du vår",
     "chooseUsername": "Velg brukernavnet ditt",
     "chooseUsernameDesc": "Velg et unikt navn for å begynne å konkurrere.",
+    "continueWithGoogle": "Fortsett med Google",
     "displayName": "Brukernavn",
     "email": "E-post",
     "emailAlreadyRegistered": "E-post er allerede registrert",
@@ -13,6 +12,7 @@
     "enterNewPassword": "Skriv inn ditt nye passord nedenfor.",
     "forgotPassword": "Glemt passord?",
     "forgotPasswordDesc": "Skriv inn e-postadressen din for å motta en tilbakestillingslenke.",
+    "googleLogin": "Logg inn med Google",
     "hasAccount": "Har du allerede en konto? Logg inn",
     "invalidEmail": "Ugyldig e-postadresse",
     "joinCompetition": "Bli med på dartkonkurransen med vennene dine",
@@ -40,13 +40,13 @@
     "yourName": "Brukernavnet ditt"
   },
   "common": {
-    "language": "Språk",
     "and": "og",
     "back": "Tilbake",
     "cancel": "Kansellere",
     "close": "Lukke",
     "contact": "Kontakt",
     "delete": "Slett",
+    "language": "Språk",
     "loading": "Laster inn...",
     "or": "eller",
     "privacyPolicy": "Personvernerklæring",
@@ -55,71 +55,6 @@
     "signInToPlay": "Logg på for å spille",
     "termsOfService": "Vilkår for bruk",
     "unknown": "Ukjent"
-  },
-  "landing": {
-    "createAccount": "Opprett konto",
-    "createAccountCta": "Opprett en konto på sekunder og begynn å spille.",
-    "createFreeAccount": "Opprett gratis konto",
-    "footer": "© 2025 DartStreak. Konkurrer. Ha det gøy. Bli best.",
-    "googleLogin": "Logg inn med Google",
-    "heroDescription": "Bli med i daglige ligaer med venner. Ingen komplikasjoner, bare spill.",
-    "heroHighlight": "Presisjon.",
-    "heroHighlight2": "Helt gratis",
-    "heroTitle": "Global status møter",
-    "howLeaguesStep1": "Opprett liga",
-    "howLeaguesStep1Desc": "Sett opp en liga på sekunder og inviter venner med en kode.",
-    "howLeaguesStep2": "9 dart daglig",
-    "howLeaguesStep2Desc": "Alle kaster 9 dart (3x3) når det passer i løpet av dagen.",
-    "howLeaguesStep3": "Ukens vinner",
-    "howLeaguesStep3Desc": "Poeng registreres automatisk. Hvem topper tabellen ved ukeslutt?",
-    "howLeaguesWorkTitle": "Slik fungerer ligaer",
-    "leaguesSubtitle": "Det har aldri vært enklere",
-    "leaguesTeaser": "Vil du konkurrere daglig med venner? Se hvordan ligaer fungerer ↓",
-    "leaguesTitle": "Starte en liga?",
-    "playOnline": "Spill onlinekamp",
-    "playTournament": "Bli med i turnering",
-    "readyToCompete": "Klar til å konkurrere?",
-    "tagline": "Den enkleste måten å spille dart online på",
-    "whyUs1Desc": "Registrer dine daglige kast med kameraet. Enkelt, sikkert og rettferdig.",
-    "whyUs1Title": "Videoverifisert",
-    "whyUs2Desc": "Ingen kompliserte registreringer. Inviter venner og begynn å kaste.",
-    "whyUs2Title": "Nybegynnervennlig",
-    "whyUs3Desc": "Opprett private ligaer, følg tabellen og se hvem som klatrer.",
-    "whyUs3Title": "Konkurrer med venner",
-    "whyUsTitle": "Hvorfor DartStreak?",
-    "coreMechanicsTitle": "Kjernemekanikk",
-    "philosophyTitle": "De fleste apper fokuserer på generisk statistikk.",
-    "philosophyHighlight": "Vi fokuserer på: fellesskap og progresjon.",
-    "footerDesc": "Presisjonsmekanikk for dine daglige dartkast. Et digitalt verktøy for den moderne konkurrenten.",
-    "navFeatures": "Funksjoner",
-    "navLeagues": "Ligaer",
-    "navPhilosophy": "Filosofi",
-    "dashboard": "Dashbord",
-    "login": "Logg inn",
-    "leagueDetails": "Ligadetaljer",
-    "leaderboard": "Tabell",
-    "liveMatches": "Direktematcher",
-    "inProgress": "Pågår",
-    "calculating": "Beregner",
-    "save": "Lagre",
-    "systemOperational": "SYSTEM I DRIFT",
-    "footerHome": "Hjem",
-    "footerLeagues": "Ligaer",
-    "footerTraining": "Trening",
-    "footerLegal": "Juridisk",
-    "footerPrivacyPolicy": "Personvernpolicy",
-    "footerTermsOfService": "Vilkår for bruk",
-    "footerContact": "Kontakt",
-    "featureLiveScoreTitle": "Video + manuell inngang",
-    "featureLiveScoreDesc": "Registrer kastet ditt, skriv deretter inn poengsummen manuelt, f.eks. 20, 14, 5.",
-    "featureLeagueRaceTitle": "Leaderboard flytter live",
-    "featureLeagueRaceDesc": "Følg ukentlige posisjonsendringer som poengoppdatering gjennom uken.",
-    "featureStreakTitle": "Bygg din daglige serie",
-    "featureStreakDesc": "Logg dine daglige 9 dart og hold streaken i live hver dag.",
-    "featureCurrentStreakLabel": "Nåværende rekke",
-    "featureThrowsLoggedLabel": "Innlagt kast",
-    "featureVideoInputBadge": "Video + inngang",
-    "featureEntryTotalLabel": "Oppgitt total"
   },
   "cookie": {
     "acceptButton": "Godta analyser",
@@ -159,6 +94,7 @@
     "noLeaguesYet": "Ingen ligaer ennå",
     "numberOfRounds": "Antall runder (uker)",
     "of": "av",
+    "openCard": "Åpne",
     "playDarts": "Spill dart",
     "round": "Rund",
     "starts": "Starter",
@@ -167,8 +103,72 @@
     "welcomeBack": "Velkommen tilbake, {{name}}!",
     "welcomeTo": "Velkommen til {{name}}! 🎯",
     "youHaveNotifications": "Du har {{count}} varsling(er)",
-    "yourLeagues": "Dine ligaer",
-    "openCard": "Åpne"
+    "yourLeagues": "Dine ligaer"
+  },
+  "landing": {
+    "calculating": "Beregner",
+    "coreMechanicsTitle": "Kjernemekanikk",
+    "createAccount": "Opprett konto",
+    "createAccountCta": "Opprett en konto på sekunder og begynn å spille.",
+    "createFreeAccount": "Opprett gratis konto",
+    "dashboard": "Dashbord",
+    "featureCurrentStreakLabel": "Nåværende rekke",
+    "featureEntryTotalLabel": "Oppgitt total",
+    "featureLeagueRaceDesc": "Følg ukentlige posisjonsendringer som poengoppdatering gjennom uken.",
+    "featureLeagueRaceTitle": "Leaderboard flytter live",
+    "featureLiveScoreDesc": "Registrer kastet ditt, skriv deretter inn poengsummen manuelt, f.eks. 20, 14, 5.",
+    "featureLiveScoreTitle": "Video + manuell inngang",
+    "featureStreakDesc": "Logg dine daglige 9 dart og hold streaken i live hver dag.",
+    "featureStreakTitle": "Bygg din daglige serie",
+    "featureThrowsLoggedLabel": "Innlagt kast",
+    "featureVideoInputBadge": "Video + inngang",
+    "footer": "© 2025 DartStreak. Konkurrer. Ha det gøy. Bli best.",
+    "footerContact": "Kontakt",
+    "footerDesc": "Presisjonsmekanikk for dine daglige dartkast. Et digitalt verktøy for den moderne konkurrenten.",
+    "footerHome": "Hjem",
+    "footerLeagues": "Ligaer",
+    "footerLegal": "Juridisk",
+    "footerPrivacyPolicy": "Personvernpolicy",
+    "footerTermsOfService": "Vilkår for bruk",
+    "footerTraining": "Trening",
+    "googleLogin": "Logg inn med Google",
+    "heroDescription": "Bli med i daglige ligaer med venner. Ingen komplikasjoner, bare spill.",
+    "heroHighlight": "Presisjon.",
+    "heroHighlight2": "Helt gratis",
+    "heroTitle": "Global status møter",
+    "howLeaguesStep1": "Opprett liga",
+    "howLeaguesStep1Desc": "Sett opp en liga på sekunder og inviter venner med en kode.",
+    "howLeaguesStep2": "9 dart daglig",
+    "howLeaguesStep2Desc": "Alle kaster 9 dart (3x3) når det passer i løpet av dagen.",
+    "howLeaguesStep3": "Ukens vinner",
+    "howLeaguesStep3Desc": "Poeng registreres automatisk. Hvem topper tabellen ved ukeslutt?",
+    "howLeaguesWorkTitle": "Slik fungerer ligaer",
+    "inProgress": "Pågår",
+    "leaderboard": "Tabell",
+    "leagueDetails": "Ligadetaljer",
+    "leaguesSubtitle": "Det har aldri vært enklere",
+    "leaguesTeaser": "Vil du konkurrere daglig med venner? Se hvordan ligaer fungerer ↓",
+    "leaguesTitle": "Starte en liga?",
+    "liveMatches": "Direktematcher",
+    "login": "Logg inn",
+    "navFeatures": "Funksjoner",
+    "navLeagues": "Ligaer",
+    "navPhilosophy": "Filosofi",
+    "philosophyHighlight": "Vi fokuserer på: fellesskap og progresjon.",
+    "philosophyTitle": "De fleste apper fokuserer på generisk statistikk.",
+    "playOnline": "Spill onlinekamp",
+    "playTournament": "Bli med i turnering",
+    "readyToCompete": "Klar til å konkurrere?",
+    "save": "Lagre",
+    "systemOperational": "SYSTEM I DRIFT",
+    "tagline": "Den enkleste måten å spille dart online på",
+    "whyUs1Desc": "Registrer dine daglige kast med kameraet. Enkelt, sikkert og rettferdig.",
+    "whyUs1Title": "Videoverifisert",
+    "whyUs2Desc": "Ingen kompliserte registreringer. Inviter venner og begynn å kaste.",
+    "whyUs2Title": "Nybegynnervennlig",
+    "whyUs3Desc": "Opprett private ligaer, følg tabellen og se hvem som klatrer.",
+    "whyUs3Title": "Konkurrer med venner",
+    "whyUsTitle": "Hvorfor DartStreak?"
   },
   "league": {
     "alreadyRegisteredToday": "Du har allerede registrert dagens kast",
@@ -183,15 +183,22 @@
     "couldNotDelete": "Kunne ikke slette ligaen",
     "couldNotFindLeague": "Fant ikke ligaen",
     "couldNotLeave": "Kunne ikke forlate ligaen",
+    "countryLeagueLabel": "Landsliga: {{country}}",
+    "countryLeagueTitle": "{{country}} Liga",
     "deleteConfirmDesc": "Er du sikker på at du vil slette \"{{name}}\"? Dette kan ikke angres og alle data vil bli fjernet.",
     "deleteConfirmTitle": "Slett ligaen",
     "deleteLeague": "Slett ligaen",
     "deleting": "Sletter ...",
+    "endsAtLeagueTimezone": "Ender i ligaens tidssone",
+    "endsAtYourTimezone": "Slutter i din lokale tid",
     "endsOn": "Slutt",
     "finalScore": "Sluttresultat",
     "finished": "Liga ferdig",
     "firstRoundStarts": "Første runde starter",
     "fiveMinuteWarning": "Du har 5 minutter å fullføre når du har startet",
+    "globalLeagueLabel": "Global liga",
+    "globalLeagueTitle": "Global League",
+    "historyView": "Historie",
     "invalidRounds": "Legg inn mellom 1 og 52 runder",
     "invalidStartDate": "Velg en gyldig startdato",
     "inviteCodeCopied": "Invitasjonskoden er kopiert!",
@@ -203,11 +210,13 @@
     "leaveConfirmTitle": "Forlate ligaen?",
     "leaving": "Forlater...",
     "newRoundEvery": "Ny runde hver",
+    "newerWeek": "Nyere uke",
     "nextDay": "Neste dag i",
     "noThrows": "Ingen kast",
     "noThrowsYet": "Ingen har kastet ennå denne runden",
     "notRegisteredToday": "Du har ikke registrert dagens kast ennå",
     "of": "av",
+    "olderWeek": "Eldre uke",
     "player": "Spiller",
     "previousRounds": "Tidligere runder",
     "restart": "Start på nytt",
@@ -225,18 +234,9 @@
     "todaysScore": "Dagens poengsum: {{score}} 🎯",
     "total": "Total",
     "week": "Uke",
-    "winner": "Vinner",
-    "you": "du",
-    "globalLeagueLabel": "Global liga",
-    "globalLeagueTitle": "Global League",
-    "countryLeagueLabel": "Landsliga: {{country}}",
-    "countryLeagueTitle": "{{country}} Liga",
     "weekLabel": "Uke {{week}}",
-    "endsAtLeagueTimezone": "Ender i ligaens tidssone",
-    "endsAtYourTimezone": "Slutter i din lokale tid",
-    "olderWeek": "Eldre uke",
-    "newerWeek": "Nyere uke",
-    "historyView": "Historie"
+    "winner": "Vinner",
+    "you": "du"
   },
   "legal": {
     "contact": {
@@ -251,13 +251,14 @@
     },
     "privacyPolicy": {
       "li1": "Kontodata: Vi samler inn e-postadressen din og profildetaljer (som visningsnavn, land, landstidssone og avatar-URL når tilgjengelig) for å opprette profilen din.",
+      "li10": "Språkpreferansedata: Vi lagrer det valgte appspråket i nettleserens lokale lagring, slik at appen kan huske valget ditt på tvers av besøk.",
       "li2": "Spilldata: Vi lagrer kastehistorikk, statistikk og ligadeltakelsesdata for å tilby kjernetjenestefunksjoner, inkludert automatisk plassering i globale og landlige ligaer.",
       "li3": "Videodata: Noen ligaer kan kreve videoopptak for bekreftelse. Hvis en liga krever video, lagres klipp slik at ligamedlemmer kan se dem i løpet av den aktive sesongen. For fullførte systemligaer fjernes historiske videoreferanser.",
-      "li7": "Treningsdata: Tic-Tac-Toe Darts, Red Zone Survival og Throw for the Bull kjører lokalt i nettleserøkten din i denne versjonen og sendes ikke til vår backend.",
-      "li8": "Bruksdata: Vi bruker Google Analytics for å forstå appbruk, inkludert sidevisninger, enhet/nettleserinformasjon og omtrentlig plassering.",
       "li4": "Supabase: Brukes til vår database, autentisering og sikker datalagring.",
       "li5": "Google OAuth: Valgfri påloggingsleverandør for sikker autentisering.",
       "li6": "Supabase-lagring: Brukes til å lagre verifiseringsvideoer på sikker måte.",
+      "li7": "Treningsdata: Tic-Tac-Toe Darts, Red Zone Survival og Throw for the Bull kjører lokalt i nettleserøkten din i denne versjonen og sendes ikke til vår backend.",
+      "li8": "Bruksdata: Vi bruker Google Analytics for å forstå appbruk, inkludert sidevisninger, enhet/nettleserinformasjon og omtrentlig plassering.",
       "li9": "Google Analytics: Brukes til trafikk- og atferdsanalyse. Vi har aktivert IP-anonymisering der dette støttes.",
       "p1": "Sist oppdatert: 21. februar 2026",
       "s1Text": "Velkommen til DartStreak (\"vi\", \"vår\" eller \"oss\"). Vi respekterer ditt privatliv og er forpliktet til å beskytte dine personlige data. Denne personvernerklæringen forklarer hvordan vi tar vare på dine personopplysninger når du besøker applikasjonen vår og forteller deg om personvernrettighetene dine.",
@@ -269,10 +270,9 @@
       "s4Title": "4. Sletting av data",
       "s5Text": "Analytics-informasjonskapsler brukes kun etter at du har gitt samtykke i vårt cookie-banner. Du kan endre valget ditt når som helst fra informasjonskapselinnstillinger i appen.",
       "s5Title": "5. Informasjonskapsler og samtykke",
-      "title": "Personvernerklæring",
-      "s6Title": "6. Systemligaer og landdata",
       "s6Text": "Når du angir landet ditt, kan vi automatisk plassere deg i en global liga og en landsliga. Systemligaer bruker faste ligatidssoner for ukentlige sesonger.",
-      "li10": "Språkpreferansedata: Vi lagrer det valgte appspråket i nettleserens lokale lagring, slik at appen kan huske valget ditt på tvers av besøk."
+      "s6Title": "6. Systemligaer og landdata",
+      "title": "Personvernerklæring"
     },
     "terms": {
       "li1": "Juks, manipuler poeng, eller bruk automatiserte roboter.",
@@ -401,150 +401,8 @@
     "matches": "Matcher",
     "offline": "Frakoblet",
     "profile": "Profil",
-    "training": "Opplæring",
-    "tournaments": "Turneringer"
-  },
-  "trainingHub": {
-    "kicker": "Velg treningsmodus",
-    "title": "Opplæring",
-    "subtitle": "Velg en modus basert på hva du vil øve på akkurat nå.",
-    "open": "Åpen modus",
-    "cards": {
-      "ticTacToe": {
-        "badge": "Taktisk duell",
-        "title": "Tic-Tac-Toe Dart",
-        "description": "To-spiller målkontroll hvor hver runde bestemmes av styreledelse og kassepresisjon."
-      },
-      "redZone": {
-        "badge": "Elimination mode",
-        "title": "Red Zone Survival",
-        "description": "Multiplayer survival drill: one dart each, avoid the red sectors as danger expands around the board."
-      }
-    }
-  },
-  "trainingTicTacToe": {
-    "actions": {
-      "changeTeams": "Bytt lag",
-      "enterFullscreen": "Fullskjerm",
-      "exitFullscreen": "Avslutt fullskjerm",
-      "newBoard": "Nytt styre",
-      "nextRound": "Start neste runde",
-      "resetMatch": "Tilbakestill match"
-    },
-    "board": {
-      "easiest": "Enkleste",
-      "fastest": "Raskest",
-      "guideTitle": "Kasseguide",
-      "lockNow": "På mål nå - lås denne firkanten.",
-      "noFinish": "Ingen avslutning mulig denne svingen.",
-      "open": "Åpne",
-      "pending": "I påvente av",
-      "playerPrefix": "P",
-      "target": "Mål"
-    },
-    "difficulty": {
-      "advanced_scores": {
-        "description": "Tilfeldige skårer mellom 61-120.",
-        "label": "Poeng (avansert 61-120)"
-      },
-      "beginner_numbers": {
-        "description": "Tilfeldige tall 1-20.",
-        "label": "Tall (nybegynner 1–20)"
-      },
-      "easy_scores": {
-        "description": "Tilfeldig skår mellom 21-60.",
-        "label": "Poeng (Lett 21-60)"
-      },
-      "expert_checkouts": {
-        "description": "Tilfeldige utsjekker mellom 41-80. Avslutt på en dobbel.",
-        "label": "Kasser (ekspert 41-80)"
-      },
-      "intermediate_doubles": {
-        "description": "Tilfeldig dobler 1-20 og BULL.",
-        "label": "Double (mellom 1-20)"
-      },
-      "pro_checkouts": {
-        "description": "Tilfeldige utsjekker mellom 81-120. Avslutt på en dobbel.",
-        "label": "Checkouts (Pro 81-120)"
-      },
-      "pro_trebles": {
-        "description": "Tilfeldig diskant 1-20.",
-        "label": "Diskanter (Pro 1-20)"
-      }
-    },
-    "help": {
-      "button": "Ny her? Lær deg spillet",
-      "subtitle": "Raske regler og vanskelighetsoversikt.",
-      "title": "Hvordan Tic-Tac-Toe Dart fungerer"
-    },
-    "levels": {
-      "title": "De forskjellige vanskelige nivåene"
-    },
-    "players": {
-      "playerA": "Spiller A",
-      "playerB": "Spiller B"
-    },
-    "setup": {
-      "colorsMustDiffer": "Lag må bruke forskjellige farger.",
-      "firstTo": "Først til",
-      "legsToWin": "Ben å vinne",
-      "matchDesc": "Konkurransedyktig kamp",
-      "namesRequired": "Begge lagnavn er obligatoriske.",
-      "practiceDesc": "Spill for moro skyld",
-      "start": "Start spillet",
-      "subtitle": "Velg navn og farger for begge lag før start.",
-      "teamA": "Team A",
-      "teamB": "Lag B",
-      "title": "Sett opp lag",
-      "unlimited": "Ubegrenset"
-    },
-    "result": {
-      "draw": "Runden endte uavgjort",
-      "matchWinner": "Matchvinner!",
-      "matchWinnerSubtitle": "{{player}} vinner kampen {{score}}!",
-      "playAgain": "Spill igjen",
-      "subtitle": "Trykk nedenfor for å fortsette med et nytt brett.",
-      "winner": "Spiller {{player}} vinner runden!"
-    },
-    "rules": {
-      "r1": "Hver tur har 3 piler.",
-      "r2": "Registrer hver dart med singel/dobbel/trippel og brettnummer 1-20.",
-      "r3": "Hvis den løpende summen ikke lenger samsvarer med en åpen rute, er kravet i kø tapt.",
-      "r4": "Lås ruten i kø når som helst, eller den låses automatisk etter kast 3 hvis den fortsatt er gyldig.",
-      "title": "Hvordan det fungerer"
-    },
-    "status": {
-      "currentTurn": "Gjeldende tur: {{player}}",
-      "firstTo": "Først til {{legs}}"
-    },
-    "title": "Tic-Tac-Toe Dart",
-    "turn": {
-      "activePlayer": "Aktiv spiller",
-      "double": "Dobbelt",
-      "quick25": "25",
-      "selectHint": "Registrer hver dart nedenfor. Bruk MISS hvis du ikke scorer.",
-      "lockSquare": "Lås firkant",
-      "miss": "GÅ GLIPP AV",
-      "noPossibleSquares": "Ingen mulige ruter igjen - svingpasninger",
-      "single": "Enkelt",
-      "total": "Turn totalt",
-      "throw": "Kaste",
-      "triple": "Trippel",
-      "undo": "Angre"
-    },
-    "bullDecider": {
-      "title": "Throw for the Bull",
-      "subtitle": "Før kampstart kaster begge lag én pil. Nærmest bull starter.",
-      "registered": "Registrerte kast: {{count}} / {{total}}",
-      "left": "Kast igjen: {{count}}",
-      "currentThrow": "{{player}} kaster nå",
-      "distance": "{{distance}} mm fra bull",
-      "tie": "Lik først mellom {{players}}. Kast om for å avgjøre starter.",
-      "winner": "{{player}} starter kampen.",
-      "rethrow": "Kast om",
-      "cancel": "Avbryt",
-      "start": "Start kamp"
-    }
+    "tournaments": "Turneringer",
+    "training": "Opplæring"
   },
   "offline": {
     "activeMatches": "Aktive frakoblede kamper",
@@ -579,6 +437,13 @@
     "bestDay": "Beste dagen",
     "canChangeIn": "Du kan endre dette om {{days}} dager",
     "cannotChangeYet": "Kan ikke endres i {{days}} dager til",
+    "completeProfileDesc": "Velg hvilket land du bor i for å bli med i globale og landlige ligaer.",
+    "completeProfileTitle": "Fullfør profilen din",
+    "country": "Land",
+    "countryRequired": "Du må velge et land",
+    "countryUpdated": "Land oppdatert!",
+    "dartCursor": "Dartmarkør",
+    "dartCursorDesc": "Bytt ut musepekeren med en dartpil",
     "daysPlayed": "Dager spilt",
     "deleteAccount": "Slett konto",
     "deleteAccountConfirmDesc": "Denne handlingen er permanent og kan ikke angres. Alle dataene dine, inkludert ligaer, kast, statistikk og videoer, slettes permanent.",
@@ -586,16 +451,15 @@
     "deleteAccountError": "Kunne ikke slette kontoen. Vennligst prøv igjen eller kontakt kundestøtte.",
     "deleteAccountSuccess": "Kontoen din er slettet. Adjø!",
     "deleting": "Sletter ...",
-    "dartCursor": "Dartmarkør",
-    "dartCursorDesc": "Bytt ut musepekeren med en dartpil",
     "email": "E-post",
     "emailUpdated": "E-postoppdatering startet. Sjekk innboksen din.",
     "leaguesParticipated": "Ligaer deltok",
     "lifetimePoints": "Livstidspoeng",
     "memberSince": "Medlem siden",
-    "notFound": "Finner ikke profil",
     "noCountriesFound": "Ingen land funnet",
+    "notFound": "Finner ikke profil",
     "searchCountry": "Søk etter land...",
+    "selectCountry": "Velg land",
     "settings": "Innstillinger",
     "summary": "Sammendrag",
     "timezone": "Tidssone",
@@ -606,13 +470,7 @@
     "unnamed": "uten navn",
     "updateError": "Kunne ikke oppdatere",
     "username": "Brukernavn",
-    "usernameUpdated": "Brukernavnet er oppdatert!",
-    "country": "Land",
-    "selectCountry": "Velg land",
-    "countryRequired": "Du må velge et land",
-    "countryUpdated": "Land oppdatert!",
-    "completeProfileTitle": "Fullfør profilen din",
-    "completeProfileDesc": "Velg hvilket land du bor i for å bli med i globale og landlige ligaer."
+    "usernameUpdated": "Brukernavnet er oppdatert!"
   },
   "pwa": {
     "alreadyInstalled": "Allerede installert?",
@@ -789,6 +647,250 @@
     "youDidntShow": "Du ble ikke med i tide",
     "yourMatch": "Din kamp"
   },
+  "trainingHub": {
+    "cards": {
+      "redZone": {
+        "badge": "Elimination mode",
+        "description": "Multiplayer survival drill: one dart each, avoid the red sectors as danger expands around the board.",
+        "title": "Red Zone Survival"
+      },
+      "ticTacToe": {
+        "badge": "Taktisk duell",
+        "description": "To-spiller målkontroll hvor hver runde bestemmes av styreledelse og kassepresisjon.",
+        "title": "Tic-Tac-Toe Dart"
+      }
+    },
+    "kicker": "Velg treningsmodus",
+    "open": "Åpen modus",
+    "subtitle": "Velg en modus basert på hva du vil øve på akkurat nå.",
+    "title": "Opplæring"
+  },
+  "trainingRedZone": {
+    "actions": {
+      "changePlayers": "Endre spillere",
+      "newGame": "Nytt spill",
+      "undo": "Angre"
+    },
+    "bullDecider": {
+      "cancel": "Avbryt",
+      "currentThrow": "{{player}} kaster nå",
+      "distance": "{{distance}} mm fra bull",
+      "left": "Kast igjen: {{count}}",
+      "registered": "Registrerte kast: {{count}} / {{total}}",
+      "rethrow": "Kast om",
+      "startGame": "Start spill",
+      "subtitle": "Før spillstart kaster alle én pil. Nærmest bull får første kastrekkefølge.",
+      "tie": "Lik først mellom {{players}}. Kast om for å avgjøre rekkefølgen.",
+      "title": "Throw for the Bull",
+      "winner": "{{player}} er nærmest bull og starter."
+    },
+    "history": {
+      "allSafe": "Alle overlevde rundan.",
+      "eliminated": "Utslåtte",
+      "none": "Ingen runder fullført ennå.",
+      "round": "Runde {{round}}",
+      "title": "Rundehistorikk"
+    },
+    "players": {
+      "alive": "Fremdeles med",
+      "eliminated": "Utslått",
+      "eliminatedRound": "Ute i runde {{round}}"
+    },
+    "result": {
+      "draw": "Alle ble slått ut i samme runde.",
+      "playAgain": "Spill igjen",
+      "winner": "{{player}} vinner!"
+    },
+    "rules": {
+      "expanding": {
+        "r1": "Runde 1 starter med at bare 20 er markert rødt.",
+        "r2": "Hver gjenværende spiller kaster opptil 3 piler per runde og registrerer om rødt ble truffet på pil 1, 2, 3 eller ikke i det hele tatt.",
+        "r3": "Hvis alle ryker ut i samme runde, vinner spilleren som overlevde til den seneste pilen. Samme pil = uavgjort.",
+        "r4": "Etter hver runde utvides rød med ett trinn på begge sider: 20 -> 5/1 -> 12/18 osv."
+      },
+      "random": {
+        "r1": "Runde 1 starter med et tilfeldig tall markert rødt.",
+        "r2": "Hver gjenværende spiller kaster opptil 3 piler per runde og registrerer om rødt ble truffet på pil 1, 2, 3 eller ikke i det hele tatt.",
+        "r3": "Hvis alle ryker ut i samme runde, vinner spilleren som overlevde til den seneste pilen. Samme pil = uavgjort.",
+        "r4": "Etter hver runde legges ett nytt tilfeldig tall til de røde sonene (de tidligere røde blir)."
+      },
+      "title": "Slik fungerer det"
+    },
+    "setup": {
+      "addPlayer": "Legg til",
+      "duplicateNames": "Spillernavn må være unike.",
+      "lives": {
+        "0": "Ingen (Sudden Death)",
+        "1": "1 Liv",
+        "3": "3 Liv",
+        "5": "5 Liv"
+      },
+      "livesLabel": "Liv",
+      "livesSubtitle": "Ekstra sjanser før eliminering",
+      "minPlayers": "Minst 2 spillere kreves.",
+      "mode": {
+        "expanding": {
+          "description": "Røde sektorer utvides fra 20 hver runde.",
+          "label": "Klassisk utvidelse"
+        },
+        "random": {
+          "description": "Nye tilfeldige røde sektorer hver runde.",
+          "label": "Tilfeldige sektorer"
+        }
+      },
+      "modeLabel": "Spillmodus",
+      "modeSubtitle": "Velg om røde sektorer utvides fra 20 eller randomiseres hver runde.",
+      "namesRequired": "Alle spillere må ha et navn.",
+      "playerDefault": "Spiller {{index}}",
+      "removePlayer": "Fjern",
+      "start": "Start spill",
+      "subtitle": "Legg til alle som skal spille, velg farger og navn, og start spillet.",
+      "title": "Sett opp spillere"
+    },
+    "status": {
+      "alivePlayers": "Spillere igjen: {{count}}",
+      "currentThrow": "{{player}} kaster nå",
+      "dangerNumbers": "Røde tall",
+      "mode": "Modus",
+      "nextExpansion": "Neste utvidelse",
+      "nextRandomCount": "{{count}} tilfeldige sektorer",
+      "round": "Runde {{round}}"
+    },
+    "subtitle": "Flerspiller overlevelsesmodus: opptil 3 piler per spiller per runde. Du er ute når den første pilen din treffer en rød faresone.",
+    "throw": {
+      "bull": "BULL",
+      "danger": "Rød Sone / Bom",
+      "miss": "MISS",
+      "prompt": "Registrer seksjonen som ble truffet. MISS og BULL er alltid sikre.",
+      "promptSimple": "Velg SIKKER hvis alle 3 piler var sikre, eller RØD 1/2/3 for pilen der du først traff rødt.",
+      "safe": "Sikkert treff"
+    },
+    "title": "Red Zone Survival"
+  },
+  "trainingTicTacToe": {
+    "actions": {
+      "changeTeams": "Bytt lag",
+      "enterFullscreen": "Fullskjerm",
+      "exitFullscreen": "Avslutt fullskjerm",
+      "newBoard": "Nytt styre",
+      "nextRound": "Start neste runde",
+      "resetMatch": "Tilbakestill match"
+    },
+    "board": {
+      "easiest": "Enkleste",
+      "fastest": "Raskest",
+      "guideTitle": "Kasseguide",
+      "lockNow": "På mål nå - lås denne firkanten.",
+      "noFinish": "Ingen avslutning mulig denne svingen.",
+      "open": "Åpne",
+      "pending": "I påvente av",
+      "playerPrefix": "P",
+      "target": "Mål"
+    },
+    "bullDecider": {
+      "cancel": "Avbryt",
+      "currentThrow": "{{player}} kaster nå",
+      "distance": "{{distance}} mm fra bull",
+      "left": "Kast igjen: {{count}}",
+      "registered": "Registrerte kast: {{count}} / {{total}}",
+      "rethrow": "Kast om",
+      "start": "Start kamp",
+      "subtitle": "Før kampstart kaster begge lag én pil. Nærmest bull starter.",
+      "tie": "Lik først mellom {{players}}. Kast om for å avgjøre starter.",
+      "title": "Throw for the Bull",
+      "winner": "{{player}} starter kampen."
+    },
+    "difficulty": {
+      "advanced_scores": {
+        "description": "Tilfeldige skårer mellom 61-120.",
+        "label": "Poeng (avansert 61-120)"
+      },
+      "beginner_numbers": {
+        "description": "Tilfeldige tall 1-20.",
+        "label": "Tall (nybegynner 1–20)"
+      },
+      "easy_scores": {
+        "description": "Tilfeldig skår mellom 21-60.",
+        "label": "Poeng (Lett 21-60)"
+      },
+      "expert_checkouts": {
+        "description": "Tilfeldige utsjekker mellom 41-80. Avslutt på en dobbel.",
+        "label": "Kasser (ekspert 41-80)"
+      },
+      "intermediate_doubles": {
+        "description": "Tilfeldig dobler 1-20 og BULL.",
+        "label": "Double (mellom 1-20)"
+      },
+      "pro_checkouts": {
+        "description": "Tilfeldige utsjekker mellom 81-120. Avslutt på en dobbel.",
+        "label": "Checkouts (Pro 81-120)"
+      },
+      "pro_trebles": {
+        "description": "Tilfeldig diskant 1-20.",
+        "label": "Diskanter (Pro 1-20)"
+      }
+    },
+    "help": {
+      "button": "Ny her? Lær deg spillet",
+      "subtitle": "Raske regler og vanskelighetsoversikt.",
+      "title": "Hvordan Tic-Tac-Toe Dart fungerer"
+    },
+    "levels": {
+      "title": "De forskjellige vanskelige nivåene"
+    },
+    "players": {
+      "playerA": "Spiller A",
+      "playerB": "Spiller B"
+    },
+    "result": {
+      "draw": "Runden endte uavgjort",
+      "matchWinner": "Matchvinner!",
+      "matchWinnerSubtitle": "{{player}} vinner kampen {{score}}!",
+      "playAgain": "Spill igjen",
+      "subtitle": "Trykk nedenfor for å fortsette med et nytt brett.",
+      "winner": "Spiller {{player}} vinner runden!"
+    },
+    "rules": {
+      "r1": "Hver tur har 3 piler.",
+      "r2": "Registrer hver dart med singel/dobbel/trippel og brettnummer 1-20.",
+      "r3": "Hvis den løpende summen ikke lenger samsvarer med en åpen rute, er kravet i kø tapt.",
+      "r4": "Lås ruten i kø når som helst, eller den låses automatisk etter kast 3 hvis den fortsatt er gyldig.",
+      "title": "Hvordan det fungerer"
+    },
+    "setup": {
+      "colorsMustDiffer": "Lag må bruke forskjellige farger.",
+      "firstTo": "Først til",
+      "legsToWin": "Ben å vinne",
+      "matchDesc": "Konkurransedyktig kamp",
+      "namesRequired": "Begge lagnavn er obligatoriske.",
+      "practiceDesc": "Spill for moro skyld",
+      "start": "Start spillet",
+      "subtitle": "Velg navn og farger for begge lag før start.",
+      "teamA": "Team A",
+      "teamB": "Lag B",
+      "title": "Sett opp lag",
+      "unlimited": "Ubegrenset"
+    },
+    "status": {
+      "currentTurn": "Gjeldende tur: {{player}}",
+      "firstTo": "Først til {{legs}}"
+    },
+    "title": "Tic-Tac-Toe Dart",
+    "turn": {
+      "activePlayer": "Aktiv spiller",
+      "double": "Dobbelt",
+      "lockSquare": "Lås firkant",
+      "miss": "GÅ GLIPP AV",
+      "noPossibleSquares": "Ingen mulige ruter igjen - svingpasninger",
+      "quick25": "25",
+      "selectHint": "Registrer hver dart nedenfor. Bruk MISS hvis du ikke scorer.",
+      "single": "Enkelt",
+      "throw": "Kaste",
+      "total": "Turn totalt",
+      "triple": "Trippel",
+      "undo": "Angre"
+    }
+  },
   "videoDialog": {
     "couldNotLoadVideo": "Kunne ikke laste inn videoen. Det kan ha blitt slettet.",
     "noVideoRecorded": "Ingen video ble spilt inn for dette kastet",
@@ -808,77 +910,5 @@
     "thursday": "torsdag",
     "tuesday": "tirsdag",
     "wednesday": "onsdag"
-  },
-  "trainingRedZone": {
-    "title": "Red Zone Survival",
-    "subtitle": "Flerspiller overlevelsesmodus: opptil 3 piler per spiller per runde. Du er ute når den første pilen din treffer en rød faresone.",
-    "setup": {
-      "title": "Sett opp spillere",
-      "subtitle": "Legg til alle som skal spille, velg farger og navn, og start spillet.",
-      "playerDefault": "Spiller {{index}}",
-      "addPlayer": "Legg til",
-      "removePlayer": "Fjern",
-      "start": "Start spill",
-      "minPlayers": "Minst 2 spillere kreves.",
-      "namesRequired": "Alle spillere må ha et navn.",
-      "duplicateNames": "Spillernavn må være unike."
-    },
-    "rules": {
-      "title": "Slik fungerer det",
-      "r1": "Runde 1 starter med at bare 20 er markert rødt.",
-      "r2": "Hver gjenværende spiller kaster opptil 3 piler per runde og registrerer om rødt ble truffet på pil 1, 2, 3 eller ikke i det hele tatt.",
-      "r3": "Hvis alle ryker ut i samme runde, vinner spilleren som overlevde til den seneste pilen. Samme pil = uavgjort.",
-      "r4": "Etter hver runde utvides rød med ett trinn på begge sider: 20 -> 5/1 -> 12/18 osv."
-    },
-    "actions": {
-      "newGame": "Nytt spill",
-      "changePlayers": "Endre spillere",
-      "undo": "Angre"
-    },
-    "status": {
-      "round": "Runde {{round}}",
-      "alivePlayers": "Spillere igjen: {{count}}",
-      "dangerNumbers": "Røde tall",
-      "nextExpansion": "Neste utvidelse",
-      "currentThrow": "{{player}} kaster nå"
-    },
-    "throw": {
-      "prompt": "Registrer seksjonen som ble truffet. MISS og BULL er alltid sikre.",
-      "promptSimple": "Velg SIKKER hvis alle 3 piler var sikre, eller RØD 1/2/3 for pilen der du først traff rødt.",
-      "safe": "Sikkert treff",
-      "danger": "Rød Sone / Bom",
-      "miss": "MISS",
-      "bull": "BULL"
-    },
-    "players": {
-      "alive": "Fremdeles med",
-      "eliminated": "Utslått",
-      "eliminatedRound": "Ute i runde {{round}}"
-    },
-    "result": {
-      "winner": "{{player}} vinner!",
-      "draw": "Alle ble slått ut i samme runde.",
-      "playAgain": "Spill igjen"
-    },
-    "history": {
-      "title": "Rundehistorikk",
-      "none": "Ingen runder fullført ennå.",
-      "round": "Runde {{round}}",
-      "eliminated": "Utslåtte",
-      "allSafe": "Alle overlevde rundan."
-    },
-    "bullDecider": {
-      "title": "Throw for the Bull",
-      "subtitle": "Før spillstart kaster alle én pil. Nærmest bull får første kastrekkefølge.",
-      "registered": "Registrerte kast: {{count}} / {{total}}",
-      "left": "Kast igjen: {{count}}",
-      "currentThrow": "{{player}} kaster nå",
-      "distance": "{{distance}} mm fra bull",
-      "tie": "Lik først mellom {{players}}. Kast om for å avgjøre rekkefølgen.",
-      "winner": "{{player}} er nærmest bull og starter.",
-      "rethrow": "Kast om",
-      "cancel": "Avbryt",
-      "startGame": "Start spill"
-    }
   }
 }

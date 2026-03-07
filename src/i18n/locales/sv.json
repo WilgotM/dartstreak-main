@@ -93,6 +93,7 @@
     "noLeaguesYet": "Inga ligor ännu",
     "numberOfRounds": "Antal omgångar (veckor)",
     "of": "av",
+    "openCard": "Öppna",
     "playDarts": "Kasta Dagens Pilar",
     "round": "Omgång",
     "starts": "Startar",
@@ -101,8 +102,7 @@
     "welcomeBack": "Välkommen tillbaka, {{name}}!",
     "welcomeTo": "Välkommen till {{name}}! 🎯",
     "youHaveNotifications": "Du har {{count}} notis(er)",
-    "yourLeagues": "Dina ligor",
-    "openCard": "Öppna"
+    "yourLeagues": "Dina ligor"
   },
   "landing": {
     "calculating": "Beräknar",
@@ -441,6 +441,8 @@
     "country": "Land",
     "countryRequired": "Du måste välja land",
     "countryUpdated": "Land uppdaterat!",
+    "dartCursor": "Dartmuspekare",
+    "dartCursorDesc": "Byt ut din muspekare mot en dartpil",
     "daysPlayed": "Dagar spelade",
     "deleteAccount": "Radera konto",
     "deleteAccountConfirmDesc": "Denna åtgärd är permanent och kan inte ångras. All din data inklusive ligor, kast, statistik och videor kommer att raderas permanent.",
@@ -448,15 +450,13 @@
     "deleteAccountError": "Kunde inte radera kontot. Försök igen eller kontakta support.",
     "deleteAccountSuccess": "Ditt konto har raderats. Hej då!",
     "deleting": "Raderar...",
-    "dartCursor": "Dartmuspekare",
-    "dartCursorDesc": "Byt ut din muspekare mot en dartpil",
     "email": "E-post",
     "emailUpdated": "E-postuppdatering påbörjad. Kolla din inkorg.",
     "leaguesParticipated": "Ligor deltagit i",
     "lifetimePoints": "Livstidspoäng",
     "memberSince": "Medlem sedan",
-    "notFound": "Profilen hittades inte",
     "noCountriesFound": "Inga länder hittades",
+    "notFound": "Profilen hittades inte",
     "searchCountry": "Sök land...",
     "selectCountry": "Välj land",
     "settings": "Inställningar",
@@ -670,6 +670,19 @@
       "newGame": "Nytt spel",
       "undo": "Ångra"
     },
+    "bullDecider": {
+      "cancel": "Avbryt",
+      "currentThrow": "{{player}} kastar nu",
+      "distance": "{{distance}} mm från bull",
+      "left": "Kast kvar: {{count}}",
+      "registered": "Registrerade kast: {{count}} / {{total}}",
+      "rethrow": "Kasta om",
+      "startGame": "Starta spel",
+      "subtitle": "Innan spelstart kastar alla en pil. Närmast bull får första kastordningen.",
+      "tie": "Lika om förstaplatsen mellan {{players}}. Kasta om för att avgöra ordning.",
+      "title": "Throw for the Bull",
+      "winner": "{{player}} är närmast bull och börjar."
+    },
     "history": {
       "allSafe": "Alla överlevde rundan.",
       "eliminated": "Utslagna",
@@ -688,16 +701,44 @@
       "winner": "{{player}} vinner!"
     },
     "rules": {
-      "r1": "Runda 1 börjar med att bara 20 är rödmarkerad.",
-      "r2": "Varje kvarvarande spelare kastar upp till 3 pilar per runda och registrerar om rött träffades på pil 1, 2, 3 eller inte alls.",
-      "r3": "Om alla åker ut i samma runda vinner den som överlevde längst i rundan (senaste pilen). Samma pil = oavgjort.",
-      "r4": "Efter varje full runda expanderar rött ett steg åt båda håll: 20 -> 5/1 -> 12/18 -> och så vidare.",
+      "expanding": {
+        "r1": "Runda 1 börjar med att bara 20 är rödmarkerad.",
+        "r2": "Varje kvarvarande spelare kastar upp till 3 pilar per runda och registrerar om rött träffades på pil 1, 2, 3 eller inte alls.",
+        "r3": "Om alla åker ut i samma runda vinner den som överlevde längst i rundan (senaste pilen). Samma pil = oavgjort.",
+        "r4": "Efter varje full runda expanderar rött ett steg åt båda håll: 20 -> 5/1 -> 12/18 -> och så vidare."
+      },
+      "random": {
+        "r1": "Runda 1 börjar med ett slumpat nummer som är rödmarkerat.",
+        "r2": "Varje kvarvarande spelare kastar upp till 3 pilar per runda och registrerar om rött träffades på pil 1, 2, 3 eller inte alls.",
+        "r3": "Om alla åker ut i samma runda vinner den som överlevde längst i rundan (senaste pilen). Samma pil = oavgjort.",
+        "r4": "Efter varje full runda läggs ett nytt slumpat nummer till som rött (tidigare röda ligger kvar)."
+      },
       "title": "Så fungerar det"
     },
     "setup": {
       "addPlayer": "Lägg till spelare",
       "duplicateNames": "Spelarnamn måste vara unika.",
+      "lives": {
+        "0": "Inga (Sudden Death)",
+        "1": "1 liv",
+        "3": "3 liv",
+        "5": "5 liv"
+      },
+      "livesLabel": "Liv",
+      "livesSubtitle": "Extra chanser före eliminering",
       "minPlayers": "Minst 2 spelare krävs.",
+      "mode": {
+        "expanding": {
+          "description": "Röda sektorer expanderar från 20 varje runda.",
+          "label": "Klassisk expansion"
+        },
+        "random": {
+          "description": "Nya slumpade röda sektorer varje runda.",
+          "label": "Slumpade sektorer"
+        }
+      },
+      "modeLabel": "Spelläge",
+      "modeSubtitle": "Välj om röda sektorer expanderar från 20 eller slumpas om varje runda.",
       "namesRequired": "Alla spelare måste ha ett namn.",
       "playerDefault": "Spelare {{index}}",
       "removePlayer": "Ta bort",
@@ -709,7 +750,9 @@
       "alivePlayers": "Spelare kvar: {{count}}",
       "currentThrow": "{{player}} kastar nu",
       "dangerNumbers": "Röda risknummer",
+      "mode": "Läge",
       "nextExpansion": "Nästa expansion",
+      "nextRandomCount": "{{count}} slumpade sektorer",
       "round": "Runda {{round}}"
     },
     "subtitle": "Flerspelarläge med upp till 3 pilar per spelare och runda. Du åker ut när din första pil träffar en röd risksektor.",
@@ -721,20 +764,7 @@
       "promptSimple": "Välj SÄKER om alla 3 pilar var säkra, eller RÖD 1/2/3 för pilen där du först träffade rött.",
       "safe": "Säker Träff"
     },
-    "title": "Red Zone Survival",
-    "bullDecider": {
-      "title": "Throw for the Bull",
-      "subtitle": "Innan spelstart kastar alla en pil. Närmast bull får första kastordningen.",
-      "registered": "Registrerade kast: {{count}} / {{total}}",
-      "left": "Kast kvar: {{count}}",
-      "currentThrow": "{{player}} kastar nu",
-      "distance": "{{distance}} mm från bull",
-      "tie": "Lika om förstaplatsen mellan {{players}}. Kasta om för att avgöra ordning.",
-      "winner": "{{player}} är närmast bull och börjar.",
-      "rethrow": "Kasta om",
-      "cancel": "Avbryt",
-      "startGame": "Starta spel"
-    }
+    "title": "Red Zone Survival"
   },
   "trainingTicTacToe": {
     "actions": {
@@ -755,6 +785,19 @@
       "pending": "Väntar",
       "playerPrefix": "S",
       "target": "Mål"
+    },
+    "bullDecider": {
+      "cancel": "Avbryt",
+      "currentThrow": "{{player}} kastar nu",
+      "distance": "{{distance}} mm från bull",
+      "left": "Kast kvar: {{count}}",
+      "registered": "Registrerade kast: {{count}} / {{total}}",
+      "rethrow": "Kasta om",
+      "start": "Starta match",
+      "subtitle": "Innan matchstart kastar båda lagen en pil. Närmast bull börjar.",
+      "tie": "Lika om förstaplatsen mellan {{players}}. Kasta om för att avgöra startspelare.",
+      "title": "Throw for the Bull",
+      "winner": "{{player}} börjar matchen."
     },
     "difficulty": {
       "advanced_scores": {
@@ -845,19 +888,6 @@
       "total": "Turens total",
       "triple": "Trippel",
       "undo": "Ångra"
-    },
-    "bullDecider": {
-      "title": "Throw for the Bull",
-      "subtitle": "Innan matchstart kastar båda lagen en pil. Närmast bull börjar.",
-      "registered": "Registrerade kast: {{count}} / {{total}}",
-      "left": "Kast kvar: {{count}}",
-      "currentThrow": "{{player}} kastar nu",
-      "distance": "{{distance}} mm från bull",
-      "tie": "Lika om förstaplatsen mellan {{players}}. Kasta om för att avgöra startspelare.",
-      "winner": "{{player}} börjar matchen.",
-      "rethrow": "Kasta om",
-      "cancel": "Avbryt",
-      "start": "Starta match"
     }
   },
   "videoDialog": {

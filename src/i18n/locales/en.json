@@ -93,6 +93,7 @@
     "noLeaguesYet": "No leagues yet",
     "numberOfRounds": "Number of rounds (weeks)",
     "of": "of",
+    "openCard": "Open",
     "playDarts": "Play Darts",
     "round": "Round",
     "starts": "Starts",
@@ -101,8 +102,7 @@
     "welcomeBack": "Welcome back, {{name}}!",
     "welcomeTo": "Welcome to {{name}}! 🎯",
     "youHaveNotifications": "You have {{count}} notification(s)",
-    "yourLeagues": "Your leagues",
-    "openCard": "Open"
+    "yourLeagues": "Your leagues"
   },
   "landing": {
     "calculating": "Calculating",
@@ -441,6 +441,8 @@
     "country": "Country",
     "countryRequired": "You must select a country",
     "countryUpdated": "Country updated!",
+    "dartCursor": "Dart cursor",
+    "dartCursorDesc": "Replace your mouse pointer with a dart",
     "daysPlayed": "Days played",
     "deleteAccount": "Delete Account",
     "deleteAccountConfirmDesc": "This action is permanent and cannot be undone. All your data including leagues, throws, statistics, and videos will be permanently deleted.",
@@ -448,15 +450,13 @@
     "deleteAccountError": "Could not delete the account. Please try again or contact support.",
     "deleteAccountSuccess": "Your account has been deleted. Goodbye!",
     "deleting": "Deleting...",
-    "dartCursor": "Dart cursor",
-    "dartCursorDesc": "Replace your mouse pointer with a dart",
     "email": "Email",
     "emailUpdated": "Email update initiated. Check your inbox.",
     "leaguesParticipated": "Leagues participated",
     "lifetimePoints": "Lifetime points",
     "memberSince": "Member since",
-    "notFound": "Profile not found",
     "noCountriesFound": "No countries found",
+    "notFound": "Profile not found",
     "searchCountry": "Search country...",
     "selectCountry": "Select country",
     "settings": "Settings",
@@ -670,6 +670,19 @@
       "newGame": "New game",
       "undo": "Undo"
     },
+    "bullDecider": {
+      "cancel": "Cancel",
+      "currentThrow": "{{player}} throws now",
+      "distance": "{{distance}} mm from bull",
+      "left": "Throws left: {{count}}",
+      "registered": "Registered throws: {{count}} / {{total}}",
+      "rethrow": "Re-throw",
+      "startGame": "Start game",
+      "subtitle": "Before game start, all players throw one dart. Closest to bull gets first throw order.",
+      "tie": "Tie for first between {{players}}. Re-throw to decide order.",
+      "title": "Throw for the Bull",
+      "winner": "{{player}} is closest to bull and starts."
+    },
     "history": {
       "allSafe": "Everyone survived this round.",
       "eliminated": "Eliminated",
@@ -688,16 +701,44 @@
       "winner": "{{player}} wins!"
     },
     "rules": {
-      "r1": "Round 1 starts with only 20 marked red.",
-      "r2": "Each remaining player throws up to 3 darts per round and registers if red was hit on dart 1, 2, 3, or not at all.",
-      "r3": "If everyone is eliminated in the same round, the player who lasted to the latest dart wins that round. Same dart = draw.",
-      "r4": "After each full round, red expands one step on both sides: 20 -> 5/1 -> 12/18 -> and so on.",
+      "expanding": {
+        "r1": "Round 1 starts with only 20 marked red.",
+        "r2": "Each remaining player throws up to 3 darts per round and registers if red was hit on dart 1, 2, 3, or not at all.",
+        "r3": "If everyone is eliminated in the same round, the player who lasted to the latest dart wins that round. Same dart = draw.",
+        "r4": "After each full round, red expands one step on both sides: 20 -> 5/1 -> 12/18 -> and so on."
+      },
+      "random": {
+        "r1": "Round 1 starts with one random number marked red.",
+        "r2": "Each remaining player throws up to 3 darts per round and registers if red was hit on dart 1, 2, 3, or not at all.",
+        "r3": "If everyone is eliminated in the same round, the player who lasted to the latest dart wins that round. Same dart = draw.",
+        "r4": "After each full round, one new random number is added to the red zones (previous red zones remain)."
+      },
       "title": "How it works"
     },
     "setup": {
       "addPlayer": "Add player",
       "duplicateNames": "Player names must be unique.",
+      "lives": {
+        "0": "None (Sudden Death)",
+        "1": "1 Life",
+        "3": "3 Lives",
+        "5": "5 Lives"
+      },
+      "livesLabel": "Lives",
+      "livesSubtitle": "Extra chances before elimination",
       "minPlayers": "At least 2 players are required.",
+      "mode": {
+        "expanding": {
+          "description": "Red sectors expand from 20 each round.",
+          "label": "Classic expansion"
+        },
+        "random": {
+          "description": "New random red sectors each round.",
+          "label": "Random sectors"
+        }
+      },
+      "modeLabel": "Game mode",
+      "modeSubtitle": "Choose whether red sectors expand from 20 or are randomized each round.",
       "namesRequired": "All players need a name.",
       "playerDefault": "Player {{index}}",
       "removePlayer": "Remove",
@@ -709,7 +750,9 @@
       "alivePlayers": "Players still alive: {{count}}",
       "currentThrow": "{{player}} throws now",
       "dangerNumbers": "Red danger numbers",
+      "mode": "Mode",
       "nextExpansion": "Next expansion",
+      "nextRandomCount": "{{count}} random sectors",
       "round": "Round {{round}}"
     },
     "subtitle": "Multiplayer survival mode: up to 3 darts each per round, and you are out when your first dart lands in the red danger sectors.",
@@ -721,20 +764,7 @@
       "promptSimple": "Register SAFE if all 3 darts were safe, or RED 1/2/3 for the dart where red was first hit.",
       "safe": "Safe Hit"
     },
-    "title": "Red Zone Survival",
-    "bullDecider": {
-      "title": "Throw for the Bull",
-      "subtitle": "Before game start, all players throw one dart. Closest to bull gets first throw order.",
-      "registered": "Registered throws: {{count}} / {{total}}",
-      "left": "Throws left: {{count}}",
-      "currentThrow": "{{player}} throws now",
-      "distance": "{{distance}} mm from bull",
-      "tie": "Tie for first between {{players}}. Re-throw to decide order.",
-      "winner": "{{player}} is closest to bull and starts.",
-      "rethrow": "Re-throw",
-      "cancel": "Cancel",
-      "startGame": "Start game"
-    }
+    "title": "Red Zone Survival"
   },
   "trainingTicTacToe": {
     "actions": {
@@ -755,6 +785,19 @@
       "pending": "Pending",
       "playerPrefix": "P",
       "target": "Target"
+    },
+    "bullDecider": {
+      "cancel": "Cancel",
+      "currentThrow": "{{player}} throws now",
+      "distance": "{{distance}} mm from bull",
+      "left": "Throws left: {{count}}",
+      "registered": "Registered throws: {{count}} / {{total}}",
+      "rethrow": "Re-throw",
+      "start": "Start match",
+      "subtitle": "Before match start, each team throws one dart. Closest to bull starts.",
+      "tie": "Tie for first between {{players}}. Re-throw to decide starter.",
+      "title": "Throw for the Bull",
+      "winner": "{{player}} starts the match."
     },
     "difficulty": {
       "advanced_scores": {
@@ -845,19 +888,6 @@
       "total": "Turn total",
       "triple": "Triple",
       "undo": "Undo"
-    },
-    "bullDecider": {
-      "title": "Throw for the Bull",
-      "subtitle": "Before match start, each team throws one dart. Closest to bull starts.",
-      "registered": "Registered throws: {{count}} / {{total}}",
-      "left": "Throws left: {{count}}",
-      "currentThrow": "{{player}} throws now",
-      "distance": "{{distance}} mm from bull",
-      "tie": "Tie for first between {{players}}. Re-throw to decide starter.",
-      "winner": "{{player}} starts the match.",
-      "rethrow": "Re-throw",
-      "cancel": "Cancel",
-      "start": "Start match"
     }
   },
   "videoDialog": {

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { AlertTriangle, Maximize, Minimize, Plus, RotateCcw, Skull, Users } from "lucide-react";
+import { AlertTriangle, Maximize, Minimize, Plus, RotateCcw, Skull, Users, Heart, Target, Shuffle, Infinity as InfinityIcon, User } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,7 @@ interface SetupPlayer {
 interface GamePlayer extends SetupPlayer {
   isEliminated: boolean;
   eliminatedRound: number | null;
+  lives: number;
 }
 
 interface ThrowEntry {
@@ -39,6 +40,8 @@ interface BullThrow {
   y: number;
   distance: number;
 }
+
+type RedZoneMode = "expanding" | "random";
 
 const BOARD_RING = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
 const START_TARGET = 20;
@@ -80,6 +83,22 @@ const getDangerNumbers = (radius: number): number[] => {
   return BOARD_RING.filter((number) => dangerSet.has(number));
 };
 
+const pickRandomDangerNumbers = (count: number): number[] => {
+  const shuffled = [...BOARD_RING].sort(() => Math.random() - 0.5);
+  const selected = new Set(shuffled.slice(0, Math.min(Math.max(count, 1), BOARD_RING.length)));
+  return BOARD_RING.filter((number) => selected.has(number));
+};
+
+const appendOneRandomDangerNumber = (current: number[]): number[] => {
+  const currentSet = new Set(current);
+  const available = BOARD_RING.filter((number) => !currentSet.has(number));
+  if (available.length === 0) return current;
+
+  const next = available[Math.floor(Math.random() * available.length)];
+  currentSet.add(next);
+  return BOARD_RING.filter((number) => currentSet.has(number));
+};
+
 export default function TrainingRedZone() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
@@ -102,6 +121,12 @@ export default function TrainingRedZone() {
   const [isBullDeciderActive, setIsBullDeciderActive] = useState(false);
   const [bullPlayers, setBullPlayers] = useState<SetupPlayer[]>([]);
   const [bullThrows, setBullThrows] = useState<BullThrow[]>([]);
+  const [setupMode, setSetupMode] = useState<RedZoneMode>("expanding");
+  const [gameMode, setGameMode] = useState<RedZoneMode>("expanding");
+  const [setupLives, setSetupLives] = useState<number>(0);
+  const [gameLives, setGameLives] = useState<number>(0);
+  const [dangerNumbers, setDangerNumbers] = useState<number[]>(() => getDangerNumbers(0));
+  const [previousDangerNumbers, setPreviousDangerNumbers] = useState<number[]>([]);
 
   useEffect(() => {
     const onFullscreenChange = () => {
@@ -144,16 +169,24 @@ export default function TrainingRedZone() {
     return null;
   }, [setupPlayers, t]);
 
-  const dangerNumbers = useMemo(() => getDangerNumbers(dangerRadius), [dangerRadius]);
   const dangerNumberSet = useMemo(() => new Set(dangerNumbers), [dangerNumbers]);
-  const newlyAddedSet = useMemo(
-    () => new Set(getExpansionStepNumbers(dangerRadius)),
-    [dangerRadius],
-  );
+  const newlyAddedSet = useMemo(() => {
+    if (gameMode === "expanding") {
+      return new Set(getExpansionStepNumbers(dangerRadius));
+    }
+    const previousSet = new Set(previousDangerNumbers);
+    return new Set(dangerNumbers.filter((number) => !previousSet.has(number)));
+  }, [dangerNumbers, dangerRadius, gameMode, previousDangerNumbers]);
   const nextExpansionNumbers = useMemo(
-    () => dangerRadius >= 10 ? [] : getExpansionStepNumbers(dangerRadius + 1),
-    [dangerRadius],
+    () => (gameMode === "expanding" && dangerRadius < 10 ? getExpansionStepNumbers(dangerRadius + 1) : []),
+    [dangerRadius, gameMode],
   );
+  const nextDangerCount = useMemo(() => {
+    if (gameMode === "expanding") {
+      return getDangerNumbers(Math.min(dangerRadius + 1, 10)).length;
+    }
+    return dangerNumbers.length < BOARD_RING.length ? 1 : 0;
+  }, [dangerNumbers.length, dangerRadius, gameMode]);
 
   const playerNameById = useMemo(
     () => new Map(players.map((player) => [player.id, player.name])),
@@ -242,17 +275,23 @@ export default function TrainingRedZone() {
     });
   }, []);
 
-  const startGameFromPlayers = useCallback((basePlayers: SetupPlayer[]) => {
+  const startGameFromPlayers = useCallback((basePlayers: SetupPlayer[], mode: RedZoneMode, initialLives: number) => {
     const gamePlayers: GamePlayer[] = basePlayers.map((player) => ({
       ...player,
       name: player.name.trim(),
       isEliminated: false,
       eliminatedRound: null,
+      lives: initialLives,
     }));
+    const initialDangerNumbers = mode === "random" ? pickRandomDangerNumbers(1) : getDangerNumbers(0);
 
     setPlayers(gamePlayers);
     setRound(1);
     setDangerRadius(0);
+    setGameMode(mode);
+    setGameLives(initialLives);
+    setDangerNumbers(initialDangerNumbers);
+    setPreviousDangerNumbers([]);
     setRoundOrder(gamePlayers.map((player) => player.id));
     setRoundEntries([]);
     setHistory([]);
@@ -311,11 +350,11 @@ export default function TrainingRedZone() {
       .map((entry) => bullPlayers.find((player) => player.id === entry.playerId))
       .filter((player): player is SetupPlayer => Boolean(player));
 
-    startGameFromPlayers(orderedPlayers);
+    startGameFromPlayers(orderedPlayers, setupMode, setupLives);
     setIsBullDeciderActive(false);
     setBullPlayers([]);
     setBullThrows([]);
-  }, [bullPlayers, bullRanking, bullTopPlayers.length, isBullRoundComplete, startGameFromPlayers]);
+  }, [bullPlayers, bullRanking, bullTopPlayers.length, isBullRoundComplete, setupMode, setupLives, startGameFromPlayers]);
 
   const handleRegisterThrow = useCallback(
     (hitDangerDart: 1 | 2 | 3 | null) => {
@@ -328,17 +367,21 @@ export default function TrainingRedZone() {
 
       const nextEntries = [...roundEntries, nextEntry];
       const nextPlayers = hitDangerDart !== null
-        ? players.map((player) =>
-          player.id === currentPlayerId
-            ? { ...player, isEliminated: true, eliminatedRound: round }
-            : player,
-        )
+        ? players.map((player) => {
+            if (player.id === currentPlayerId) {
+              if (gameLives > 0 && player.lives > 0) {
+                return { ...player, lives: player.lives - 1, isEliminated: false, eliminatedRound: null };
+              }
+              return { ...player, isEliminated: true, eliminatedRound: round, lives: 0 };
+            }
+            return player;
+          })
         : players;
 
       const finalizeRound = (entries: ThrowEntry[], updatedPlayers: GamePlayer[]) => {
-        const eliminatedIds = entries
-          .filter((entry) => entry.hitDangerDart !== null)
-          .map((entry) => entry.playerId);
+        const eliminatedIds = updatedPlayers
+          .filter((player) => player.isEliminated && player.eliminatedRound === round)
+          .map((player) => player.id);
 
         setHistory((previous) => [
           {
@@ -374,8 +417,15 @@ export default function TrainingRedZone() {
           return;
         }
 
+        const nextRadius = Math.min(dangerRadius + 1, 10);
+        const nextDangerNumbers = gameMode === "random"
+          ? appendOneRandomDangerNumber(dangerNumbers)
+          : getDangerNumbers(nextRadius);
+
         setRound((previous) => previous + 1);
-        setDangerRadius((previous) => Math.min(previous + 1, 10));
+        setDangerRadius(nextRadius);
+        setPreviousDangerNumbers(dangerNumbers);
+        setDangerNumbers(nextDangerNumbers);
         setRoundOrder(survivors.map((player) => player.id));
         setRoundEntries([]);
       };
@@ -387,7 +437,7 @@ export default function TrainingRedZone() {
 
       finalizeRound(nextEntries, nextPlayers);
     },
-    [currentPlayerId, dangerNumbers, players, result, round, roundEntries, roundOrder.length],
+    [currentPlayerId, dangerNumbers, dangerRadius, gameMode, gameLives, players, result, round, roundEntries, roundOrder.length],
   );
 
   const handleUndoThrow = useCallback(() => {
@@ -398,11 +448,16 @@ export default function TrainingRedZone() {
 
     if (lastEntry.hitDangerDart !== null) {
       setPlayers((previous) =>
-        previous.map((player) =>
-          player.id === lastEntry.playerId
-            ? { ...player, isEliminated: false, eliminatedRound: null }
-            : player,
-        ),
+        previous.map((player) => {
+          if (player.id === lastEntry.playerId) {
+            if (player.isEliminated) {
+              return { ...player, isEliminated: false, eliminatedRound: null, lives: 0 };
+            } else {
+              return { ...player, lives: player.lives + 1 };
+            }
+          }
+          return player;
+        }),
       );
     }
   }, [result, roundEntries]);
@@ -414,9 +469,10 @@ export default function TrainingRedZone() {
       ...player,
       isEliminated: false,
       eliminatedRound: null,
+      lives: gameLives,
     }));
-    startGameFromPlayers(restartPlayers);
-  }, [players, startGameFromPlayers]);
+    startGameFromPlayers(restartPlayers, gameMode, gameLives);
+  }, [gameMode, gameLives, players, startGameFromPlayers]);
 
   const handleChangePlayers = useCallback(() => {
     if (players.length > 0) {
@@ -449,6 +505,16 @@ export default function TrainingRedZone() {
       </AppLayout>
     );
   }
+
+  const getModeLabel = (mode: RedZoneMode) =>
+    mode === "expanding"
+      ? t("trainingRedZone.setup.mode.expanding.label")
+      : t("trainingRedZone.setup.mode.random.label");
+
+  const getModeDescription = (mode: RedZoneMode) =>
+    mode === "expanding"
+      ? t("trainingRedZone.setup.mode.expanding.description")
+      : t("trainingRedZone.setup.mode.random.description");
 
   return (
     <AppLayout hideNav={isFullscreen}>
@@ -521,6 +587,7 @@ export default function TrainingRedZone() {
                       
                       <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center gap-2 flex-1">
+                          <User className="w-3.5 h-3.5 text-muted-foreground/80 mt-[-1px]" />
                           <p className="text-xs uppercase tracking-widest font-bold text-muted-foreground/80">
                             {t("trainingRedZone.setup.playerDefault", { index: index + 1 })}
                           </p>
@@ -581,6 +648,94 @@ export default function TrainingRedZone() {
                 </AnimatePresence>
               </div>
 
+              <div className="space-y-3 rounded-xl border border-white/10 bg-[#15151D] p-4">
+                <p className="text-xs uppercase tracking-widest font-bold text-muted-foreground/80">
+                  {t("trainingRedZone.setup.modeLabel")}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {t("trainingRedZone.setup.modeSubtitle")}
+                </p>
+                <div className="grid gap-3 md:grid-cols-2">
+                  {(["expanding", "random"] as RedZoneMode[]).map((mode) => {
+                    const isSelected = setupMode === mode;
+                    const Icon = mode === "expanding" ? Target : Shuffle;
+                    return (
+                      <button
+                        key={mode}
+                        type="button"
+                        onClick={() => setSetupMode(mode)}
+                        className={cn(
+                          "relative flex flex-col items-center justify-center gap-2 p-5 rounded-xl border transition-all duration-300 overflow-hidden",
+                          isSelected
+                            ? "border-red-500 bg-red-500/10 text-red-100 shadow-[0_0_20px_-5px_rgba(239,68,68,0.3)]"
+                            : "border-white/10 bg-[#101017] hover:border-white/20 hover:bg-red-500/5 text-muted-foreground hover:text-foreground"
+                        )}
+                      >
+                        <Icon className={cn("w-7 h-7 transition-all duration-500", isSelected ? "scale-110 text-red-500" : "")} />
+                        <span className="text-base font-semibold tracking-tight">
+                          {getModeLabel(mode)}
+                        </span>
+                        <span className="text-xs opacity-70 font-light mt-1 max-w-[90%] mx-auto">
+                          {getModeDescription(mode)}
+                        </span>
+                        {isSelected && (
+                          <motion.div
+                            layoutId="active-redzone-mode"
+                            className="absolute inset-0 border-2 border-red-500 rounded-xl pointer-events-none"
+                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                          />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="space-y-3 rounded-xl border border-white/10 bg-[#15151D] p-4">
+                <div className="space-y-1">
+                  <p className="text-xs uppercase tracking-widest font-bold text-muted-foreground/80">
+                    {t("trainingRedZone.setup.livesLabel", "Liv")}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {t("trainingRedZone.setup.livesSubtitle", "Extra chanser före eliminering")}
+                  </p>
+                </div>
+                <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+                  {[0, 1, 3, 5].map((livesOption) => {
+                    const isSelected = setupLives === livesOption;
+                    return (
+                      <button
+                        key={`lives-${livesOption}`}
+                        type="button"
+                        onClick={() => setSetupLives(livesOption)}
+                        className={cn(
+                          "relative flex flex-col items-center justify-center gap-2 p-4 rounded-xl border transition-all duration-300 overflow-hidden",
+                          isSelected
+                            ? "border-red-500 bg-red-500/10 text-red-100 shadow-[0_0_20px_-5px_rgba(239,68,68,0.3)]"
+                            : "border-white/10 bg-[#101017] hover:border-white/20 hover:bg-red-500/5 text-muted-foreground hover:text-foreground"
+                        )}
+                      >
+                        {livesOption === 0 ? (
+                          <InfinityIcon className={cn("w-6 h-6 transition-all duration-500", isSelected ? "scale-110 text-red-500" : "")} />
+                        ) : (
+                          <Heart className={cn("w-6 h-6 transition-all duration-500", isSelected ? "scale-110 text-red-500 fill-red-500/20" : "")} />
+                        )}
+                        <span className="text-sm font-semibold tracking-tight">
+                          {t(`trainingRedZone.setup.lives.${livesOption}`)}
+                        </span>
+                        {isSelected && (
+                          <motion.div
+                            layoutId="active-redzone-lives"
+                            className="absolute inset-0 border-2 border-red-500 rounded-xl pointer-events-none"
+                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                          />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -635,16 +790,20 @@ export default function TrainingRedZone() {
                 </h3>
                 <ul className="space-y-2.5 text-sm text-foreground/80 font-light relative z-10">
                   <motion.li whileHover={{ x: 2 }} className="flex items-start gap-2">
-                    <span className="text-primary mt-0.5">•</span> {t("trainingRedZone.rules.r1")}
+                    <span className="text-primary mt-0.5">•</span>{" "}
+                    {setupMode === "expanding" ? t("trainingRedZone.rules.expanding.r1") : t("trainingRedZone.rules.random.r1")}
                   </motion.li>
                   <motion.li whileHover={{ x: 2 }} className="flex items-start gap-2">
-                    <span className="text-primary mt-0.5">•</span> {t("trainingRedZone.rules.r2")}
+                    <span className="text-primary mt-0.5">•</span>{" "}
+                    {setupMode === "expanding" ? t("trainingRedZone.rules.expanding.r2") : t("trainingRedZone.rules.random.r2")}
                   </motion.li>
                   <motion.li whileHover={{ x: 2 }} className="flex items-start gap-2">
-                    <span className="text-primary mt-0.5">•</span> {t("trainingRedZone.rules.r3")}
+                    <span className="text-primary mt-0.5">•</span>{" "}
+                    {setupMode === "expanding" ? t("trainingRedZone.rules.expanding.r3") : t("trainingRedZone.rules.random.r3")}
                   </motion.li>
                   <motion.li whileHover={{ x: 2 }} className="flex items-start gap-2">
-                    <span className="text-primary mt-0.5">•</span> {t("trainingRedZone.rules.r4")}
+                    <span className="text-primary mt-0.5">•</span>{" "}
+                    {setupMode === "expanding" ? t("trainingRedZone.rules.expanding.r4") : t("trainingRedZone.rules.random.r4")}
                   </motion.li>
                 </ul>
               </motion.section>
@@ -869,9 +1028,14 @@ export default function TrainingRedZone() {
                 </Button>
               </div>
 
-              <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+              <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-5">
                 <div className="rounded-xl border border-white/10 bg-[#15151D] px-3 py-2 text-sm">
                   <span className="text-muted-foreground">{t("trainingRedZone.status.round", { round })}</span>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-[#15151D] px-3 py-2 text-sm">
+                  <span className="text-muted-foreground">
+                    {t("trainingRedZone.status.mode")}: {getModeLabel(gameMode)}
+                  </span>
                 </div>
                 <div className="rounded-xl border border-white/10 bg-[#15151D] px-3 py-2 text-sm">
                   <span className="text-muted-foreground">
@@ -888,7 +1052,13 @@ export default function TrainingRedZone() {
                   <span className="text-muted-foreground">
                     {t("trainingRedZone.status.nextExpansion")}:{" "}
                     <span className="text-amber-100 font-medium">
-                      {nextExpansionNumbers.length > 0 ? nextExpansionNumbers.join(", ") : t("trainingRedZone.throw.bull")}
+                      {gameMode === "expanding"
+                        ? nextExpansionNumbers.length > 0
+                          ? nextExpansionNumbers.join(", ")
+                          : t("trainingRedZone.throw.bull")
+                        : nextDangerCount > 0
+                          ? t("trainingRedZone.status.nextRandomCount", { count: nextDangerCount })
+                          : t("trainingRedZone.throw.bull")}
                     </span>
                   </span>
                 </div>
@@ -919,9 +1089,26 @@ export default function TrainingRedZone() {
                               {t("trainingRedZone.players.eliminated")}
                             </p>
                           ) : (
-                            <p className="text-sm text-emerald-300 font-medium">
-                              {t("trainingRedZone.players.alive")}
-                            </p>
+                            <div className="flex items-center gap-1.5">
+                              <p className="text-sm text-emerald-300 font-medium">
+                                {t("trainingRedZone.players.alive")}
+                              </p>
+                              {gameLives > 0 && (
+                                <div className="flex items-center ml-1">
+                                  {Array.from({ length: gameLives }).map((_, i) => (
+                                    <Heart
+                                      key={i}
+                                      className={cn(
+                                        "w-[14px] h-[14px] mx-[2px] transition-all duration-300",
+                                        i < player.lives 
+                                          ? "fill-red-500 text-red-500 drop-shadow-[0_0_5px_rgba(239,68,68,0.5)] scale-110" 
+                                          : "fill-transparent text-white/10 scale-90"
+                                      )}
+                                    />
+                                  ))}
+                                </div>
+                              )}
+                            </div>
                           )}
                         </div>
                         {player.eliminatedRound && (
