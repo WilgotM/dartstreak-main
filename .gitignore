@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# AI agent files
+AGENTS.md
+.agent/
+.gemini/
