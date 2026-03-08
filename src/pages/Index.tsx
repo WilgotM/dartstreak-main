@@ -369,7 +369,7 @@ const LiveScoringCard = () => {
         <div className="relative overflow-hidden rounded-2xl border border-[#2A2A35] bg-black">
           <video
             ref={videoRef}
-            src="/landing-throw.mov"
+            src="/landing-throw.mp4"
             autoPlay
             muted
             loop
