@@ -42,11 +42,19 @@ interface BullThrow {
 }
 
 type RedZoneMode = "expanding" | "random";
+type LivesOption = 0 | 1 | 3 | 5;
 
 const BOARD_RING = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
 const START_TARGET = 20;
 const MAX_PLAYERS = 8;
 const TOP_TIE_THRESHOLD = 1.0;
+const LIVES_OPTIONS: LivesOption[] = [0, 1, 3, 5];
+const LIVES_LABEL_KEYS: Record<LivesOption, string> = {
+  0: "trainingRedZone.setup.lives.0",
+  1: "trainingRedZone.setup.lives.1",
+  3: "trainingRedZone.setup.lives.3",
+  5: "trainingRedZone.setup.lives.5",
+};
 
 const PLAYER_COLORS = [
   "#3B82F6",
@@ -123,8 +131,8 @@ export default function TrainingRedZone() {
   const [bullThrows, setBullThrows] = useState<BullThrow[]>([]);
   const [setupMode, setSetupMode] = useState<RedZoneMode>("expanding");
   const [gameMode, setGameMode] = useState<RedZoneMode>("expanding");
-  const [setupLives, setSetupLives] = useState<number>(0);
-  const [gameLives, setGameLives] = useState<number>(0);
+  const [setupLives, setSetupLives] = useState<LivesOption>(0);
+  const [gameLives, setGameLives] = useState<LivesOption>(0);
   const [dangerNumbers, setDangerNumbers] = useState<number[]>(() => getDangerNumbers(0));
   const [previousDangerNumbers, setPreviousDangerNumbers] = useState<number[]>([]);
 
@@ -701,7 +709,7 @@ export default function TrainingRedZone() {
                   </p>
                 </div>
                 <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
-                  {[0, 1, 3, 5].map((livesOption) => {
+                  {LIVES_OPTIONS.map((livesOption) => {
                     const isSelected = setupLives === livesOption;
                     return (
                       <button
@@ -721,7 +729,7 @@ export default function TrainingRedZone() {
                           <Heart className={cn("w-6 h-6 transition-all duration-500", isSelected ? "scale-110 text-red-500 fill-red-500/20" : "")} />
                         )}
                         <span className="text-sm font-semibold tracking-tight">
-                          {t(`trainingRedZone.setup.lives.${livesOption}`)}
+                          {t(LIVES_LABEL_KEYS[livesOption])}
                         </span>
                         {isSelected && (
                           <motion.div

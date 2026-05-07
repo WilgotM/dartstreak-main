@@ -521,26 +521,26 @@ export default function League() {
 
   return (
     <AppLayout>
-      <header className="sticky top-0 z-40 px-3 pb-3 pt-[calc(env(safe-area-inset-top)+0.75rem)] md:pt-3">
-        <div className="app-surface container mx-auto rounded-2xl px-2 py-3">
+      <header className="px-3 pb-2 pt-2 md:sticky md:top-0 md:z-40 md:pt-3">
+        <div className="app-surface container mx-auto rounded-xl px-2 py-2 md:rounded-2xl md:py-3">
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" onClick={() => navigate("/leagues")} className="shrink-0 text-foreground hover:bg-white/8 rounded-full w-10 h-10">
               <ArrowLeft className="w-6 h-6" />
             </Button>
             <div className="min-w-0 flex-1">
-              <h1 className="font-display font-bold text-2xl text-foreground truncate drop-shadow-md">{leagueDisplayName}</h1>
+              <h1 className="font-display text-xl font-bold text-foreground truncate drop-shadow-md md:text-2xl">{leagueDisplayName}</h1>
               <p className="text-sm text-muted-foreground truncate font-medium">
                 {isFinished
                   ? t("league.finished")
                   : `${t("league.round")} ${league.current_round} ${t("league.of")} ${league.total_rounds}`
                 }
               </p>
-              <p className="text-xs text-muted-foreground font-medium">
+              <p className="text-xs text-muted-foreground font-medium truncate">
                 {t("league.startsOn")}: <span className="text-foreground">{leagueStartDateText}</span>
                 {" • "}
                 {t("league.endsOn")}: <span className="text-foreground">{leagueEndDateText}</span>
               </p>
-              <p className="text-xs text-muted-foreground font-medium mt-1">
+              <p className="text-xs text-muted-foreground font-medium truncate md:mt-1">
                 {t("league.endsAtYourTimezone")}: <span className="text-foreground">{localizedUserEnd}</span>
               </p>
             </div>

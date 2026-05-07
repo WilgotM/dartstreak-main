@@ -9,6 +9,12 @@ interface UseCameraResult {
   stopRecording: () => Promise<Blob | null>;
 }
 
+const debugLog = (...args: unknown[]) => {
+  if (import.meta.env.DEV) {
+    console.log(...args);
+  }
+};
+
 export function useCamera(): UseCameraResult {
   const videoElementRef = useRef<HTMLVideoElement | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -37,7 +43,7 @@ export function useCamera(): UseCameraResult {
     videoElementRef.current = element;
 
     if (element && pendingStreamRef.current) {
-      console.log("Attaching pending stream to video element");
+      debugLog("Attaching pending stream to video element");
       element.srcObject = pendingStreamRef.current;
       element.play().catch(err => {
         console.error("Error playing video:", err);
@@ -58,7 +64,7 @@ export function useCamera(): UseCameraResult {
       chunksRef.current = [];
       headerChunkRef.current = null;
 
-      console.log("Requesting camera access...");
+      debugLog("Requesting camera access...");
 
       const constraints = {
         video: {
@@ -79,26 +85,26 @@ export function useCamera(): UseCameraResult {
           audio: false,
         });
       } catch (envError) {
-        console.log("Environment camera failed, trying any camera:", envError);
+        debugLog("Environment camera failed, trying any camera:", envError);
         stream = await navigator.mediaDevices.getUserMedia(constraints);
       }
 
-      console.log("Camera stream obtained:", stream.getVideoTracks()[0]?.getSettings());
+      debugLog("Camera stream obtained:", stream.getVideoTracks()[0]?.getSettings());
 
       streamRef.current = stream;
       setHasCamera(true);
 
       if (videoElementRef.current) {
-        console.log("Attaching stream to existing video element");
+        debugLog("Attaching stream to existing video element");
         videoElementRef.current.srcObject = stream;
         try {
           await videoElementRef.current.play();
-          console.log("Video playback started");
+          debugLog("Video playback started");
         } catch (playError) {
           console.error("Error playing video:", playError);
         }
       } else {
-        console.log("Video element not ready, storing stream for later");
+        debugLog("Video element not ready, storing stream for later");
         pendingStreamRef.current = stream;
       }
 
@@ -119,7 +125,7 @@ export function useCamera(): UseCameraResult {
       }
 
       mimeTypeRef.current = mimeType || "video/webm";
-      console.log("Using mime type:", mimeTypeRef.current);
+      debugLog("Using mime type:", mimeTypeRef.current);
 
       const recorderOptions: MediaRecorderOptions = {
         videoBitsPerSecond: 250000,
@@ -136,7 +142,7 @@ export function useCamera(): UseCameraResult {
         if (event.data.size > 0) {
           if (!headerChunkRef.current) {
             headerChunkRef.current = event.data;
-            console.log("Header chunk captured:", event.data.size);
+            debugLog("Header chunk captured:", event.data.size);
             return;
           }
 
@@ -156,7 +162,7 @@ export function useCamera(): UseCameraResult {
 
       mediaRecorder.start(1000);
       setIsRecording(true);
-      console.log("Recording started");
+      debugLog("Recording started");
     } catch (error) {
       console.error("Camera error:", error);
       if (error instanceof Error) {
@@ -180,12 +186,12 @@ export function useCamera(): UseCameraResult {
 
   const stopRecording = useCallback((): Promise<Blob | null> => {
     return new Promise((resolve) => {
-      console.log("Stopping recording...");
+      debugLog("Stopping recording...");
 
       const mediaRecorder = mediaRecorderRef.current;
 
       if (!mediaRecorder || mediaRecorder.state === "inactive") {
-        console.log("No active recorder, returning null");
+        debugLog("No active recorder, returning null");
         setIsRecording(false);
         resolve(null);
         return;
@@ -200,12 +206,12 @@ export function useCamera(): UseCameraResult {
 
         // Create clean blob without extra metadata
         const blob = new Blob(blobParts, { type: mimeTypeRef.current });
-        console.log("Recording stopped, total size:", blob.size, "bytes, chunks:", chunksRef.current.length);
+        debugLog("Recording stopped, total size:", blob.size, "bytes, chunks:", chunksRef.current.length);
 
         if (streamRef.current) {
           streamRef.current.getTracks().forEach(track => {
             track.stop();
-            console.log("Stopped track:", track.kind);
+            debugLog("Stopped track:", track.kind);
           });
           streamRef.current = null;
         }

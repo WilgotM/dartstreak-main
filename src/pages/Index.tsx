@@ -84,16 +84,16 @@ const Navbar = () => {
         <img
           src="/logo.png"
           alt="Dartstreak Logo"
-          className={`object-contain transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${isScrolled ? "w-5 h-5" : "w-6 h-6"}`}
+          className={`object-contain transition-all duration-500 ease-standard ${isScrolled ? "w-5 h-5" : "w-6 h-6"}`}
         />
-        <span className={`transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${isScrolled ? "text-lg" : "text-xl"}`}>
+        <span className={`transition-all duration-500 ease-standard ${isScrolled ? "text-lg" : "text-xl"}`}>
           DartStreak
         </span>
       </div>
 
       {/* Always rendered — animated via opacity, max-width, and overflow */}
       <div
-        className="hidden md:flex items-center gap-8 overflow-visible transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+        className="hidden md:flex items-center gap-8 overflow-visible transition-all duration-500 ease-standard"
         style={{
           opacity: isScrolled ? 0 : 1,
           maxWidth: isScrolled ? "0px" : "600px",
@@ -119,32 +119,32 @@ const Navbar = () => {
       </div>
 
       <div
-        className="transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] shrink-0"
+        className="transition-all duration-500 ease-standard shrink-0"
         style={{ marginLeft: isScrolled ? "24px" : "0px" }}
       >
         {session ? (
           <Link
             to="/dashboard"
-            className={`group relative flex items-center justify-center overflow-hidden rounded-full bg-[#FAF8F5] font-semibold text-[#0D0D12] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] hover:scale-[1.03] active:scale-[0.97] ${
+            className={`group relative flex items-center justify-center overflow-hidden rounded-full bg-[#FAF8F5] font-semibold text-[#0D0D12] transition-all duration-500 ease-standard hover:scale-[1.03] active:scale-[0.97] ${
               isScrolled ? "px-4 py-1.5 text-xs" : "px-6 py-2.5 text-sm"
             }`}
           >
             <span className="relative z-10 transition-colors group-hover:text-[#FAF8F5]">
               {t("landing.dashboard")}
             </span>
-            <span className="absolute inset-0 z-0 h-full w-full -translate-x-[101%] bg-[#22C55E] transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:translate-x-0" />
+            <span className="absolute inset-0 z-0 h-full w-full -translate-x-[101%] bg-[#22C55E] transition-transform duration-500 ease-reveal group-hover:translate-x-0" />
           </Link>
         ) : (
           <Link
             to="/auth"
-            className={`group relative flex items-center justify-center overflow-hidden rounded-full bg-[#FAF8F5] font-semibold text-[#0D0D12] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] hover:scale-[1.03] active:scale-[0.97] ${
+            className={`group relative flex items-center justify-center overflow-hidden rounded-full bg-[#FAF8F5] font-semibold text-[#0D0D12] transition-all duration-500 ease-standard hover:scale-[1.03] active:scale-[0.97] ${
               isScrolled ? "px-4 py-1.5 text-xs" : "px-6 py-2.5 text-sm"
             }`}
           >
             <span className="relative z-10 transition-colors group-hover:text-[#FAF8F5]">
               {t("landing.login")}
             </span>
-            <span className="absolute inset-0 z-0 h-full w-full -translate-x-[101%] bg-[#22C55E] transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:translate-x-0" />
+            <span className="absolute inset-0 z-0 h-full w-full -translate-x-[101%] bg-[#22C55E] transition-transform duration-500 ease-reveal group-hover:translate-x-0" />
           </Link>
         )}
       </div>
@@ -229,7 +229,7 @@ const Hero = () => {
               <span className="relative z-10 flex items-center gap-2">
                 {t("landing.dashboard")} <ArrowRight size={18} />
               </span>
-              <span className="absolute inset-0 z-0 h-full w-full -translate-x-full bg-[#FAF8F5] transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:translate-x-0" />
+              <span className="absolute inset-0 z-0 h-full w-full -translate-x-full bg-[#FAF8F5] transition-transform duration-500 ease-reveal group-hover:translate-x-0" />
             </Link>
           ) : (
             <>
@@ -240,7 +240,7 @@ const Hero = () => {
                 <span className="relative z-10 flex items-center gap-2">
                   {t("landing.createAccount")} <ArrowRight size={18} />
                 </span>
-                <span className="absolute inset-0 z-0 h-full w-full -translate-x-full bg-[#FAF8F5] transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:translate-x-0" />
+                <span className="absolute inset-0 z-0 h-full w-full -translate-x-full bg-[#FAF8F5] transition-transform duration-500 ease-reveal group-hover:translate-x-0" />
               </Link>
               <button
                 type="button"
@@ -855,7 +855,7 @@ const CTA = () => {
             {t("landing.dashboard")}{" "}
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </span>
-          <span className="absolute inset-0 z-0 h-full w-full -translate-x-full bg-[#FAF8F5] transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:translate-x-0" />
+          <span className="absolute inset-0 z-0 h-full w-full -translate-x-full bg-[#FAF8F5] transition-transform duration-500 ease-reveal group-hover:translate-x-0" />
         </Link>
       ) : (
         <Link
@@ -866,7 +866,7 @@ const CTA = () => {
             {t("landing.createFreeAccount")}{" "}
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </span>
-          <span className="absolute inset-0 z-0 h-full w-full -translate-x-full bg-[#FAF8F5] transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:translate-x-0" />
+          <span className="absolute inset-0 z-0 h-full w-full -translate-x-full bg-[#FAF8F5] transition-transform duration-500 ease-reveal group-hover:translate-x-0" />
         </Link>
       )}
     </section>

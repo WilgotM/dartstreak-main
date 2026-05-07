@@ -8,6 +8,11 @@ import { useVoiceInput } from "@/hooks/useVoiceInput";
 import { VoiceInputButton } from "@/components/VoiceInputButton";
 import { useOrientation } from "@/hooks/useOrientation";
 
+const debugLog = (...args: unknown[]) => {
+  if (import.meta.env.DEV) {
+    console.log(...args);
+  }
+};
 
 type Multiplier = 1 | 2 | 3;
 
@@ -177,13 +182,13 @@ export default function ThrowInput({
       const blob = await stopRecording();
 
       if (blob && blob.size > 0) {
-        console.log("Uploading video blob:", blob.size, "bytes");
+        debugLog("Uploading video blob:", blob.size, "bytes");
         setIsUploading(true);
         videoUrl = await uploadVideo(blob);
         setIsUploading(false);
-        console.log("Video uploaded, URL:", videoUrl);
+        debugLog("Video uploaded, URL:", videoUrl);
       } else {
-        console.log("No video blob to upload");
+        debugLog("No video blob to upload");
       }
     }
 

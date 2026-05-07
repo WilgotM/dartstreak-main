@@ -53,6 +53,12 @@ interface UseVoiceInputProps {
   autoStart?: boolean; // Auto-start when disabled changes from true to false
 }
 
+const debugLog = (...args: unknown[]) => {
+  if (import.meta.env.DEV) {
+    console.log(...args);
+  }
+};
+
 // Number words in English - extended for better recognition
 const englishNumbers: Record<string, number> = {
   zero: 0, oh: 0, o: 0,
@@ -205,7 +211,7 @@ export function useVoiceInput({ onScoreDetected, disabled, autoStart = false }: 
 
     if (!text) return null;
 
-    console.log("Processing voice:", text);
+    debugLog("Processing voice:", text);
 
     // Check for activation word (optional now)
     const activationWords = languageActivationWords[languageCode] ?? ["score", "points", "point"];
@@ -314,7 +320,7 @@ export function useVoiceInput({ onScoreDetected, disabled, autoStart = false }: 
 
   const startListening = useCallback(() => {
     if (recognitionRef.current) {
-      console.log("Already listening, ignoring start request");
+      debugLog("Already listening, ignoring start request");
       return;
     }
 
@@ -329,15 +335,15 @@ export function useVoiceInput({ onScoreDetected, disabled, autoStart = false }: 
     recognition.onstart = () => {
       setIsListening(true);
       setNeedsRestart(false);
-      console.log("🎤 Voice recognition started - listening continuously");
+      debugLog("🎤 Voice recognition started - listening continuously");
     };
 
     recognition.onaudiostart = () => {
-      console.log("🔊 Audio capture started");
+      debugLog("🔊 Audio capture started");
     };
 
     recognition.onsoundstart = () => {
-      console.log("🔉 Sound detected");
+      debugLog("🔉 Sound detected");
     };
 
     recognition.onresult = (event) => {
@@ -358,12 +364,12 @@ export function useVoiceInput({ onScoreDetected, disabled, autoStart = false }: 
             const alternative = result[altIndex];
             const transcript = alternative.transcript;
 
-            console.log(`Final result [alt ${altIndex}]: "${transcript}" (confidence: ${(alternative.confidence * 100).toFixed(1)}%)`);
+            debugLog(`Final result [alt ${altIndex}]: "${transcript}" (confidence: ${(alternative.confidence * 100).toFixed(1)}%)`);
             setLastTranscript(transcript);
 
             const parsed = parseVoiceCommand(transcript);
             if (parsed) {
-              console.log("✅ Score detected:", parsed.score);
+              debugLog("✅ Score detected:", parsed.score);
               onScoreDetected(parsed.score);
               break; // Stop checking alternatives once we find a match
             }
@@ -372,7 +378,7 @@ export function useVoiceInput({ onScoreDetected, disabled, autoStart = false }: 
           // Log interim results for debugging
           const interim = result[0].transcript;
           if (interim.length > 2) {
-            console.log(`Interim: "${interim}"`);
+            debugLog(`Interim: "${interim}"`);
           }
         }
       }
@@ -388,7 +394,7 @@ export function useVoiceInput({ onScoreDetected, disabled, autoStart = false }: 
           break;
         case "no-speech":
           // No speech detected - this is normal, recognition will continue
-          console.log("No speech detected, still listening...");
+          debugLog("No speech detected, still listening...");
           break;
         case "not-allowed":
           // Permission denied - stop completely
@@ -413,13 +419,13 @@ export function useVoiceInput({ onScoreDetected, disabled, autoStart = false }: 
     };
 
     recognition.onend = () => {
-      console.log("Voice recognition session ended");
+      debugLog("Voice recognition session ended");
       recognitionRef.current = null;
 
       // If we're supposed to still be listening, the session died unexpectedly
       // Show visual indicator that user needs to tap to restart
       if (shouldBeListeningRef.current && !disabled) {
-        console.log("⚠️ Session ended unexpectedly - user needs to restart");
+        debugLog("⚠️ Session ended unexpectedly - user needs to restart");
         setIsListening(false);
         setNeedsRestart(true);
         // Do NOT auto-restart to avoid beeps on Android
@@ -430,11 +436,11 @@ export function useVoiceInput({ onScoreDetected, disabled, autoStart = false }: 
     };
 
     recognition.onsoundend = () => {
-      console.log("🔇 Sound ended");
+      debugLog("🔇 Sound ended");
     };
 
     recognition.onaudioend = () => {
-      console.log("🔊 Audio capture ended");
+      debugLog("🔊 Audio capture ended");
     };
 
     recognitionRef.current = recognition;
@@ -456,7 +462,7 @@ export function useVoiceInput({ onScoreDetected, disabled, autoStart = false }: 
       try {
         recognitionRef.current.stop(); // Use stop() to get any final results
       } catch (e) {
-        console.log("Could not stop recognition");
+        debugLog("Could not stop recognition");
       }
       recognitionRef.current = null;
     }
@@ -509,7 +515,7 @@ export function useVoiceInput({ onScoreDetected, disabled, autoStart = false }: 
       }
     } else if (autoStart && wasDisabled && !isListening && !recognitionRef.current) {
       // Auto-start when transitioning from disabled to enabled
-      console.log("🎤 Auto-starting voice recognition (your turn)");
+      debugLog("🎤 Auto-starting voice recognition (your turn)");
       startListening();
     }
   }, [disabled, autoStart, isListening, startListening]);
