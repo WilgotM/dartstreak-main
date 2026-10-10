@@ -114,6 +114,24 @@ describe("Tic Tac Toe bot turns", () => {
 });
 
 describe("Red Zone bot turns", () => {
+  it.each([1, 2, 3])("eliminates the bot when dart %i misses the board", async (missDart) => {
+    let dartIndex = 0;
+    vi.mocked(simulateDartbotThrow).mockImplementation(() => {
+      dartIndex += 1;
+      return scoreDartbotPoint(0, dartIndex === missDart ? 175 : 133);
+    });
+    render(<MemoryRouter><TrainingRedZone /></MemoryRouter>);
+    await startRedZone();
+    fireEvent.click(screen.getByRole("button", { name: "Safe Hit" }));
+    for (let dart = 0; dart < missDart; dart += 1) await tick(1000);
+    expect(screen.getByText(`Missed the board with dart ${missDart}.`)).toBeTruthy();
+    await tick(1500);
+    expect(screen.queryByText("Player 1 wins!")).not.toBeNull();
+    expect(vi.mocked(simulateDartbotThrow)).toHaveBeenCalledTimes(missDart);
+    await tick(5000);
+    expect(vi.mocked(simulateDartbotThrow)).toHaveBeenCalledTimes(missDart);
+  });
+
   it("stops on a red hit and resolves sudden-death elimination", async () => {
     vi.mocked(simulateDartbotThrow).mockImplementation(() => scoreDartbotPoint(0, -133));
     render(<MemoryRouter><TrainingRedZone /></MemoryRouter>);
@@ -144,6 +162,20 @@ describe("Red Zone bot turns", () => {
     expect(screen.getByRole("button", { name: "Safe Hit" })).toBeTruthy();
     expect(screen.queryByText(/wins!/)).toBeNull();
     expect(screen.getAllByText("Still in")).toHaveLength(2);
+  });
+
+  it("loses an extra life on an off-board miss without treating the turn as safe", async () => {
+    vi.mocked(simulateDartbotThrow).mockImplementation(() => scoreDartbotPoint(0, 175));
+    render(<MemoryRouter><TrainingRedZone /></MemoryRouter>);
+    fireEvent.click(screen.getByRole("button", { name: "1 Life" }));
+    await startRedZone();
+    for (let round = 0; round < 2; round += 1) {
+      fireEvent.click(screen.getByRole("button", { name: "Safe Hit" }));
+      await tick(1000);
+      await tick(1500);
+    }
+    expect(vi.mocked(simulateDartbotThrow)).toHaveBeenCalledTimes(2);
+    expect(screen.getByText("Player 1 wins!")).toBeTruthy();
   });
 
   it("throws three safe darts, advances the round, and restarts without carrying old darts", async () => {

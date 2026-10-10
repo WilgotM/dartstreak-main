@@ -706,13 +706,13 @@
     "rules": {
       "expanding": {
         "r1": "Ronde 1 begint met alleen rood op de 20.",
-        "r2": "Iedere overblijvende speler gooit tot 3 darts per ronde en registreert of rood werd geraakt op dart 1, 2, 3 of helemaal niet.",
+        "r2": "Elke speler gooit maximaal 3 pijlen. Een rode treffer of een worp buiten de scorevelden beëindigt de beurt en kost een leven. Zonder resterende levens lig je eruit. Bull is veilig.",
         "r3": "Als iedereen in dezelfde ronde wordt uitgeschakeld, wint de speler die het langst overleefde in de ronde (laatste dart). Zelfde dart = gelijkspel.",
         "r4": "Na elke ronde breiden de rode velden zich uit: 20 -> 5/1 -> 12/18 etc."
       },
       "random": {
         "r1": "Ronde 1 begint met een willekeurig getal in het rood.",
-        "r2": "Iedere overblijvende speler gooit tot 3 darts per ronde en registreert of rood werd geraakt op dart 1, 2, 3 of helemaal niet.",
+        "r2": "Elke speler gooit maximaal 3 pijlen. Een rode treffer of een worp buiten de scorevelden beëindigt de beurt en kost een leven. Zonder resterende levens lig je eruit. Bull is veilig.",
         "r3": "Als iedereen in dezelfde ronde wordt uitgeschakeld, wint de speler die het langst overleefde in de ronde (laatste dart). Zelfde dart = gelijkspel.",
         "r4": "Na elke ronde wordt er één nieuw willekeurig getal toegevoegd aan de rode zones (de eerdere rode zones blijven)."
       },
@@ -758,13 +758,13 @@
       "nextRandomCount": "{{count}} willekeurige sectoren",
       "round": "Ronde {{round}}"
     },
-    "subtitle": "Multiplayer overlevingsmodus: tot 3 darts per speler per ronde. Je ligt eruit zodra je eerste dart in een rode gevarenzone landt.",
+    "subtitle": "Overlevingsmodus met maximaal 3 pijlen per ronde. Een rode treffer of een worp buiten de scorevelden kost een leven of schakelt je uit.",
     "throw": {
       "bull": "BULL",
       "danger": "Rode Zone / Mis",
       "miss": "MISS",
-      "prompt": "Registreer waar je gooide. MISS en BULL zijn veilig.",
-      "promptSimple": "Kies VEILIG als alle 3 darts veilig waren, of ROOD 1/2/3 voor de dart waarop je voor het eerst rood raakte.",
+      "prompt": "Registreer het geraakte vak. Bull is veilig; een worp buiten de scorevelden telt als een rode treffer.",
+      "promptSimple": "Kies VEILIG als alle 3 pijlen veilig waren. Kies anders Rode Zone / Mis 1/2/3 voor de eerste rode treffer of worp buiten de scorevelden.",
       "safe": "Veilig"
     },
     "title": "Red Zone Survival"
@@ -926,6 +926,7 @@
     "dart": "Pijl {{index}}",
     "miss": "Mis",
     "hitDanger": "De rode zone geraakt met pijl {{index}}.",
-    "safeTurn": "Alle drie de pijlen zijn veilig."
+    "safeTurn": "Alle drie de pijlen zijn veilig.",
+    "missedBoard": "Pijl {{index}} heeft het bord gemist."
   }
 }

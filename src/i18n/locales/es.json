@@ -706,13 +706,13 @@
     "rules": {
       "expanding": {
         "r1": "La ronda 1 empieza con el 20 en rojo.",
-        "r2": "Cada jugador restante lanza hasta 3 dardos por ronda y registra si tocó rojo en dardo 1, 2, 3 o no tocó rojo.",
+        "r2": "Cada jugador lanza hasta 3 dardos. Un acierto en rojo o un fallo fuera de la zona de puntuación termina el turno y cuesta una vida, o te elimina si no quedan vidas. La diana central es segura.",
         "r3": "Si todos quedan eliminados en la misma ronda, gana quien sobrevivió hasta el dardo más tardío. Mismo dardo = empate.",
         "r4": "Después de cada ronda, el color rojo se expande: 20 -> 5/1 -> 12/18 etc."
       },
       "random": {
         "r1": "La ronda 1 empieza con un número aleatorio en rojo.",
-        "r2": "Cada jugador restante lanza hasta 3 dardos por ronda y registra si tocó rojo en dardo 1, 2, 3 o no tocó rojo.",
+        "r2": "Cada jugador lanza hasta 3 dardos. Un acierto en rojo o un fallo fuera de la zona de puntuación termina el turno y cuesta una vida, o te elimina si no quedan vidas. La diana central es segura.",
         "r3": "Si todos quedan eliminados en la misma ronda, gana quien sobrevivió hasta el dardo más tardío. Mismo dardo = empate.",
         "r4": "Después de cada ronda, se añade un nuevo número aleatorio a las zonas rojas (las anteriores se mantienen)."
       },
@@ -758,13 +758,13 @@
       "nextRandomCount": "{{count}} zonas aleatorias",
       "round": "Ronda {{round}}"
     },
-    "subtitle": "Modo supervivencia multijugador: hasta 3 dardos por jugador y ronda. Quedas eliminado cuando tu primer dardo cae en zona roja.",
+    "subtitle": "Modo supervivencia con hasta 3 dardos por ronda. Un acierto en rojo o un fallo fuera de la zona de puntuación cuesta una vida o te elimina.",
     "throw": {
       "bull": "BULL",
       "danger": "Zona Roja / Fallo",
       "miss": "MISS",
-      "prompt": "Registra en qué sección diste. MISS y BULL son seguras.",
-      "promptSimple": "Elige SEGURO si los 3 dardos fueron seguros, o ROJO 1/2/3 para el dardo en el que tocaste rojo por primera vez.",
+      "prompt": "Registra la sección alcanzada. La diana central es segura; un fallo fuera de la zona de puntuación cuenta como un acierto en rojo.",
+      "promptSimple": "Elige SEGURO si los 3 dardos fueron seguros. Si no, elige Zona Roja / Fallo 1/2/3 para el primer acierto en rojo o fallo fuera de la zona de puntuación.",
       "safe": "Tiro a salvo"
     },
     "title": "Red Zone Survival"
@@ -926,6 +926,7 @@
     "dart": "Dardo {{index}}",
     "miss": "Fallo",
     "hitDanger": "Ha alcanzado la zona roja con el dardo {{index}}.",
-    "safeTurn": "Los tres dardos están a salvo."
+    "safeTurn": "Los tres dardos están a salvo.",
+    "missedBoard": "El dardo {{index}} ha fallado el tablero."
   }
 }

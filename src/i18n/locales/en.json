@@ -705,13 +705,13 @@
     "rules": {
       "expanding": {
         "r1": "Round 1 starts with only 20 marked red.",
-        "r2": "Each remaining player throws up to 3 darts per round and registers if red was hit on dart 1, 2, 3, or not at all.",
+        "r2": "Each player throws up to 3 darts. A red hit or a miss outside the scoring area ends the turn and costs a life, or eliminates you if no lives remain. Bull is safe.",
         "r3": "If everyone is eliminated in the same round, the player who lasted to the latest dart wins that round. Same dart = draw.",
         "r4": "After each full round, red expands one step on both sides: 20 -> 5/1 -> 12/18 -> and so on."
       },
       "random": {
         "r1": "Round 1 starts with one random number marked red.",
-        "r2": "Each remaining player throws up to 3 darts per round and registers if red was hit on dart 1, 2, 3, or not at all.",
+        "r2": "Each player throws up to 3 darts. A red hit or a miss outside the scoring area ends the turn and costs a life, or eliminates you if no lives remain. Bull is safe.",
         "r3": "If everyone is eliminated in the same round, the player who lasted to the latest dart wins that round. Same dart = draw.",
         "r4": "After each full round, one new random number is added to the red zones (previous red zones remain)."
       },
@@ -757,13 +757,13 @@
       "nextRandomCount": "{{count}} random sectors",
       "round": "Round {{round}}"
     },
-    "subtitle": "Multiplayer survival mode: up to 3 darts each per round, and you are out when your first dart lands in the red danger sectors.",
+    "subtitle": "Survival mode: up to 3 darts per round. A red hit or a miss outside the scoring area costs a life or eliminates you.",
     "throw": {
       "bull": "BULL",
       "danger": "Red Zone / Miss",
       "miss": "MISS",
-      "prompt": "Register the section that was hit. MISS and BULL are always safe.",
-      "promptSimple": "Register SAFE if all 3 darts were safe, or RED 1/2/3 for the dart where red was first hit.",
+      "prompt": "Register the section that was hit. Bull is safe; a miss outside the scoring area counts like a red hit.",
+      "promptSimple": "Choose SAFE if all 3 darts were safe. Otherwise select Red Zone / Miss 1/2/3 for the first red hit or miss outside the scoring area.",
       "safe": "Safe Hit"
     },
     "title": "Red Zone Survival"
@@ -925,6 +925,7 @@
     "dart": "Dart {{index}}",
     "miss": "Miss",
     "hitDanger": "Hit the red zone with dart {{index}}.",
-    "safeTurn": "All three darts are safe."
+    "safeTurn": "All three darts are safe.",
+    "missedBoard": "Missed the board with dart {{index}}."
   }
 }

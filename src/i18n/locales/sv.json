@@ -705,13 +705,13 @@
     "rules": {
       "expanding": {
         "r1": "Runda 1 börjar med att bara 20 är rödmarkerad.",
-        "r2": "Varje kvarvarande spelare kastar upp till 3 pilar per runda och registrerar om rött träffades på pil 1, 2, 3 eller inte alls.",
+        "r2": "Varje spelare kastar upp till 3 pilar. En röd träff eller en miss utanför poängfälten avslutar turen och kostar ett liv, eller eliminerar dig om inga liv återstår. Bull är säker.",
         "r3": "Om alla åker ut i samma runda vinner den som överlevde längst i rundan (senaste pilen). Samma pil = oavgjort.",
         "r4": "Efter varje full runda expanderar rött ett steg åt båda håll: 20 -> 5/1 -> 12/18 -> och så vidare."
       },
       "random": {
         "r1": "Runda 1 börjar med ett slumpat nummer som är rödmarkerat.",
-        "r2": "Varje kvarvarande spelare kastar upp till 3 pilar per runda och registrerar om rött träffades på pil 1, 2, 3 eller inte alls.",
+        "r2": "Varje spelare kastar upp till 3 pilar. En röd träff eller en miss utanför poängfälten avslutar turen och kostar ett liv, eller eliminerar dig om inga liv återstår. Bull är säker.",
         "r3": "Om alla åker ut i samma runda vinner den som överlevde längst i rundan (senaste pilen). Samma pil = oavgjort.",
         "r4": "Efter varje full runda läggs ett nytt slumpat nummer till som rött (tidigare röda ligger kvar)."
       },
@@ -757,13 +757,13 @@
       "nextRandomCount": "{{count}} slumpade sektorer",
       "round": "Runda {{round}}"
     },
-    "subtitle": "Flerspelarläge med upp till 3 pilar per spelare och runda. Du åker ut när din första pil träffar en röd risksektor.",
+    "subtitle": "Överlevnadsläge med upp till 3 pilar per runda. En röd träff eller en miss utanför poängfälten kostar ett liv eller eliminerar dig.",
     "throw": {
       "bull": "BULL",
       "danger": "Röd Zon / Miss",
       "miss": "MISS",
-      "prompt": "Registrera vilket fält som träffades. MISS och BULL är alltid säkra.",
-      "promptSimple": "Välj SÄKER om alla 3 pilar var säkra, eller RÖD 1/2/3 för pilen där du först träffade rött.",
+      "prompt": "Registrera vilket fält som träffades. Bull är säker; en miss utanför poängfälten räknas som en röd träff.",
+      "promptSimple": "Välj SÄKER om alla 3 pilar var säkra. Annars väljer du Röd zon / Miss 1/2/3 för den första röda träffen eller missen utanför poängfälten.",
       "safe": "Säker Träff"
     },
     "title": "Red Zone Survival"
@@ -925,6 +925,7 @@
     "dart": "Pil {{index}}",
     "miss": "Miss",
     "hitDanger": "Träffade den röda zonen med pil {{index}}.",
-    "safeTurn": "Alla tre pilar är säkra."
+    "safeTurn": "Alla tre pilar är säkra.",
+    "missedBoard": "Missade tavlan med pil {{index}}."
   }
 }

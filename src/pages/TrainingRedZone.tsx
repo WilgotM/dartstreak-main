@@ -1243,7 +1243,7 @@ export default function TrainingRedZone() {
 
               <aside className="space-y-4 xl:col-span-4 xl:sticky xl:top-24">
                 {!result && currentPlayer?.botLevelId && <DartbotTurn level={getDartbotLevel(currentPlayer.botLevelId)} darts={botDarts}
-                  status={botDangerIndex !== -1 ? t("trainingDartbot.hitDanger", { index: botDangerIndex + 1 }) : botDarts.length === 3 ? t("trainingDartbot.safeTurn") : undefined}
+                  status={botDangerIndex !== -1 ? t(botDarts[botDangerIndex].score === 0 ? "trainingDartbot.missedBoard" : "trainingDartbot.hitDanger", { index: botDangerIndex + 1 }) : botDarts.length === 3 ? t("trainingDartbot.safeTurn") : undefined}
                 />}
                 {!result && currentPlayer && !isBotTurn && (
                   <section className="glass-card rounded-2xl border border-white/10 p-4 md:p-5 space-y-4">

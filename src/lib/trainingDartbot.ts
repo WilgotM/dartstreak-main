@@ -183,4 +183,4 @@ export const chooseRedZoneDartbotAim = (dangerNumbers: ReadonlySet<number>): Dar
 };
 
 export const isRedZoneDanger = (dart: DartbotThrow, dangerNumbers: ReadonlySet<number>): boolean =>
-  dart.segment !== null && dangerNumbers.has(dart.segment);
+  dart.score === 0 || (dart.segment !== null && dangerNumbers.has(dart.segment));

@@ -112,6 +112,14 @@ describe("Red Zone Survival strategy", () => {
     expect(chooseRedZoneDartbotAim(danger)).toEqual({ kind: "DB", value: 50 });
     expect(isRedZoneDanger(scoreDartbotPoint(0, 0), danger)).toBe(false);
     expect(isRedZoneDanger(scoreDartbotPoint(0, 30), danger)).toBe(true);
-    expect(isRedZoneDanger(scoreDartbotPoint(0, 175), danger)).toBe(false);
+    expect(isRedZoneDanger(scoreDartbotPoint(0, 175), danger)).toBe(true);
+  });
+  it("requires a scoring board hit to survive, while both bulls remain safe", () => {
+    const danger = new Set([20]);
+    expect(isRedZoneDanger(scoreDartbotPoint(0, 170), danger)).toBe(false);
+    expect(isRedZoneDanger(scoreDartbotPoint(0, 170.01), danger)).toBe(true);
+    expect(isRedZoneDanger(scoreDartbotPoint(0, 250), new Set())).toBe(true);
+    expect(isRedZoneDanger(scoreDartbotPoint(0, 0), danger)).toBe(false);
+    expect(isRedZoneDanger(scoreDartbotPoint(0, 12), danger)).toBe(false);
   });
 });

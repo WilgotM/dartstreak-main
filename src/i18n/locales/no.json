@@ -706,13 +706,13 @@
     "rules": {
       "expanding": {
         "r1": "Runde 1 starter med at bare 20 er markert rødt.",
-        "r2": "Hver gjenværende spiller kaster opptil 3 piler per runde og registrerer om rødt ble truffet på pil 1, 2, 3 eller ikke i det hele tatt.",
+        "r2": "Hver spiller kaster opptil 3 piler. Et rødt treff eller et kast utenfor poengfeltene avslutter turen og koster et liv, eller eliminerer deg hvis ingen liv gjenstår. Bull er trygg.",
         "r3": "Hvis alle ryker ut i samme runde, vinner spilleren som overlevde til den seneste pilen. Samme pil = uavgjort.",
         "r4": "Etter hver runde utvides rød med ett trinn på begge sider: 20 -> 5/1 -> 12/18 osv."
       },
       "random": {
         "r1": "Runde 1 starter med et tilfeldig tall markert rødt.",
-        "r2": "Hver gjenværende spiller kaster opptil 3 piler per runde og registrerer om rødt ble truffet på pil 1, 2, 3 eller ikke i det hele tatt.",
+        "r2": "Hver spiller kaster opptil 3 piler. Et rødt treff eller et kast utenfor poengfeltene avslutter turen og koster et liv, eller eliminerer deg hvis ingen liv gjenstår. Bull er trygg.",
         "r3": "Hvis alle ryker ut i samme runde, vinner spilleren som overlevde til den seneste pilen. Samme pil = uavgjort.",
         "r4": "Etter hver runde legges ett nytt tilfeldig tall til de røde sonene (de tidligere røde blir)."
       },
@@ -758,13 +758,13 @@
       "nextRandomCount": "{{count}} tilfeldige sektorer",
       "round": "Runde {{round}}"
     },
-    "subtitle": "Flerspiller overlevelsesmodus: opptil 3 piler per spiller per runde. Du er ute når den første pilen din treffer en rød faresone.",
+    "subtitle": "Overlevelsesmodus med opptil 3 piler per runde. Et rødt treff eller et kast utenfor poengfeltene koster et liv eller eliminerer deg.",
     "throw": {
       "bull": "BULL",
       "danger": "Rød Sone / Bom",
       "miss": "MISS",
-      "prompt": "Registrer seksjonen som ble truffet. MISS og BULL er alltid sikre.",
-      "promptSimple": "Velg SIKKER hvis alle 3 piler var sikre, eller RØD 1/2/3 for pilen der du først traff rødt.",
+      "prompt": "Registrer feltet som ble truffet. Bull er trygg; et kast utenfor poengfeltene regnes som et rødt treff.",
+      "promptSimple": "Velg SIKKER hvis alle 3 piler var trygge. Ellers velger du Rød sone / Bom 1/2/3 for det første røde treffet eller kastet utenfor poengfeltene.",
       "safe": "Sikkert treff"
     },
     "title": "Red Zone Survival"
@@ -926,6 +926,7 @@
     "dart": "Pil {{index}}",
     "miss": "Bom",
     "hitDanger": "Traff den røde sonen med pil {{index}}.",
-    "safeTurn": "Alle tre pilene er trygge."
+    "safeTurn": "Alle tre pilene er trygge.",
+    "missedBoard": "Bommet på skiven med pil {{index}}."
   }
 }

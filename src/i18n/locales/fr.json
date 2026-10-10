@@ -706,13 +706,13 @@
     "rules": {
       "expanding": {
         "r1": "La manche 1 commence avec seulement le 20 en rouge.",
-        "r2": "Chaque joueur restant lance jusqu'à 3 fléchettes par manche et indique si le rouge a été touché à la fléchette 1, 2, 3 ou pas du tout.",
+        "r2": "Chaque joueur lance jusqu’à 3 fléchettes. Toucher le rouge ou manquer la zone de score termine le tour et coûte une vie, ou vous élimine s’il ne reste aucune vie. Le centre est sûr.",
         "r3": "Si tout le monde est éliminé dans la même manche, gagne celui qui a survécu jusqu'à la fléchette la plus tardive. Même fléchette = égalité.",
         "r4": "Après chaque manche, le rouge s'étend : 20 -> 5/1 -> 12/18 etc."
       },
       "random": {
         "r1": "La manche 1 commence avec un numéro aléatoire en rouge.",
-        "r2": "Chaque joueur restant lance jusqu'à 3 fléchettes par manche et indique si le rouge a été touché à la fléchette 1, 2, 3 ou pas du tout.",
+        "r2": "Chaque joueur lance jusqu’à 3 fléchettes. Toucher le rouge ou manquer la zone de score termine le tour et coûte une vie, ou vous élimine s’il ne reste aucune vie. Le centre est sûr.",
         "r3": "Si tout le monde est éliminé dans la même manche, gagne celui qui a survécu jusqu'à la fléchette la plus tardive. Même fléchette = égalité.",
         "r4": "Après chaque manche, un nouveau numéro aléatoire s'ajoute aux zones rouges (les zones rouges précédentes restent)."
       },
@@ -758,13 +758,13 @@
       "nextRandomCount": "{{count}} secteurs aléatoires",
       "round": "Manche {{round}}"
     },
-    "subtitle": "Mode survie multijoueur : jusqu'à 3 fléchettes par joueur et par manche. Vous êtes éliminé dès que votre première fléchette touche le rouge.",
+    "subtitle": "Mode survie avec jusqu’à 3 fléchettes par manche. Toucher le rouge ou manquer la zone de score coûte une vie ou vous élimine.",
     "throw": {
       "bull": "BULL",
       "danger": "Zone Rouge / Raté",
       "miss": "MISS",
-      "prompt": "Enregistrez votre lancer. MISS et BULL sont sûrs.",
-      "promptSimple": "Choisissez SÛR si les 3 fléchettes étaient sûres, ou ROUGE 1/2/3 pour la fléchette qui a touché le rouge en premier.",
+      "prompt": "Indiquez la zone touchée. Le centre est sûr ; manquer la zone de score compte comme toucher le rouge.",
+      "promptSimple": "Choisissez SÛR si les 3 fléchettes étaient sûres. Sinon, choisissez Zone Rouge / Raté 1/2/3 pour la première fléchette dans le rouge ou hors de la zone de score.",
       "safe": "Tir Sécurisé"
     },
     "title": "Survie Zone Rouge"
@@ -926,6 +926,7 @@
     "dart": "Fléchette {{index}}",
     "miss": "Raté",
     "hitDanger": "La fléchette {{index}} a touché la zone rouge.",
-    "safeTurn": "Les trois fléchettes sont en sécurité."
+    "safeTurn": "Les trois fléchettes sont en sécurité.",
+    "missedBoard": "La fléchette {{index}} a manqué la cible."
   }
 }
