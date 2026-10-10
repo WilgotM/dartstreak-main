@@ -8,12 +8,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { DartboardSvg, type DartboardClickPoint, type DartboardMarker } from "@/components/training/DartboardSvg";
+import DartbotSetup from "@/components/training/DartbotSetup";
+import DartbotTurn from "@/components/training/DartbotTurn";
+import { DEFAULT_DARTBOT_LEVEL, chooseRedZoneDartbotAim, dartbotTurnForm, getDartbotLevel, isRedZoneDanger, simulateDartbotBull, simulateDartbotThrow, type DartbotThrow } from "@/lib/trainingDartbot";
 import { AnimatePresence, motion } from "framer-motion";
 
 interface SetupPlayer {
   id: string;
   name: string;
   color: string;
+  botLevelId?: number;
 }
 
 interface GamePlayer extends SetupPlayer {
@@ -25,6 +29,7 @@ interface GamePlayer extends SetupPlayer {
 interface ThrowEntry {
   playerId: string;
   hitDangerDart: 1 | 2 | 3 | null;
+  darts?: DartbotThrow[];
 }
 
 interface RoundLog {
@@ -68,6 +73,7 @@ const PLAYER_COLORS = [
 ];
 
 const START_INDEX = BOARD_RING.indexOf(START_TARGET);
+const EMPTY_BOT_DARTS: DartbotThrow[] = [];
 
 const getExpansionStepNumbers = (step: number): number[] => {
   if (step <= 0) return [START_TARGET];
@@ -135,6 +141,15 @@ export default function TrainingRedZone() {
   const [gameLives, setGameLives] = useState<LivesOption>(0);
   const [dangerNumbers, setDangerNumbers] = useState<number[]>(() => getDangerNumbers(0));
   const [previousDangerNumbers, setPreviousDangerNumbers] = useState<number[]>([]);
+  const [vsDartbot, setVsDartbot] = useState(false);
+  const [botLevelId, setBotLevelId] = useState(DEFAULT_DARTBOT_LEVEL);
+  const [botTurn, setBotTurn] = useState<{ key: string; darts: DartbotThrow[]; form: number } | null>(null);
+  const matchSetupPlayers = useMemo(() => vsDartbot ? [setupPlayers[0], {
+    id: "dartbot",
+    name: t("trainingDartbot.name"),
+    color: PLAYER_COLORS.find((color) => color !== setupPlayers[0].color)!,
+    botLevelId,
+  }] : setupPlayers, [botLevelId, setupPlayers, t, vsDartbot]);
 
   useEffect(() => {
     const onFullscreenChange = () => {
@@ -164,9 +179,9 @@ export default function TrainingRedZone() {
   }, [isGameStarted, t]);
 
   const setupError = useMemo(() => {
-    if (setupPlayers.length < 2) return t("trainingRedZone.setup.minPlayers");
+    if (matchSetupPlayers.length < 2) return t("trainingRedZone.setup.minPlayers");
 
-    const trimmedNames = setupPlayers.map((player) => player.name.trim());
+    const trimmedNames = matchSetupPlayers.map((player) => player.name.trim());
     if (trimmedNames.some((name) => !name)) return t("trainingRedZone.setup.namesRequired");
 
     const normalized = trimmedNames.map((name) => name.toLowerCase());
@@ -175,7 +190,7 @@ export default function TrainingRedZone() {
     }
 
     return null;
-  }, [setupPlayers, t]);
+  }, [matchSetupPlayers, t]);
 
   const dangerNumberSet = useMemo(() => new Set(dangerNumbers), [dangerNumbers]);
   const newlyAddedSet = useMemo(() => {
@@ -212,6 +227,10 @@ export default function TrainingRedZone() {
     [currentPlayerId, players],
   );
   const bullCurrentPlayer = bullPlayers[bullThrows.length] ?? null;
+  const isBotTurn = Boolean(currentPlayer?.botLevelId);
+  const botTurnKey = `${round}:${currentPlayerId}`;
+  const botDarts = botTurn?.key === botTurnKey ? botTurn.darts : EMPTY_BOT_DARTS;
+  const botDangerIndex = botDarts.findIndex((dart) => isRedZoneDanger(dart, dangerNumberSet));
   const isBullRoundComplete = bullPlayers.length > 0 && bullThrows.length === bullPlayers.length;
   const bullPlayerById = useMemo(
     () => new Map(bullPlayers.map((player) => [player.id, player])),
@@ -283,7 +302,7 @@ export default function TrainingRedZone() {
     });
   }, []);
 
-  const startGameFromPlayers = useCallback((basePlayers: SetupPlayer[], mode: RedZoneMode, initialLives: number) => {
+  const startGameFromPlayers = useCallback((basePlayers: SetupPlayer[], mode: RedZoneMode, initialLives: LivesOption) => {
     const gamePlayers: GamePlayer[] = basePlayers.map((player) => ({
       ...player,
       name: player.name.trim(),
@@ -303,20 +322,21 @@ export default function TrainingRedZone() {
     setRoundOrder(gamePlayers.map((player) => player.id));
     setRoundEntries([]);
     setHistory([]);
+    setBotTurn(null);
     setResult(null);
     setIsGameStarted(true);
   }, []);
 
   const handleStartGame = useCallback(() => {
     if (setupError) return;
-    const normalizedPlayers = setupPlayers.map((player) => ({
+    const normalizedPlayers = matchSetupPlayers.map((player) => ({
       ...player,
       name: player.name.trim(),
     }));
     setBullPlayers(normalizedPlayers);
     setBullThrows([]);
     setIsBullDeciderActive(true);
-  }, [setupError, setupPlayers]);
+  }, [matchSetupPlayers, setupError]);
 
   const handleRegisterBullThrow = useCallback(
     (point: DartboardClickPoint) => {
@@ -339,6 +359,14 @@ export default function TrainingRedZone() {
     if (bullThrows.length === 0) return;
     setBullThrows((previous) => previous.slice(0, -1));
   }, [bullThrows.length]);
+
+  useEffect(() => {
+    if (!isBullDeciderActive || !bullCurrentPlayer?.botLevelId) return;
+    const timeout = window.setTimeout(() => {
+      handleRegisterBullThrow(simulateDartbotBull(getDartbotLevel(bullCurrentPlayer.botLevelId)));
+    }, 1100);
+    return () => window.clearTimeout(timeout);
+  }, [bullCurrentPlayer, handleRegisterBullThrow, isBullDeciderActive]);
 
   const handleRestartBullRound = useCallback(() => {
     setBullThrows([]);
@@ -365,12 +393,13 @@ export default function TrainingRedZone() {
   }, [bullPlayers, bullRanking, bullTopPlayers.length, isBullRoundComplete, setupMode, setupLives, startGameFromPlayers]);
 
   const handleRegisterThrow = useCallback(
-    (hitDangerDart: 1 | 2 | 3 | null) => {
+    (hitDangerDart: 1 | 2 | 3 | null, darts?: DartbotThrow[]) => {
       if (!currentPlayerId || result) return;
 
       const nextEntry: ThrowEntry = {
         playerId: currentPlayerId,
         hitDangerDart,
+        darts,
       };
 
       const nextEntries = [...roundEntries, nextEntry];
@@ -448,6 +477,20 @@ export default function TrainingRedZone() {
     [currentPlayerId, dangerNumbers, dangerRadius, gameMode, gameLives, players, result, round, roundEntries, roundOrder.length],
   );
 
+  useEffect(() => {
+    if (!isGameStarted || result || !currentPlayer?.botLevelId) return;
+    const timeout = window.setTimeout(() => {
+      if (botDangerIndex !== -1 || botDarts.length === 3) {
+        handleRegisterThrow(botDangerIndex === -1 ? null : (botDangerIndex + 1) as 1 | 2 | 3, botDarts);
+        return;
+      }
+      const form = botTurn?.key === botTurnKey ? botTurn.form : dartbotTurnForm();
+      const dart = simulateDartbotThrow(getDartbotLevel(currentPlayer.botLevelId), chooseRedZoneDartbotAim(dangerNumberSet), Math.random, form);
+      setBotTurn({ key: botTurnKey, form, darts: [...botDarts, dart] });
+    }, botDangerIndex !== -1 || botDarts.length === 3 ? 1400 : 950);
+    return () => window.clearTimeout(timeout);
+  }, [botDangerIndex, botDarts, botTurn, botTurnKey, currentPlayer, dangerNumberSet, handleRegisterThrow, isGameStarted, result]);
+
   const handleUndoThrow = useCallback(() => {
     if (result || roundEntries.length === 0) return;
 
@@ -483,7 +526,7 @@ export default function TrainingRedZone() {
   }, [gameMode, gameLives, players, startGameFromPlayers]);
 
   const handleChangePlayers = useCallback(() => {
-    if (players.length > 0) {
+    if (players.length > 0 && !players.some((player) => player.botLevelId)) {
       setSetupPlayers(players.map(({ id, name, color }) => ({ id, name, color })));
       setPlayerCounter(players.length);
     }
@@ -492,6 +535,7 @@ export default function TrainingRedZone() {
     setBullPlayers([]);
     setBullThrows([]);
     setResult(null);
+    setBotTurn(null);
   }, [players]);
 
   const toggleFullscreen = useCallback(async () => {
@@ -576,9 +620,11 @@ export default function TrainingRedZone() {
                 <p className="text-sm text-muted-foreground font-light">{t("trainingRedZone.setup.subtitle")}</p>
               </motion.div>
 
+              <DartbotSetup enabled={vsDartbot} levelId={botLevelId} onEnabledChange={setVsDartbot} onLevelChange={setBotLevelId} />
+
               <div className="space-y-3">
                 <AnimatePresence mode="popLayout">
-                  {setupPlayers.map((player, index) => (
+                  {(vsDartbot ? setupPlayers.slice(0, 1) : setupPlayers).map((player, index) => (
                     <motion.div
                       layout
                       initial={{ opacity: 0, scale: 0.9, y: 10 }}
@@ -604,7 +650,7 @@ export default function TrainingRedZone() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          disabled={setupPlayers.length <= 2}
+                          disabled={vsDartbot || setupPlayers.length <= 2}
                           onClick={() => handleRemovePlayer(player.id)}
                           className="text-xs h-7 hover:bg-red-500/10 hover:text-red-400 opacity-60 hover:opacity-100"
                         >
@@ -614,6 +660,7 @@ export default function TrainingRedZone() {
                       
                       <Input
                         value={player.name}
+                        aria-label={t("trainingRedZone.setup.playerDefault", { index: index + 1 })}
                         onChange={(event) => handleSetupNameChange(player.id, event.target.value)}
                         placeholder={t("trainingRedZone.setup.playerDefault", { index: index + 1 })}
                         className="bg-[#11111A] border-white/12 h-11 transition-all focus-visible:ring-1 focus-visible:ring-white/30"
@@ -655,6 +702,8 @@ export default function TrainingRedZone() {
                   ))}
                 </AnimatePresence>
               </div>
+
+              {vsDartbot && <DartbotTurn level={getDartbotLevel(botLevelId)} status={t("trainingDartbot.ready")} />}
 
               <div className="space-y-3 rounded-xl border border-white/10 bg-[#15151D] p-4">
                 <p className="text-xs uppercase tracking-widest font-bold text-muted-foreground/80">
@@ -753,7 +802,7 @@ export default function TrainingRedZone() {
                 <Button
                   variant="outline"
                   onClick={handleAddPlayer}
-                  disabled={setupPlayers.length >= MAX_PLAYERS || isBullDeciderActive}
+                  disabled={vsDartbot || setupPlayers.length >= MAX_PLAYERS || isBullDeciderActive}
                   className="rounded-xl h-11 border-white/10 hover:bg-white/5 active:scale-95 transition-all"
                 >
                   <Plus className="w-4 h-4 mr-2" />
@@ -896,7 +945,7 @@ export default function TrainingRedZone() {
                 <DartboardSvg
                   dangerNumbers={new Set<number>()}
                   markers={bullMarkers}
-                  onBoardClick={bullCurrentPlayer && !isBullRoundComplete ? handleRegisterBullThrow : undefined}
+                  onBoardClick={bullCurrentPlayer && !isBullRoundComplete && !bullCurrentPlayer.botLevelId ? handleRegisterBullThrow : undefined}
                   className={cn(
                     "drop-shadow-[0_0_35px_rgba(239,68,68,0.15)] transition-all duration-700 ease-in-out block",
                     !isBullRoundComplete 
@@ -906,6 +955,8 @@ export default function TrainingRedZone() {
                   )}
                 />
               </motion.div>
+
+              {bullCurrentPlayer?.botLevelId && <DartbotTurn level={getDartbotLevel(bullCurrentPlayer.botLevelId)} />}
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -1030,7 +1081,7 @@ export default function TrainingRedZone() {
                 <Button
                   variant="outline"
                   onClick={handleUndoThrow}
-                  disabled={roundEntries.length === 0 || Boolean(result)}
+                  disabled={roundEntries.length === 0 || Boolean(result) || isBotTurn}
                 >
                   {t("trainingRedZone.actions.undo")}
                 </Button>
@@ -1162,6 +1213,7 @@ export default function TrainingRedZone() {
                   <div className="flex-1 py-4 md:py-6 flex items-center justify-center">
                     <DartboardSvg
                       dangerNumbers={dangerNumberSet}
+                      markers={isBotTurn ? botDarts.map((dart, index) => ({ x: dart.x, y: dart.y, color: currentPlayer.color, label: String(index + 1) })) : []}
                       className="w-full max-w-[300px] md:max-w-[360px] xl:max-w-[430px] drop-shadow-[0_0_18px_rgba(239,68,68,0.16)]"
                     />
                   </div>
@@ -1190,7 +1242,10 @@ export default function TrainingRedZone() {
               </div>
 
               <aside className="space-y-4 xl:col-span-4 xl:sticky xl:top-24">
-                {!result && currentPlayer && (
+                {!result && currentPlayer?.botLevelId && <DartbotTurn level={getDartbotLevel(currentPlayer.botLevelId)} darts={botDarts}
+                  status={botDangerIndex !== -1 ? t("trainingDartbot.hitDanger", { index: botDangerIndex + 1 }) : botDarts.length === 3 ? t("trainingDartbot.safeTurn") : undefined}
+                />}
+                {!result && currentPlayer && !isBotTurn && (
                   <section className="glass-card rounded-2xl border border-white/10 p-4 md:p-5 space-y-4">
                     <p className="text-sm text-foreground font-medium">
                       {t("trainingRedZone.status.currentThrow", { player: currentPlayer.name })}

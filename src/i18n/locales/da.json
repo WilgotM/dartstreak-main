@@ -272,7 +272,8 @@
       "s5Title": "5. Cookies og samtykke",
       "s6Text": "Når du angiver dit land, placerer vi dig muligvis automatisk i en global liga og en landeliga. Systemligaer bruger faste ligatidszoner for ugentlige sæsoner.",
       "s6Title": "6. Systemligaer og landedata",
-      "title": "Privatlivspolitik"
+      "title": "Privatlivspolitik",
+      "dartbotTraining": "I Tic Tac Toe og Red Zone Survival simulerer Dartbot en modstander på din enhed. Spillernavne, valgt niveau og kast opbevares i spillets midlertidige hukommelse under træningen og slettes, når siden lukkes eller genindlæses. Funktionen tilføjer ingen serverlagring og sender ingen træningsdata til en ekstern AI-tjeneste."
     },
     "terms": {
       "li1": "Snyd, manipuler scores, eller brug automatiserede bots.",
@@ -290,7 +291,8 @@
       "s3Text2": "Vi forbeholder os retten til at udelukke enhver bruger, der overtræder disse regler.",
       "s3Title": "3. Brugeradfærd",
       "s4Title": "4. Intellektuel ejendomsret",
-      "title": "Servicevilkår"
+      "title": "Servicevilkår",
+      "dartbotTraining": "Dartbot-modstandere simuleres til træning. De viste gennemsnit er omtrentlige gennemsnit pr. tre pile for almindelig 501 med double out og beskriver sværhedsgraden, ikke garanterede resultater eller en scoringsregel for træningen. Disse sessioner er ikke onlinekampe mod rigtige personer."
     }
   },
   "match": {
@@ -910,5 +912,20 @@
     "thursday": "torsdag",
     "tuesday": "tirsdag",
     "wednesday": "onsdag"
+  },
+  "trainingDartbot": {
+    "opponent": "Modstander",
+    "localPlayers": "Lokale spillere",
+    "playBot": "Spil mod Dartbot",
+    "difficulty": "Dartbot-niveau",
+    "levelAverage": "Niveau {{level}} · ≈ {{average}} i gennemsnit (501)",
+    "averageExplanation": "Omtrentlige point pr. 3 pile i en almindelig 501-kamp med double out. Det viser bottens spillestyrke, ikke din score i denne træning. Gennemsnittet varierer fra kamp til kamp.",
+    "name": "Dartbot",
+    "throwing": "Dartbot kaster…",
+    "ready": "Klar til næste tur.",
+    "dart": "Pil {{index}}",
+    "miss": "Forbi",
+    "hitDanger": "Ramte den røde zone med pil {{index}}.",
+    "safeTurn": "Alle tre pile er sikre."
   }
 }

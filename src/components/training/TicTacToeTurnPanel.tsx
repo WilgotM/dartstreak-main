@@ -117,7 +117,7 @@ export default function TicTacToeTurnPanel({
                 {strings.throwLabel} {index + 1}
               </span>
               <span className="text-[11px] text-muted-foreground leading-none mb-1">
-                {throwValue?.label ?? "-"}
+                {throwValue?.label === "MISS" ? strings.miss : throwValue?.label ?? "-"}
               </span>
               <span className="text-lg font-mono font-semibold text-foreground leading-none">
                 {throwValue?.score ?? "-"}

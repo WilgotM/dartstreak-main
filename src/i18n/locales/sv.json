@@ -271,7 +271,8 @@
       "s5Title": "5. Cookies och samtycke",
       "s6Text": "När du väljer land kan vi automatiskt placera dig i en global liga och en liga för ditt land. Systemligor använder fasta tidszoner per liga för veckosäsonger.",
       "s6Title": "6. Systemligor och landdata",
-      "title": "Integritetspolicy"
+      "title": "Integritetspolicy",
+      "dartbotTraining": "I Tic Tac Toe och Red Zone Survival simulerar Dartbot en motståndare på din enhet. Spelarnamn, vald nivå och kast hålls i spelets tillfälliga minne för att genomföra träningen och rensas när sidan stängs eller laddas om. Funktionen tillför ingen lagring på servern och skickar inga träningsdata till en extern AI-tjänst."
     },
     "terms": {
       "li1": "Fuska, manipulera poäng eller använda automatiserade bottar.",
@@ -289,7 +290,8 @@
       "s3Text2": "Vi förbehåller oss rätten att stänga av användare som bryter mot dessa regler.",
       "s3Title": "3. Användaruppförande",
       "s4Title": "4. Immateriella rättigheter",
-      "title": "Användarvillkor"
+      "title": "Användarvillkor",
+      "dartbotTraining": "Dartbot-motståndare simuleras för träning. De visade snitten är ungefärliga trepilssnitt för vanlig 501 med dubbel ut och beskriver svårighetsgraden, inte garanterade resultat eller en poängregel för träningsläget. Dessa pass är inte onlinematcher mot riktiga personer."
     }
   },
   "match": {
@@ -909,5 +911,20 @@
     "thursday": "Torsdag",
     "tuesday": "Tisdag",
     "wednesday": "Onsdag"
+  },
+  "trainingDartbot": {
+    "opponent": "Motståndare",
+    "localPlayers": "Lokala spelare",
+    "playBot": "Spela mot Dartbot",
+    "difficulty": "Dartbot-nivå",
+    "levelAverage": "Nivå {{level}} · ≈ {{average}} i snitt (501)",
+    "averageExplanation": "Ungefärliga poäng per 3 pilar i en vanlig 501-match med dubbel ut. Det visar botens spelstyrka, inte din poäng i det här träningsläget. Snittet varierar mellan matcher.",
+    "name": "Dartbot",
+    "throwing": "Dartbot kastar…",
+    "ready": "Redo för nästa tur.",
+    "dart": "Pil {{index}}",
+    "miss": "Miss",
+    "hitDanger": "Träffade den röda zonen med pil {{index}}.",
+    "safeTurn": "Alla tre pilar är säkra."
   }
 }

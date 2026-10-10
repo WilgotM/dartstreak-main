@@ -272,7 +272,8 @@
       "s5Title": "5. Cookies et consentement",
       "s6Text": "Lorsque vous définissez votre pays, nous pouvons vous placer automatiquement dans une ligue mondiale et une ligue nationale. Les ligues système utilisent des fuseaux horaires fixes pour les saisons hebdomadaires.",
       "s6Title": "6. Ligues système et données nationales",
-      "title": "politique de confidentialité"
+      "title": "politique de confidentialité",
+      "dartbotTraining": "Dans Tic Tac Toe et Red Zone Survival, Dartbot simule un adversaire sur votre appareil. Les noms des joueurs, la difficulté choisie et les lancers sont conservés dans la mémoire temporaire du jeu pendant la séance, puis effacés à la fermeture ou au rechargement de la page. Cette fonctionnalité n’ajoute aucun stockage sur le serveur et n’envoie aucune donnée d’entraînement à un service d’IA externe."
     },
     "terms": {
       "li1": "Trichez, manipulez les scores ou utilisez des robots automatisés.",
@@ -290,7 +291,8 @@
       "s3Text2": "Nous nous réservons le droit de bannir tout utilisateur qui enfreindrait ces règles.",
       "s3Title": "3. Comportement de l'utilisateur",
       "s4Title": "4. Propriété intellectuelle",
-      "title": "Conditions d'utilisation"
+      "title": "Conditions d'utilisation",
+      "dartbotTraining": "Les adversaires Dartbot sont simulés pour l’entraînement. Les moyennes affichées sont des moyennes approximatives sur trois fléchettes en 501 classique avec sortie en double. Elles décrivent la difficulté, sans garantir de résultats ni définir une règle de score de l’entraînement. Ces séances ne sont pas des parties en ligne contre de vraies personnes."
     }
   },
   "match": {
@@ -910,5 +912,20 @@
     "thursday": "Jeudi",
     "tuesday": "Mardi",
     "wednesday": "Mercredi"
+  },
+  "trainingDartbot": {
+    "opponent": "Adversaire",
+    "localPlayers": "Joueurs locaux",
+    "playBot": "Jouer contre Dartbot",
+    "difficulty": "Difficulté de Dartbot",
+    "levelAverage": "Niveau {{level}} · ≈ {{average}} de moyenne (501)",
+    "averageExplanation": "Points approximatifs par 3 fléchettes dans une partie classique de 501 avec sortie en double. Cela décrit le niveau du bot, pas votre score dans cet entraînement. La moyenne varie d’une partie à l’autre.",
+    "name": "Dartbot",
+    "throwing": "Dartbot lance…",
+    "ready": "Prêt pour le prochain tour.",
+    "dart": "Fléchette {{index}}",
+    "miss": "Raté",
+    "hitDanger": "La fléchette {{index}} a touché la zone rouge.",
+    "safeTurn": "Les trois fléchettes sont en sécurité."
   }
 }

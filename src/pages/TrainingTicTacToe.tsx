@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { CircleHelp, Maximize, Minimize } from "lucide-react";
@@ -17,6 +17,9 @@ import {
 } from "@/components/ui/dialog";
 import TicTacToeBoard from "@/components/training/TicTacToeBoard";
 import TicTacToeTurnPanel from "@/components/training/TicTacToeTurnPanel";
+import DartbotSetup from "@/components/training/DartbotSetup";
+import DartbotTurn from "@/components/training/DartbotTurn";
+import { DEFAULT_DARTBOT_LEVEL, chooseTicTacToeDartbotAim, dartbotTurnForm, getDartbotLevel, simulateDartbotBull, simulateDartbotThrow } from "@/lib/trainingDartbot";
 import { DartboardSvg, type DartboardClickPoint, type DartboardMarker } from "@/components/training/DartboardSvg";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
@@ -187,7 +190,7 @@ export default function TrainingTicTacToe() {
   const [roundsWon, setRoundsWon] = useState<Record<Player, number>>({ A: 0, B: 0 });
   const [roundResult, setRoundResult] = useState<RoundResult | null>(null);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(Boolean(document.fullscreenElement));
-  const [teamSetup, setTeamSetup] = useState<Record<Player, TeamConfig>>({
+  const [humanTeamSetup, setTeamSetup] = useState<Record<Player, TeamConfig>>({
     A: { name: "Player A", color: "#3B82F6" },
     B: { name: "Player B", color: "#F43F5E" },
   });
@@ -197,6 +200,14 @@ export default function TrainingTicTacToe() {
   const [isWaitingForTurnSwitch, setIsWaitingForTurnSwitch] = useState(false);
   const [isBullDeciderActive, setIsBullDeciderActive] = useState(false);
   const [bullThrows, setBullThrows] = useState<BullThrow[]>([]);
+  const [vsDartbot, setVsDartbot] = useState(false);
+  const [botLevelId, setBotLevelId] = useState(DEFAULT_DARTBOT_LEVEL);
+  const botForm = useRef(1);
+  const botLevel = getDartbotLevel(botLevelId);
+  const teamSetup = useMemo(() => vsDartbot
+    ? { ...humanTeamSetup, B: { ...humanTeamSetup.B, name: t("trainingDartbot.name") } }
+    : humanTeamSetup, [humanTeamSetup, t, vsDartbot]);
+  const isBotTurn = vsDartbot && currentPlayer === "B";
 
   useEffect(() => {
     if (!loading && !user) {
@@ -327,28 +338,21 @@ export default function TrainingTicTacToe() {
       if (evaluated) {
         setRoundResult(evaluated);
         if (evaluated.winner) {
-          setRoundsWon((prev) => {
-            const newScore = prev[evaluated.winner] + 1;
-            if (targetLegs > 0 && newScore >= targetLegs) {
-              setMatchWinner(evaluated.winner);
-            }
-            return {
-              ...prev,
-              [evaluated.winner]: newScore,
-            };
-          });
+          const newScore = roundsWon[evaluated.winner] + 1;
+          setRoundsWon((prev) => ({ ...prev, [evaluated.winner]: newScore }));
+          if (targetLegs > 0 && newScore >= targetLegs) setMatchWinner(evaluated.winner);
         }
         return;
       }
 
       setCurrentPlayer((prev) => (prev === "A" ? "B" : "A"));
     },
-    [board, currentPlayer, roundResult, targetLegs],
+    [board, currentPlayer, roundResult, roundsWon, targetLegs],
   );
 
   const handleAddThrow = useCallback(
     (throwEntry: ThrowInputEntry) => {
-      if (roundResult || throwsThisTurn.length >= 3) return;
+      if (roundResult || isWaitingForTurnSwitch || throwsThisTurn.length >= 3) return;
 
       const integerScore = Math.trunc(throwEntry.score);
       if (!Number.isInteger(integerScore) || integerScore < 0 || integerScore > 180) return;
@@ -376,26 +380,44 @@ export default function TrainingTicTacToe() {
 
         if (!anyCellPossible && nextPendingCellId === null) {
           setIsWaitingForTurnSwitch(true);
-          setTimeout(() => {
-            endTurnWithoutClaim();
-          }, 1500);
         }
         return;
       }
 
-      if (nextPendingCellId !== null) {
-        completeClaim(nextPendingCellId);
-        return;
-      }
-
-      endTurnWithoutClaim();
+      setThrowsThisTurn(nextThrows);
+      setPendingCellId(nextPendingCellId);
+      setIsWaitingForTurnSwitch(nextPendingCellId === null);
     },
-    [board, completeClaim, endTurnWithoutClaim, finishOnDouble, roundResult, throwsThisTurn],
+    [board, finishOnDouble, isWaitingForTurnSwitch, roundResult, throwsThisTurn],
   );
+
+  // Clean up every delayed action when changing boards, opponents or leaving.
+  useEffect(() => {
+    if (!isTeamsReady || isBullDeciderActive || roundResult || matchWinner) return;
+    if (!isWaitingForTurnSwitch && throwsThisTurn.length < 3) return;
+    const timeout = window.setTimeout(() => {
+      if (pendingCellId !== null) completeClaim(pendingCellId);
+      else endTurnWithoutClaim();
+    }, 1200);
+    return () => window.clearTimeout(timeout);
+  }, [completeClaim, endTurnWithoutClaim, isBullDeciderActive, isTeamsReady, isWaitingForTurnSwitch, matchWinner, pendingCellId, roundResult, throwsThisTurn.length]);
+
+  useEffect(() => {
+    if (!isTeamsReady || isBullDeciderActive || !isBotTurn || roundResult || matchWinner || isWaitingForTurnSwitch || throwsThisTurn.length >= 3) return;
+    const timeout = window.setTimeout(() => {
+      if (pendingCellId !== null) { completeClaim(pendingCellId); return; }
+      const aim = chooseTicTacToeDartbotAim(board, turnTotal, remainingDarts, finishOnDouble, botLevel);
+      if (!aim) { setIsWaitingForTurnSwitch(true); return; }
+      if (throwsThisTurn.length === 0) botForm.current = dartbotTurnForm();
+      handleAddThrow(simulateDartbotThrow(botLevel, aim.dart, Math.random, botForm.current));
+    }, 950);
+    return () => window.clearTimeout(timeout);
+  }, [board, botLevel, completeClaim, finishOnDouble, handleAddThrow, isBotTurn, isBullDeciderActive, isTeamsReady, isWaitingForTurnSwitch, matchWinner, pendingCellId, remainingDarts, roundResult, throwsThisTurn.length, turnTotal]);
 
   const handleUndoThrow = useCallback(() => {
     if (roundResult || throwsThisTurn.length === 0) return;
     const nextThrows = throwsThisTurn.slice(0, -1);
+    setIsWaitingForTurnSwitch(false);
     setThrowsThisTurn(nextThrows);
     setPendingCellId(recomputePendingCell(board, nextThrows, finishOnDouble));
   }, [board, finishOnDouble, roundResult, throwsThisTurn]);
@@ -412,13 +434,18 @@ export default function TrainingTicTacToe() {
       setThrowsThisTurn([]);
       setPendingCellId(null);
       setRoundResult(null);
+      setIsWaitingForTurnSwitch(false);
     },
     [difficulty],
   );
 
   const handleNewBoard = useCallback(() => {
+    if (matchWinner) {
+      setRoundsWon({ A: 0, B: 0 });
+      setMatchWinner(null);
+    }
     resetRound(startingPlayer);
-  }, [resetRound, startingPlayer]);
+  }, [matchWinner, resetRound, startingPlayer]);
 
   const handleResetMatch = useCallback(() => {
     setRoundsWon({ A: 0, B: 0 });
@@ -437,6 +464,7 @@ export default function TrainingTicTacToe() {
     setThrowsThisTurn([]);
     setPendingCellId(null);
     setRoundResult(null);
+    setIsWaitingForTurnSwitch(false);
     setMatchWinner(null);
     setBoard(buildBoard(difficulty));
   }, [difficulty]);
@@ -486,6 +514,12 @@ export default function TrainingTicTacToe() {
     });
   }, []);
 
+  useEffect(() => {
+    if (!isBullDeciderActive || !vsDartbot || bullCurrentPlayer !== "B") return;
+    const timeout = window.setTimeout(() => handleRegisterBullThrow(simulateDartbotBull(botLevel)), 1100);
+    return () => window.clearTimeout(timeout);
+  }, [botLevel, bullCurrentPlayer, handleRegisterBullThrow, isBullDeciderActive, vsDartbot]);
+
   const handleUndoBullThrow = useCallback(() => {
     if (bullThrows.length === 0) return;
     setBullThrows((previous) => previous.slice(0, -1));
@@ -511,6 +545,7 @@ export default function TrainingTicTacToe() {
     setThrowsThisTurn([]);
     setPendingCellId(null);
     setRoundResult(null);
+    setIsWaitingForTurnSwitch(false);
     setMatchWinner(null);
     setRoundsWon({ A: 0, B: 0 });
     setBullThrows([]);
@@ -530,6 +565,7 @@ export default function TrainingTicTacToe() {
     setThrowsThisTurn([]);
     setPendingCellId(null);
     setRoundResult(null);
+    setIsWaitingForTurnSwitch(false);
     setMatchWinner(null);
   }, []);
 
@@ -692,6 +728,8 @@ export default function TrainingTicTacToe() {
                 <p className="text-sm text-muted-foreground mb-6 font-light">{t("trainingTicTacToe.setup.subtitle")}</p>
               </motion.div>
 
+              <DartbotSetup enabled={vsDartbot} levelId={botLevelId} onEnabledChange={setVsDartbot} onLevelChange={setBotLevelId} />
+
               <div className="grid gap-4 md:grid-cols-2">
                 {(["A", "B"] as const).map((player, index) => (
                   <motion.div
@@ -715,6 +753,8 @@ export default function TrainingTicTacToe() {
                     
                     <Input
                       value={teamSetup[player].name}
+                      disabled={vsDartbot && player === "B"}
+                      aria-label={player === "A" ? t("trainingTicTacToe.setup.teamA") : t("trainingTicTacToe.setup.teamB")}
                       onChange={(event) => handleTeamNameChange(player, event.target.value)}
                       placeholder={player === "A" ? t("trainingTicTacToe.players.playerA") : t("trainingTicTacToe.players.playerB")}
                       className="bg-[#11111A] border-white/12 h-11 transition-all focus-visible:ring-1 focus-visible:ring-white/30"
@@ -1039,7 +1079,7 @@ export default function TrainingTicTacToe() {
                 <DartboardSvg
                   dangerNumbers={new Set<number>()}
                   markers={bullMarkers}
-                  onBoardClick={bullCurrentPlayer && !isBullRoundComplete ? handleRegisterBullThrow : undefined}
+                  onBoardClick={bullCurrentPlayer && !isBullRoundComplete && !(vsDartbot && bullCurrentPlayer === "B") ? handleRegisterBullThrow : undefined}
                   className={cn(
                     "drop-shadow-[0_0_35px_rgba(6,182,212,0.15)] transition-all duration-700 ease-in-out block",
                     !isBullRoundComplete 
@@ -1049,6 +1089,8 @@ export default function TrainingTicTacToe() {
                   )}
                 />
               </motion.div>
+
+              {vsDartbot && bullCurrentPlayer === "B" && <DartbotTurn level={botLevel} />}
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -1221,6 +1263,9 @@ export default function TrainingTicTacToe() {
             </section>
 
             <aside className="space-y-4 h-full xl:col-span-4">
+              {vsDartbot && <DartbotTurn level={botLevel}
+                status={isBotTurn && !roundResult ? undefined : t("trainingDartbot.ready")}
+              />}
               <TicTacToeTurnPanel
                 currentPlayer={currentPlayer}
                 currentPlayerName={teamSetup[currentPlayer].name}
@@ -1228,9 +1273,9 @@ export default function TrainingTicTacToe() {
                 throwsThisTurn={throwsThisTurn}
                 pendingTarget={pendingTarget}
                 noPossibleSquares={noPossibleSquares}
-                disabled={Boolean(roundResult) || isWaitingForTurnSwitch}
+                disabled={Boolean(roundResult) || isWaitingForTurnSwitch || isBotTurn}
                 strings={{
-                  selectHint: t("trainingTicTacToe.turn.selectHint"),
+                  selectHint: isBotTurn ? t("trainingDartbot.throwing") : t("trainingTicTacToe.turn.selectHint"),
                   miss: t("trainingTicTacToe.turn.miss"),
                   undo: t("trainingTicTacToe.turn.undo"),
                   lockSquare: t("trainingTicTacToe.turn.lockSquare"),

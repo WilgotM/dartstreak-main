@@ -271,7 +271,8 @@
       "s5Title": "5. Cookies and Consent",
       "s6Text": "When you set your country, we may automatically place you in a global league and a country league. System leagues use fixed league timezones for weekly seasons.",
       "s6Title": "6. System Leagues and Country Data",
-      "title": "Privacy Policy"
+      "title": "Privacy Policy",
+      "dartbotTraining": "In Tic Tac Toe and Red Zone Survival, Dartbot simulates an opponent on your device. Player names, selected difficulty and throws are kept in temporary game memory to run the session and are cleared when the page closes or reloads. This feature adds no server storage and sends no training data to an external AI service."
     },
     "terms": {
       "li1": "Cheat, manipulate scores, or use automated bots.",
@@ -289,7 +290,8 @@
       "s3Text2": "We reserve the right to ban any user who violates these rules.",
       "s3Title": "3. User Conduct",
       "s4Title": "4. Intellectual Property",
-      "title": "Terms of Service"
+      "title": "Terms of Service",
+      "dartbotTraining": "Dartbot opponents are simulated for practice. Displayed averages are approximate three-dart averages for standard 501 double-out and describe difficulty, not guaranteed results or a training-game scoring rule. These sessions are not online matches against real people."
     }
   },
   "match": {
@@ -909,5 +911,20 @@
     "thursday": "Thursday",
     "tuesday": "Tuesday",
     "wednesday": "Wednesday"
+  },
+  "trainingDartbot": {
+    "opponent": "Opponent",
+    "localPlayers": "Local players",
+    "playBot": "Play against Dartbot",
+    "difficulty": "Dartbot difficulty",
+    "levelAverage": "Level {{level}} · ≈ {{average}} average (501)",
+    "averageExplanation": "Approximate points per 3 darts in a standard 501 double-out match. This describes the bot’s skill, not your score in this training game. Each game will vary.",
+    "name": "Dartbot",
+    "throwing": "Dartbot is throwing…",
+    "ready": "Ready for your next turn.",
+    "dart": "Dart {{index}}",
+    "miss": "Miss",
+    "hitDanger": "Hit the red zone with dart {{index}}.",
+    "safeTurn": "All three darts are safe."
   }
 }

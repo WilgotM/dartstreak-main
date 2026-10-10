@@ -22,6 +22,12 @@ interface DartboardSvgProps {
 }
 
 const BOARD_RING = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
+const MM_PER_SVG_UNIT = 170 / 83;
+const BULL_RADIUS = 6.35 / MM_PER_SVG_UNIT;
+const OUTER_BULL_RADIUS = 15.9 / MM_PER_SVG_UNIT;
+const TREBLE_INNER_RADIUS = 99.4 / MM_PER_SVG_UNIT;
+const TREBLE_OUTER_RADIUS = 107.4 / MM_PER_SVG_UNIT;
+const DOUBLE_INNER_RADIUS = 162 / MM_PER_SVG_UNIT;
 
 export function DartboardSvg({ dangerNumbers, className, markers = [], onBoardClick }: DartboardSvgProps) {
   const getWedgePath = (startAngle: number, endAngle: number, innerRadius: number, outerRadius: number) => {
@@ -59,8 +65,7 @@ export function DartboardSvg({ dangerNumbers, className, markers = [], onBoardCl
 
     if (svgDistance > 100) return;
     
-    const SVG_TO_MM = 2.048; // 170mm real radius / 83 SVG units = 2.048 mm per SVG unit
-    const distance_mm = svgDistance * SVG_TO_MM;
+    const distance_mm = svgDistance * MM_PER_SVG_UNIT;
 
     onBoardClick({ x, y, distance: distance_mm });
   };
@@ -104,7 +109,7 @@ export function DartboardSvg({ dangerNumbers, className, markers = [], onBoardCl
           <g key={number}>
             {/* Inner single */}
             <path
-              d={getWedgePath(startAngle, endAngle, 9, 43)}
+              d={getWedgePath(startAngle, endAngle, OUTER_BULL_RADIUS, TREBLE_INNER_RADIUS)}
               fill={singleColor}
               stroke="#222"
               strokeWidth="0.5"
@@ -112,7 +117,7 @@ export function DartboardSvg({ dangerNumbers, className, markers = [], onBoardCl
             />
             {/* Treble ring */}
             <path
-              d={getWedgePath(startAngle, endAngle, 43, 51)}
+              d={getWedgePath(startAngle, endAngle, TREBLE_INNER_RADIUS, TREBLE_OUTER_RADIUS)}
               fill={ringColor}
               stroke="#222"
               strokeWidth="0.5"
@@ -120,7 +125,7 @@ export function DartboardSvg({ dangerNumbers, className, markers = [], onBoardCl
             />
             {/* Outer single */}
             <path
-              d={getWedgePath(startAngle, endAngle, 51, 75)}
+              d={getWedgePath(startAngle, endAngle, TREBLE_OUTER_RADIUS, DOUBLE_INNER_RADIUS)}
               fill={singleColor}
               stroke="#222"
               strokeWidth="0.5"
@@ -128,7 +133,7 @@ export function DartboardSvg({ dangerNumbers, className, markers = [], onBoardCl
             />
             {/* Double ring */}
             <path
-              d={getWedgePath(startAngle, endAngle, 75, 83)}
+              d={getWedgePath(startAngle, endAngle, DOUBLE_INNER_RADIUS, 83)}
               fill={ringColor}
               stroke="#222"
               strokeWidth="0.5"
@@ -152,8 +157,8 @@ export function DartboardSvg({ dangerNumbers, className, markers = [], onBoardCl
       })}
       
       {/* Bullseyes */}
-      <circle cx="100" cy="100" r="9" fill="#064e3b" stroke="#222" strokeWidth="0.5" />
-      <circle cx="100" cy="100" r="4" fill="#7f1d1d" stroke="#222" strokeWidth="0.5" />
+      <circle cx="100" cy="100" r={OUTER_BULL_RADIUS} fill="#064e3b" stroke="#222" strokeWidth="0.5" />
+      <circle cx="100" cy="100" r={BULL_RADIUS} fill="#7f1d1d" stroke="#222" strokeWidth="0.5" />
 
       {markers.length > 0 && (
         <g pointerEvents="none">

@@ -10,6 +10,7 @@
     "i18n:baseline": "node scripts/check-i18n.mjs --update-baseline",
     "i18n:check": "node scripts/check-i18n.mjs",
     "lint": "eslint . && npm run i18n:check",
+    "test": "vitest run",
     "preview": "vite preview"
   },
   "dependencies": {

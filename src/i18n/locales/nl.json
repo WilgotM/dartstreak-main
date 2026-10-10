@@ -272,7 +272,8 @@
       "s5Title": "5. Cookies en toestemming",
       "s6Text": "Wanneer u uw land instelt, kunnen we u automatisch in een mondiale competitie en een landencompetitie plaatsen. Systeemcompetities gebruiken vaste competitietijdzones voor wekelijkse seizoenen.",
       "s6Title": "6. Systeemcompetities en landgegevens",
-      "title": "Privacybeleid"
+      "title": "Privacybeleid",
+      "dartbotTraining": "In Tic Tac Toe en Red Zone Survival simuleert Dartbot een tegenstander op je apparaat. Spelersnamen, het gekozen niveau en worpen worden tijdens de training in het tijdelijke spelgeheugen bewaard en gewist wanneer de pagina wordt gesloten of opnieuw geladen. Deze functie voegt geen serveropslag toe en stuurt geen trainingsgegevens naar een externe AI-dienst."
     },
     "terms": {
       "li1": "Speel vals, manipuleer scores of gebruik geautomatiseerde bots.",
@@ -290,7 +291,8 @@
       "s3Text2": "Wij behouden ons het recht voor om elke gebruiker die deze regels overtreedt, te verbannen.",
       "s3Title": "3. Gebruikersgedrag",
       "s4Title": "4. Intellectuele eigendom",
-      "title": "Servicevoorwaarden"
+      "title": "Servicevoorwaarden",
+      "dartbotTraining": "Dartbot-tegenstanders worden gesimuleerd om te oefenen. De getoonde gemiddelden zijn geschatte gemiddelden per drie pijlen voor gewone 501 met dubbel uit en beschrijven de moeilijkheid, geen gegarandeerde resultaten of scoreregel voor de training. Deze sessies zijn geen onlinewedstrijden tegen echte mensen."
     }
   },
   "match": {
@@ -910,5 +912,20 @@
     "thursday": "Donderdag",
     "tuesday": "Dinsdag",
     "wednesday": "Woensdag"
+  },
+  "trainingDartbot": {
+    "opponent": "Tegenstander",
+    "localPlayers": "Lokale spelers",
+    "playBot": "Tegen Dartbot spelen",
+    "difficulty": "Dartbot-niveau",
+    "levelAverage": "Niveau {{level}} · ≈ {{average}} gemiddelde (501)",
+    "averageExplanation": "Geschatte punten per 3 pijlen in een gewone 501-wedstrijd met dubbel uit. Dit geeft de speelsterkte van de bot aan, niet je score in deze training. Het gemiddelde verschilt per wedstrijd.",
+    "name": "Dartbot",
+    "throwing": "Dartbot gooit…",
+    "ready": "Klaar voor de volgende beurt.",
+    "dart": "Pijl {{index}}",
+    "miss": "Mis",
+    "hitDanger": "De rode zone geraakt met pijl {{index}}.",
+    "safeTurn": "Alle drie de pijlen zijn veilig."
   }
 }

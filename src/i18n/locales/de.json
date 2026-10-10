@@ -272,7 +272,8 @@
       "s5Title": "5. Cookies und Einwilligung",
       "s6Text": "Wenn Sie Ihr Land festlegen, platzieren wir Sie möglicherweise automatisch in einer globalen Liga und einer Länderliga. Systemligen verwenden für wöchentliche Saisons feste Ligazeitzonen.",
       "s6Title": "6. Systemligen und Länderdaten",
-      "title": "Datenschutzrichtlinie"
+      "title": "Datenschutzrichtlinie",
+      "dartbotTraining": "In Tic Tac Toe und Red Zone Survival simuliert Dartbot einen Gegner auf deinem Gerät. Spielernamen, gewählte Schwierigkeit und Würfe werden für die Trainingsrunde im temporären Spielspeicher gehalten und beim Schließen oder Neuladen der Seite gelöscht. Diese Funktion fügt keine Serverspeicherung hinzu und sendet keine Trainingsdaten an einen externen KI-Dienst."
     },
     "terms": {
       "li1": "Betrügen Sie, manipulieren Sie Punktestände oder verwenden Sie automatisierte Bots.",
@@ -290,7 +291,8 @@
       "s3Text2": "Wir behalten uns das Recht vor, jeden Benutzer zu sperren, der gegen diese Regeln verstößt.",
       "s3Title": "3. Nutzerverhalten",
       "s4Title": "4. Geistiges Eigentum",
-      "title": "Nutzungsbedingungen"
+      "title": "Nutzungsbedingungen",
+      "dartbotTraining": "Dartbot-Gegner werden zum Üben simuliert. Die angezeigten Averages sind ungefähre Drei-Dart-Durchschnitte für normales 501 mit Double-out und beschreiben die Schwierigkeit, keine garantierten Ergebnisse oder Punkteregel für das Training. Diese Runden sind keine Online-Spiele gegen echte Personen."
     }
   },
   "match": {
@@ -910,5 +912,20 @@
     "thursday": "Donnerstag",
     "tuesday": "Dienstag",
     "wednesday": "Mittwoch"
+  },
+  "trainingDartbot": {
+    "opponent": "Gegner",
+    "localPlayers": "Lokale Spieler",
+    "playBot": "Gegen Dartbot spielen",
+    "difficulty": "Dartbot-Schwierigkeitsgrad",
+    "levelAverage": "Stufe {{level}} · ≈ {{average}} Average (501)",
+    "averageExplanation": "Ungefähre Punkte pro 3 Darts in einem normalen 501-Spiel mit Double-out. Dies beschreibt die Spielstärke des Bots, nicht deine Punktzahl in diesem Training. Der Average variiert von Spiel zu Spiel.",
+    "name": "Dartbot",
+    "throwing": "Dartbot wirft…",
+    "ready": "Bereit für den nächsten Zug.",
+    "dart": "Dart {{index}}",
+    "miss": "Fehlwurf",
+    "hitDanger": "Mit Dart {{index}} die rote Zone getroffen.",
+    "safeTurn": "Alle drei Darts sind sicher."
   }
 }

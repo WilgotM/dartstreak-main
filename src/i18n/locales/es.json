@@ -272,7 +272,8 @@
       "s5Title": "5. Cookies y consentimiento",
       "s6Text": "Cuando configura su país, es posible que lo coloquemos automáticamente en una liga global y una liga nacional. Las ligas del sistema utilizan zonas horarias de liga fijas para las temporadas semanales.",
       "s6Title": "6. Ligas del sistema y datos de países",
-      "title": "política de privacidad"
+      "title": "política de privacidad",
+      "dartbotTraining": "En Tic Tac Toe y Red Zone Survival, Dartbot simula un rival en tu dispositivo. Los nombres de jugadores, la dificultad elegida y los lanzamientos se mantienen en la memoria temporal del juego durante la sesión y se borran al cerrar o recargar la página. Esta función no añade almacenamiento en el servidor ni envía datos de entrenamiento a un servicio externo de IA."
     },
     "terms": {
       "li1": "Haz trampa, manipula puntuaciones o utiliza robots automatizados.",
@@ -290,7 +291,8 @@
       "s3Text2": "Nos reservamos el derecho de prohibir a cualquier usuario que viole estas reglas.",
       "s3Title": "3. Conducta del usuario",
       "s4Title": "4. Propiedad intelectual",
-      "title": "Términos de servicio"
+      "title": "Términos de servicio",
+      "dartbotTraining": "Los rivales Dartbot son simulaciones para practicar. Las medias mostradas son promedios aproximados de tres dardos para 501 con cierre en doble y describen la dificultad, no resultados garantizados ni una regla de puntuación del entrenamiento. Estas sesiones no son partidas en línea contra personas reales."
     }
   },
   "match": {
@@ -910,5 +912,20 @@
     "thursday": "Jueves",
     "tuesday": "Martes",
     "wednesday": "Miércoles"
+  },
+  "trainingDartbot": {
+    "opponent": "Rival",
+    "localPlayers": "Jugadores locales",
+    "playBot": "Jugar contra Dartbot",
+    "difficulty": "Dificultad de Dartbot",
+    "levelAverage": "Nivel {{level}} · ≈ {{average}} de media (501)",
+    "averageExplanation": "Puntos aproximados por 3 dardos en una partida normal de 501 con cierre en doble. Indica la habilidad del bot, no tu puntuación en este entrenamiento. La media varía entre partidas.",
+    "name": "Dartbot",
+    "throwing": "Dartbot está lanzando…",
+    "ready": "Listo para el siguiente turno.",
+    "dart": "Dardo {{index}}",
+    "miss": "Fallo",
+    "hitDanger": "Ha alcanzado la zona roja con el dardo {{index}}.",
+    "safeTurn": "Los tres dardos están a salvo."
   }
 }
