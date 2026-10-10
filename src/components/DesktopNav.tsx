@@ -18,56 +18,28 @@ export function DesktopNav({ isScrolled = false }: DesktopNavProps) {
     { to: "/profile", icon: User, label: t("nav.profile"), matchPrefixes: ["/profile"] },
   ];
 
-  const ease = "cubic-bezier(0.4,0,0.2,1)";
-  const dur = "500ms";
-
   return (
     <nav className="fixed inset-x-0 top-0 z-50 hidden md:block pt-4">
       <div
-        className="mx-auto flex items-center justify-between border border-white/10 bg-[#0D0D12]/78 shadow-[0_18px_48px_rgba(0,0,0,0.5)] backdrop-blur-xl"
-        style={{
-          height: isScrolled ? "48px" : "64px",
-          width: isScrolled ? "auto" : undefined,
-          maxWidth: isScrolled ? "420px" : "1120px",
-          padding: isScrolled ? "0 16px" : "0 20px",
-          borderRadius: isScrolled ? "9999px" : "1.6rem",
-          transition: `height ${dur} ${ease}, max-width ${dur} ${ease}, padding ${dur} ${ease}, border-radius ${dur} ${ease}`,
-        }}
+        className={cn(
+          "mx-auto flex h-16 w-[calc(100%_-_32px)] max-w-6xl items-center justify-between gap-4 rounded-[1.6rem] border border-white/10 bg-[#0D0D12]/78 px-5 shadow-[0_18px_48px_rgba(0,0,0,0.5)] backdrop-blur-xl transition-[opacity,transform,filter] duration-300 ease-out",
+          isScrolled
+            ? "pointer-events-none -translate-y-2 scale-[0.98] opacity-0 blur-[2px]"
+            : "translate-y-0 scale-100 opacity-100 blur-0",
+        )}
       >
-        {/* Logo — text collapses when scrolled */}
         <div className="flex min-w-0 items-center gap-3">
           <img
             src="/logo.png"
             alt="DartStreak Logo"
-            className="object-contain"
-            style={{
-              height: isScrolled ? "28px" : "36px",
-              width: isScrolled ? "28px" : "36px",
-              transition: `all ${dur} ${ease}`,
-            }}
+            className="h-9 w-9 object-contain"
           />
-          <span
-            className="font-display font-bold tracking-tight text-[#FAF8F5] whitespace-nowrap overflow-hidden"
-            style={{
-              fontSize: isScrolled ? "0px" : "1.25rem",
-              opacity: isScrolled ? 0 : 1,
-              maxWidth: isScrolled ? "0px" : "120px",
-              transition: `all ${dur} ${ease}`,
-            }}
-          >
+          <span className="whitespace-nowrap font-display text-xl font-bold tracking-tight text-[#FAF8F5]">
             DartStreak
           </span>
         </div>
 
-        {/* Nav items — labels collapse when scrolled */}
-        <div
-          className="flex items-center rounded-full border border-white/10 bg-[#16161C]/85"
-          style={{
-            padding: isScrolled ? "2px" : "4px",
-            gap: isScrolled ? "2px" : "4px",
-            transition: `all ${dur} ${ease}`,
-          }}
-        >
+        <div className="flex items-center gap-1 rounded-full border border-white/10 bg-[#16161C]/85 p-1">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = item.matchPrefixes.some((prefix) =>
@@ -79,52 +51,58 @@ export function DesktopNav({ isScrolled = false }: DesktopNavProps) {
                 key={item.to}
                 to={item.to}
                 className={cn(
-                  "flex items-center rounded-full text-sm font-semibold",
+                  "flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-200",
                   isActive
                     ? "bg-[#22C55E]/18 text-[#22C55E]"
                     : "text-[#FAF8F5]/70 hover:bg-white/5 hover:text-[#FAF8F5]",
                 )}
-                style={{
-                  gap: isScrolled ? "0px" : "8px",
-                  padding: isScrolled ? "6px 10px" : "8px 16px",
-                  transition: `all ${dur} ${ease}`,
-                }}
               >
-                <Icon
-                  className="shrink-0"
-                  style={{
-                    width: isScrolled ? "16px" : "16px",
-                    height: isScrolled ? "16px" : "16px",
-                  }}
-                />
-                <span
-                  className="whitespace-nowrap overflow-hidden"
-                  style={{
-                    opacity: isScrolled ? 0 : 1,
-                    maxWidth: isScrolled ? "0px" : "100px",
-                    transition: `all ${dur} ${ease}`,
-                  }}
-                >
-                  {item.label}
-                </span>
+                <Icon className="h-4 w-4 shrink-0" />
+                <span className="whitespace-nowrap">{item.label}</span>
               </RouterNavLink>
             );
           })}
         </div>
 
-        {/* Language switch — collapses when scrolled */}
-        <div
-          className="flex min-w-0 justify-end overflow-hidden"
-          style={{
-            opacity: isScrolled ? 0 : 1,
-            maxWidth: isScrolled ? "0px" : "120px",
-            flex: isScrolled ? "0 0 0px" : "1 1 0%",
-            pointerEvents: isScrolled ? "none" : "auto",
-            transition: `all ${dur} ${ease}`,
-          }}
-        >
+        <div className="flex min-w-0 flex-1 justify-end">
           <LanguageSwitch />
         </div>
+      </div>
+
+      <div
+        className={cn(
+          "absolute left-1/2 top-4 flex h-12 -translate-x-1/2 items-center gap-1 rounded-full border border-white/12 bg-[#0D0D12]/86 p-1.5 shadow-[0_16px_44px_rgba(0,0,0,0.48)] backdrop-blur-2xl transition-[opacity,transform,filter] duration-300 ease-out",
+          isScrolled
+            ? "translate-y-0 opacity-100 blur-0"
+            : "pointer-events-none -translate-y-2 opacity-0 blur-[2px]",
+        )}
+      >
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = item.matchPrefixes.some((prefix) =>
+            location.pathname.startsWith(prefix),
+          );
+
+          return (
+            <RouterNavLink
+              key={item.to}
+              to={item.to}
+              aria-label={item.label}
+              title={item.label}
+              className={cn(
+                "relative flex h-9 w-9 items-center justify-center rounded-full transition-[background-color,color,box-shadow,transform] duration-200 hover:scale-105",
+                isActive
+                  ? "bg-[#22C55E]/18 text-[#22C55E] shadow-[inset_0_0_0_1px_rgba(34,197,94,0.24),0_0_18px_rgba(34,197,94,0.12)]"
+                  : "text-[#FAF8F5]/62 hover:bg-white/7 hover:text-[#FAF8F5]",
+              )}
+            >
+              <Icon className="h-4 w-4" />
+              {isActive && (
+                <span className="absolute bottom-1 h-0.5 w-3 rounded-full bg-[#22C55E] shadow-[0_0_8px_rgba(34,197,94,0.8)]" />
+              )}
+            </RouterNavLink>
+          );
+        })}
       </div>
     </nav>
   );
