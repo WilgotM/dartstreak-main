@@ -89,7 +89,7 @@ export default function TicTacToeTurnPanel({
   return (
     <section
       className={cn(
-        "h-full glass-card rounded-2xl p-4 sm:p-5 border border-white/10 bg-[#12121A]/90 flex flex-col gap-4",
+        "glass-card rounded-2xl p-4 sm:p-5 border border-white/10 bg-[#12121A]/90 flex flex-col gap-4",
         className,
       )}
     >
@@ -140,7 +140,7 @@ export default function TicTacToeTurnPanel({
         </p>
       )}
 
-      <div className="flex-1 overflow-y-auto pr-1 space-y-3">
+      <div className="min-h-0 flex-1 overflow-y-auto pr-1 space-y-3">
         <p className="text-sm text-muted-foreground">{strings.selectHint}</p>
 
         <div className="flex gap-2">

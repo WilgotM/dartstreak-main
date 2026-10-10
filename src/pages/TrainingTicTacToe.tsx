@@ -20,6 +20,7 @@ import TicTacToeTurnPanel from "@/components/training/TicTacToeTurnPanel";
 import DartbotSetup from "@/components/training/DartbotSetup";
 import DartbotTurn from "@/components/training/DartbotTurn";
 import DartbotBoard3D from "@/components/training/DartbotBoard3D";
+import { DARTBOT_THROW_INTERVAL_MS, DARTBOT_TURN_PAUSE_MS } from "@/lib/dartbotTiming";
 import { DEFAULT_DARTBOT_LEVEL, chooseTicTacToeDartbotAim, dartbotTurnForm, getDartbotLevel, simulateDartbotBull, simulateDartbotThrow, type DartbotThrow } from "@/lib/trainingDartbot";
 import { DartboardSvg, type DartboardClickPoint, type DartboardMarker } from "@/components/training/DartboardSvg";
 import { cn } from "@/lib/utils";
@@ -400,9 +401,9 @@ export default function TrainingTicTacToe() {
     const timeout = window.setTimeout(() => {
       if (pendingCellId !== null) completeClaim(pendingCellId);
       else endTurnWithoutClaim();
-    }, 1200);
+    }, isBotTurn ? DARTBOT_TURN_PAUSE_MS : 1200);
     return () => window.clearTimeout(timeout);
-  }, [completeClaim, endTurnWithoutClaim, isBullDeciderActive, isTeamsReady, isWaitingForTurnSwitch, matchWinner, pendingCellId, roundResult, throwsThisTurn.length]);
+  }, [completeClaim, endTurnWithoutClaim, isBotTurn, isBullDeciderActive, isTeamsReady, isWaitingForTurnSwitch, matchWinner, pendingCellId, roundResult, throwsThisTurn.length]);
 
   useEffect(() => {
     if (!isTeamsReady || isBullDeciderActive || !isBotTurn || roundResult || matchWinner || isWaitingForTurnSwitch || throwsThisTurn.length >= 3) return;
@@ -414,7 +415,7 @@ export default function TrainingTicTacToe() {
       const dart = simulateDartbotThrow(botLevel, aim.dart, Math.random, botForm.current);
       setBotDarts((previous) => throwsThisTurn.length === 0 ? [dart] : [...previous, dart]);
       handleAddThrow(dart);
-    }, 950);
+    }, DARTBOT_THROW_INTERVAL_MS);
     return () => window.clearTimeout(timeout);
   }, [board, botLevel, completeClaim, finishOnDouble, handleAddThrow, isBotTurn, isBullDeciderActive, isTeamsReady, isWaitingForTurnSwitch, matchWinner, pendingCellId, remainingDarts, roundResult, throwsThisTurn.length, turnTotal]);
 
@@ -522,7 +523,7 @@ export default function TrainingTicTacToe() {
 
   useEffect(() => {
     if (!isBullDeciderActive || !vsDartbot || bullCurrentPlayer !== "B") return;
-    const timeout = window.setTimeout(() => handleRegisterBullThrow(simulateDartbotBull(botLevel)), 1100);
+    const timeout = window.setTimeout(() => handleRegisterBullThrow(simulateDartbotBull(botLevel)), DARTBOT_THROW_INTERVAL_MS);
     return () => window.clearTimeout(timeout);
   }, [botLevel, bullCurrentPlayer, handleRegisterBullThrow, isBullDeciderActive, vsDartbot]);
 
@@ -712,7 +713,7 @@ export default function TrainingTicTacToe() {
       <main
         className={cn(
           "container mx-auto px-4 py-6 md:py-4 pb-24 md:pb-4 relative",
-          isFullscreen && "md:py-6 md:pb-6",
+          isFullscreen && "md:py-6 md:pb-6 lg:max-w-none",
         )}
       >
         <AnimatePresence mode="wait">
@@ -1204,13 +1205,13 @@ export default function TrainingTicTacToe() {
 
         {isTeamsReady && (
           <div
+            data-fullscreen={isFullscreen}
             className={cn(
-              "grid gap-4 lg:grid-cols-12 lg:items-start",
-              isFullscreen && "xl:min-h-[calc(100vh-10rem)]",
+              "tic-tac-toe-layout grid gap-4 lg:grid-cols-12 lg:items-start",
             )}
           >
-            <aside className="space-y-4 lg:col-span-12 xl:col-span-3">
-              <section className="glass-card rounded-2xl border border-white/10 p-4 sm:p-5 space-y-3">
+            <aside className="tic-tac-toe-sidebar space-y-4 lg:col-span-12 xl:col-span-3">
+              <section className="tic-tac-toe-score glass-card rounded-2xl border border-white/10 p-4 sm:p-5 space-y-3">
                 <div className="grid grid-cols-2 gap-4">
                   <div
                     className="rounded-xl border p-3"
@@ -1250,8 +1251,9 @@ export default function TrainingTicTacToe() {
               </section>
             </aside>
 
-            <section className="glass-card min-w-0 rounded-2xl border border-white/10 p-4 sm:p-5 lg:col-span-7 xl:col-span-5">
+            <section className="tic-tac-toe-board-panel glass-card min-w-0 rounded-2xl border border-white/10 p-4 sm:p-5 lg:col-span-7 xl:col-span-5">
               <TicTacToeBoard
+                className="tic-tac-toe-board"
                 board={board}
                 pendingCellId={pendingCellId}
                 winningLine={winningLine}
@@ -1270,7 +1272,7 @@ export default function TrainingTicTacToe() {
               />
             </section>
 
-            <aside className="min-w-0 space-y-4 h-full lg:col-span-5 xl:col-span-4">
+            <aside className="tic-tac-toe-controls min-w-0 space-y-4 lg:col-span-5 xl:col-span-4">
               {vsDartbot && <DartbotBoard3D level={botLevel} darts={botDarts} color={teamSetup.B.color} active={isBotTurn && !roundResult && !matchWinner} />}
               <TicTacToeTurnPanel
                 currentPlayer={currentPlayer}
@@ -1297,16 +1299,13 @@ export default function TrainingTicTacToe() {
                 onAddThrow={handleAddThrow}
                 onUndoThrow={handleUndoThrow}
                 onLockSquare={handleLockSquare}
-                className={cn(
-                  "xl:max-h-[calc(100vh-10rem)]",
-                  isFullscreen && "xl:max-h-[calc(100vh-7rem)]",
-                )}
+                className="tic-tac-toe-turn-panel"
               />
             </aside>
           </div>
         )}
 
-        <div className="space-y-6 mt-6 xl:hidden">
+        <div className={cn("space-y-6 mt-6 xl:hidden", isFullscreen && "lg:hidden")}>
           <section className="glass-card rounded-2xl border border-white/10 p-4 sm:p-5">
             <h2 className="text-sm uppercase tracking-wider text-muted-foreground mb-2">
               {t("trainingTicTacToe.rules.title")}

@@ -11,6 +11,7 @@ import { DartboardSvg, type DartboardClickPoint, type DartboardMarker } from "@/
 import DartbotSetup from "@/components/training/DartbotSetup";
 import DartbotTurn from "@/components/training/DartbotTurn";
 import DartbotBoard3D from "@/components/training/DartbotBoard3D";
+import { DARTBOT_THROW_INTERVAL_MS, DARTBOT_TURN_PAUSE_MS } from "@/lib/dartbotTiming";
 import { DEFAULT_DARTBOT_LEVEL, chooseRedZoneDartbotAim, dartbotTurnForm, getDartbotLevel, isRedZoneDanger, simulateDartbotBull, simulateDartbotThrow, type DartbotThrow } from "@/lib/trainingDartbot";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -365,7 +366,7 @@ export default function TrainingRedZone() {
     if (!isBullDeciderActive || !bullCurrentPlayer?.botLevelId) return;
     const timeout = window.setTimeout(() => {
       handleRegisterBullThrow(simulateDartbotBull(getDartbotLevel(bullCurrentPlayer.botLevelId)));
-    }, 1100);
+    }, DARTBOT_THROW_INTERVAL_MS);
     return () => window.clearTimeout(timeout);
   }, [bullCurrentPlayer, handleRegisterBullThrow, isBullDeciderActive]);
 
@@ -488,7 +489,7 @@ export default function TrainingRedZone() {
       const form = botTurn?.key === botTurnKey ? botTurn.form : dartbotTurnForm();
       const dart = simulateDartbotThrow(getDartbotLevel(currentPlayer.botLevelId), chooseRedZoneDartbotAim(dangerNumberSet), Math.random, form);
       setBotTurn({ key: botTurnKey, form, darts: [...botDarts, dart] });
-    }, botDangerIndex !== -1 || botDarts.length === 3 ? 1400 : 950);
+    }, botDangerIndex !== -1 || botDarts.length === 3 ? DARTBOT_TURN_PAUSE_MS : DARTBOT_THROW_INTERVAL_MS);
     return () => window.clearTimeout(timeout);
   }, [botDangerIndex, botDarts, botTurn, botTurnKey, currentPlayer, dangerNumberSet, handleRegisterThrow, isGameStarted, result]);
 

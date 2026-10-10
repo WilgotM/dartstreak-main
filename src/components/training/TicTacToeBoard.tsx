@@ -9,6 +9,7 @@ interface BoardCell {
 }
 
 interface TicTacToeBoardProps {
+  className?: string;
   board: BoardCell[];
   pendingCellId: number | null;
   winningLine: number[];
@@ -33,6 +34,7 @@ interface TicTacToeBoardProps {
 }
 
 export default function TicTacToeBoard({
+  className,
   board,
   pendingCellId,
   winningLine,
@@ -41,7 +43,7 @@ export default function TicTacToeBoard({
   strings,
 }: TicTacToeBoardProps) {
   return (
-    <div className="grid grid-cols-3 gap-2.5 md:gap-3">
+    <div className={cn("grid grid-cols-3 gap-2.5 md:gap-3", className)}>
       {board.map((cell) => {
         const isWinningCell = winningLine.includes(cell.id);
         const isPending = pendingCellId === cell.id && !cell.owner;

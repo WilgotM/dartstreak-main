@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { DartboardSvg } from "@/components/training/DartboardSvg";
 import type { DartbotThrow } from "@/lib/trainingDartbot";
+import { DARTBOT_FLIGHT_MS } from "@/lib/dartbotTiming";
 
 interface DartbotBoardSceneProps {
   darts: DartbotThrow[];
@@ -27,7 +28,6 @@ interface BoardScene {
 // as the throw engine, so the animation cannot invent or shift a hit.
 const WORLD_PER_SVG_UNIT = 1.7 / 83;
 const BOARD_RADIUS = 100 * WORLD_PER_SVG_UNIT;
-const FLIGHT_MS = 460;
 
 export default function DartbotBoardScene({ darts, dangerNumbers, color }: DartbotBoardSceneProps) {
   const hostRef = useRef<HTMLDivElement>(null);
@@ -155,7 +155,7 @@ export default function DartbotBoardScene({ darts, dangerNumbers, color }: Dartb
       let moving = false;
       for (const entry of flying) {
         const elapsed = now - entry.startedAt;
-        const progress = motion.matches ? 1 : Math.min(1, Math.max(0, elapsed / FLIGHT_MS));
+        const progress = motion.matches ? 1 : Math.min(1, Math.max(0, elapsed / DARTBOT_FLIGHT_MS));
         const remaining = (1 - progress) ** 2;
         entry.mesh.position.copy(entry.target);
         entry.mesh.position.x += 1.8 * remaining;
@@ -164,14 +164,14 @@ export default function DartbotBoardScene({ darts, dangerNumbers, color }: Dartb
         entry.mesh.rotation.set(0.12 * remaining, -0.18 * remaining, 0.35);
         if (progress === 1 && entry.dart.score === 0) {
           // A miss bounces/drops away rather than sticking in a safe field.
-          const drop = motion.matches ? 1 : Math.min(1, Math.max(0, (elapsed - FLIGHT_MS) / 420));
+          const drop = motion.matches ? 1 : Math.min(1, Math.max(0, (elapsed - DARTBOT_FLIGHT_MS) / 420));
           entry.mesh.position.y -= drop * drop * 3;
           entry.mesh.position.z += drop * 0.5;
           entry.mesh.rotation.x += drop * 1.8;
           entry.mesh.visible = drop < 1;
           moving ||= drop < 1;
         } else if (progress === 1) {
-          const settle = motion.matches ? 1 : Math.min(1, (elapsed - FLIGHT_MS) / 180);
+          const settle = motion.matches ? 1 : Math.min(1, (elapsed - DARTBOT_FLIGHT_MS) / 180);
           entry.mesh.rotation.x = Math.sin(settle * Math.PI * 4) * 0.045 * (1 - settle);
           moving ||= settle < 1;
         }
@@ -206,6 +206,8 @@ export default function DartbotBoardScene({ darts, dangerNumbers, color }: Dartb
       if (!width || !height) return;
       renderer.setSize(width, height, false);
       camera.aspect = width / height;
+      // Preserve the board's horizontal framing in a tall fullscreen sidebar.
+      camera.fov = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(36) / 2) * Math.max(1, (4 / 3) / camera.aspect)));
       camera.updateProjectionMatrix();
       render();
     };

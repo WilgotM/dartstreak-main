@@ -45,14 +45,14 @@ const startTicTacToe = async () => {
   clickBull();
   // Input is locked while the bot throws for the bull.
   expect(screen.queryByRole("button", { name: "Interactive dartboard" })).toBeNull();
-  await tick();
+  await tick(2200);
   fireEvent.click(screen.getByRole("button", { name: "Start match" }));
 };
 const startRedZone = async () => {
   enableBot();
   fireEvent.click(screen.getByRole("button", { name: "Start game" }));
   clickBull();
-  await tick();
+  await tick(2200);
   fireEvent.click(screen.getByRole("button", { name: "Start game" }));
 };
 
@@ -89,13 +89,27 @@ describe("Dartbot setup", () => {
 });
 
 describe("Tic Tac Toe bot turns", () => {
+  it("waits before throwing and keeps each hit visible before the next action", async () => {
+    render(<MemoryRouter><TrainingTicTacToe /></MemoryRouter>);
+    await startTicTacToe();
+    for (let index = 0; index < 3; index += 1) fireEvent.click(screen.getByRole("button", { name: "MISS" }));
+    await tick();
+    await tick(2199);
+    expect(vi.mocked(simulateDartbotThrow)).not.toHaveBeenCalled();
+    await tick(1);
+    expect(vi.mocked(simulateDartbotThrow)).toHaveBeenCalledTimes(1);
+    await tick(2199);
+    expect(vi.mocked(simulateDartbotThrow)).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole("button", { name: "MISS" }).getAttribute("disabled")).not.toBeNull();
+  });
+
   it("automatically throws and claims a square, then returns control to the human", async () => {
     render(<MemoryRouter><TrainingTicTacToe /></MemoryRouter>);
     await startTicTacToe();
     for (let index = 0; index < 3; index += 1) fireEvent.click(screen.getByRole("button", { name: "MISS" }));
     await tick();
     expect(screen.getByRole("button", { name: "MISS" }).getAttribute("disabled")).not.toBeNull();
-    for (let step = 0; step < 5; step += 1) await tick(1000);
+    for (let step = 0; step < 5; step += 1) await tick(2200);
     expect(vi.mocked(simulateDartbotThrow).mock.calls.length).toBeGreaterThan(0);
     expect(screen.getByRole("button", { name: "MISS" }).getAttribute("disabled")).toBeNull();
     expect(screen.getAllByText("Dartbot").length).toBeGreaterThan(1);
@@ -123,6 +137,22 @@ describe("Tic Tac Toe bot turns", () => {
 });
 
 describe("Red Zone bot turns", () => {
+  it("leaves time to watch each dart and the final result before handing back control", async () => {
+    render(<MemoryRouter><TrainingRedZone /></MemoryRouter>);
+    await startRedZone();
+    fireEvent.click(screen.getByRole("button", { name: "Safe Hit" }));
+    for (let dart = 1; dart <= 3; dart += 1) {
+      await tick(2199);
+      expect(vi.mocked(simulateDartbotThrow)).toHaveBeenCalledTimes(dart - 1);
+      await tick(1);
+      expect(vi.mocked(simulateDartbotThrow)).toHaveBeenCalledTimes(dart);
+    }
+    await tick(2399);
+    expect(screen.queryByRole("button", { name: "Safe Hit" })).toBeNull();
+    await tick(1);
+    expect(screen.getByRole("button", { name: "Safe Hit" })).toBeTruthy();
+  });
+
   it.each([1, 2, 3])("eliminates the bot when dart %i misses the board", async (missDart) => {
     let dartIndex = 0;
     vi.mocked(simulateDartbotThrow).mockImplementation(() => {
@@ -132,12 +162,12 @@ describe("Red Zone bot turns", () => {
     render(<MemoryRouter><TrainingRedZone /></MemoryRouter>);
     await startRedZone();
     fireEvent.click(screen.getByRole("button", { name: "Safe Hit" }));
-    for (let dart = 0; dart < missDart; dart += 1) await tick(1000);
+    for (let dart = 0; dart < missDart; dart += 1) await tick(2200);
     expect(screen.getByText(`Missed the board with dart ${missDart}.`)).toBeTruthy();
     const shownDarts = JSON.parse(screen.getByTestId("dartbot-scene").getAttribute("data-darts"));
     expect(shownDarts).toHaveLength(missDart);
     expect(shownDarts.at(-1)).toEqual(scoreDartbotPoint(0, 175));
-    await tick(1500);
+    await tick(2400);
     expect(screen.queryByText("Player 1 wins!")).not.toBeNull();
     expect(vi.mocked(simulateDartbotThrow)).toHaveBeenCalledTimes(missDart);
     await tick(5000);
@@ -149,9 +179,9 @@ describe("Red Zone bot turns", () => {
     render(<MemoryRouter><TrainingRedZone /></MemoryRouter>);
     await startRedZone();
     fireEvent.click(screen.getByRole("button", { name: "Safe Hit" }));
-    await tick(1000);
+    await tick(2200);
     expect(screen.getByText("Hit the red zone with dart 1.")).toBeTruthy();
-    await tick(1500);
+    await tick(2400);
     expect(vi.mocked(simulateDartbotThrow)).toHaveBeenCalledTimes(1);
     expect(screen.getByText("Player 1 wins!")).toBeTruthy();
     const count = vi.mocked(simulateDartbotThrow).mock.calls.length;
@@ -168,8 +198,8 @@ describe("Red Zone bot turns", () => {
     vi.spyOn(Math, "random").mockReturnValue(0.5);
     await startRedZone();
     fireEvent.click(screen.getByRole("button", { name: "Safe Hit" }));
-    await tick(1000);
-    await tick(1500);
+    await tick(2200);
+    await tick(2400);
     expect(vi.mocked(simulateDartbotThrow)).toHaveBeenCalledTimes(1);
     expect(screen.getByRole("button", { name: "Safe Hit" })).toBeTruthy();
     expect(screen.queryByText(/wins!/)).toBeNull();
@@ -183,8 +213,8 @@ describe("Red Zone bot turns", () => {
     await startRedZone();
     for (let round = 0; round < 2; round += 1) {
       fireEvent.click(screen.getByRole("button", { name: "Safe Hit" }));
-      await tick(1000);
-      await tick(1500);
+      await tick(2200);
+      await tick(2400);
     }
     expect(vi.mocked(simulateDartbotThrow)).toHaveBeenCalledTimes(2);
     expect(screen.getByText("Player 1 wins!")).toBeTruthy();
@@ -195,7 +225,7 @@ describe("Red Zone bot turns", () => {
     await startRedZone();
     fireEvent.click(screen.getByRole("button", { name: "Safe Hit" }));
     expect(screen.queryByRole("button", { name: "Safe Hit" })).toBeNull();
-    for (let step = 0; step < 5; step += 1) await tick(1000);
+    for (let step = 0; step < 5; step += 1) await tick(2200);
     expect(vi.mocked(simulateDartbotThrow)).toHaveBeenCalledTimes(3);
     expect(screen.getByRole("button", { name: "Safe Hit" })).toBeTruthy();
     expect(screen.getAllByText("Round 2").length).toBeGreaterThan(0);
@@ -205,7 +235,7 @@ describe("Red Zone bot turns", () => {
     expect(screen.getByTestId("dartbot-scene").getAttribute("data-darts")).toBe("[]");
     expect(screen.getAllByText("Round 1").length).toBeGreaterThan(0);
     fireEvent.click(screen.getByRole("button", { name: "Safe Hit" }));
-    await tick(1000);
+    await tick(2200);
     expect(vi.mocked(simulateDartbotThrow)).toHaveBeenCalledTimes(4);
     fireEvent.click(screen.getByRole("button", { name: "Change players" }));
     await tick(6000);
