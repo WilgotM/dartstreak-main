@@ -273,7 +273,8 @@
       "s6Text": "Lorsque vous définissez votre pays, nous pouvons vous placer automatiquement dans une ligue mondiale et une ligue nationale. Les ligues système utilisent des fuseaux horaires fixes pour les saisons hebdomadaires.",
       "s6Title": "6. Ligues système et données nationales",
       "title": "politique de confidentialité",
-      "dartbotTraining": "Dans Tic Tac Toe et Red Zone Survival, Dartbot simule un adversaire sur votre appareil. Les noms des joueurs, la difficulté choisie et les lancers sont conservés dans la mémoire temporaire du jeu pendant la séance, puis effacés à la fermeture ou au rechargement de la page. Cette fonctionnalité n’ajoute aucun stockage sur le serveur et n’envoie aucune donnée d’entraînement à un service d’IA externe. L’animation des lancers en 3D est générée sur votre appareil à partir de ces lancers simulés."
+      "dartbotTraining": "Dans Tic Tac Toe et Red Zone Survival, Dartbot simule un adversaire sur votre appareil. Les noms des joueurs, la difficulté choisie et les lancers sont conservés dans la mémoire temporaire du jeu pendant la séance, puis effacés à la fermeture ou au rechargement de la page. Cette fonctionnalité n’ajoute aucun stockage sur le serveur et n’envoie aucune donnée d’entraînement à un service d’IA externe. L’animation des lancers en 3D est générée sur votre appareil à partir de ces lancers simulés.",
+      "x01Training": "Dans l’entraînement X01, le nom du joueur, les réglages, les scores des fléchettes et les statistiques sont traités dans la mémoire temporaire de votre appareil pour faire fonctionner le match. Ils sont effacés lorsque vous quittez ou rechargez la page ; cette fonction n’ajoute aucun stockage sur serveur. Le bot, l’animation de la cible et les sons synthétiques sont générés localement. Aucun microphone, caméra, service d’IA externe ni véritable diffusion vidéo n’est utilisé."
     },
     "terms": {
       "li1": "Trichez, manipulez les scores ou utilisez des robots automatisés.",
@@ -292,7 +293,8 @@
       "s3Title": "3. Comportement de l'utilisateur",
       "s4Title": "4. Propriété intellectuelle",
       "title": "Conditions d'utilisation",
-      "dartbotTraining": "Les adversaires Dartbot sont simulés pour l’entraînement. Les moyennes affichées sont des moyennes approximatives sur trois fléchettes en 501 classique avec sortie en double. Elles décrivent la difficulté, sans garantir de résultats ni définir une règle de score de l’entraînement. Ces séances ne sont pas des parties en ligne contre de vraies personnes."
+      "dartbotTraining": "Les adversaires Dartbot sont simulés pour l’entraînement. Les moyennes affichées sont des moyennes approximatives sur trois fléchettes en 501 classique avec sortie en double. Elles décrivent la difficulté, sans garantir de résultats ni définir une règle de score de l’entraînement. Ces séances ne sont pas des parties en ligne contre de vraies personnes.",
+      "x01Training": "Le mode de retransmission X01 est un match d’entraînement simulé avec des graphismes inspirés du sport, et non une diffusion TV en direct ni un match contre une autre personne. DartStreak n’est pas affilié à Sky Sports. Vous saisissez vos propres scores ; les règles d’entrée, de sortie et de format choisies déterminent le résultat. Les résultats d’entraînement n’affectent ni les ligues ni les classements."
     }
   },
   "match": {
@@ -660,6 +662,11 @@
         "badge": "Duel tactique",
         "description": "Contrôle de cible à deux joueurs où chaque tour est décidé par la gestion du plateau et la précision du paiement.",
         "title": "Fléchettes Tic-Tac-Toe"
+      },
+      "x01": {
+        "badge": "Match TV",
+        "title": "X01 contre Dartbot",
+        "description": "Vos règles, un vrai match. Affrontez Dartbot sur une scène 3D avec un tableau des scores façon télévision."
       }
     },
     "kicker": "Choisissez votre mode d'entraînement",
@@ -931,5 +938,127 @@
     "throwView": "Lancers de Dartbot",
     "sideView": "Vue de côté",
     "lastThrow": "Dernier tour de Dartbot."
+  },
+  "x01": {
+    "setupTitle": "Votre match. Vos règles.",
+    "setupDescription": "Un vrai match X01 contre Dartbot, dans une ambiance de retransmission TV.",
+    "matchSettings": "Réglages du match",
+    "playerName": "Nom du joueur",
+    "startScore": "Score de départ",
+    "customScore": "Score personnalisé",
+    "scoreRange": "Choisissez un nombre entier de 2 à 10 001.",
+    "inRule": "Règle d’entrée",
+    "outRule": "Règle de sortie",
+    "format": "Format du match",
+    "legsPerSet": "Manches pour gagner un set",
+    "legsToWin": "Manches pour gagner",
+    "setsToWin": "Sets pour gagner",
+    "starter": "Premier lancer",
+    "nextStarter": "Départ de la manche suivante",
+    "pace": "Rythme des lancers",
+    "broadcastSettings": "Réglages de retransmission",
+    "rulesHelp": "Double signifie double ou bullseye. Master signifie double, triple ou bullseye. Un bust annule toute la volée, y compris l’entrée. Le premier à atteindre le nombre choisi de manches ou de sets gagne ; deux points d’écart ne sont pas nécessaires.",
+    "sound": "Sons des fléchettes et du public",
+    "hints": "Suggestions de fermeture",
+    "startMatch": "Démarrer le match",
+    "physicalBoard": "Jouez sur votre propre cible. Saisissez vos scores ici. Le match reste dans cet onglet.",
+    "you": "Vous",
+    "firstTo": "Premier à {{count}}",
+    "sets": "Sets",
+    "legs": "Manches",
+    "paused": "En pause",
+    "matchOver": "Match terminé",
+    "legOver": "Manche terminée",
+    "bust": "Bust",
+    "yourTurn": "À vous de lancer",
+    "scoreboard": "Tableau des scores",
+    "averageShort": "MOY.",
+    "remaining": "Score restant",
+    "notIn": "Pas encore entré",
+    "legNumber": "Manche {{number}}",
+    "yourVisit": "Votre volée",
+    "entryNeeded": "Entrée requise : {{rule}}",
+    "checkout": "Fermeture",
+    "dartsLeft": "{{count}} fléchettes restantes",
+    "inputMode": "Saisie du score",
+    "wholeVisit": "Volée complète",
+    "perDart": "Par fléchette",
+    "visitScore": "Score de la volée",
+    "record": "Valider",
+    "checkoutDarts": "Fléchettes utilisées pour finir",
+    "invalidVisit": "Cette volée est impossible avec ces règles. Vérifiez le total et le nombre de fléchettes de la fermeture, ou saisissez chaque fléchette.",
+    "multiplier": "Multiplicateur",
+    "single": "Simple",
+    "double": "Double",
+    "triple": "Triple",
+    "bull": "Bull",
+    "bustDescription": "Bust. Votre score revient à celui du début de la volée.",
+    "visitRecorded": "{{score}} points. Prêt pour Dartbot ?",
+    "checkoutRecorded": "Fermeture à {{score}}. Manche gagnée !",
+    "undo": "Annuler",
+    "nextLeg": "Manche suivante",
+    "botTurn": "Au tour de Dartbot",
+    "broadcastBoard": "Cible en vue de retransmission",
+    "pause": "Mettre le match en pause",
+    "resume": "Reprendre",
+    "mute": "Couper le son",
+    "unmute": "Activer le son",
+    "fullscreen": "Plein écran",
+    "exitFullscreen": "Quitter le plein écran",
+    "fullscreenUnavailable": "Le plein écran n’est pas disponible dans ce navigateur. La vue du match remplit toujours la page.",
+    "bullOff": "Lancer au bull",
+    "bullInstructions": "Lancez une fléchette au bull de votre cible, puis marquez son emplacement ici. Dartbot lance ensuite. Le bullseye bat le bull extérieur ; sinon, le plus proche gagne.",
+    "bullTie": "Égalité. Les deux joueurs relancent.",
+    "startsResult": "{{name}} lance en premier.",
+    "markBull": "Marquez l’emplacement de votre fléchette sur la cible.",
+    "throwAgain": "Relancer",
+    "legWinner": "{{name}} remporte la manche",
+    "pauseDescription": "Le match est en pause. Dartbot s’arrête aussi lorsque cet onglet est masqué.",
+    "matchWinner": "{{name}} remporte le match",
+    "matchStats": "Statistiques du match",
+    "average": "Moyenne sur trois fléchettes",
+    "rematch": "Revanche",
+    "changeSettings": "Modifier les réglages",
+    "leaveTitle": "Quitter ce match ?",
+    "leaveDescription": "Ce match d’entraînement est conservé en mémoire temporaire. Quitter cette page fait perdre votre progression.",
+    "keepPlaying": "Continuer à jouer",
+    "leaveMatch": "Quitter le match",
+    "entry": {
+      "straight": "Entrée simple",
+      "double": "Entrée double",
+      "master": "Entrée master"
+    },
+    "finish": {
+      "straight": "Sortie simple",
+      "double": "Sortie double",
+      "master": "Sortie master"
+    },
+    "formats": {
+      "legs": "Manches",
+      "sets": "Sets"
+    },
+    "starters": {
+      "human": "Vous",
+      "bot": "Dartbot",
+      "random": "Aléatoire",
+      "bull": "Lancer au bull"
+    },
+    "nextStarters": {
+      "alternate": "En alternance",
+      "winner": "Gagnant de la manche",
+      "loser": "Perdant de la manche"
+    },
+    "paces": {
+      "match": "Rythme du match",
+      "quick": "Rapide",
+      "relaxed": "Détendu"
+    },
+    "stats": {
+      "legsWon": "Manches gagnées",
+      "bestVisit": "Meilleure volée",
+      "highestCheckout": "Meilleure fermeture",
+      "oneEighties": "Volées de 180"
+    },
+    "invalidRules": "Ce score de départ ne peut pas être terminé avec les règles d’entrée et de sortie choisies. Modifiez le score ou les règles."
   }
 }

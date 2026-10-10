@@ -273,7 +273,8 @@
       "s6Text": "Cuando configura su país, es posible que lo coloquemos automáticamente en una liga global y una liga nacional. Las ligas del sistema utilizan zonas horarias de liga fijas para las temporadas semanales.",
       "s6Title": "6. Ligas del sistema y datos de países",
       "title": "política de privacidad",
-      "dartbotTraining": "En Tic Tac Toe y Red Zone Survival, Dartbot simula un rival en tu dispositivo. Los nombres de jugadores, la dificultad elegida y los lanzamientos se mantienen en la memoria temporal del juego durante la sesión y se borran al cerrar o recargar la página. Esta función no añade almacenamiento en el servidor ni envía datos de entrenamiento a un servicio externo de IA. La animación de los lanzamientos en 3D se genera en tu dispositivo a partir de estos lanzamientos simulados."
+      "dartbotTraining": "En Tic Tac Toe y Red Zone Survival, Dartbot simula un rival en tu dispositivo. Los nombres de jugadores, la dificultad elegida y los lanzamientos se mantienen en la memoria temporal del juego durante la sesión y se borran al cerrar o recargar la página. Esta función no añade almacenamiento en el servidor ni envía datos de entrenamiento a un servicio externo de IA. La animación de los lanzamientos en 3D se genera en tu dispositivo a partir de estos lanzamientos simulados.",
+      "x01Training": "En el entrenamiento X01, el nombre del jugador, los ajustes, las puntuaciones de los dardos y las estadísticas se procesan en la memoria temporal de tu dispositivo para ejecutar la partida. Se borran al salir o recargar la página, y esta función no añade almacenamiento en el servidor. El bot, la animación de la diana y los sonidos sintetizados se generan localmente. No se utilizan micrófono, cámara, servicios externos de IA ni una retransmisión de vídeo real."
     },
     "terms": {
       "li1": "Haz trampa, manipula puntuaciones o utiliza robots automatizados.",
@@ -292,7 +293,8 @@
       "s3Title": "3. Conducta del usuario",
       "s4Title": "4. Propiedad intelectual",
       "title": "Términos de servicio",
-      "dartbotTraining": "Los rivales Dartbot son simulaciones para practicar. Las medias mostradas son promedios aproximados de tres dardos para 501 con cierre en doble y describen la dificultad, no resultados garantizados ni una regla de puntuación del entrenamiento. Estas sesiones no son partidas en línea contra personas reales."
+      "dartbotTraining": "Los rivales Dartbot son simulaciones para practicar. Las medias mostradas son promedios aproximados de tres dardos para 501 con cierre en doble y describen la dificultad, no resultados garantizados ni una regla de puntuación del entrenamiento. Estas sesiones no son partidas en línea contra personas reales.",
+      "x01Training": "El modo de retransmisión X01 es una partida de entrenamiento simulada con gráficos inspirados en el deporte, no una emisión de TV en directo ni una partida contra otra persona. DartStreak no está afiliado a Sky Sports. Introduces tus propias puntuaciones; las reglas elegidas de entrada, cierre y formato determinan el resultado. Los resultados de entrenamiento no afectan a ligas ni clasificaciones."
     }
   },
   "match": {
@@ -660,6 +662,11 @@
         "badge": "Duelo táctico",
         "description": "Control de objetivos para dos jugadores donde cada ronda se decide mediante la gestión del tablero y la precisión del pago.",
         "title": "Dardos tres en raya"
+      },
+      "x01": {
+        "badge": "Partida televisiva",
+        "title": "X01 contra Dartbot",
+        "description": "Tus reglas, una partida real. Enfréntate a Dartbot en un escenario 3D con un marcador de estilo televisivo."
       }
     },
     "kicker": "Elige tu modo de entrenamiento",
@@ -931,5 +938,127 @@
     "throwView": "Lanzamientos de Dartbot",
     "sideView": "Vista lateral",
     "lastThrow": "Último turno de Dartbot."
+  },
+  "x01": {
+    "setupTitle": "Tu partida. Tus reglas.",
+    "setupDescription": "Una partida X01 contra Dartbot con ambiente de retransmisión televisiva.",
+    "matchSettings": "Ajustes de la partida",
+    "playerName": "Nombre del jugador",
+    "startScore": "Puntuación inicial",
+    "customScore": "Puntuación personalizada",
+    "scoreRange": "Elige un número entero entre 2 y 10.001.",
+    "inRule": "Regla de entrada",
+    "outRule": "Regla de cierre",
+    "format": "Formato de la partida",
+    "legsPerSet": "Legs para ganar un set",
+    "legsToWin": "Legs para ganar",
+    "setsToWin": "Sets para ganar",
+    "starter": "Primer lanzamiento",
+    "nextStarter": "Quién empieza el siguiente leg",
+    "pace": "Ritmo de lanzamiento",
+    "broadcastSettings": "Ajustes de retransmisión",
+    "rulesHelp": "Double significa doble o diana central. Master significa doble, triple o diana central. Un bust anula todo el turno, incluida la entrada. Gana quien alcance primero el número elegido de legs o sets; no se exige una ventaja de dos.",
+    "sound": "Sonidos de dardos y público",
+    "hints": "Sugerencias de cierre",
+    "startMatch": "Empezar partida",
+    "physicalBoard": "Juega en tu propia diana. Introduce aquí tus puntos. La partida permanece en esta pestaña.",
+    "you": "Tú",
+    "firstTo": "Primero en llegar a {{count}}",
+    "sets": "Sets",
+    "legs": "Legs",
+    "paused": "En pausa",
+    "matchOver": "Partida terminada",
+    "legOver": "Leg terminado",
+    "bust": "Bust",
+    "yourTurn": "Tu turno",
+    "scoreboard": "Marcador de la partida",
+    "averageShort": "MEDIA",
+    "remaining": "Puntos restantes",
+    "notIn": "Sin entrada",
+    "legNumber": "Leg {{number}}",
+    "yourVisit": "Tu turno",
+    "entryNeeded": "Entrada necesaria: {{rule}}",
+    "checkout": "Cierre",
+    "dartsLeft": "{{count}} dardos restantes",
+    "inputMode": "Introducción de puntos",
+    "wholeVisit": "Turno completo",
+    "perDart": "Por dardo",
+    "visitScore": "Puntos del turno",
+    "record": "Registrar",
+    "checkoutDarts": "Dardos usados para cerrar",
+    "invalidVisit": "Este turno no es posible con estas reglas. Comprueba la suma y los dardos del cierre, o introduce cada dardo.",
+    "multiplier": "Multiplicador",
+    "single": "Simple",
+    "double": "Doble",
+    "triple": "Triple",
+    "bull": "Diana central",
+    "bustDescription": "Bust. Tu puntuación vuelve a la del inicio del turno.",
+    "visitRecorded": "{{score}} puntos. ¿Listo para Dartbot?",
+    "checkoutRecorded": "Cierre de {{score}}. ¡Leg ganado!",
+    "undo": "Deshacer",
+    "nextLeg": "Siguiente leg",
+    "botTurn": "Turno de Dartbot",
+    "broadcastBoard": "Diana en vista de retransmisión",
+    "pause": "Pausar partida",
+    "resume": "Continuar",
+    "mute": "Silenciar",
+    "unmute": "Activar sonido",
+    "fullscreen": "Pantalla completa",
+    "exitFullscreen": "Salir de pantalla completa",
+    "fullscreenUnavailable": "La pantalla completa no está disponible en este navegador. La vista de la partida sigue ocupando toda la página.",
+    "bullOff": "Lanzamiento a la diana central",
+    "bullInstructions": "Lanza un dardo al centro de tu propia diana y marca aquí su posición. Después lanza Dartbot. El centro interior gana al exterior; en los demás casos gana el más cercano.",
+    "bullTie": "Empate. Ambos vuelven a lanzar.",
+    "startsResult": "{{name}} lanza primero.",
+    "markBull": "Marca la posición de tu dardo en la diana.",
+    "throwAgain": "Volver a lanzar",
+    "legWinner": "{{name}} gana el leg",
+    "pauseDescription": "La partida está en pausa. Dartbot también se pausa cuando esta pestaña está oculta.",
+    "matchWinner": "{{name}} gana la partida",
+    "matchStats": "Estadísticas de la partida",
+    "average": "Media de tres dardos",
+    "rematch": "Revancha",
+    "changeSettings": "Cambiar ajustes",
+    "leaveTitle": "¿Salir de la partida?",
+    "leaveDescription": "Esta partida de entrenamiento se mantiene en memoria temporal. Al salir de la página perderás tu progreso.",
+    "keepPlaying": "Seguir jugando",
+    "leaveMatch": "Salir de la partida",
+    "entry": {
+      "straight": "Entrada simple",
+      "double": "Entrada doble",
+      "master": "Entrada máster"
+    },
+    "finish": {
+      "straight": "Salida simple",
+      "double": "Salida doble",
+      "master": "Salida máster"
+    },
+    "formats": {
+      "legs": "Legs",
+      "sets": "Sets"
+    },
+    "starters": {
+      "human": "Tú",
+      "bot": "Dartbot",
+      "random": "Aleatorio",
+      "bull": "Lanzar al centro"
+    },
+    "nextStarters": {
+      "alternate": "Alternar",
+      "winner": "Ganador del leg",
+      "loser": "Perdedor del leg"
+    },
+    "paces": {
+      "match": "Ritmo de partida",
+      "quick": "Rápido",
+      "relaxed": "Tranquilo"
+    },
+    "stats": {
+      "legsWon": "Legs ganados",
+      "bestVisit": "Mejor turno",
+      "highestCheckout": "Mayor cierre",
+      "oneEighties": "Lanzamientos de 180"
+    },
+    "invalidRules": "Esta puntuación inicial no se puede cerrar con las reglas de entrada y salida elegidas. Cambia la puntuación o las reglas."
   }
 }

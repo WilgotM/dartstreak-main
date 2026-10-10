@@ -54,6 +54,7 @@ export default function Legal() {
                                 <h3 className="text-xl font-semibold text-foreground">{t("legal.privacyPolicy.s3Title")}</h3>
                                 <p>{t("legal.privacyPolicy.s3Text")}</p>
                                 <p>{t("legal.privacyPolicy.dartbotTraining")}</p>
+                                <p>{t("legal.privacyPolicy.x01Training")}</p>
                                 <ul className="list-disc pl-5 space-y-2">
                                     <li><span className="text-foreground font-medium">{t("legal.privacyPolicy.li4")}</span></li>
                                     <li><span className="text-foreground font-medium">{t("legal.privacyPolicy.li5")}</span></li>
@@ -118,6 +119,7 @@ export default function Legal() {
                                 <h3 className="text-xl font-semibold text-foreground">{t("legal.terms.s3Title")}</h3>
                                 <p>{t("legal.terms.s3Text")}</p>
                                 <p>{t("legal.terms.dartbotTraining")}</p>
+                                <p>{t("legal.terms.x01Training")}</p>
                                 <ul className="list-disc pl-5 space-y-2">
                                     <li>{t("legal.terms.li1")}</li>
                                     <li>{t("legal.terms.li2")}</li>

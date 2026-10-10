@@ -272,7 +272,8 @@
       "s6Text": "When you set your country, we may automatically place you in a global league and a country league. System leagues use fixed league timezones for weekly seasons.",
       "s6Title": "6. System Leagues and Country Data",
       "title": "Privacy Policy",
-      "dartbotTraining": "In Tic Tac Toe and Red Zone Survival, Dartbot simulates an opponent on your device. Player names, selected difficulty and throws are kept in temporary game memory to run the session and are cleared when the page closes or reloads. This feature adds no server storage and sends no training data to an external AI service. The 3D throw animation is rendered on your device from these simulated throws."
+      "dartbotTraining": "In Tic Tac Toe and Red Zone Survival, Dartbot simulates an opponent on your device. Player names, selected difficulty and throws are kept in temporary game memory to run the session and are cleared when the page closes or reloads. This feature adds no server storage and sends no training data to an external AI service. The 3D throw animation is rendered on your device from these simulated throws.",
+      "x01Training": "In X01 practice, the player name, match settings, dart scores and match statistics are processed in temporary memory on your device to run the match. They are cleared when you leave or reload the page, and this feature adds no server storage. The bot, board animation and synthesized sound are generated locally. No microphone, camera, external AI service or actual video broadcast is used."
     },
     "terms": {
       "li1": "Cheat, manipulate scores, or use automated bots.",
@@ -291,7 +292,8 @@
       "s3Title": "3. User Conduct",
       "s4Title": "4. Intellectual Property",
       "title": "Terms of Service",
-      "dartbotTraining": "Dartbot opponents are simulated for practice. Displayed averages are approximate three-dart averages for standard 501 double-out and describe difficulty, not guaranteed results or a training-game scoring rule. These sessions are not online matches against real people."
+      "dartbotTraining": "Dartbot opponents are simulated for practice. Displayed averages are approximate three-dart averages for standard 501 double-out and describe difficulty, not guaranteed results or a training-game scoring rule. These sessions are not online matches against real people.",
+      "x01Training": "X01 broadcast mode is a simulated practice match with sports-inspired graphics, not a live TV broadcast or a match against another person. DartStreak is not affiliated with Sky Sports. You enter your own dart scores; the selected entry, finish and match-format rules determine the result. Practice results do not affect leagues or rankings."
     }
   },
   "match": {
@@ -659,6 +661,11 @@
         "badge": "Tactical duel",
         "description": "Two-player target control where each round is decided by board management and checkout precision.",
         "title": "Tic-Tac-Toe Darts"
+      },
+      "x01": {
+        "badge": "TV match",
+        "title": "X01 vs Dartbot",
+        "description": "Your rules, a real match. Face Dartbot on a 3D stage with a TV-style scoreboard."
       }
     },
     "kicker": "Pick your training mode",
@@ -930,5 +937,127 @@
     "throwView": "Dartbot throws",
     "sideView": "Side view",
     "lastThrow": "Last Dartbot turn."
+  },
+  "x01": {
+    "setupTitle": "Your match. Your rules.",
+    "setupDescription": "A proper X01 match against Dartbot, with a broadcast view.",
+    "matchSettings": "Match settings",
+    "playerName": "Player name",
+    "startScore": "Starting score",
+    "customScore": "Custom score",
+    "scoreRange": "Choose a whole number from 2 to 10,001.",
+    "inRule": "Entry rule",
+    "outRule": "Finish rule",
+    "format": "Match format",
+    "legsPerSet": "Legs to win a set",
+    "legsToWin": "Legs to win",
+    "setsToWin": "Sets to win",
+    "starter": "First throw",
+    "nextStarter": "Next leg starts",
+    "pace": "Throw pace",
+    "broadcastSettings": "Broadcast settings",
+    "rulesHelp": "Double means a double or bullseye. Master means a double, triple or bullseye. A bust cancels the entire visit, including entry. The first player to the selected number of legs or sets wins; no extra two-clear rule.",
+    "sound": "Board sounds & crowd ambience",
+    "hints": "Checkout suggestions",
+    "startMatch": "Start match",
+    "physicalBoard": "Play on your own dartboard. Enter your scores here. The match stays in this tab.",
+    "you": "You",
+    "firstTo": "First to {{count}}",
+    "sets": "Sets",
+    "legs": "Legs",
+    "paused": "Paused",
+    "matchOver": "Match complete",
+    "legOver": "Leg complete",
+    "bust": "Bust",
+    "yourTurn": "Your throw",
+    "scoreboard": "Match scoreboard",
+    "averageShort": "AVG",
+    "remaining": "Remaining score",
+    "notIn": "Not in",
+    "legNumber": "Leg {{number}}",
+    "yourVisit": "Your visit",
+    "entryNeeded": "Entry needed: {{rule}}",
+    "checkout": "Checkout",
+    "dartsLeft": "{{count}} darts left",
+    "inputMode": "Score input",
+    "wholeVisit": "Whole visit",
+    "perDart": "Per dart",
+    "visitScore": "Visit score",
+    "record": "Record",
+    "checkoutDarts": "Darts used for checkout",
+    "invalidVisit": "That visit is not possible under these rules. Check the total and checkout dart count, or enter each dart.",
+    "multiplier": "Multiplier",
+    "single": "Single",
+    "double": "Double",
+    "triple": "Triple",
+    "bull": "Bull",
+    "bustDescription": "Bust. Your score returns to the start of this visit.",
+    "visitRecorded": "{{score}} scored. Ready for Dartbot?",
+    "checkoutRecorded": "{{score}} checkout. Leg won!",
+    "undo": "Undo",
+    "nextLeg": "Next leg",
+    "botTurn": "Dartbot’s turn",
+    "broadcastBoard": "Broadcast dartboard",
+    "pause": "Pause match",
+    "resume": "Resume",
+    "mute": "Mute sound",
+    "unmute": "Enable sound",
+    "fullscreen": "Full screen",
+    "exitFullscreen": "Exit full screen",
+    "fullscreenUnavailable": "Full screen is unavailable in this browser. The match view still fills the page.",
+    "bullOff": "Throw for the bull",
+    "bullInstructions": "Throw one dart at the bull on your own board, then mark its position here. Dartbot throws next. Bullseye beats outer bull; otherwise closest wins.",
+    "bullTie": "A tie. Both players throw again.",
+    "startsResult": "{{name}} throws first.",
+    "markBull": "Mark your dart’s position on the board.",
+    "throwAgain": "Throw again",
+    "legWinner": "{{name}} wins the leg",
+    "pauseDescription": "The match is on hold. Dartbot also pauses while this tab is hidden.",
+    "matchWinner": "{{name}} wins the match",
+    "matchStats": "Match statistics",
+    "average": "3-dart average",
+    "rematch": "Rematch",
+    "changeSettings": "Change settings",
+    "leaveTitle": "Leave this match?",
+    "leaveDescription": "This practice match is kept in temporary memory. Leaving this page loses your progress.",
+    "keepPlaying": "Keep playing",
+    "leaveMatch": "Leave match",
+    "entry": {
+      "straight": "Straight in",
+      "double": "Double in",
+      "master": "Master in"
+    },
+    "finish": {
+      "straight": "Straight out",
+      "double": "Double out",
+      "master": "Master out"
+    },
+    "formats": {
+      "legs": "Legs",
+      "sets": "Sets"
+    },
+    "starters": {
+      "human": "You",
+      "bot": "Dartbot",
+      "random": "Random",
+      "bull": "Throw for bull"
+    },
+    "nextStarters": {
+      "alternate": "Alternate",
+      "winner": "Leg winner",
+      "loser": "Leg loser"
+    },
+    "paces": {
+      "match": "Match pace",
+      "quick": "Quick",
+      "relaxed": "Relaxed"
+    },
+    "stats": {
+      "legsWon": "Legs won",
+      "bestVisit": "Best visit",
+      "highestCheckout": "Highest checkout",
+      "oneEighties": "180s"
+    },
+    "invalidRules": "This starting score cannot be finished with the selected entry and finish rules. Change the score or the rules."
   }
 }

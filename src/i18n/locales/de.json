@@ -273,7 +273,8 @@
       "s6Text": "Wenn Sie Ihr Land festlegen, platzieren wir Sie möglicherweise automatisch in einer globalen Liga und einer Länderliga. Systemligen verwenden für wöchentliche Saisons feste Ligazeitzonen.",
       "s6Title": "6. Systemligen und Länderdaten",
       "title": "Datenschutzrichtlinie",
-      "dartbotTraining": "In Tic Tac Toe und Red Zone Survival simuliert Dartbot einen Gegner auf deinem Gerät. Spielernamen, gewählte Schwierigkeit und Würfe werden für die Trainingsrunde im temporären Spielspeicher gehalten und beim Schließen oder Neuladen der Seite gelöscht. Diese Funktion fügt keine Serverspeicherung hinzu und sendet keine Trainingsdaten an einen externen KI-Dienst. Die 3D-Wurfanimation wird auf deinem Gerät aus diesen simulierten Würfen erzeugt."
+      "dartbotTraining": "In Tic Tac Toe und Red Zone Survival simuliert Dartbot einen Gegner auf deinem Gerät. Spielernamen, gewählte Schwierigkeit und Würfe werden für die Trainingsrunde im temporären Spielspeicher gehalten und beim Schließen oder Neuladen der Seite gelöscht. Diese Funktion fügt keine Serverspeicherung hinzu und sendet keine Trainingsdaten an einen externen KI-Dienst. Die 3D-Wurfanimation wird auf deinem Gerät aus diesen simulierten Würfen erzeugt.",
+      "x01Training": "Beim X01-Training werden Spielername, Match-Einstellungen, Wurfpunkte und Matchstatistiken im temporären Speicher deines Geräts verarbeitet, um das Match durchzuführen. Sie werden beim Verlassen oder Neuladen der Seite gelöscht; diese Funktion fügt keine Serverspeicherung hinzu. Bot, Board-Animation und synthetische Geräusche werden lokal erzeugt. Es werden weder Mikrofon, Kamera, externer KI-Dienst noch eine tatsächliche Videoübertragung verwendet."
     },
     "terms": {
       "li1": "Betrügen Sie, manipulieren Sie Punktestände oder verwenden Sie automatisierte Bots.",
@@ -292,7 +293,8 @@
       "s3Title": "3. Nutzerverhalten",
       "s4Title": "4. Geistiges Eigentum",
       "title": "Nutzungsbedingungen",
-      "dartbotTraining": "Dartbot-Gegner werden zum Üben simuliert. Die angezeigten Averages sind ungefähre Drei-Dart-Durchschnitte für normales 501 mit Double-out und beschreiben die Schwierigkeit, keine garantierten Ergebnisse oder Punkteregel für das Training. Diese Runden sind keine Online-Spiele gegen echte Personen."
+      "dartbotTraining": "Dartbot-Gegner werden zum Üben simuliert. Die angezeigten Averages sind ungefähre Drei-Dart-Durchschnitte für normales 501 mit Double-out und beschreiben die Schwierigkeit, keine garantierten Ergebnisse oder Punkteregel für das Training. Diese Runden sind keine Online-Spiele gegen echte Personen.",
+      "x01Training": "Der X01-Übertragungsmodus ist ein simuliertes Trainingsmatch mit sportinspirierten Grafiken, keine Live-TV-Übertragung und kein Match gegen eine andere Person. DartStreak ist nicht mit Sky Sports verbunden. Du trägst deine eigenen Wurfpunkte ein; die gewählten Einstiegs-, Finish- und Formatregeln bestimmen das Ergebnis. Trainingsergebnisse beeinflussen keine Ligen oder Ranglisten."
     }
   },
   "match": {
@@ -660,6 +662,11 @@
         "badge": "Taktisches Duell",
         "description": "Zielkontrolle für zwei Spieler, wobei jede Runde durch Brettmanagement und Checkout-Präzision entschieden wird.",
         "title": "Tic-Tac-Toe-Darts"
+      },
+      "x01": {
+        "badge": "TV-Match",
+        "title": "X01 gegen Dartbot",
+        "description": "Deine Regeln, ein echtes Match. Spiele gegen Dartbot auf einer 3D-Bühne mit Spielstand im TV-Stil."
       }
     },
     "kicker": "Wählen Sie Ihren Trainingsmodus",
@@ -931,5 +938,127 @@
     "throwView": "Dartbots Würfe",
     "sideView": "Seitliche Ansicht",
     "lastThrow": "Dartbots letzter Zug."
+  },
+  "x01": {
+    "setupTitle": "Dein Match. Deine Regeln.",
+    "setupDescription": "Ein echtes X01-Match gegen Dartbot mit TV-Atmosphäre.",
+    "matchSettings": "Match-Einstellungen",
+    "playerName": "Spielername",
+    "startScore": "Startpunktzahl",
+    "customScore": "Eigene Startpunktzahl",
+    "scoreRange": "Wähle eine ganze Zahl von 2 bis 10.001.",
+    "inRule": "Einstiegsregel",
+    "outRule": "Finish-Regel",
+    "format": "Matchformat",
+    "legsPerSet": "Legs zum Satzgewinn",
+    "legsToWin": "Legs zum Sieg",
+    "setsToWin": "Sätze zum Sieg",
+    "starter": "Erster Wurf",
+    "nextStarter": "Nächstes Leg beginnt",
+    "pace": "Wurftempo",
+    "broadcastSettings": "Übertragungseinstellungen",
+    "rulesHelp": "Double bedeutet Doppel oder Bullseye. Master bedeutet Doppel, Triple oder Bullseye. Ein Bust macht die gesamte Aufnahme ungültig, auch den Einstieg. Wer zuerst die gewählte Anzahl Legs oder Sätze erreicht, gewinnt; zwei Punkte Vorsprung sind nicht erforderlich.",
+    "sound": "Wurfgeräusche und Publikum",
+    "hints": "Checkout-Vorschläge",
+    "startMatch": "Match starten",
+    "physicalBoard": "Spiele auf deinem eigenen Dartboard. Trage deine Punkte hier ein. Das Match bleibt in diesem Tab.",
+    "you": "Du",
+    "firstTo": "Zuerst {{count}}",
+    "sets": "Sätze",
+    "legs": "Legs",
+    "paused": "Pausiert",
+    "matchOver": "Match beendet",
+    "legOver": "Leg beendet",
+    "bust": "Bust",
+    "yourTurn": "Du bist dran",
+    "scoreboard": "Match-Spielstand",
+    "averageShort": "Ø",
+    "remaining": "Restpunkte",
+    "notIn": "Noch nicht drin",
+    "legNumber": "Leg {{number}}",
+    "yourVisit": "Deine Aufnahme",
+    "entryNeeded": "Einstieg nötig: {{rule}}",
+    "checkout": "Checkout",
+    "dartsLeft": "{{count}} Darts übrig",
+    "inputMode": "Punkteeingabe",
+    "wholeVisit": "Ganze Aufnahme",
+    "perDart": "Pro Dart",
+    "visitScore": "Aufnahmepunkte",
+    "record": "Eintragen",
+    "checkoutDarts": "Darts für das Checkout",
+    "invalidVisit": "Diese Aufnahme ist mit den Regeln nicht möglich. Prüfe Summe und Dartanzahl beim Checkout oder trage jeden Dart einzeln ein.",
+    "multiplier": "Multiplikator",
+    "single": "Single",
+    "double": "Double",
+    "triple": "Triple",
+    "bull": "Bull",
+    "bustDescription": "Bust. Deine Punkte werden auf den Stand vor der Aufnahme zurückgesetzt.",
+    "visitRecorded": "{{score}} Punkte. Bereit für Dartbot?",
+    "checkoutRecorded": "{{score}} ausgecheckt. Leg gewonnen!",
+    "undo": "Rückgängig",
+    "nextLeg": "Nächstes Leg",
+    "botTurn": "Dartbot ist dran",
+    "broadcastBoard": "Dartboard in TV-Ansicht",
+    "pause": "Match pausieren",
+    "resume": "Fortsetzen",
+    "mute": "Ton ausschalten",
+    "unmute": "Ton einschalten",
+    "fullscreen": "Vollbild",
+    "exitFullscreen": "Vollbild verlassen",
+    "fullscreenUnavailable": "Vollbild ist in diesem Browser nicht verfügbar. Die Matchansicht füllt weiterhin die Seite.",
+    "bullOff": "Ausbullen",
+    "bullInstructions": "Wirf einen Dart auf das Bull deines eigenen Boards und markiere den Treffer hier. Danach wirft Dartbot. Bullseye schlägt Outer Bull; sonst gewinnt der nähere Treffer.",
+    "bullTie": "Gleichstand. Beide werfen erneut.",
+    "startsResult": "{{name}} wirft zuerst.",
+    "markBull": "Markiere den Treffer deines Darts auf dem Board.",
+    "throwAgain": "Erneut werfen",
+    "legWinner": "{{name}} gewinnt das Leg",
+    "pauseDescription": "Das Match ist pausiert. Dartbot pausiert auch, wenn dieser Tab ausgeblendet ist.",
+    "matchWinner": "{{name}} gewinnt das Match",
+    "matchStats": "Matchstatistik",
+    "average": "3-Dart-Durchschnitt",
+    "rematch": "Revanche",
+    "changeSettings": "Einstellungen ändern",
+    "leaveTitle": "Match verlassen?",
+    "leaveDescription": "Dieses Trainingsmatch wird im temporären Speicher gehalten. Beim Verlassen der Seite geht dein Fortschritt verloren.",
+    "keepPlaying": "Weiterspielen",
+    "leaveMatch": "Match verlassen",
+    "entry": {
+      "straight": "Straight In",
+      "double": "Double In",
+      "master": "Master In"
+    },
+    "finish": {
+      "straight": "Straight Out",
+      "double": "Double Out",
+      "master": "Master Out"
+    },
+    "formats": {
+      "legs": "Legs",
+      "sets": "Sätze"
+    },
+    "starters": {
+      "human": "Du",
+      "bot": "Dartbot",
+      "random": "Zufällig",
+      "bull": "Ausbullen"
+    },
+    "nextStarters": {
+      "alternate": "Abwechselnd",
+      "winner": "Leg-Gewinner",
+      "loser": "Leg-Verlierer"
+    },
+    "paces": {
+      "match": "Matchtempo",
+      "quick": "Schnell",
+      "relaxed": "Entspannt"
+    },
+    "stats": {
+      "legsWon": "Gewonnene Legs",
+      "bestVisit": "Beste Aufnahme",
+      "highestCheckout": "Höchstes Checkout",
+      "oneEighties": "180er"
+    },
+    "invalidRules": "Diese Startpunktzahl lässt sich mit den gewählten Einstiegs- und Finish-Regeln nicht auschecken. Ändere die Punktzahl oder die Regeln."
   }
 }

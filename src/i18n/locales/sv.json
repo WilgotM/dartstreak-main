@@ -272,7 +272,8 @@
       "s6Text": "När du väljer land kan vi automatiskt placera dig i en global liga och en liga för ditt land. Systemligor använder fasta tidszoner per liga för veckosäsonger.",
       "s6Title": "6. Systemligor och landdata",
       "title": "Integritetspolicy",
-      "dartbotTraining": "I Tic Tac Toe och Red Zone Survival simulerar Dartbot en motståndare på din enhet. Spelarnamn, vald nivå och kast hålls i spelets tillfälliga minne för att genomföra träningen och rensas när sidan stängs eller laddas om. Funktionen tillför ingen lagring på servern och skickar inga träningsdata till en extern AI-tjänst. 3D-animationen av kasten skapas på din enhet utifrån dessa simulerade kast."
+      "dartbotTraining": "I Tic Tac Toe och Red Zone Survival simulerar Dartbot en motståndare på din enhet. Spelarnamn, vald nivå och kast hålls i spelets tillfälliga minne för att genomföra träningen och rensas när sidan stängs eller laddas om. Funktionen tillför ingen lagring på servern och skickar inga träningsdata till en extern AI-tjänst. 3D-animationen av kasten skapas på din enhet utifrån dessa simulerade kast.",
+      "x01Training": "Vid X01-träning behandlas spelarnamn, matchinställningar, kastpoäng och matchstatistik i tillfälligt minne på din enhet för att genomföra matchen. De rensas när du lämnar eller laddar om sidan, och funktionen tillför ingen serverlagring. Boten, tavlans animation och syntetiska ljud skapas lokalt. Ingen mikrofon, kamera, extern AI-tjänst eller faktisk videosändning används."
     },
     "terms": {
       "li1": "Fuska, manipulera poäng eller använda automatiserade bottar.",
@@ -291,7 +292,8 @@
       "s3Title": "3. Användaruppförande",
       "s4Title": "4. Immateriella rättigheter",
       "title": "Användarvillkor",
-      "dartbotTraining": "Dartbot-motståndare simuleras för träning. De visade snitten är ungefärliga trepilssnitt för vanlig 501 med dubbel ut och beskriver svårighetsgraden, inte garanterade resultat eller en poängregel för träningsläget. Dessa pass är inte onlinematcher mot riktiga personer."
+      "dartbotTraining": "Dartbot-motståndare simuleras för träning. De visade snitten är ungefärliga trepilssnitt för vanlig 501 med dubbel ut och beskriver svårighetsgraden, inte garanterade resultat eller en poängregel för träningsläget. Dessa pass är inte onlinematcher mot riktiga personer.",
+      "x01Training": "X01-lägets TV-vy är en simulerad träningsmatch med sportinspirerad grafik, inte en direktsänd TV-sändning eller en match mot en annan person. DartStreak är inte kopplat till Sky Sports. Du registrerar dina egna kastpoäng; valda regler för ingång, avslut och matchformat avgör resultatet. Träningsresultat påverkar inte ligor eller ranking."
     }
   },
   "match": {
@@ -659,6 +661,11 @@
         "badge": "Taktisk duell",
         "description": "Tvåspelarläge där ni låser rutor med smart boardkontroll och exakt checkout-spel.",
         "title": "Tic-Tac-Toe Darts"
+      },
+      "x01": {
+        "badge": "TV-match",
+        "title": "X01 mot Dartbot",
+        "description": "Dina regler, en riktig match. Möt Dartbot på en 3D-scen med en resultattavla i TV-stil."
       }
     },
     "kicker": "Välj träningsläge",
@@ -930,5 +937,127 @@
     "throwView": "Dartbots kast",
     "sideView": "Snett från sidan",
     "lastThrow": "Dartbots senaste tur."
+  },
+  "x01": {
+    "setupTitle": "Din match. Dina regler.",
+    "setupDescription": "En riktig X01-match mot Dartbot med TV-känsla.",
+    "matchSettings": "Matchinställningar",
+    "playerName": "Spelarnamn",
+    "startScore": "Startpoäng",
+    "customScore": "Egen startpoäng",
+    "scoreRange": "Välj ett heltal från 2 till 10 001.",
+    "inRule": "Ingångsregel",
+    "outRule": "Avslutsregel",
+    "format": "Matchformat",
+    "legsPerSet": "Legs för att vinna ett set",
+    "legsToWin": "Legs för att vinna",
+    "setsToWin": "Sets för att vinna",
+    "starter": "Första kastet",
+    "nextStarter": "Nästa leg börjar",
+    "pace": "Kasttempo",
+    "broadcastSettings": "Sändningsinställningar",
+    "rulesHelp": "Double innebär dubbel eller bullseye. Master innebär dubbel, trippel eller bullseye. Bust nollställer hela omgången, även ingången. Först till valt antal legs eller sets vinner; ingen extra regel om två i marginal.",
+    "sound": "Kastljud och publikljud",
+    "hints": "Checkout-förslag",
+    "startMatch": "Starta match",
+    "physicalBoard": "Spela på din egen darttavla. Registrera poängen här. Matchen finns bara i den här fliken.",
+    "you": "Du",
+    "firstTo": "Först till {{count}}",
+    "sets": "Sets",
+    "legs": "Legs",
+    "paused": "Pausad",
+    "matchOver": "Matchen är slut",
+    "legOver": "Leget är slut",
+    "bust": "Bust",
+    "yourTurn": "Din tur",
+    "scoreboard": "Matchens resultattavla",
+    "averageShort": "SNITT",
+    "remaining": "Kvarvarande poäng",
+    "notIn": "Inte inne",
+    "legNumber": "Leg {{number}}",
+    "yourVisit": "Din omgång",
+    "entryNeeded": "Ingång krävs: {{rule}}",
+    "checkout": "Checkout",
+    "dartsLeft": "{{count}} pilar kvar",
+    "inputMode": "Poänginmatning",
+    "wholeVisit": "Hel omgång",
+    "perDart": "Per pil",
+    "visitScore": "Omgångspoäng",
+    "record": "Registrera",
+    "checkoutDarts": "Pilar för checkout",
+    "invalidVisit": "Omgången är inte möjlig med dessa regler. Kontrollera summan och antalet pilar för checkout, eller registrera varje pil.",
+    "multiplier": "Multiplikator",
+    "single": "Enkel",
+    "double": "Dubbel",
+    "triple": "Trippel",
+    "bull": "Bull",
+    "bustDescription": "Bust. Poängen återställs till början av omgången.",
+    "visitRecorded": "{{score}} poäng. Redo för Dartbot?",
+    "checkoutRecorded": "Checkout på {{score}}. Du vann leget!",
+    "undo": "Ångra",
+    "nextLeg": "Nästa leg",
+    "botTurn": "Dartbots tur",
+    "broadcastBoard": "Darttavla i TV-vyn",
+    "pause": "Pausa match",
+    "resume": "Fortsätt",
+    "mute": "Stäng av ljud",
+    "unmute": "Slå på ljud",
+    "fullscreen": "Helskärm",
+    "exitFullscreen": "Avsluta helskärm",
+    "fullscreenUnavailable": "Helskärm stöds inte i den här webbläsaren. Matchvyn fyller fortfarande sidan.",
+    "bullOff": "Kasta om bullen",
+    "bullInstructions": "Kasta en pil mot bullen på din egen tavla och markera träffen här. Sedan kastar Dartbot. Bullseye slår yttre bull; annars vinner den närmaste.",
+    "bullTie": "Lika. Båda kastar igen.",
+    "startsResult": "{{name}} börjar kasta.",
+    "markBull": "Markera var din pil träffade tavlan.",
+    "throwAgain": "Kasta igen",
+    "legWinner": "{{name}} vinner leget",
+    "pauseDescription": "Matchen är pausad. Dartbot pausar även när fliken är dold.",
+    "matchWinner": "{{name}} vinner matchen",
+    "matchStats": "Matchstatistik",
+    "average": "Snitt per tre pilar",
+    "rematch": "Revansch",
+    "changeSettings": "Ändra inställningar",
+    "leaveTitle": "Lämna matchen?",
+    "leaveDescription": "Träningsmatchen finns i tillfälligt minne. Dina framsteg försvinner när du lämnar sidan.",
+    "keepPlaying": "Spela vidare",
+    "leaveMatch": "Lämna match",
+    "entry": {
+      "straight": "Straight in",
+      "double": "Double in",
+      "master": "Master in"
+    },
+    "finish": {
+      "straight": "Straight out",
+      "double": "Double out",
+      "master": "Master out"
+    },
+    "formats": {
+      "legs": "Legs",
+      "sets": "Sets"
+    },
+    "starters": {
+      "human": "Du",
+      "bot": "Dartbot",
+      "random": "Slumpa",
+      "bull": "Kasta om bullen"
+    },
+    "nextStarters": {
+      "alternate": "Växelvis",
+      "winner": "Legvinnaren",
+      "loser": "Legförloraren"
+    },
+    "paces": {
+      "match": "Matchtempo",
+      "quick": "Snabbt",
+      "relaxed": "Lugnt"
+    },
+    "stats": {
+      "legsWon": "Vunna legs",
+      "bestVisit": "Bästa omgång",
+      "highestCheckout": "Högsta checkout",
+      "oneEighties": "180-kast"
+    },
+    "invalidRules": "Startpoängen kan inte spelas ut med valda ingångs- och avslutsregler. Ändra poängen eller reglerna."
   }
 }

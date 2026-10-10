@@ -273,7 +273,8 @@
       "s6Text": "Når du angiver dit land, placerer vi dig muligvis automatisk i en global liga og en landeliga. Systemligaer bruger faste ligatidszoner for ugentlige sæsoner.",
       "s6Title": "6. Systemligaer og landedata",
       "title": "Privatlivspolitik",
-      "dartbotTraining": "I Tic Tac Toe og Red Zone Survival simulerer Dartbot en modstander på din enhed. Spillernavne, valgt niveau og kast opbevares i spillets midlertidige hukommelse under træningen og slettes, når siden lukkes eller genindlæses. Funktionen tilføjer ingen serverlagring og sender ingen træningsdata til en ekstern AI-tjeneste. 3D-animationen af kastene vises på din enhed ud fra disse simulerede kast."
+      "dartbotTraining": "I Tic Tac Toe og Red Zone Survival simulerer Dartbot en modstander på din enhed. Spillernavne, valgt niveau og kast opbevares i spillets midlertidige hukommelse under træningen og slettes, når siden lukkes eller genindlæses. Funktionen tilføjer ingen serverlagring og sender ingen træningsdata til en ekstern AI-tjeneste. 3D-animationen af kastene vises på din enhed ud fra disse simulerede kast.",
+      "x01Training": "Ved X01-træning behandles spillernavn, kampindstillinger, kastepoint og kampstatistik i midlertidig hukommelse på din enhed for at gennemføre kampen. De slettes, når du forlader eller genindlæser siden, og funktionen tilføjer ingen serverlagring. Botten, skivens animation og syntetiske lyde skabes lokalt. Der bruges ingen mikrofon, kamera, ekstern AI-tjeneste eller faktisk videoudsendelse."
     },
     "terms": {
       "li1": "Snyd, manipuler scores, eller brug automatiserede bots.",
@@ -292,7 +293,8 @@
       "s3Title": "3. Brugeradfærd",
       "s4Title": "4. Intellektuel ejendomsret",
       "title": "Servicevilkår",
-      "dartbotTraining": "Dartbot-modstandere simuleres til træning. De viste gennemsnit er omtrentlige gennemsnit pr. tre pile for almindelig 501 med double out og beskriver sværhedsgraden, ikke garanterede resultater eller en scoringsregel for træningen. Disse sessioner er ikke onlinekampe mod rigtige personer."
+      "dartbotTraining": "Dartbot-modstandere simuleres til træning. De viste gennemsnit er omtrentlige gennemsnit pr. tre pile for almindelig 501 med double out og beskriver sværhedsgraden, ikke garanterede resultater eller en scoringsregel for træningen. Disse sessioner er ikke onlinekampe mod rigtige personer.",
+      "x01Training": "X01-tilstandens TV-visning er en simuleret træningskamp med sportsinspireret grafik, ikke en direkte TV-udsendelse eller en kamp mod en anden person. DartStreak er ikke tilknyttet Sky Sports. Du indtaster dine egne kastepoint; de valgte regler for indgang, afslutning og kampformat afgør resultatet. Træningsresultater påvirker ikke ligaer eller ranglister."
     }
   },
   "match": {
@@ -660,6 +662,11 @@
         "badge": "Taktisk duel",
         "description": "To-spiller målkontrol, hvor hver runde afgøres af bestyrelsens ledelse og kassepræcision.",
         "title": "Tic-Tac-Toe Dart"
+      },
+      "x01": {
+        "badge": "TV-kamp",
+        "title": "X01 mod Dartbot",
+        "description": "Dine regler, en rigtig kamp. Mød Dartbot på en 3D-scene med en resultattavle i TV-stil."
       }
     },
     "kicker": "Vælg din træningstilstand",
@@ -931,5 +938,127 @@
     "throwView": "Dartbots kast",
     "sideView": "Set fra siden",
     "lastThrow": "Dartbots seneste tur."
+  },
+  "x01": {
+    "setupTitle": "Din kamp. Dine regler.",
+    "setupDescription": "En rigtig X01-kamp mod Dartbot med TV-stemning.",
+    "matchSettings": "Kampindstillinger",
+    "playerName": "Spillernavn",
+    "startScore": "Startscore",
+    "customScore": "Valgfri startscore",
+    "scoreRange": "Vælg et helt tal fra 2 til 10.001.",
+    "inRule": "Indgangsregel",
+    "outRule": "Afslutningsregel",
+    "format": "Kampformat",
+    "legsPerSet": "Legs for at vinde et sæt",
+    "legsToWin": "Legs for at vinde",
+    "setsToWin": "Sæt for at vinde",
+    "starter": "Første kast",
+    "nextStarter": "Næste leg starter",
+    "pace": "Kastetempo",
+    "broadcastSettings": "TV-indstillinger",
+    "rulesHelp": "Double betyder double eller bullseye. Master betyder double, triple eller bullseye. Bust annullerer hele turen, også indgangen. Først til det valgte antal legs eller sæt vinder; der kræves ikke to i forskel.",
+    "sound": "Kastelyde og publikumslyd",
+    "hints": "Checkout-forslag",
+    "startMatch": "Start kamp",
+    "physicalBoard": "Spil på din egen dartskive. Indtast dine point her. Kampen bliver i denne fane.",
+    "you": "Dig",
+    "firstTo": "Først til {{count}}",
+    "sets": "Sæt",
+    "legs": "Legs",
+    "paused": "På pause",
+    "matchOver": "Kampen er slut",
+    "legOver": "Leget er slut",
+    "bust": "Bust",
+    "yourTurn": "Din tur",
+    "scoreboard": "Kampens resultattavle",
+    "averageShort": "GN.SNIT",
+    "remaining": "Resterende point",
+    "notIn": "Ikke inde",
+    "legNumber": "Leg {{number}}",
+    "yourVisit": "Din tur",
+    "entryNeeded": "Indgang kræves: {{rule}}",
+    "checkout": "Checkout",
+    "dartsLeft": "{{count}} pile tilbage",
+    "inputMode": "Pointindtastning",
+    "wholeVisit": "Hele turen",
+    "perDart": "Pr. pil",
+    "visitScore": "Turens point",
+    "record": "Registrer",
+    "checkoutDarts": "Pile brugt til checkout",
+    "invalidVisit": "Denne tur er ikke mulig med disse regler. Kontrollér summen og antal pile til checkout, eller indtast hver pil.",
+    "multiplier": "Multiplikator",
+    "single": "Single",
+    "double": "Double",
+    "triple": "Triple",
+    "bull": "Bull",
+    "bustDescription": "Bust. Din score går tilbage til starten af turen.",
+    "visitRecorded": "{{score}} point. Klar til Dartbot?",
+    "checkoutRecorded": "Checkout på {{score}}. Du vandt leget!",
+    "undo": "Fortryd",
+    "nextLeg": "Næste leg",
+    "botTurn": "Dartbots tur",
+    "broadcastBoard": "Dartskive i TV-visning",
+    "pause": "Sæt kampen på pause",
+    "resume": "Fortsæt",
+    "mute": "Slå lyd fra",
+    "unmute": "Slå lyd til",
+    "fullscreen": "Fuld skærm",
+    "exitFullscreen": "Afslut fuld skærm",
+    "fullscreenUnavailable": "Fuld skærm er ikke tilgængelig i denne browser. Kampvisningen fylder stadig siden.",
+    "bullOff": "Kast om bull",
+    "bullInstructions": "Kast én pil mod bull på din egen skive, og markér træffet her. Dartbot kaster derefter. Bullseye slår ydre bull; ellers vinder den nærmeste.",
+    "bullTie": "Uafgjort. Begge kaster igen.",
+    "startsResult": "{{name}} kaster først.",
+    "markBull": "Markér din pils position på skiven.",
+    "throwAgain": "Kast igen",
+    "legWinner": "{{name}} vinder leget",
+    "pauseDescription": "Kampen er på pause. Dartbot holder også pause, når fanen er skjult.",
+    "matchWinner": "{{name}} vinder kampen",
+    "matchStats": "Kampstatistik",
+    "average": "Gennemsnit pr. tre pile",
+    "rematch": "Revanche",
+    "changeSettings": "Skift indstillinger",
+    "leaveTitle": "Forlad kampen?",
+    "leaveDescription": "Denne træningskamp gemmes i midlertidig hukommelse. Dine fremskridt mistes, når du forlader siden.",
+    "keepPlaying": "Spil videre",
+    "leaveMatch": "Forlad kamp",
+    "entry": {
+      "straight": "Lige ind",
+      "double": "Double ind",
+      "master": "Master ind"
+    },
+    "finish": {
+      "straight": "Lige ud",
+      "double": "Double ud",
+      "master": "Master ud"
+    },
+    "formats": {
+      "legs": "Legs",
+      "sets": "Sæt"
+    },
+    "starters": {
+      "human": "Dig",
+      "bot": "Dartbot",
+      "random": "Tilfældigt",
+      "bull": "Kast om bull"
+    },
+    "nextStarters": {
+      "alternate": "Skiftevis",
+      "winner": "Vinderen af leget",
+      "loser": "Taberen af leget"
+    },
+    "paces": {
+      "match": "Kamptempo",
+      "quick": "Hurtigt",
+      "relaxed": "Roligt"
+    },
+    "stats": {
+      "legsWon": "Vundne legs",
+      "bestVisit": "Bedste tur",
+      "highestCheckout": "Højeste checkout",
+      "oneEighties": "180-kast"
+    },
+    "invalidRules": "Startscoren kan ikke afsluttes med de valgte indgangs- og afslutningsregler. Skift scoren eller reglerne."
   }
 }

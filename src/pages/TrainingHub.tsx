@@ -1,13 +1,19 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowRight, Flame, Grid3X3 } from "lucide-react";
+import { ArrowRight, Flame, Grid3X3, Tv } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { useAuth } from "@/hooks/useAuth";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const trainingCards = [
+  {
+    key: "x01",
+    to: "/training/x01",
+    icon: Tv,
+    accent: "from-red-600/35 via-blue-600/15 to-transparent",
+  },
   {
     key: "ticTacToe",
     to: "/training/tic-tac-toe",
@@ -63,14 +69,13 @@ export default function TrainingHub() {
           </div>
         </header>
 
-        <section className="grid gap-4 md:grid-cols-2">
+        <section className="grid gap-4 md:grid-cols-3">
           {trainingCards.map((card) => {
             const Icon = card.icon;
             return (
-              <button
+              <Link
                 key={card.key}
-                type="button"
-                onClick={() => navigate(card.to)}
+                to={card.to}
                 className="group relative overflow-hidden rounded-3xl border border-white/10 bg-[#13131C]/88 p-6 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-[0_20px_44px_-28px_rgba(34,197,94,0.65)]"
               >
                 <div className={cn("absolute inset-0 opacity-80 bg-gradient-to-br", card.accent)} />
@@ -90,13 +95,13 @@ export default function TrainingHub() {
                   </div>
 
                   <div className="pt-3 mt-auto">
-                    <Button variant="secondary" className="bg-secondary text-foreground hover:bg-white/20">
+                    <span className={cn(buttonVariants({ variant: "secondary" }), "bg-secondary text-foreground group-hover:bg-white/20")}>
                       {t("trainingHub.open")}
                       <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-0.5" />
-                    </Button>
+                    </span>
                   </div>
                 </div>
-              </button>
+              </Link>
             );
           })}
         </section>

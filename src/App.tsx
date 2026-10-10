@@ -29,6 +29,7 @@ const Legal = lazy(() => import("./pages/Legal"));
 const TrainingTicTacToe = lazy(() => import("./pages/TrainingTicTacToe"));
 const TrainingHub = lazy(() => import("./pages/TrainingHub"));
 const TrainingRedZone = lazy(() => import("./pages/TrainingRedZone"));
+const TrainingX01 = lazy(() => import("./pages/TrainingX01"));
 
 const AnalyticsRouteTracker = () => {
   const location = useLocation();
@@ -76,6 +77,7 @@ const App = () => {
                         <Route path="/training" element={<TrainingHub />} />
                         <Route path="/training/tic-tac-toe" element={<TrainingTicTacToe />} />
                         <Route path="/training/red-zone" element={<TrainingRedZone />} />
+                        <Route path="/training/x01" element={<TrainingX01 />} />
                         <Route path="/privacy" element={<Legal />} />
                         <Route path="/terms" element={<Legal />} />
                         <Route path="/contact" element={<Legal />} />

@@ -273,7 +273,8 @@
       "s6Text": "Wanneer u uw land instelt, kunnen we u automatisch in een mondiale competitie en een landencompetitie plaatsen. Systeemcompetities gebruiken vaste competitietijdzones voor wekelijkse seizoenen.",
       "s6Title": "6. Systeemcompetities en landgegevens",
       "title": "Privacybeleid",
-      "dartbotTraining": "In Tic Tac Toe en Red Zone Survival simuleert Dartbot een tegenstander op je apparaat. Spelersnamen, het gekozen niveau en worpen worden tijdens de training in het tijdelijke spelgeheugen bewaard en gewist wanneer de pagina wordt gesloten of opnieuw geladen. Deze functie voegt geen serveropslag toe en stuurt geen trainingsgegevens naar een externe AI-dienst. De 3D-worpanimatie wordt op je apparaat gemaakt op basis van deze gesimuleerde worpen."
+      "dartbotTraining": "In Tic Tac Toe en Red Zone Survival simuleert Dartbot een tegenstander op je apparaat. Spelersnamen, het gekozen niveau en worpen worden tijdens de training in het tijdelijke spelgeheugen bewaard en gewist wanneer de pagina wordt gesloten of opnieuw geladen. Deze functie voegt geen serveropslag toe en stuurt geen trainingsgegevens naar een externe AI-dienst. De 3D-worpanimatie wordt op je apparaat gemaakt op basis van deze gesimuleerde worpen.",
+      "x01Training": "Bij X01-training worden de spelersnaam, wedstrijdinstellingen, dartscores en wedstrijdstatistieken in tijdelijk geheugen op je apparaat verwerkt om de wedstrijd te laten werken. Ze worden gewist wanneer je de pagina verlaat of herlaadt; deze functie voegt geen serveropslag toe. De bot, bordanimatie en gesynthetiseerde geluiden worden lokaal gemaakt. Er wordt geen microfoon, camera, externe AI-dienst of echte video-uitzending gebruikt."
     },
     "terms": {
       "li1": "Speel vals, manipuleer scores of gebruik geautomatiseerde bots.",
@@ -292,7 +293,8 @@
       "s3Title": "3. Gebruikersgedrag",
       "s4Title": "4. Intellectuele eigendom",
       "title": "Servicevoorwaarden",
-      "dartbotTraining": "Dartbot-tegenstanders worden gesimuleerd om te oefenen. De getoonde gemiddelden zijn geschatte gemiddelden per drie pijlen voor gewone 501 met dubbel uit en beschrijven de moeilijkheid, geen gegarandeerde resultaten of scoreregel voor de training. Deze sessies zijn geen onlinewedstrijden tegen echte mensen."
+      "dartbotTraining": "Dartbot-tegenstanders worden gesimuleerd om te oefenen. De getoonde gemiddelden zijn geschatte gemiddelden per drie pijlen voor gewone 501 met dubbel uit en beschrijven de moeilijkheid, geen gegarandeerde resultaten of scoreregel voor de training. Deze sessies zijn geen onlinewedstrijden tegen echte mensen.",
+      "x01Training": "De X01-uitzendmodus is een gesimuleerde oefenwedstrijd met sportieve graphics, geen live-tv-uitzending of wedstrijd tegen een andere persoon. DartStreak is niet verbonden aan Sky Sports. Je voert je eigen dartscores in; de gekozen regels voor openen, uitgooien en wedstrijdvorm bepalen het resultaat. Oefenresultaten hebben geen invloed op competities of ranglijsten."
     }
   },
   "match": {
@@ -660,6 +662,11 @@
         "badge": "Tactisch duel",
         "description": "Doelcontrole voor twee spelers, waarbij elke ronde wordt bepaald door bordbeheer en afrekenprecisie.",
         "title": "Boter-kaas-en-eieren darten"
+      },
+      "x01": {
+        "badge": "TV-wedstrijd",
+        "title": "X01 tegen Dartbot",
+        "description": "Jouw regels, een echte wedstrijd. Speel tegen Dartbot op een 3D-podium met een scorebord in tv-stijl."
       }
     },
     "kicker": "Kies uw trainingsmodus",
@@ -931,5 +938,127 @@
     "throwView": "Worpen van Dartbot",
     "sideView": "Zijaanzicht",
     "lastThrow": "Laatste beurt van Dartbot."
+  },
+  "x01": {
+    "setupTitle": "Jouw wedstrijd. Jouw regels.",
+    "setupDescription": "Een echte X01-wedstrijd tegen Dartbot met de sfeer van een tv-uitzending.",
+    "matchSettings": "Wedstrijdinstellingen",
+    "playerName": "Spelersnaam",
+    "startScore": "Beginscore",
+    "customScore": "Eigen beginscore",
+    "scoreRange": "Kies een geheel getal van 2 tot 10.001.",
+    "inRule": "Regel voor openen",
+    "outRule": "Regel voor uitgooien",
+    "format": "Wedstrijdvorm",
+    "legsPerSet": "Legs om een set te winnen",
+    "legsToWin": "Legs om te winnen",
+    "setsToWin": "Sets om te winnen",
+    "starter": "Eerste worp",
+    "nextStarter": "Volgende leg begint",
+    "pace": "Werptempo",
+    "broadcastSettings": "Uitzendinstellingen",
+    "rulesHelp": "Double betekent dubbel of bullseye. Master betekent dubbel, triple of bullseye. Een bust maakt de hele beurt ongeldig, ook het openen. Wie als eerste het gekozen aantal legs of sets bereikt, wint; twee punten verschil is niet nodig.",
+    "sound": "Dartgeluiden en publiek",
+    "hints": "Suggesties voor uitgooien",
+    "startMatch": "Wedstrijd starten",
+    "physicalBoard": "Speel op je eigen dartbord. Voer je scores hier in. De wedstrijd blijft in dit tabblad.",
+    "you": "Jij",
+    "firstTo": "Als eerste {{count}}",
+    "sets": "Sets",
+    "legs": "Legs",
+    "paused": "Gepauzeerd",
+    "matchOver": "Wedstrijd afgelopen",
+    "legOver": "Leg afgelopen",
+    "bust": "Bust",
+    "yourTurn": "Jouw beurt",
+    "scoreboard": "Wedstrijdscorebord",
+    "averageShort": "GEM.",
+    "remaining": "Resterende score",
+    "notIn": "Nog niet geopend",
+    "legNumber": "Leg {{number}}",
+    "yourVisit": "Jouw beurt",
+    "entryNeeded": "Openen vereist: {{rule}}",
+    "checkout": "Uitgooien",
+    "dartsLeft": "{{count}} darts over",
+    "inputMode": "Score-invoer",
+    "wholeVisit": "Hele beurt",
+    "perDart": "Per dart",
+    "visitScore": "Beurtscore",
+    "record": "Invoeren",
+    "checkoutDarts": "Darts gebruikt voor uitgooien",
+    "invalidVisit": "Deze beurt is niet mogelijk met deze regels. Controleer het totaal en het aantal darts voor uitgooien, of voer elke dart in.",
+    "multiplier": "Vermenigvuldiger",
+    "single": "Single",
+    "double": "Double",
+    "triple": "Triple",
+    "bull": "Bull",
+    "bustDescription": "Bust. Je score gaat terug naar het begin van deze beurt.",
+    "visitRecorded": "{{score}} punten. Klaar voor Dartbot?",
+    "checkoutRecorded": "{{score}} uitgegooid. Leg gewonnen!",
+    "undo": "Ongedaan maken",
+    "nextLeg": "Volgende leg",
+    "botTurn": "Dartbot aan de beurt",
+    "broadcastBoard": "Dartbord in tv-weergave",
+    "pause": "Wedstrijd pauzeren",
+    "resume": "Hervatten",
+    "mute": "Geluid uitzetten",
+    "unmute": "Geluid aanzetten",
+    "fullscreen": "Volledig scherm",
+    "exitFullscreen": "Volledig scherm sluiten",
+    "fullscreenUnavailable": "Volledig scherm is niet beschikbaar in deze browser. De wedstrijdweergave vult nog steeds de pagina.",
+    "bullOff": "Gooien voor de bull",
+    "bullInstructions": "Gooi één dart naar de bull op je eigen bord en markeer hier de positie. Daarna gooit Dartbot. Bullseye verslaat de buitenste bull; anders wint de dichtstbijzijnde.",
+    "bullTie": "Gelijkspel. Beide spelers gooien opnieuw.",
+    "startsResult": "{{name}} gooit als eerste.",
+    "markBull": "Markeer de positie van je dart op het bord.",
+    "throwAgain": "Opnieuw gooien",
+    "legWinner": "{{name}} wint de leg",
+    "pauseDescription": "De wedstrijd is gepauzeerd. Dartbot pauzeert ook als dit tabblad verborgen is.",
+    "matchWinner": "{{name}} wint de wedstrijd",
+    "matchStats": "Wedstrijdstatistieken",
+    "average": "Gemiddelde per drie darts",
+    "rematch": "Revanche",
+    "changeSettings": "Instellingen wijzigen",
+    "leaveTitle": "Deze wedstrijd verlaten?",
+    "leaveDescription": "Deze oefenwedstrijd wordt in tijdelijk geheugen bewaard. Als je deze pagina verlaat, verlies je je voortgang.",
+    "keepPlaying": "Verder spelen",
+    "leaveMatch": "Wedstrijd verlaten",
+    "entry": {
+      "straight": "Vrij openen",
+      "double": "Dubbel openen",
+      "master": "Master openen"
+    },
+    "finish": {
+      "straight": "Vrij uitgooien",
+      "double": "Dubbel uitgooien",
+      "master": "Master uitgooien"
+    },
+    "formats": {
+      "legs": "Legs",
+      "sets": "Sets"
+    },
+    "starters": {
+      "human": "Jij",
+      "bot": "Dartbot",
+      "random": "Willekeurig",
+      "bull": "Gooien voor de bull"
+    },
+    "nextStarters": {
+      "alternate": "Om en om",
+      "winner": "Winnaar van de leg",
+      "loser": "Verliezer van de leg"
+    },
+    "paces": {
+      "match": "Wedstrijdtempo",
+      "quick": "Snel",
+      "relaxed": "Rustig"
+    },
+    "stats": {
+      "legsWon": "Gewonnen legs",
+      "bestVisit": "Beste beurt",
+      "highestCheckout": "Hoogste finish",
+      "oneEighties": "180-worpen"
+    },
+    "invalidRules": "Deze beginscore kan niet worden uitgegooid met de gekozen regels voor openen en uitgooien. Wijzig de score of de regels."
   }
 }

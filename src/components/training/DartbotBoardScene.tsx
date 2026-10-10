@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { DartboardSvg } from "@/components/training/DartboardSvg";
 import type { DartbotThrow } from "@/lib/trainingDartbot";
 import { DARTBOT_FLIGHT_MS } from "@/lib/dartbotTiming";
@@ -8,6 +9,8 @@ interface DartbotBoardSceneProps {
   darts: DartbotThrow[];
   dangerNumbers: Set<number>;
   color: string;
+  broadcast?: boolean;
+  flightMs?: number;
 }
 
 interface FlyingDart {
@@ -29,7 +32,7 @@ interface BoardScene {
 const WORLD_PER_SVG_UNIT = 1.7 / 83;
 const BOARD_RADIUS = 100 * WORLD_PER_SVG_UNIT;
 
-export default function DartbotBoardScene({ darts, dangerNumbers, color }: DartbotBoardSceneProps) {
+export default function DartbotBoardScene({ darts, dangerNumbers, color, broadcast = false, flightMs = DARTBOT_FLIGHT_MS }: DartbotBoardSceneProps) {
   const hostRef = useRef<HTMLDivElement>(null);
   const textureRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<BoardScene | null>(null);
@@ -51,6 +54,7 @@ export default function DartbotBoardScene({ darts, dangerNumbers, color }: Dartb
     setReady(false);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
+    if (broadcast) { renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1; }
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.domElement.setAttribute("aria-hidden", "true");
@@ -58,14 +62,24 @@ export default function DartbotBoardScene({ darts, dangerNumbers, color }: Dartb
     host.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
+    let environmentTarget: THREE.WebGLRenderTarget | null = null;
+    if (broadcast) {
+      const room = new RoomEnvironment();
+      const generator = new THREE.PMREMGenerator(renderer);
+      environmentTarget = generator.fromScene(room, 0.04);
+      scene.environment = environmentTarget.texture;
+      scene.environmentIntensity = 0.3;
+      room.dispose(); generator.dispose();
+    }
     const camera = new THREE.PerspectiveCamera(36, 4 / 3, 0.1, 30);
-    camera.position.set(2.7, 0.85, 7.4);
+    camera.position.set(broadcast ? 0.65 : 2.7, broadcast ? 0.12 : 0.85, broadcast ? 6.8 : 7.4);
     camera.lookAt(0, 0, 0.25);
-    scene.add(new THREE.HemisphereLight(0xdbeaff, 0x343045, 2));
-    const light = new THREE.SpotLight(0xffffff, 90, 20, 0.65, 0.8);
-    light.position.set(2, 5, 6);
+    scene.add(new THREE.HemisphereLight(0xdbeaff, 0x343045, broadcast ? 0.9 : 2));
+    const light = new THREE.SpotLight(0xffffff, broadcast ? 70 : 90, 20, 0.65, 0.8);
+    light.position.set(broadcast ? 0.5 : 2, broadcast ? 1.6 : 5, broadcast ? 8 : 6);
     light.castShadow = true;
-    light.shadow.mapSize.set(512, 512);
+    light.shadow.mapSize.set(broadcast ? 2048 : 512, broadcast ? 2048 : 512);
+    light.shadow.radius = broadcast ? 2 : 1;
     light.shadow.normalBias = 0.025;
     scene.add(light);
     const fill = new THREE.PointLight(0x94bfff, 18, 15);
@@ -76,10 +90,35 @@ export default function DartbotBoardScene({ darts, dangerNumbers, color }: Dartb
     const materials: THREE.Material[] = [];
     const geometry = <T extends THREE.BufferGeometry>(value: T): T => { geometries.push(value); return value; };
     const material = <T extends THREE.Material>(value: T): T => { materials.push(value); return value; };
-    const surround = new THREE.Mesh(geometry(new THREE.CylinderGeometry(2.3, 2.3, 0.12, 96)), material(new THREE.MeshStandardMaterial({ color: 0x111722, roughness: 1 })));
+    let stageTexture: THREE.CanvasTexture | null = null;
+    if (broadcast) {
+      const canvas = document.createElement("canvas"); canvas.width = 256; canvas.height = 256;
+      const context = canvas.getContext("2d");
+      if (context) {
+        const pixels = context.createImageData(256, 256);
+        for (let index = 0; index < pixels.data.length; index += 4) {
+          const value = 80 + Math.random() * 100;
+          pixels.data[index] = value; pixels.data[index + 1] = value; pixels.data[index + 2] = value; pixels.data[index + 3] = 255;
+        }
+        context.putImageData(pixels, 0, 0);
+        stageTexture = new THREE.CanvasTexture(canvas);
+        stageTexture.wrapS = stageTexture.wrapT = THREE.RepeatWrapping;
+        stageTexture.repeat.set(12, 12);
+      }
+    }
+    const surround = new THREE.Mesh(geometry(new THREE.CylinderGeometry(broadcast ? 2.47 : 2.3, broadcast ? 2.47 : 2.3, 0.12, 96)), material(new THREE.MeshStandardMaterial({ color: broadcast ? 0x9a1522 : 0x111722, roughness: 1, bumpMap: stageTexture, bumpScale: 0.013 })));
     surround.rotation.x = Math.PI / 2;
     surround.position.z = -0.19;
     scene.add(surround);
+    if (broadcast) {
+      const wall = new THREE.Mesh(geometry(new THREE.PlaneGeometry(30, 20)), material(new THREE.MeshStandardMaterial({ color: 0x10131b, roughness: 1, bumpMap: stageTexture, bumpScale: 0.03 })));
+      wall.position.z = -0.32; wall.receiveShadow = true; scene.add(wall);
+      const redLight = new THREE.PointLight(0xe52035, 14, 8);
+      redLight.position.set(-2.8, 2, 0.4); scene.add(redLight);
+      const stageStrip = new THREE.Mesh(geometry(new THREE.BoxGeometry(0.035, 12, 0.03)), material(new THREE.MeshBasicMaterial({ color: 0xa91b2d })));
+      stageStrip.position.set(4.6, 0, -0.25); scene.add(stageStrip);
+      surround.castShadow = true;
+    }
     const body = new THREE.Mesh(geometry(new THREE.CylinderGeometry(BOARD_RADIUS, BOARD_RADIUS, 0.16, 96)), material(new THREE.MeshStandardMaterial({ color: 0x34363b, roughness: 0.8 })));
     body.rotation.x = Math.PI / 2;
     body.position.z = -0.08;
@@ -92,6 +131,21 @@ export default function DartbotBoardScene({ darts, dangerNumbers, color }: Dartb
     const rim = new THREE.Mesh(geometry(new THREE.TorusGeometry(BOARD_RADIUS - 0.015, 0.018, 8, 96)), material(new THREE.MeshStandardMaterial({ color: 0x71808e, metalness: 0.75, roughness: 0.4 })));
     rim.position.z = 0.018;
     scene.add(rim);
+    if (broadcast) {
+      const wireMaterial = material(new THREE.MeshStandardMaterial({ color: 0xc6c4b6, metalness: 0.9, roughness: 0.35 }));
+      for (const radiusMm of [6.35, 15.9, 99.4, 107.4, 162, 170]) {
+        const wire = new THREE.Mesh(geometry(new THREE.TorusGeometry(radiusMm / 100, 0.004, 5, 160)), wireMaterial);
+        wire.position.z = 0.025; scene.add(wire);
+      }
+      const spokeGeometry = geometry(new THREE.CylinderGeometry(0.004, 0.004, 1.541, 5));
+      for (let index = 0; index < 20; index++) {
+        const angle = (index * 18 + 9) * Math.PI / 180;
+        const wire = new THREE.Mesh(spokeGeometry, wireMaterial);
+        wire.rotation.z = -angle;
+        wire.position.set(Math.sin(angle) * 0.9295, Math.cos(angle) * 0.9295, 0.025);
+        scene.add(wire);
+      }
+    }
 
     const steel = material(new THREE.MeshStandardMaterial({ color: 0xcbd3db, metalness: 0.8, roughness: 0.3 }));
     const shaftMaterial = material(new THREE.MeshStandardMaterial({ color: 0x383d48, metalness: 0.35, roughness: 0.4 }));
@@ -112,6 +166,7 @@ export default function DartbotBoardScene({ darts, dangerNumbers, color }: Dartb
     const stripeGeometry = geometry(new THREE.PlaneGeometry(0.025, 0.14));
     const makeDart = () => {
       const group = new THREE.Group();
+      if (broadcast) group.scale.setScalar(1.45);
       const tip = new THREE.Mesh(tipGeometry, steel);
       tip.rotation.x = -Math.PI / 2;
       tip.position.z = 0.08;
@@ -155,24 +210,29 @@ export default function DartbotBoardScene({ darts, dangerNumbers, color }: Dartb
       let moving = false;
       for (const entry of flying) {
         const elapsed = now - entry.startedAt;
-        const progress = motion.matches ? 1 : Math.min(1, Math.max(0, elapsed / DARTBOT_FLIGHT_MS));
-        const remaining = (1 - progress) ** 2;
+        const progress = motion.matches ? 1 : Math.min(1, Math.max(0, elapsed / flightMs));
+        // In broadcast mode the dart keeps its speed, following a shallow
+        // ballistic arc. Older training views retain their slower demonstration.
+        const remaining = broadcast ? 1 - progress : (1 - progress) ** 2;
         entry.mesh.position.copy(entry.target);
         entry.mesh.position.x += 1.8 * remaining;
-        entry.mesh.position.y += -1.4 * remaining + Math.sin(progress * Math.PI) * 0.25;
-        entry.mesh.position.z += 5 * remaining;
-        entry.mesh.rotation.set(0.12 * remaining, -0.18 * remaining, 0.35);
+        // World units are 100 mm: 23.7 is the regulation 2.37 m oche.
+        // Gravity gives a shallow parabola over a 260 ms match-speed flight.
+        entry.mesh.position.y += broadcast ? -2.3 * remaining + 0.5 * 98.1 * (flightMs / 1000) ** 2 * progress * (1 - progress) : -1.4 * remaining + Math.sin(progress * Math.PI) * 0.25;
+        entry.mesh.position.z += (broadcast ? 23.7 : 5) * remaining;
+        const restingPitch = broadcast ? -0.07 : 0;
+        entry.mesh.rotation.set(restingPitch + 0.12 * remaining, -0.18 * remaining, 0.35);
         if (progress === 1 && entry.dart.score === 0) {
           // A miss bounces/drops away rather than sticking in a safe field.
-          const drop = motion.matches ? 1 : Math.min(1, Math.max(0, (elapsed - DARTBOT_FLIGHT_MS) / 420));
+          const drop = motion.matches ? 1 : Math.min(1, Math.max(0, (elapsed - flightMs) / 420));
           entry.mesh.position.y -= drop * drop * 3;
           entry.mesh.position.z += drop * 0.5;
           entry.mesh.rotation.x += drop * 1.8;
           entry.mesh.visible = drop < 1;
           moving ||= drop < 1;
         } else if (progress === 1) {
-          const settle = motion.matches ? 1 : Math.min(1, (elapsed - DARTBOT_FLIGHT_MS) / 180);
-          entry.mesh.rotation.x = Math.sin(settle * Math.PI * 4) * 0.045 * (1 - settle);
+          const settle = motion.matches ? 1 : Math.min(1, (elapsed - flightMs) / 180);
+          entry.mesh.rotation.x = restingPitch + Math.sin(settle * Math.PI * 4) * 0.045 * (1 - settle);
           moving ||= settle < 1;
         }
         moving ||= progress < 1;
@@ -239,15 +299,17 @@ export default function DartbotBoardScene({ darts, dangerNumbers, color }: Dartb
       renderer.domElement.removeEventListener("webglcontextrestored", handleContextRestored);
       window.cancelAnimationFrame(frame);
       faceMaterial.map?.dispose();
+      environmentTarget?.dispose();
+      stageTexture?.dispose();
       geometries.forEach((value) => value.dispose());
       materials.forEach((value) => value.dispose());
       renderer.dispose();
       renderer.forceContextLoss();
       renderer.domElement.remove();
     };
-  }, [color]);
+  }, [broadcast, color, flightMs]);
 
-  useEffect(() => { sceneRef.current?.addDarts(darts); }, [color, darts]);
+  useEffect(() => { sceneRef.current?.addDarts(darts); }, [broadcast, color, darts, flightMs]);
 
   useEffect(() => {
     const state = sceneRef.current;
@@ -263,7 +325,26 @@ export default function DartbotBoardScene({ darts, dangerNumbers, color }: Dartb
     let cancelled = false;
     image.onload = () => {
       if (cancelled || sceneRef.current !== state) return;
-      const texture = new THREE.Texture(image);
+      let textureImage: HTMLImageElement | HTMLCanvasElement = image;
+      if (broadcast) {
+        // Bake fine sisal fibres into the existing face, preserving every
+        // segment boundary. Seeded noise avoids flickering across texture loads.
+        const canvas = document.createElement("canvas"); canvas.width = 1024; canvas.height = 1024;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(image, 0, 0, 1024, 1024);
+          let seed = 501;
+          const random = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+          for (let index = 0; index < 90000; index++) {
+            const x = random() * 1024; const y = random() * 1024;
+            if (Math.hypot(x - 512, y - 512) > 423) continue;
+            ctx.fillStyle = random() > 0.5 ? "rgba(0,0,0,0.07)" : "rgba(255,255,235,0.05)";
+            ctx.fillRect(x, y, 0.5 + random(), 1 + random() * 3);
+          }
+          textureImage = canvas;
+        }
+      }
+      const texture = new THREE.Texture(textureImage);
       texture.colorSpace = THREE.SRGBColorSpace;
       texture.anisotropy = Math.min(4, state.renderer.capabilities.getMaxAnisotropy());
       texture.needsUpdate = true;
@@ -277,7 +358,7 @@ export default function DartbotBoardScene({ darts, dangerNumbers, color }: Dartb
     };
     image.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(new XMLSerializer().serializeToString(copy))}`;
     return () => { cancelled = true; image.onload = null; };
-  }, [color, dangerNumbers]);
+  }, [broadcast, color, dangerNumbers, flightMs]);
 
   return (
     <div ref={hostRef} className="absolute inset-0" data-renderer={ready ? "3d" : "fallback"}>
