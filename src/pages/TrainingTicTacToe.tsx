@@ -19,7 +19,8 @@ import TicTacToeBoard from "@/components/training/TicTacToeBoard";
 import TicTacToeTurnPanel from "@/components/training/TicTacToeTurnPanel";
 import DartbotSetup from "@/components/training/DartbotSetup";
 import DartbotTurn from "@/components/training/DartbotTurn";
-import { DEFAULT_DARTBOT_LEVEL, chooseTicTacToeDartbotAim, dartbotTurnForm, getDartbotLevel, simulateDartbotBull, simulateDartbotThrow } from "@/lib/trainingDartbot";
+import DartbotBoard3D from "@/components/training/DartbotBoard3D";
+import { DEFAULT_DARTBOT_LEVEL, chooseTicTacToeDartbotAim, dartbotTurnForm, getDartbotLevel, simulateDartbotBull, simulateDartbotThrow, type DartbotThrow } from "@/lib/trainingDartbot";
 import { DartboardSvg, type DartboardClickPoint, type DartboardMarker } from "@/components/training/DartboardSvg";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
@@ -202,6 +203,7 @@ export default function TrainingTicTacToe() {
   const [bullThrows, setBullThrows] = useState<BullThrow[]>([]);
   const [vsDartbot, setVsDartbot] = useState(false);
   const [botLevelId, setBotLevelId] = useState(DEFAULT_DARTBOT_LEVEL);
+  const [botDarts, setBotDarts] = useState<DartbotThrow[]>([]);
   const botForm = useRef(1);
   const botLevel = getDartbotLevel(botLevelId);
   const teamSetup = useMemo(() => vsDartbot
@@ -409,7 +411,9 @@ export default function TrainingTicTacToe() {
       const aim = chooseTicTacToeDartbotAim(board, turnTotal, remainingDarts, finishOnDouble, botLevel);
       if (!aim) { setIsWaitingForTurnSwitch(true); return; }
       if (throwsThisTurn.length === 0) botForm.current = dartbotTurnForm();
-      handleAddThrow(simulateDartbotThrow(botLevel, aim.dart, Math.random, botForm.current));
+      const dart = simulateDartbotThrow(botLevel, aim.dart, Math.random, botForm.current);
+      setBotDarts((previous) => throwsThisTurn.length === 0 ? [dart] : [...previous, dart]);
+      handleAddThrow(dart);
     }, 950);
     return () => window.clearTimeout(timeout);
   }, [board, botLevel, completeClaim, finishOnDouble, handleAddThrow, isBotTurn, isBullDeciderActive, isTeamsReady, isWaitingForTurnSwitch, matchWinner, pendingCellId, remainingDarts, roundResult, throwsThisTurn.length, turnTotal]);
@@ -430,6 +434,7 @@ export default function TrainingTicTacToe() {
   const resetRound = useCallback(
     (starter: Player, nextDifficulty: Difficulty = difficulty) => {
       setBoard(buildBoard(nextDifficulty));
+      setBotDarts([]);
       setCurrentPlayer(starter);
       setThrowsThisTurn([]);
       setPendingCellId(null);
@@ -455,6 +460,7 @@ export default function TrainingTicTacToe() {
   }, [resetRound]);
 
   const handleChangeTeams = useCallback(() => {
+    setBotDarts([]);
     setIsTeamsReady(false);
     setIsBullDeciderActive(false);
     setBullThrows([]);
@@ -539,6 +545,7 @@ export default function TrainingTicTacToe() {
     if (bullTopPlayers.length > 1) return;
 
     const starter = bullRanking[0].player;
+    setBotDarts([]);
     setStartingPlayer(starter);
     setCurrentPlayer(starter);
     setBoard(buildBoard(difficulty));
@@ -555,6 +562,7 @@ export default function TrainingTicTacToe() {
 
   const handleDifficultyChange = useCallback((nextValue: string) => {
     const nextDifficulty = nextValue as Difficulty;
+    setBotDarts([]);
     setDifficulty(nextDifficulty);
     setIsBullDeciderActive(false);
     setBullThrows([]);
@@ -1197,11 +1205,11 @@ export default function TrainingTicTacToe() {
         {isTeamsReady && (
           <div
             className={cn(
-              "grid gap-4 xl:grid-cols-12 xl:items-start",
+              "grid gap-4 lg:grid-cols-12 lg:items-start",
               isFullscreen && "xl:min-h-[calc(100vh-10rem)]",
             )}
           >
-            <aside className="space-y-4 xl:col-span-3">
+            <aside className="space-y-4 lg:col-span-12 xl:col-span-3">
               <section className="glass-card rounded-2xl border border-white/10 p-4 sm:p-5 space-y-3">
                 <div className="grid grid-cols-2 gap-4">
                   <div
@@ -1229,7 +1237,7 @@ export default function TrainingTicTacToe() {
                 </p>
               </section>
 
-              <section className="glass-card rounded-2xl border border-white/10 p-4 sm:p-5">
+              <section className="hidden glass-card rounded-2xl border border-white/10 p-4 sm:p-5 xl:block">
                 <h2 className="text-sm uppercase tracking-wider text-muted-foreground mb-2">
                   {t("trainingTicTacToe.rules.title")}
                 </h2>
@@ -1242,7 +1250,7 @@ export default function TrainingTicTacToe() {
               </section>
             </aside>
 
-            <section className="glass-card rounded-2xl border border-white/10 p-4 sm:p-5 xl:col-span-5">
+            <section className="glass-card min-w-0 rounded-2xl border border-white/10 p-4 sm:p-5 lg:col-span-7 xl:col-span-5">
               <TicTacToeBoard
                 board={board}
                 pendingCellId={pendingCellId}
@@ -1262,10 +1270,8 @@ export default function TrainingTicTacToe() {
               />
             </section>
 
-            <aside className="space-y-4 h-full xl:col-span-4">
-              {vsDartbot && <DartbotTurn level={botLevel}
-                status={isBotTurn && !roundResult ? undefined : t("trainingDartbot.ready")}
-              />}
+            <aside className="min-w-0 space-y-4 h-full lg:col-span-5 xl:col-span-4">
+              {vsDartbot && <DartbotBoard3D level={botLevel} darts={botDarts} color={teamSetup.B.color} active={isBotTurn && !roundResult && !matchWinner} />}
               <TicTacToeTurnPanel
                 currentPlayer={currentPlayer}
                 currentPlayerName={teamSetup[currentPlayer].name}
@@ -1300,7 +1306,7 @@ export default function TrainingTicTacToe() {
           </div>
         )}
 
-        <div className="space-y-6 mt-6 md:hidden">
+        <div className="space-y-6 mt-6 xl:hidden">
           <section className="glass-card rounded-2xl border border-white/10 p-4 sm:p-5">
             <h2 className="text-sm uppercase tracking-wider text-muted-foreground mb-2">
               {t("trainingTicTacToe.rules.title")}

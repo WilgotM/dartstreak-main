@@ -273,7 +273,7 @@
       "s6Text": "Wenn Sie Ihr Land festlegen, platzieren wir Sie möglicherweise automatisch in einer globalen Liga und einer Länderliga. Systemligen verwenden für wöchentliche Saisons feste Ligazeitzonen.",
       "s6Title": "6. Systemligen und Länderdaten",
       "title": "Datenschutzrichtlinie",
-      "dartbotTraining": "In Tic Tac Toe und Red Zone Survival simuliert Dartbot einen Gegner auf deinem Gerät. Spielernamen, gewählte Schwierigkeit und Würfe werden für die Trainingsrunde im temporären Spielspeicher gehalten und beim Schließen oder Neuladen der Seite gelöscht. Diese Funktion fügt keine Serverspeicherung hinzu und sendet keine Trainingsdaten an einen externen KI-Dienst."
+      "dartbotTraining": "In Tic Tac Toe und Red Zone Survival simuliert Dartbot einen Gegner auf deinem Gerät. Spielernamen, gewählte Schwierigkeit und Würfe werden für die Trainingsrunde im temporären Spielspeicher gehalten und beim Schließen oder Neuladen der Seite gelöscht. Diese Funktion fügt keine Serverspeicherung hinzu und sendet keine Trainingsdaten an einen externen KI-Dienst. Die 3D-Wurfanimation wird auf deinem Gerät aus diesen simulierten Würfen erzeugt."
     },
     "terms": {
       "li1": "Betrügen Sie, manipulieren Sie Punktestände oder verwenden Sie automatisierte Bots.",
@@ -927,6 +927,9 @@
     "miss": "Fehlwurf",
     "hitDanger": "Mit Dart {{index}} die rote Zone getroffen.",
     "safeTurn": "Alle drei Darts sind sicher.",
-    "missedBoard": "Mit Dart {{index}} die Scheibe verfehlt."
+    "missedBoard": "Mit Dart {{index}} die Scheibe verfehlt.",
+    "throwView": "Dartbots Würfe",
+    "sideView": "Seitliche Ansicht",
+    "lastThrow": "Dartbots letzter Zug."
   }
 }

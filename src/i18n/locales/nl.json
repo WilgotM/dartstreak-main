@@ -273,7 +273,7 @@
       "s6Text": "Wanneer u uw land instelt, kunnen we u automatisch in een mondiale competitie en een landencompetitie plaatsen. Systeemcompetities gebruiken vaste competitietijdzones voor wekelijkse seizoenen.",
       "s6Title": "6. Systeemcompetities en landgegevens",
       "title": "Privacybeleid",
-      "dartbotTraining": "In Tic Tac Toe en Red Zone Survival simuleert Dartbot een tegenstander op je apparaat. Spelersnamen, het gekozen niveau en worpen worden tijdens de training in het tijdelijke spelgeheugen bewaard en gewist wanneer de pagina wordt gesloten of opnieuw geladen. Deze functie voegt geen serveropslag toe en stuurt geen trainingsgegevens naar een externe AI-dienst."
+      "dartbotTraining": "In Tic Tac Toe en Red Zone Survival simuleert Dartbot een tegenstander op je apparaat. Spelersnamen, het gekozen niveau en worpen worden tijdens de training in het tijdelijke spelgeheugen bewaard en gewist wanneer de pagina wordt gesloten of opnieuw geladen. Deze functie voegt geen serveropslag toe en stuurt geen trainingsgegevens naar een externe AI-dienst. De 3D-worpanimatie wordt op je apparaat gemaakt op basis van deze gesimuleerde worpen."
     },
     "terms": {
       "li1": "Speel vals, manipuleer scores of gebruik geautomatiseerde bots.",
@@ -927,6 +927,9 @@
     "miss": "Mis",
     "hitDanger": "De rode zone geraakt met pijl {{index}}.",
     "safeTurn": "Alle drie de pijlen zijn veilig.",
-    "missedBoard": "Pijl {{index}} heeft het bord gemist."
+    "missedBoard": "Pijl {{index}} heeft het bord gemist.",
+    "throwView": "Worpen van Dartbot",
+    "sideView": "Zijaanzicht",
+    "lastThrow": "Laatste beurt van Dartbot."
   }
 }

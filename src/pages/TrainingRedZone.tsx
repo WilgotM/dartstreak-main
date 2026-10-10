@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { DartboardSvg, type DartboardClickPoint, type DartboardMarker } from "@/components/training/DartboardSvg";
 import DartbotSetup from "@/components/training/DartbotSetup";
 import DartbotTurn from "@/components/training/DartbotTurn";
+import DartbotBoard3D from "@/components/training/DartbotBoard3D";
 import { DEFAULT_DARTBOT_LEVEL, chooseRedZoneDartbotAim, dartbotTurnForm, getDartbotLevel, isRedZoneDanger, simulateDartbotBull, simulateDartbotThrow, type DartbotThrow } from "@/lib/trainingDartbot";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -1125,7 +1126,7 @@ export default function TrainingRedZone() {
             </section>
 
             <section className="grid gap-4 xl:grid-cols-12 xl:items-start">
-              <aside className="glass-card rounded-2xl border border-white/10 p-4 space-y-4 xl:col-span-3 xl:sticky xl:top-24">
+              <aside className="order-3 glass-card rounded-2xl border border-white/10 p-4 space-y-4 xl:order-none xl:col-span-3 xl:sticky xl:top-24">
                 <div>
                   <h3 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">
                     {t("trainingRedZone.status.alivePlayers", { count: alivePlayers.length })}
@@ -1208,14 +1209,21 @@ export default function TrainingRedZone() {
                 </div>
               </aside>
 
-              <div className="glass-card rounded-2xl border border-white/10 p-4 md:p-5 xl:col-span-5 xl:min-h-[620px] xl:sticky xl:top-24">
+              <div className="order-1 min-w-0 glass-card rounded-2xl border border-white/10 p-4 md:p-5 xl:order-none xl:col-span-5 xl:min-h-[620px] xl:sticky xl:top-24">
                 <div className="h-full flex flex-col">
                   <div className="flex-1 py-4 md:py-6 flex items-center justify-center">
-                    <DartboardSvg
+                    {vsDartbot ? <DartbotBoard3D
+                      level={getDartbotLevel(botLevelId)}
+                      darts={botTurn?.darts ?? EMPTY_BOT_DARTS}
                       dangerNumbers={dangerNumberSet}
-                      markers={isBotTurn ? botDarts.map((dart, index) => ({ x: dart.x, y: dart.y, color: currentPlayer.color, label: String(index + 1) })) : []}
+                      color={players.find((player) => player.botLevelId)?.color ?? PLAYER_COLORS[1]}
+                      active={isBotTurn && !result}
+                      framed={false}
+                      className="w-full max-w-[500px]"
+                    /> : <DartboardSvg
+                      dangerNumbers={dangerNumberSet}
                       className="w-full max-w-[300px] md:max-w-[360px] xl:max-w-[430px] drop-shadow-[0_0_18px_rgba(239,68,68,0.16)]"
-                    />
+                    />}
                   </div>
 
                   <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
@@ -1241,7 +1249,7 @@ export default function TrainingRedZone() {
                 </div>
               </div>
 
-              <aside className="space-y-4 xl:col-span-4 xl:sticky xl:top-24">
+              <aside className="order-2 min-w-0 space-y-4 xl:order-none xl:col-span-4 xl:sticky xl:top-24">
                 {!result && currentPlayer?.botLevelId && <DartbotTurn level={getDartbotLevel(currentPlayer.botLevelId)} darts={botDarts}
                   status={botDangerIndex !== -1 ? t(botDarts[botDangerIndex].score === 0 ? "trainingDartbot.missedBoard" : "trainingDartbot.hitDanger", { index: botDangerIndex + 1 }) : botDarts.length === 3 ? t("trainingDartbot.safeTurn") : undefined}
                 />}

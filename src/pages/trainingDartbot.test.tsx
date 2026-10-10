@@ -9,6 +9,10 @@ import { scoreDartbotPoint, simulateDartbotThrow } from "@/lib/trainingDartbot";
 
 vi.mock("@/hooks/useAuth", () => ({ useAuth: () => ({ user: { id: "test-player" }, loading: false }) }));
 vi.mock("@/components/AppLayout", () => ({ AppLayout: ({ children }) => children }));
+// Exercise the real page/3D-view boundary without creating a GPU context in jsdom.
+vi.mock("@/components/training/DartbotBoardScene", () => ({
+  default: ({ darts, dangerNumbers }) => <div data-testid="dartbot-scene" data-darts={JSON.stringify(darts)} data-danger={JSON.stringify([...dangerNumbers])} />,
+}));
 vi.mock("framer-motion", async () => {
   const { createElement } = await import("react");
   const tags = ["section", "div", "p", "span", "h2", "li", "button"];
@@ -95,6 +99,11 @@ describe("Tic Tac Toe bot turns", () => {
     expect(vi.mocked(simulateDartbotThrow).mock.calls.length).toBeGreaterThan(0);
     expect(screen.getByRole("button", { name: "MISS" }).getAttribute("disabled")).toBeNull();
     expect(screen.getAllByText("Dartbot").length).toBeGreaterThan(1);
+    const shownDarts = JSON.parse(screen.getByTestId("dartbot-scene").getAttribute("data-darts"));
+    expect(shownDarts).toEqual(vi.mocked(simulateDartbotThrow).mock.results.map((result) => result.value));
+    expect(screen.getByText("Last Dartbot turn.")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "New board" }));
+    expect(screen.getByTestId("dartbot-scene").getAttribute("data-darts")).toBe("[]");
   });
 
   it("cancels a pending bot throw when changing teams or unmounting", async () => {
@@ -125,6 +134,9 @@ describe("Red Zone bot turns", () => {
     fireEvent.click(screen.getByRole("button", { name: "Safe Hit" }));
     for (let dart = 0; dart < missDart; dart += 1) await tick(1000);
     expect(screen.getByText(`Missed the board with dart ${missDart}.`)).toBeTruthy();
+    const shownDarts = JSON.parse(screen.getByTestId("dartbot-scene").getAttribute("data-darts"));
+    expect(shownDarts).toHaveLength(missDart);
+    expect(shownDarts.at(-1)).toEqual(scoreDartbotPoint(0, 175));
     await tick(1500);
     expect(screen.queryByText("Player 1 wins!")).not.toBeNull();
     expect(vi.mocked(simulateDartbotThrow)).toHaveBeenCalledTimes(missDart);
@@ -187,7 +199,10 @@ describe("Red Zone bot turns", () => {
     expect(vi.mocked(simulateDartbotThrow)).toHaveBeenCalledTimes(3);
     expect(screen.getByRole("button", { name: "Safe Hit" })).toBeTruthy();
     expect(screen.getAllByText("Round 2").length).toBeGreaterThan(0);
+    expect(JSON.parse(screen.getByTestId("dartbot-scene").getAttribute("data-danger"))).toEqual(expect.arrayContaining([20, 5, 1]));
+    expect(JSON.parse(screen.getByTestId("dartbot-scene").getAttribute("data-darts"))).toHaveLength(3);
     fireEvent.click(screen.getByRole("button", { name: "New game" }));
+    expect(screen.getByTestId("dartbot-scene").getAttribute("data-darts")).toBe("[]");
     expect(screen.getAllByText("Round 1").length).toBeGreaterThan(0);
     fireEvent.click(screen.getByRole("button", { name: "Safe Hit" }));
     await tick(1000);

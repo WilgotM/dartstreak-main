@@ -273,7 +273,7 @@
       "s6Text": "Når du angir landet ditt, kan vi automatisk plassere deg i en global liga og en landsliga. Systemligaer bruker faste ligatidssoner for ukentlige sesonger.",
       "s6Title": "6. Systemligaer og landdata",
       "title": "Personvernerklæring",
-      "dartbotTraining": "I Tic Tac Toe og Red Zone Survival simulerer Dartbot en motstander på enheten din. Spillernavn, valgt nivå og kast beholdes i spillets midlertidige minne under treningen og slettes når siden lukkes eller lastes inn på nytt. Funksjonen legger ikke til serverlagring og sender ingen treningsdata til en ekstern KI-tjeneste."
+      "dartbotTraining": "I Tic Tac Toe og Red Zone Survival simulerer Dartbot en motstander på enheten din. Spillernavn, valgt nivå og kast beholdes i spillets midlertidige minne under treningen og slettes når siden lukkes eller lastes inn på nytt. Funksjonen legger ikke til serverlagring og sender ingen treningsdata til en ekstern KI-tjeneste. 3D-animasjonen av kastene lages på enheten din ut fra disse simulerte kastene."
     },
     "terms": {
       "li1": "Juks, manipuler poeng, eller bruk automatiserte roboter.",
@@ -927,6 +927,9 @@
     "miss": "Bom",
     "hitDanger": "Traff den røde sonen med pil {{index}}.",
     "safeTurn": "Alle tre pilene er trygge.",
-    "missedBoard": "Bommet på skiven med pil {{index}}."
+    "missedBoard": "Bommet på skiven med pil {{index}}.",
+    "throwView": "Dartbots kast",
+    "sideView": "Sett fra siden",
+    "lastThrow": "Dartbots siste tur."
   }
 }
